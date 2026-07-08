@@ -103,33 +103,58 @@ export default function LivestockPage() {
   }, [category, filteredData]);
 
   const chartData = useMemo(() => {
-    // Map data to match the keys expected by the Bar components
-    return filteredData.map(d => {
-      const obj: any = { name: d.kecamatan };
-      
+    // Map data untuk agregasi unik per Kecamatan
+    const aggregatedMap = new Map<string, any>();
+    
+    filteredData.forEach(d => {
+      const kec = d.kecamatan;
+      if (!aggregatedMap.has(kec)) {
+        const obj: any = { name: kec };
+        // Inisialisasi properti berdasarkan kategori
+        if (category === "besar") {
+            obj["Sapi Potong"] = 0; obj["Sapi Perah"] = 0; obj["Kerbau"] = 0; obj["Kuda"] = 0;
+        } else if (category === "kecil") {
+            obj["Kambing"] = 0; obj["Domba"] = 0; obj["Kelinci"] = 0; obj["Babi"] = 0;
+        } else {
+            obj["Ayam Broiler"] = 0; obj["Ayam Kampung"] = 0; obj["Ayam Ras Layer"] = 0; obj["Itik Biasa"] = 0; obj["Itik Manila"] = 0;
+        }
+        obj.total = 0;
+        aggregatedMap.set(kec, obj);
+      }
+
+      const entry = aggregatedMap.get(kec);
       if (category === "besar") {
         const r = d as TernakBesar;
-        obj["Sapi Potong"] = r.sapi;
-        obj["Sapi Perah"] = r.sapiPerah;
-        obj["Kerbau"] = r.kerbau;
-        obj["Kuda"] = r.kuda;
+        entry["Sapi Potong"] += r.sapi;
+        entry["Sapi Perah"] += r.sapiPerah;
+        entry["Kerbau"] += r.kerbau;
+        entry["Kuda"] += r.kuda;
+        entry.total += (r.sapi + r.sapiPerah + r.kerbau + r.kuda);
       } else if (category === "kecil") {
         const r = d as TernakKecil;
-        obj["Kambing"] = r.kambing;
-        obj["Domba"] = r.domba;
-        obj["Kelinci"] = r.kelinci;
-        obj["Babi"] = r.babi;
+        entry["Kambing"] += r.kambing;
+        entry["Domba"] += r.domba;
+        entry["Kelinci"] += r.kelinci;
+        entry["Babi"] += r.babi;
+        entry.total += (r.kambing + r.domba + r.kelinci + r.babi);
       } else {
         const r = d as Unggas;
-        obj["Ayam Broiler"] = r.ayamBroiler;
-        obj["Ayam Kampung"] = r.ayamKampung;
-        obj["Ayam Ras Layer"] = r.ayamRasLayer;
-        obj["Itik Biasa"] = r.itikBiasa;
-        obj["Itik Manila"] = r.itikManila;
+        entry["Ayam Broiler"] += r.ayamBroiler;
+        entry["Ayam Kampung"] += r.ayamKampung;
+        entry["Ayam Ras Layer"] += r.ayamRasLayer;
+        entry["Itik Biasa"] += r.itikBiasa;
+        entry["Itik Manila"] += r.itikManila;
+        entry.total += (r.ayamBroiler + r.ayamKampung + r.ayamRasLayer + r.itikBiasa + r.itikManila);
       }
-      return obj;
     });
+
+    return Array.from(aggregatedMap.values()).sort((a: any, b: any) => b.total - a.total);
   }, [category, filteredData]);
+
+  const tableData = useMemo(() => {
+    // Sama dengan chartData tapi untuk tabel
+    return chartData;
+  }, [chartData]);
 
   const formatNum = (num: number) => new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 }).format(num);
 
@@ -266,15 +291,16 @@ export default function LivestockPage() {
                   {stats.breakdown.map((item, idx) => {
                     const percentage = stats.total > 0 ? (item.value / stats.total) * 100 : 0;
                     return (
-                      <div key={idx} className="flex flex-col gap-1">
-                        <div className="flex justify-between text-xs font-mono font-bold uppercase">
-                          <span>{item.name}</span>
-                          <span>{formatNum(item.value)} ({percentage.toFixed(1)}%)</span>
-                        </div>
-                        <div className="w-full bg-neutral-200 h-2 border border-[#171717]">
-                          <div className="bg-violet-500 h-full" style={{ width: `${percentage}%` }}></div>
-                        </div>
+                      <div key={item.name} className="flex flex-col gap-1">
+                      <div className="flex justify-between text-xs font-mono font-bold uppercase">
+                        <span>{item.name}</span>
+                        <span>{formatNum(item.value)} ({percentage.toFixed(1)}%)</span>
                       </div>
+                      <div className="w-full bg-neutral-200 h-2 border border-[#171717]">
+                        <div className="h-full" style={{ width: `${percentage}%`, backgroundColor: ["#f59e0b", "#3b82f6", "#8b5cf6", "#10b981", "#ef4444", "#f472b6", "#a855f7"][idx % 7] }}></div>
+                      </div>
+                      </div>
+
                     );
                   })}
                 </div>
@@ -286,7 +312,7 @@ export default function LivestockPage() {
               <div className="flex flex-col mb-6 border-b-2 border-[#171717] pb-3 text-left">
                 <h4 className="text-lg font-serif font-black uppercase flex items-center gap-2">
                   <TrendingUp className="text-amber-600" />
-                  Grafik Sebaran Populasi Ternak
+                  Grafik Sebaran Populasi Ternak ({selectedYear})
                 </h4>
                 <p className="text-xs font-mono font-bold text-neutral-500 uppercase mt-1">
                   Populasi per Kecamatan di Banjarnegara Tahun {selectedYear}
@@ -325,15 +351,14 @@ export default function LivestockPage() {
                     />
                     <Legend verticalAlign="top" height={36} wrapperStyle={{ fontFamily: "monospace", fontSize: "11px", fontWeight: "bold" }} />
                     {stats.breakdown.map((item, idx) => {
-                      const colors = ["#d97706", "#2563eb", "#9333ea", "#059669", "#dc2626"];
+                      const colors = ["#f59e0b", "#3b82f6", "#8b5cf6", "#10b981", "#ef4444", "#f472b6", "#a855f7"];
                       return (
                         <Bar 
                           key={idx}
                           dataKey={item.name} 
-                          stackId="a" 
                           fill={colors[idx % colors.length]} 
                           stroke="#171717"
-                          strokeWidth={1.5}
+                          strokeWidth={1}
                         />
                       );
                     })}
@@ -360,32 +385,18 @@ export default function LivestockPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredData.map((row, idx) => {
-                      let values: number[] = [];
-                      let sum = 0;
-
-                      if (category === "besar") {
-                        const r = row as TernakBesar;
-                        values = [r.sapi, r.sapiPerah, r.kerbau, r.kuda];
-                        sum = r.sapi + r.sapiPerah + r.kerbau + r.kuda;
-                      } else if (category === "kecil") {
-                        const r = row as TernakKecil;
-                        values = [r.kambing, r.domba, r.kelinci, r.babi];
-                        sum = r.kambing + r.domba + r.kelinci + r.babi;
-                      } else {
-                        const r = row as Unggas;
-                        values = [r.ayamBroiler, r.ayamKampung, r.ayamRasLayer, r.itikBiasa, r.itikManila];
-                        sum = r.ayamBroiler + r.ayamKampung + r.ayamRasLayer + r.itikBiasa + r.itikManila;
-                      }
-
+                    {tableData.map((row: any, idx: number) => {
+                      // Filter keys for values to display
+                      const displayKeys = Object.keys(row).filter(k => k !== "name" && k !== "total");
+                      
                       return (
-                        <tr key={idx} className="border-b-2 border-neutral-200 hover:bg-neutral-50 transition-colors">
+                        <tr key={`${row.name}-${idx}`} className="border-b-2 border-neutral-200 hover:bg-neutral-50 transition-colors">
                           <td className="p-3 border-r-2 border-neutral-200 text-xs font-bold">{idx + 1}</td>
-                          <td className="p-3 border-r-2 border-neutral-200 font-bold uppercase">{row.kecamatan}</td>
-                          {values.map((v, i) => (
-                            <td key={i} className="p-3 border-r-2 border-neutral-200 text-right">{formatNum(v)}</td>
+                          <td className="p-3 border-r-2 border-neutral-200 font-bold uppercase">{row.name}</td>
+                          {displayKeys.map((key, i) => (
+                            <td key={i} className="p-3 border-r-2 border-neutral-200 text-right">{formatNum(row[key])}</td>
                           ))}
-                          <td className="p-3 font-bold text-right bg-neutral-50">{formatNum(sum)}</td>
+                          <td className="p-3 font-bold text-right bg-neutral-50">{formatNum(row.total)}</td>
                         </tr>
                       );
                     })}

@@ -95,6 +95,7 @@ export default function InfoPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 font-mono font-bold text-xs">
+            {/* --- EXISTING ROADMAP --- */}
             {/* ML */}
             <div className="bg-neutral-50 border-2 border-[#171717] p-5 shadow-[3px_3px_0px_0px_#171717] flex flex-col justify-between hover:shadow-[4px_4px_0px_0px_#171717] transition-all">
               <div>
@@ -137,6 +138,32 @@ export default function InfoPage() {
                 <h4 className="font-serif font-black uppercase text-[#171717] mb-2 leading-tight">Logistik AI</h4>
                 <p className="text-[10px] text-neutral-500 leading-relaxed uppercase">Rekomendasi optimasi alur logistik armada distribusi dari kecamatan surplus ke wilayah rentan pangan.</p>
               </div>
+            </div>
+
+            {/* --- NEW ANALYTICAL ROADMAP --- */}
+            <div className="bg-neutral-50 border-2 border-[#171717] p-5 shadow-[3px_3px_0px_0px_#171717] transition-all">
+              <h4 className="font-serif font-black uppercase text-[#171717] mb-2 leading-tight">1. Analisis Tren (Temporal)</h4>
+              <p className="text-[10px] text-neutral-500 leading-relaxed uppercase">CAGR produksi, deteksi anomali tahunan, dan *forecasting* hasil panen 1-2 tahun ke depan.</p>
+            </div>
+
+            <div className="bg-neutral-50 border-2 border-[#171717] p-5 shadow-[3px_3px_0px_0px_#171717] transition-all">
+              <h4 className="font-serif font-black uppercase text-[#171717] mb-2 leading-tight">2. Analisis Efisiensi</h4>
+              <p className="text-[10px] text-neutral-500 leading-relaxed uppercase">Produktivitas per hektar (yield) dan pemetaan rasio kebutuhan vs produksi pangan (surplus/defisit).</p>
+            </div>
+
+            <div className="bg-neutral-50 border-2 border-[#171717] p-5 shadow-[3px_3px_0px_0px_#171717] transition-all">
+              <h4 className="font-serif font-black uppercase text-[#171717] mb-2 leading-tight">3. Analisis Spasial</h4>
+              <p className="text-[10px] text-neutral-500 leading-relaxed uppercase">Indeks spesialisasi komoditas unggulan kecamatan dan heatmap korelasi antar komoditas.</p>
+            </div>
+
+            <div className="bg-neutral-50 border-2 border-[#171717] p-5 shadow-[3px_3px_0px_0px_#171717] transition-all">
+              <h4 className="font-serif font-black uppercase text-[#171717] mb-2 leading-tight">4. Indeks Diversifikasi</h4>
+              <p className="text-[10px] text-neutral-500 leading-relaxed uppercase">Mengukur keberagaman komoditas untuk membangun ketahanan wilayah terhadap fluktuasi pasar.</p>
+            </div>
+
+            <div className="bg-neutral-50 border-2 border-[#171717] p-5 shadow-[3px_3px_0px_0px_#171717] transition-all">
+              <h4 className="font-serif font-black uppercase text-[#171717] mb-2 leading-tight">5. Analisis Risiko</h4>
+              <p className="text-[10px] text-neutral-500 leading-relaxed uppercase">Volatilitas produksi tahunan sebagai indikator dini kerentanan ketahanan pangan wilayah.</p>
             </div>
           </div>
         </div>
