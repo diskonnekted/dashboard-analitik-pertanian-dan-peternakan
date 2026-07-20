@@ -41,6 +41,10 @@ export const siteConfig = {
       href: "/economic-value",
     },
     {
+      label: "Rekomendasi",
+      href: "/recommendations",
+    },
+    {
       label: "Info JDN",
       href: "/info",
     },
@@ -81,6 +85,10 @@ export const siteConfig = {
     {
       label: "Nilai Ekonomi",
       href: "/economic-value",
+    },
+    {
+      label: "Rekomendasi",
+      href: "/recommendations",
     },
     {
       label: "Info JDN",

@@ -45,9 +45,9 @@ export const WarningTable = ({ data }: WarningTableProps) => {
 
   return (
     <div
-      className="bg-white border-2 border-[#171717] rounded-none shadow-[4px_4px_0px_0px_#171717] h-full flex flex-col p-6"
+      className="bg-white border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] h-full flex flex-col p-6"
     >
-      <div className="flex items-center gap-2 mb-4 border-b-2 border-[#171717] pb-3">
+      <div className="flex items-center gap-2 mb-4 border-b-2 border-[#141414] pb-3">
         <AlertTriangle className="text-red-600" />
         <h4 className="text-xl font-serif font-black uppercase">Analisa Lahan Kritis</h4>
       </div>
@@ -55,7 +55,7 @@ export const WarningTable = ({ data }: WarningTableProps) => {
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse whitespace-nowrap">
           <thead>
-            <tr className="border-b-2 border-[#171717] text-xs font-mono font-bold text-neutral-700">
+            <tr className="border-b-2 border-[#141414] text-xs font-mono font-bold text-neutral-700">
               <th className="pb-3 px-2">DESA</th>
               <th className="pb-3 px-2 text-right">TOTAL LAHAN (Ha)</th>
               <th className="pb-3 px-6 text-center">STATUS</th>
@@ -73,7 +73,7 @@ export const WarningTable = ({ data }: WarningTableProps) => {
               analyzedData.map((item) => (
                 <tr
                   key={item.id}
-                  className="border-b border-[#171717]/20 hover:bg-neutral-50 transition-colors"
+                  className="border-b border-[#141414]/20 hover:bg-neutral-50 transition-colors"
                 >
                   <td className="py-4 px-2 font-mono font-bold uppercase text-neutral-800 text-xs">
                     {item.desa}
@@ -83,7 +83,7 @@ export const WarningTable = ({ data }: WarningTableProps) => {
                   </td>
                   <td className="py-4 px-6 text-center">
                     <span
-                      className={`inline-flex items-center px-2 py-1 border-2 font-mono font-bold text-[10px] uppercase shadow-[1px_1px_0px_0px_#171717] ${statusStyleMap[item.status]}`}
+                      className={`inline-flex items-center px-2 py-1 border-2 font-mono font-bold text-[10px] uppercase shadow-[1px_1px_0px_0px_#141414] ${statusStyleMap[item.status]}`}
                     >
                       {getStatusIcon(item.status)}
                       {item.status}

@@ -29,7 +29,7 @@ export default function InfoPage() {
                 <Handshake className="w-4 h-4 text-emerald-600" /> Dukungan untuk Banjarnegara
               </h3>
               <p className="text-xs font-mono font-bold text-neutral-600 leading-relaxed text-justify uppercase">
-                Sistem Informasi Manajemen Pertanian ini dikembangkan secara sukarela oleh Jaga Data Nusantara (JDN) sebagai wujud dukungan teknologi kepada Pemerintah Kabupaten Banjarnegara. 
+                Sistem Informasi Manajemen Pertanian ini dikembangkan oleh Jaga Data Nusantara (JDN) sebagai wujud dukungan teknologi kepada Pemerintah Kabupaten Banjarnegara. 
                 Aplikasi ini merupakan modul strategis dari purwarupa Dasbor Super Analitik skala penuh yang sedang kami kembangkan untuk kemajuan daerah.
               </p>
             </div>
@@ -164,6 +164,31 @@ export default function InfoPage() {
             <div className="bg-neutral-50 border-2 border-[#141414] p-5 shadow-[3px_3px_0px_0px_#141414] transition-all">
               <h4 className="font-serif font-black uppercase text-[#141414] mb-2 leading-tight">5. Analisis Risiko</h4>
               <p className="text-[10px] text-neutral-500 leading-relaxed uppercase">Volatilitas produksi tahunan sebagai indikator dini kerentanan ketahanan pangan wilayah.</p>
+            </div>
+
+            <div className="bg-neutral-50 border-2 border-[#141414] p-5 shadow-[3px_3px_0px_0px_#141414] transition-all">
+              <h4 className="font-serif font-black uppercase text-[#141414] mb-2 leading-tight">6. Neraca Pangan Wilayah</h4>
+              <p className="text-[10px] text-neutral-500 leading-relaxed uppercase">Simulasi ketersediaan vs kebutuhan pangan per kecamatan untuk menentukan prioritas distribusi dan cadangan.</p>
+            </div>
+
+            <div className="bg-neutral-50 border-2 border-[#141414] p-5 shadow-[3px_3px_0px_0px_#141414] transition-all">
+              <h4 className="font-serif font-black uppercase text-[#141414] mb-2 leading-tight">7. Integrasi Data Iklim</h4>
+              <p className="text-[10px] text-neutral-500 leading-relaxed uppercase">Menghubungkan data curah hujan dan musim tanam terhadap fluktuasi hasil panen untuk peringatan dini gagal panen.</p>
+            </div>
+
+            <div className="bg-neutral-50 border-2 border-[#141414] p-5 shadow-[3px_3px_0px_0px_#141414] transition-all">
+              <h4 className="font-serif font-black uppercase text-[#141414] mb-2 leading-tight">8. Dasbor Nilai Ekonomi</h4>
+              <p className="text-[10px] text-neutral-500 leading-relaxed uppercase">Estimasi kontribusi PDRB sektor pertanian, peternakan, dan perikanan beserta proyeksi nilai tambah hilirisasi.</p>
+            </div>
+
+            <div className="bg-neutral-50 border-2 border-[#141414] p-5 shadow-[3px_3px_0px_0px_#141414] transition-all">
+              <h4 className="font-serif font-black uppercase text-[#141414] mb-2 leading-tight">9. Rekomendasi Strategis</h4>
+              <p className="text-[10px] text-neutral-500 leading-relaxed uppercase">Penyusunan rekomendasi kebijakan otomatis berbasis temuan data untuk dinas dan pimpinan daerah, siap cetak/PDF.</p>
+            </div>
+
+            <div className="bg-neutral-50 border-2 border-[#141414] p-5 shadow-[3px_3px_0px_0px_#141414] transition-all">
+              <h4 className="font-serif font-black uppercase text-[#141414] mb-2 leading-tight">10. Portal Data Terbuka</h4>
+              <p className="text-[10px] text-neutral-500 leading-relaxed uppercase">Ekspor dataset lintas sektor dalam format standar (CSV/API) untuk mendukung transparansi dan riset publik.</p>
             </div>
           </div>
         </div>

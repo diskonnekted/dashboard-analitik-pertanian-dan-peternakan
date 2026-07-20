@@ -10,6 +10,7 @@ import InfoPage from "@/pages/info";
 import LivestockPage from "@/pages/livestock";
 import FisheriesPage from "@/pages/fisheries";
 import EconomicValuePage from "@/pages/economic-value";
+import RecommendationsPage from "@/pages/recommendations";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
       <Route element={<LivestockPage />} path="/livestock" />
       <Route element={<FisheriesPage />} path="/fisheries" />
       <Route element={<EconomicValuePage />} path="/economic-value" />
+      <Route element={<RecommendationsPage />} path="/recommendations" />
       <Route element={<InfoPage />} path="/info" />
     </Routes>
   );

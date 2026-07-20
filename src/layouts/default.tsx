@@ -11,7 +11,8 @@ import {
   X, 
   Info,
   Fish,
-  DollarSign
+  DollarSign,
+  ClipboardList
 } from "lucide-react";
 import { siteConfig } from "@/config/site";
 
@@ -42,6 +43,8 @@ export default function DefaultLayout({
         return <Fish className="w-4 h-4 mr-3 text-emerald-600" />;
       case "Nilai Ekonomi":
         return <DollarSign className="w-4 h-4 mr-3 text-emerald-600" />;
+      case "Rekomendasi":
+        return <ClipboardList className="w-4 h-4 mr-3 text-emerald-600" />;
       case "Info JDN":
         return <Info className="w-4 h-4 mr-3 text-emerald-600" />;
       default:
@@ -56,13 +59,13 @@ export default function DefaultLayout({
   };
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden bg-[#f1f1ef] text-[#141414] font-sans">
+    <div className="print-root flex flex-col h-screen overflow-hidden bg-[#f1f1ef] text-[#141414] font-sans">
       
       {/* Main Shell */}
       <div className="flex flex-1 overflow-hidden">
         
         {/* Sidebar Neo-Brutalist (Desktop) */}
-        <aside className="w-64 bg-white border-r-2 border-[#141414] flex flex-col flex-shrink-0 hidden md:flex">
+        <aside className="no-print w-64 bg-white border-r-2 border-[#141414] flex flex-col flex-shrink-0 hidden md:flex">
           {/* Brand Logo Area */}
           <div className="p-5 border-b-2 border-[#141414] bg-emerald-100 flex items-center gap-3">
             <div className="w-10 h-10 border-2 border-[#141414] bg-white overflow-hidden shadow-[2px_2px_0px_0px_#141414] flex items-center justify-center font-serif font-black text-lg rotate-[-2deg] text-emerald-600">
@@ -103,7 +106,7 @@ export default function DefaultLayout({
         {/* Right Content Area */}
         <div className="flex-grow flex flex-col overflow-hidden">
           {/* Top Bar Header Neo-Brutalist */}
-          <header className="bg-white border-b-2 border-[#141414] px-6 py-4 flex items-center justify-between shrink-0">
+          <header className="no-print bg-white border-b-2 border-[#141414] px-6 py-4 flex items-center justify-between shrink-0">
             <div className="flex items-center gap-3">
               <button 
                 className="md:hidden text-[#141414] mr-2 border-2 border-[#141414] p-1.5 bg-white shadow-[2px_2px_0px_0px_#141414]" 
@@ -136,12 +139,12 @@ export default function DefaultLayout({
           </header>
           
           {/* Page Content Area */}
-          <main className="flex-grow overflow-y-auto p-6 md:p-8 bg-[#f1f1ef]">
+          <main className="print-main flex-grow overflow-y-auto p-6 md:p-8 bg-[#f1f1ef]">
             {children}
           </main>
           
           {/* Footer */}
-          <footer className="bg-white border-t-2 border-[#141414] px-6 py-4 flex items-center justify-between text-xs font-mono font-bold text-neutral-600 shrink-0">
+          <footer className="no-print bg-white border-t-2 border-[#141414] px-6 py-4 flex items-center justify-between text-xs font-mono font-bold text-neutral-600 shrink-0">
             <p>&copy; {new Date().getFullYear()} Jaga Data Nusantara (JDN) - Analitika Pertanian</p>
             <p className="hidden sm:block">V1.2.0 • Status: OK</p>
           </footer>
