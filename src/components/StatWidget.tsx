@@ -17,9 +17,9 @@ export const StatWidget = ({
 }: StatWidgetProps) => {
   return (
     <div
-      className="bg-white border-2 border-[#171717] rounded-none shadow-[4px_4px_0px_0px_#171717] p-5 flex flex-row items-center gap-4"
+      className="bg-white border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-5 flex flex-row items-center gap-4"
     >
-      <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center border-2 border-[#171717] bg-emerald-100 text-[#171717] shadow-[2px_2px_0px_0px_#171717] rounded-none">
+      <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center border-2 border-[#141414] bg-emerald-100 text-[#141414] shadow-[2px_2px_0px_0px_#141414] rounded-none">
         {icon}
       </div>
       <div className="flex flex-col">
@@ -28,7 +28,7 @@ export const StatWidget = ({
           <p className="text-2xl font-serif font-black tracking-tight">{value}</p>
           {trend && (
             <span
-              className={`text-xs font-mono font-bold px-1.5 py-0.5 border border-[#171717] bg-white ${
+              className={`text-xs font-mono font-bold px-1.5 py-0.5 border border-[#141414] bg-white ${
                 trendUp ? "text-emerald-600" : "text-red-600"
               }`}
             >

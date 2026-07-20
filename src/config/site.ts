@@ -33,6 +33,14 @@ export const siteConfig = {
       href: "/livestock",
     },
     {
+      label: "Perikanan",
+      href: "/fisheries",
+    },
+    {
+      label: "Nilai Ekonomi",
+      href: "/economic-value",
+    },
+    {
       label: "Info JDN",
       href: "/info",
     },
@@ -65,6 +73,14 @@ export const siteConfig = {
     {
       label: "Peternakan",
       href: "/livestock",
+    },
+    {
+      label: "Perikanan",
+      href: "/fisheries",
+    },
+    {
+      label: "Nilai Ekonomi",
+      href: "/economic-value",
     },
     {
       label: "Info JDN",

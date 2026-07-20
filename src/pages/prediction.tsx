@@ -46,8 +46,8 @@ export default function PredictionPage() {
     <DefaultLayout>
       <section className="flex flex-col gap-8 py-2">
         {/* Header */}
-        <div className="bg-emerald-100 border-2 border-[#171717] rounded-none shadow-[4px_4px_0px_0px_#171717] p-6 text-left">
-          <h1 className="text-3xl md:text-4xl font-serif font-black uppercase tracking-tight text-[#171717]">
+        <div className="bg-emerald-100 border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-6 text-left">
+          <h1 className="text-3xl md:text-4xl font-serif font-black uppercase tracking-tight text-[#141414]">
             Prediksi Panen Padi
           </h1>
           <p className="text-xs font-mono font-bold text-neutral-600 mt-2 uppercase tracking-wide">
@@ -64,8 +64,8 @@ export default function PredictionPage() {
             {/* Charts Row */}
             <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
               {/* Chart Comparison */}
-              <div className="lg:col-span-2 bg-white border-2 border-[#171717] rounded-none shadow-[4px_4px_0px_0px_#171717] p-6">
-                <div className="flex flex-col mb-4 border-b-2 border-[#171717] pb-3">
+              <div className="lg:col-span-2 bg-white border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-6">
+                <div className="flex flex-col mb-4 border-b-2 border-[#141414] pb-3">
                   <h4 className="text-lg font-serif font-black uppercase flex items-center gap-2">
                     <TrendingUp className="text-emerald-600" />
                     Profil Luas Panen vs Produksi Padi
@@ -75,40 +75,40 @@ export default function PredictionPage() {
                 <div className="h-[350px] w-full">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={padiData} margin={{ top: 10, right: 10, left: -20, bottom: 40 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#171717" strokeOpacity={0.1} vertical={false} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#141414" strokeOpacity={0.1} vertical={false} />
                       <XAxis 
                         dataKey="kecamatan" 
                         className="font-mono font-bold text-[9px]"
-                        tickLine={{ stroke: '#171717', strokeWidth: 2 }}
-                        axisLine={{ stroke: '#171717', strokeWidth: 2 }}
+                        tickLine={{ stroke: '#141414', strokeWidth: 2 }}
+                        axisLine={{ stroke: '#141414', strokeWidth: 2 }}
                         angle={-45} 
                         textAnchor="end"
                         interval={0}
                       />
-                      <YAxis yAxisId="left" className="font-mono font-bold text-[10px]" tickLine={{ stroke: '#171717', strokeWidth: 2 }} axisLine={{ stroke: '#171717', strokeWidth: 2 }} />
-                      <YAxis yAxisId="right" orientation="right" className="font-mono font-bold text-[10px]" tickLine={{ stroke: '#171717', strokeWidth: 2 }} axisLine={{ stroke: '#171717', strokeWidth: 2 }} />
+                      <YAxis yAxisId="left" className="font-mono font-bold text-[10px]" tickLine={{ stroke: '#141414', strokeWidth: 2 }} axisLine={{ stroke: '#141414', strokeWidth: 2 }} />
+                      <YAxis yAxisId="right" orientation="right" className="font-mono font-bold text-[10px]" tickLine={{ stroke: '#141414', strokeWidth: 2 }} axisLine={{ stroke: '#141414', strokeWidth: 2 }} />
                       <Tooltip 
                         contentStyle={{
                           backgroundColor: "#ffffff",
-                          border: "2px solid #171717",
+                          border: "2px solid #141414",
                           borderRadius: "0px",
-                          boxShadow: "3px 3px 0px 0px #171717",
+                          boxShadow: "3px 3px 0px 0px #141414",
                           fontFamily: "monospace",
                           fontWeight: "bold",
                           fontSize: "11px",
                         }}
                       />
                       <Legend verticalAlign="top" height={36} wrapperStyle={{ fontFamily: "monospace", fontWeight: "bold", fontSize: "11px" }} />
-                      <Bar yAxisId="left" dataKey="luasPanen" name="Luas Panen" fill="#a7f3d0" stroke="#171717" strokeWidth={2} />
-                      <Bar yAxisId="right" dataKey="produksi" name="Produksi" fill="#93c5fd" stroke="#171717" strokeWidth={2} />
+                      <Bar yAxisId="left" dataKey="luasPanen" name="Luas Panen" fill="#a7f3d0" stroke="#141414" strokeWidth={2} />
+                      <Bar yAxisId="right" dataKey="produksi" name="Produksi" fill="#93c5fd" stroke="#141414" strokeWidth={2} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
               </div>
 
               {/* Calculator Widget */}
-              <div className="bg-white border-2 border-[#171717] rounded-none shadow-[4px_4px_0px_0px_#171717] p-6 flex flex-col">
-                <div className="flex items-center gap-2 mb-4 border-b-2 border-[#171717] pb-3">
+              <div className="bg-white border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-6 flex flex-col">
+                <div className="flex items-center gap-2 mb-4 border-b-2 border-[#141414] pb-3">
                   <Calculator className="text-emerald-600" size={22} />
                   <h4 className="text-lg font-serif font-black uppercase">Simulator Ekspansi</h4>
                 </div>
@@ -123,7 +123,7 @@ export default function PredictionPage() {
                     <select 
                       value={selectedKec} 
                       onChange={(e) => setSelectedKec(e.target.value)}
-                      className="w-full border-2 border-[#171717] rounded-none px-3 py-2 font-mono font-bold text-xs uppercase bg-white shadow-[2px_2px_0px_0px_#171717] focus:outline-none"
+                      className="w-full border-2 border-[#141414] rounded-none px-3 py-2 font-mono font-bold text-xs uppercase bg-white shadow-[2px_2px_0px_0px_#141414] focus:outline-none"
                     >
                       {[...padiData]
                         .sort((a, b) => a.kecamatan.localeCompare(b.kecamatan))
@@ -137,7 +137,7 @@ export default function PredictionPage() {
 
                   <div className="flex flex-col gap-1">
                     <span className="text-xs font-mono font-bold text-neutral-700 uppercase">Rencana Ekspansi (Ha):</span>
-                    <div className="flex items-center w-full border-2 border-[#171717] rounded-none px-3 py-1.5 bg-white shadow-[2px_2px_0px_0px_#171717]">
+                    <div className="flex items-center w-full border-2 border-[#141414] rounded-none px-3 py-1.5 bg-white shadow-[2px_2px_0px_0px_#141414]">
                       <input 
                         type="number" 
                         value={expansionHa} 
@@ -149,28 +149,28 @@ export default function PredictionPage() {
                   </div>
 
                   {activeKecData && (
-                    <div className="mt-4 pt-4 border-t-2 border-[#171717] flex flex-col gap-3">
+                    <div className="mt-4 pt-4 border-t-2 border-[#141414] flex flex-col gap-3">
                       <div className="flex justify-between items-center text-xs">
                         <span className="font-mono font-bold text-neutral-600 uppercase">Produktivitas:</span>
-                        <span className="font-mono font-bold px-2 py-0.5 border-2 border-[#171717] bg-yellow-200 text-neutral-800 shadow-[1px_1px_0px_0px_#171717]">
+                        <span className="font-mono font-bold px-2 py-0.5 border-2 border-[#141414] bg-yellow-200 text-neutral-800 shadow-[1px_1px_0px_0px_#141414]">
                           {formatNum(activeKecData.rataRata)} Ku/Ha
                         </span>
                       </div>
                       
                       <div className="grid grid-cols-2 gap-3 mt-2">
-                        <div className="p-3 bg-neutral-50 border-2 border-[#171717] shadow-[2px_2px_0px_0px_#171717]">
+                        <div className="p-3 bg-neutral-50 border-2 border-[#141414] shadow-[2px_2px_0px_0px_#141414]">
                           <p className="text-[9px] text-neutral-500 uppercase font-mono font-bold">Lahan Baru</p>
                           <p className="text-sm font-mono font-bold text-neutral-800 mt-1">{formatNum(projectedLuas)} Ha</p>
                           <p className="text-[9px] font-mono font-bold text-emerald-600">+{formatNum(inputExpansion)} Ha</p>
                         </div>
-                        <div className="p-3 bg-neutral-50 border-2 border-[#171717] shadow-[2px_2px_0px_0px_#171717]">
+                        <div className="p-3 bg-neutral-50 border-2 border-[#141414] shadow-[2px_2px_0px_0px_#141414]">
                           <p className="text-[9px] text-neutral-500 uppercase font-mono font-bold">Hasil Panen</p>
                           <p className="text-sm font-mono font-bold text-blue-600 mt-1">{formatNum(projectedProduksi)} Ton</p>
                           <p className="text-[9px] font-mono font-bold text-emerald-600">+{formatNum(inputExpansion * yieldRateTonHa)} Ton</p>
                         </div>
                       </div>
                       
-                      <div className="flex items-start gap-2 text-[10px] text-neutral-600 mt-2 bg-yellow-50 p-2.5 border-2 border-[#171717] shadow-[2px_2px_0px_0px_#171717]">
+                      <div className="flex items-start gap-2 text-[10px] text-neutral-600 mt-2 bg-yellow-50 p-2.5 border-2 border-[#141414] shadow-[2px_2px_0px_0px_#141414]">
                         <AlertCircle size={14} className="text-yellow-600 shrink-0 mt-0.5" />
                         <span className="font-mono font-bold leading-normal">Rumus linear: `Produksi_Baru = Produksi_Lama + (Ekspansi * Laju_Produksi)`.</span>
                       </div>
@@ -181,8 +181,8 @@ export default function PredictionPage() {
             </div>
 
             {/* Ranking Table */}
-            <div className="bg-white border-2 border-[#171717] rounded-none shadow-[4px_4px_0px_0px_#171717] p-6">
-              <div className="flex flex-col mb-4 border-b-2 border-[#171717] pb-3">
+            <div className="bg-white border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-6">
+              <div className="flex flex-col mb-4 border-b-2 border-[#141414] pb-3">
                 <h4 className="text-lg font-serif font-black uppercase flex items-center gap-2">
                   <Sprout className="text-emerald-600" />
                   Peringkat Produktivitas Padi per Kecamatan
@@ -193,7 +193,7 @@ export default function PredictionPage() {
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse whitespace-nowrap">
                   <thead>
-                    <tr className="border-b-2 border-[#171717] text-xs font-mono font-bold text-neutral-700">
+                    <tr className="border-b-2 border-[#141414] text-xs font-mono font-bold text-neutral-700">
                       <th className="pb-3 px-3">PERINGKAT</th>
                       <th className="pb-3 px-3">KECAMATAN</th>
                       <th className="pb-3 px-3 text-right">LUAS PANEN (Ha)</th>
@@ -205,7 +205,7 @@ export default function PredictionPage() {
                     {sortedProductivity.map((item, index) => (
                       <tr 
                         key={item.kecamatan} 
-                        className="border-b border-[#171717]/20 hover:bg-neutral-50 transition-colors text-sm"
+                        className="border-b border-[#141414]/20 hover:bg-neutral-50 transition-colors text-sm"
                       >
                         <td className="py-3 px-3 font-mono font-bold text-neutral-500">#{index + 1}</td>
                         <td className="py-3 px-3 font-mono font-bold text-neutral-800 uppercase text-xs">

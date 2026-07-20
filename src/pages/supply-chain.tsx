@@ -78,8 +78,8 @@ export default function SupplyChainPage() {
     <DefaultLayout>
       <section className="flex flex-col gap-8 py-2">
         {/* Header */}
-        <div className="bg-emerald-100 border-2 border-[#171717] rounded-none shadow-[4px_4px_0px_0px_#171717] p-6 text-left">
-          <h1 className="text-3xl md:text-4xl font-serif font-black uppercase tracking-tight text-[#171717]">
+        <div className="bg-emerald-100 border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-6 text-left">
+          <h1 className="text-3xl md:text-4xl font-serif font-black uppercase tracking-tight text-[#141414]">
             Infrastruktur Rantai Pasok
           </h1>
           <p className="text-xs font-mono font-bold text-neutral-600 mt-2 uppercase tracking-wide">
@@ -94,10 +94,10 @@ export default function SupplyChainPage() {
         ) : (
           <>
             {/* Visualisasi Perkembangan Pasar */}
-            <div className="bg-white border-2 border-[#171717] rounded-none shadow-[4px_4px_0px_0px_#171717] p-6">
-              <div className="flex flex-col mb-6 border-b-2 border-[#171717] pb-3">
+            <div className="bg-white border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-6">
+              <div className="flex flex-col mb-6 border-b-2 border-[#141414] pb-3">
                 <h4 className="text-lg font-serif font-black uppercase flex items-center gap-2">
-                  <Store className="text-[#171717]" />
+                  <Store className="text-[#141414]" />
                   Tren Perkembangan Pasar Daerah (2016-2025)
                 </h4>
                 <p className="text-xs font-mono font-bold text-neutral-500 uppercase mt-1">Jumlah pasar resmi dikelola daerah berdasarkan spesifikasi komoditas</p>
@@ -106,34 +106,34 @@ export default function SupplyChainPage() {
               <div className="h-[350px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -25, bottom: 10 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#171717" strokeOpacity={0.1} vertical={false} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#141414" strokeOpacity={0.1} vertical={false} />
                     <XAxis 
                       dataKey="tahun" 
                       className="font-mono font-bold text-[11px]" 
-                      tickLine={{ stroke: '#171717', strokeWidth: 2 }} 
-                      axisLine={{ stroke: '#171717', strokeWidth: 2 }} 
+                      tickLine={{ stroke: '#141414', strokeWidth: 2 }} 
+                      axisLine={{ stroke: '#141414', strokeWidth: 2 }} 
                     />
                     <YAxis 
                       className="font-mono font-bold text-[11px]" 
-                      tickLine={{ stroke: '#171717', strokeWidth: 2 }} 
-                      axisLine={{ stroke: '#171717', strokeWidth: 2 }} 
+                      tickLine={{ stroke: '#141414', strokeWidth: 2 }} 
+                      axisLine={{ stroke: '#141414', strokeWidth: 2 }} 
                     />
                     <Tooltip 
                       contentStyle={{
                         backgroundColor: "#ffffff",
-                        border: "2px solid #171717",
+                        border: "2px solid #141414",
                         borderRadius: "0px",
-                        boxShadow: "3px 3px 0px 0px #171717",
+                        boxShadow: "3px 3px 0px 0px #141414",
                         fontFamily: "monospace",
                         fontWeight: "bold",
                         fontSize: "11px",
                       }}
                     />
                     <Legend wrapperStyle={{ paddingTop: '15px', fontFamily: 'monospace', fontWeight: 'bold', fontSize: '11px' }} />
-                    <Area type="monotone" dataKey="Umum" name="Pasar Umum" stackId="1" stroke="#171717" strokeWidth={2} fill="#93c5fd" fillOpacity={0.8} />
-                    <Area type="monotone" dataKey="Hewan" name="Pasar Hewan" stackId="1" stroke="#171717" strokeWidth={2} fill="#a7f3d0" fillOpacity={0.8} />
-                    <Area type="monotone" dataKey="Buah" name="Pasar Buah" stackId="1" stroke="#171717" strokeWidth={2} fill="#fde047" fillOpacity={0.8} />
-                    <Area type="monotone" dataKey="Ikan" name="Pasar Ikan" stackId="1" stroke="#171717" strokeWidth={2} fill="#f87171" fillOpacity={0.8} />
+                    <Area type="monotone" dataKey="Umum" name="Pasar Umum" stackId="1" stroke="#141414" strokeWidth={2} fill="#93c5fd" fillOpacity={0.8} />
+                    <Area type="monotone" dataKey="Hewan" name="Pasar Hewan" stackId="1" stroke="#141414" strokeWidth={2} fill="#a7f3d0" fillOpacity={0.8} />
+                    <Area type="monotone" dataKey="Buah" name="Pasar Buah" stackId="1" stroke="#141414" strokeWidth={2} fill="#fde047" fillOpacity={0.8} />
+                    <Area type="monotone" dataKey="Ikan" name="Pasar Ikan" stackId="1" stroke="#141414" strokeWidth={2} fill="#f87171" fillOpacity={0.8} />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
@@ -142,34 +142,34 @@ export default function SupplyChainPage() {
             {/* Distribution Flow Map / Table */}
             <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
               {/* Market Capacity summary */}
-              <div className="bg-white border-2 border-[#171717] rounded-none shadow-[4px_4px_0px_0px_#171717] p-6 flex flex-col justify-between">
+              <div className="bg-white border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-6 flex flex-col justify-between">
                 <div>
-                  <h4 className="text-md font-serif font-black uppercase flex items-center gap-2 mb-4 border-b-2 border-[#171717] pb-3">
-                    <Store className="text-[#171717]" size={18} />
+                  <h4 className="text-md font-serif font-black uppercase flex items-center gap-2 mb-4 border-b-2 border-[#141414] pb-3">
+                    <Store className="text-[#141414]" size={18} />
                     Kapasitas Pasar Aktif ({latestYear})
                   </h4>
                   <div className="flex flex-col gap-4">
                     {latestMarkets.map(item => (
-                      <div key={item.jenis} className="flex justify-between items-center pb-2 border-b border-[#171717]/20">
+                      <div key={item.jenis} className="flex justify-between items-center pb-2 border-b border-[#141414]/20">
                         <span className="text-xs font-mono font-bold text-neutral-800 uppercase">Pasar {item.jenis}</span>
-                        <span className="inline-flex items-center px-2 py-0.5 border-2 border-[#171717] bg-yellow-200 text-neutral-800 font-mono font-bold text-xs shadow-[1px_1px_0px_0px_#171717]">
+                        <span className="inline-flex items-center px-2 py-0.5 border-2 border-[#141414] bg-yellow-200 text-neutral-800 font-mono font-bold text-xs shadow-[1px_1px_0px_0px_#141414]">
                           {item.jumlah} UNIT
                         </span>
                       </div>
                     ))}
                   </div>
                 </div>
-                <div className="mt-6 p-3 bg-emerald-50 border-2 border-[#171717] shadow-[2px_2px_0px_0px_#171717] text-[10px] text-emerald-800 flex items-start gap-2">
+                <div className="mt-6 p-3 bg-emerald-50 border-2 border-[#141414] shadow-[2px_2px_0px_0px_#141414] text-[10px] text-emerald-800 flex items-start gap-2">
                   <ShieldCheck size={16} className="shrink-0 mt-0.5 text-emerald-600" />
                   <span className="font-mono font-bold uppercase leading-normal">Ketersediaan pasar ikan dan buah khusus sangat mendukung stabilitas harga komoditas.</span>
                 </div>
               </div>
 
               {/* Real Distribution Routes */}
-              <div className="lg:col-span-2 bg-white border-2 border-[#171717] rounded-none shadow-[4px_4px_0px_0px_#171717] p-6">
-                <div className="flex flex-col mb-6 border-b-2 border-[#171717] pb-3">
+              <div className="lg:col-span-2 bg-white border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-6">
+                <div className="flex flex-col mb-6 border-b-2 border-[#141414] pb-3">
                   <h4 className="text-md font-serif font-black uppercase flex items-center gap-2">
-                    <Truck className="text-[#171717]" size={18} />
+                    <Truck className="text-[#141414]" size={18} />
                     Alur Distribusi Logistik Hortikultura Riil
                   </h4>
                   <p className="text-xs font-mono font-bold text-neutral-500 uppercase mt-1">Peta pergerakan pasokan pertanian dari produsen ke pasar konsumen</p>
@@ -179,10 +179,10 @@ export default function SupplyChainPage() {
                   {realRoutes.map((route) => (
                     <div 
                       key={route.id} 
-                      className="p-4 border-2 border-[#171717] bg-white shadow-[3px_3px_0px_0px_#171717] flex flex-col gap-3"
+                      className="p-4 border-2 border-[#141414] bg-white shadow-[3px_3px_0px_0px_#141414] flex flex-col gap-3"
                     >
-                      <div className="flex justify-between items-center border-b border-[#171717]/10 pb-2">
-                        <span className={`inline-flex items-center px-2 py-0.5 border-2 font-mono font-bold text-[10px] uppercase shadow-[1px_1px_0px_0px_#171717] ${route.badgeStyle}`}>
+                      <div className="flex justify-between items-center border-b border-[#141414]/10 pb-2">
+                        <span className={`inline-flex items-center px-2 py-0.5 border-2 font-mono font-bold text-[10px] uppercase shadow-[1px_1px_0px_0px_#141414] ${route.badgeStyle}`}>
                           Jalur {route.status}
                         </span>
                         <span className="text-xs font-mono font-bold text-blue-600 uppercase">{route.commodity}</span>

@@ -26,9 +26,9 @@ export const LandAreaChart = ({ data }: LandAreaChartProps) => {
 
   return (
     <div
-      className="bg-white border-2 border-[#171717] rounded-none shadow-[4px_4px_0px_0px_#171717] h-full flex flex-col p-6"
+      className="bg-white border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] h-full flex flex-col p-6"
     >
-      <div className="flex flex-col mb-4 border-b-2 border-[#171717] pb-3">
+      <div className="flex flex-col mb-4 border-b-2 border-[#141414] pb-3">
         <h4 className="text-xl font-serif font-black uppercase flex items-center gap-2">
           <TrendingUp className="text-emerald-600" />
           Top 15 Desa
@@ -46,31 +46,31 @@ export const LandAreaChart = ({ data }: LandAreaChartProps) => {
             >
               <CartesianGrid
                 strokeDasharray="3 3"
-                stroke="#171717"
+                stroke="#141414"
                 strokeOpacity={0.1}
                 vertical={false}
               />
               <XAxis
                 angle={-45}
-                axisLine={{ stroke: '#171717', strokeWidth: 2 }}
+                axisLine={{ stroke: '#141414', strokeWidth: 2 }}
                 className="font-mono font-bold text-[9px]"
                 dataKey="desa"
                 interval={0}
                 textAnchor="end"
-                tickLine={{ stroke: '#171717', strokeWidth: 2 }}
+                tickLine={{ stroke: '#141414', strokeWidth: 2 }}
               />
               <YAxis
-                axisLine={{ stroke: '#171717', strokeWidth: 2 }}
+                axisLine={{ stroke: '#141414', strokeWidth: 2 }}
                 className="font-mono font-bold text-[10px]"
                 tickFormatter={(value) => `${value.toLocaleString("id-ID")}`}
-                tickLine={{ stroke: '#171717', strokeWidth: 2 }}
+                tickLine={{ stroke: '#141414', strokeWidth: 2 }}
               />
               <Tooltip
                 contentStyle={{
                   backgroundColor: "#ffffff",
-                  border: "2px solid #171717",
+                  border: "2px solid #141414",
                   borderRadius: "0px",
-                  boxShadow: "3px 3px 0px 0px #171717",
+                  boxShadow: "3px 3px 0px 0px #141414",
                   fontFamily: "monospace",
                   fontWeight: "bold",
                   fontSize: "11px",
@@ -93,7 +93,7 @@ export const LandAreaChart = ({ data }: LandAreaChartProps) => {
               <Bar
                 dataKey="lahanSawah"
                 fill="#a7f3d0"
-                stroke="#171717"
+                stroke="#141414"
                 strokeWidth={2}
                 maxBarSize={32}
                 name="Lahan Sawah"
@@ -101,7 +101,7 @@ export const LandAreaChart = ({ data }: LandAreaChartProps) => {
               <Bar
                 dataKey="lahanBukanSawah"
                 fill="#fde047"
-                stroke="#171717"
+                stroke="#141414"
                 strokeWidth={2}
                 maxBarSize={32}
                 name="Bukan Sawah"

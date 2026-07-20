@@ -237,8 +237,6 @@ export const fetchPadiProduction = async (): Promise<PadiProduction[]> => {
               const prodLadang = parseNum(row["Produksi Padi Ladang(Ton)"]);
               const rataSawah = parseNum(row["Rata-rata Produksi Padi Sawah(Kw/Ha)"]);
 
-              const currentYear = row["Tahun"] || "";
-
               const entry = {
                 kecamatan: kecName,
                 luasPanen: luasSawah + luasLadang,
@@ -249,10 +247,6 @@ export const fetchPadiProduction = async (): Promise<PadiProduction[]> => {
               const key = kecName.toUpperCase();
               if (!mapData.has(key)) {
                 mapData.set(key, entry);
-              } else {
-                // Simpan yang tahunnya lebih baru jika ada
-                const existing = mapData.get(key)!;
-                // Di sini kita tidak punya field tahun di type PadiProduction tapi kita bisa pakai variabel temporary
               }
             });
 
@@ -617,6 +611,7 @@ export const fetchTernakKecil = async (): Promise<TernakKecil[]> => {
     return new Promise((resolve) => {
       Papa.parse(text, {
         header: true, skipEmptyLines: true,
+        transformHeader: (h) => h.trim(),
         complete: (results) => {
           const rows = results.data as any[];
           resolve(rows.filter(r => r.Kecamatan && !r.Kecamatan.toLowerCase().includes("jumlah")).map(r => ({
@@ -641,6 +636,7 @@ export const fetchTernakBesar = async (): Promise<TernakBesar[]> => {
     return new Promise((resolve) => {
       Papa.parse(text, {
         header: true, skipEmptyLines: true,
+        transformHeader: (h) => h.trim(),
         complete: (results) => {
           const rows = results.data as any[];
           resolve(rows.filter(r => r.Kecamatan && !r.Kecamatan.toLowerCase().includes("jumlah")).map(r => ({
@@ -665,6 +661,7 @@ export const fetchUnggas = async (): Promise<Unggas[]> => {
     return new Promise((resolve) => {
       Papa.parse(text, {
         header: true, skipEmptyLines: true,
+        transformHeader: (h) => h.trim(),
         complete: (results) => {
           const rows = results.data as any[];
           resolve(rows.filter(r => r.Kecamatan && !r.Kecamatan.toLowerCase().includes("jumlah")).map(r => ({
@@ -680,4 +677,242 @@ export const fetchUnggas = async (): Promise<Unggas[]> => {
       });
     });
   } catch (e) { return []; }
+};
+
+// ---- Perikanan ----
+
+const cleanInt = (val: any) => parseInt(val?.toString().replace(/[^\d]/g, "") || "0");
+
+export interface PerikananBudidaya {
+  kecamatan: string;
+  kolamPembesaran: number;
+  karambaApung: number;
+  minaPenyelang: number;
+  minaTumpangsari: number;
+  tahun: string;
+}
+
+export interface PerikananTangkap {
+  kecamatan: string;
+  jalaTebar: number;
+  pancing: number;
+  jaringIngsang: number;
+  lainnya: number;
+  tahun: string;
+}
+
+export interface PerikananBenih {
+  kecamatan: string;
+  dipeliharaSendiri: number;
+  dijualLuar: number;
+  tahun: string;
+}
+
+// Normalisasi header: buang spasi tepi & rapatkan spasi ganda internal
+const normalizeHeader = (h: string) => h.trim().replace(/\s+/g, " ");
+
+const isSummaryRow = (kec?: string) => {
+  if (!kec) return true;
+  const low = kec.toLowerCase();
+  return low.includes("jumlah") || low.includes("total");
+};
+
+export const fetchPerikananBudidaya = async (): Promise<PerikananBudidaya[]> => {
+  try {
+    const response = await fetch(
+      "/14. Distankan KP/Luas dan Produksi Ikan Menurut Kecamatan dan Tempat Pemeliharaan/Luas dan Produksi Ikan Menurut Kecamatan dan Jenis Tempat Pemeliharaan CSV.csv",
+    );
+    if (!response.ok) throw new Error("Gagal mengambil data");
+    const text = await response.text();
+    return new Promise((resolve) => {
+      Papa.parse(text, {
+        header: true,
+        skipEmptyLines: true,
+        transformHeader: normalizeHeader,
+        complete: (results) => {
+          const rows = results.data as any[];
+          resolve(
+            rows
+              .filter((r) => !isSummaryRow(r.Kecamatan))
+              .map((r) => ({
+                kecamatan: r.Kecamatan?.trim() || "Unknown",
+                kolamPembesaran: cleanInt(r["Kolam Pembesaran Ikan Produksi (Kg)"]),
+                karambaApung: cleanInt(r["Jaring Karamba Apung Produksi (Kg)"]),
+                minaPenyelang: cleanInt(r["Mina Padi Penyelang Produksi (Kg)"]),
+                minaTumpangsari: cleanInt(r["Mina Padi Tumpang sari Produksi (Kg)"]),
+                tahun: r.Tahun?.trim() || "2024",
+              })),
+          );
+        },
+      });
+    });
+  } catch (e) {
+    return [];
+  }
+};
+
+// ---- Nilai Ekonomi Perikanan (Produksi & Nilai Produksi) ----
+
+export interface NilaiProduksiJenis {
+  label: string;
+  produksi: number; // kg
+  nilai: number; // ribu rupiah
+}
+
+export interface NilaiProduksiRow {
+  kecamatan: string;
+  tahun: string;
+  subSektor: "Budidaya" | "Tangkap";
+  jenis: NilaiProduksiJenis[];
+}
+
+// Pasangan kolom (produksi, nilai) per jenis untuk tiap dataset
+const NILAI_BUDIDAYA_PAIRS: { label: string; prod: string; val: string }[] = [
+  {
+    label: "Pembesaran",
+    prod: "Produksi (Kg) Pembesaran",
+    val: "Nilai Produksi (ribu rupiah) Pembesaran",
+  },
+  {
+    label: "Karamba Jaring Apung",
+    prod: "Produksi (Kg) Karamba Jaring Apung",
+    val: "Nilai Produksi (ribu rupiah) Karamba Jaring Apung",
+  },
+  {
+    label: "Minapadi Tumpang Sari",
+    prod: "Produksi (Kg) Minapadi Tumpang Sari",
+    val: "Nilai Produksi (ribu rupiah) Minapadi Tumpang Sari",
+  },
+];
+
+const NILAI_TANGKAP_PAIRS: { label: string; prod: string; val: string }[] = [
+  { label: "Jala Tebar", prod: "Produksi Jala Tebar", val: "Nilai Produksi Jala Tebar" },
+  { label: "Pancing", prod: "Produksi Pancing", val: "Nilai Produksi Pancing" },
+  {
+    label: "Jaring Ingsang",
+    prod: "Produksi Jaring Ingsang",
+    val: "Nilai Produksi Jaring Ingsang",
+  },
+  { label: "Lainnya", prod: "Produksi Lainnya", val: "Nilai Produksi Lainnya" },
+];
+
+const fetchNilaiProduksi = (
+  url: string,
+  subSektor: "Budidaya" | "Tangkap",
+  pairs: { label: string; prod: string; val: string }[],
+): Promise<NilaiProduksiRow[]> =>
+  fetch(url)
+    .then((res) => {
+      if (!res.ok) throw new Error("Gagal mengambil data");
+      return res.text();
+    })
+    .then(
+      (text) =>
+        new Promise<NilaiProduksiRow[]>((resolve) => {
+          Papa.parse(text, {
+            header: true,
+            skipEmptyLines: true,
+            transformHeader: normalizeHeader,
+            complete: (results) => {
+              const rows = results.data as any[];
+              resolve(
+                rows
+                  .filter((r) => !isSummaryRow(r.Kecamatan))
+                  .map((r) => ({
+                    kecamatan: r.Kecamatan?.trim() || "Unknown",
+                    tahun: r.Tahun?.trim() || "2024",
+                    subSektor,
+                    jenis: pairs.map((p) => ({
+                      label: p.label,
+                      produksi: cleanInt(r[p.prod]),
+                      nilai: cleanInt(r[p.val]),
+                    })),
+                  })),
+              );
+            },
+          });
+        }),
+    )
+    .catch(() => []);
+
+export const fetchNilaiProduksiBudidaya = (): Promise<NilaiProduksiRow[]> =>
+  fetchNilaiProduksi(
+    "/14. Distankan KP/Produksi dan Nilai Produksi Perikanan Budidaya Menurut Kecamatan dan Jenis Budidaya/Produksi dan Nilai Produksi Perikanan Budidaya Menurut Kecamatan dan Jenis Budidaya CSV.csv",
+    "Budidaya",
+    NILAI_BUDIDAYA_PAIRS,
+  );
+
+export const fetchNilaiProduksiTangkap = (): Promise<NilaiProduksiRow[]> =>
+  fetchNilaiProduksi(
+    "/14. Distankan KP/Produksi dan Nilai Produksi Perikanan Tangkap Menurut Kecamatan dan Jenis Penangkapan/Produksi dan Nilai Produksi Perikanan Tangkap Menurut Kecamatan dan Jenis Penangkapan CSV.csv",
+    "Tangkap",
+    NILAI_TANGKAP_PAIRS,
+  );
+
+export const fetchPerikananTangkap = async (): Promise<PerikananTangkap[]> => {
+  try {
+    const response = await fetch(
+      "/14. Distankan KP/Produksi dan Nilai Produksi Perikanan Tangkap Menurut Kecamatan dan Jenis Penangkapan/Produksi dan Nilai Produksi Perikanan Tangkap Menurut Kecamatan dan Jenis Penangkapan CSV.csv",
+    );
+    if (!response.ok) throw new Error("Gagal mengambil data");
+    const text = await response.text();
+    return new Promise((resolve) => {
+      Papa.parse(text, {
+        header: true,
+        skipEmptyLines: true,
+        transformHeader: normalizeHeader,
+        complete: (results) => {
+          const rows = results.data as any[];
+          resolve(
+            rows
+              .filter((r) => !isSummaryRow(r.Kecamatan))
+              .map((r) => ({
+                kecamatan: r.Kecamatan?.trim() || "Unknown",
+                jalaTebar: cleanInt(r["Produksi Jala Tebar"]),
+                pancing: cleanInt(r["Produksi Pancing"]),
+                jaringIngsang: cleanInt(r["Produksi Jaring Ingsang"]),
+                lainnya: cleanInt(r["Produksi Lainnya"]),
+                tahun: r.Tahun?.trim() || "2024",
+              })),
+          );
+        },
+      });
+    });
+  } catch (e) {
+    return [];
+  }
+};
+
+export const fetchPerikananBenih = async (): Promise<PerikananBenih[]> => {
+  try {
+    const response = await fetch(
+      "/14. Distankan KP/Distribusi Produksi Perikanan Hasil Obyek Pembenihan Ikan/Distribusi Produksi Perikanan Hasil Obyek Pembenihan Ikan CSV.csv",
+    );
+    if (!response.ok) throw new Error("Gagal mengambil data");
+    const text = await response.text();
+    return new Promise((resolve) => {
+      Papa.parse(text, {
+        header: true,
+        skipEmptyLines: true,
+        transformHeader: normalizeHeader,
+        complete: (results) => {
+          const rows = results.data as any[];
+          resolve(
+            rows
+              .filter((r) => !isSummaryRow(r.Kecamatan))
+              .map((r) => ({
+                kecamatan: r.Kecamatan?.trim() || "Unknown",
+                dipeliharaSendiri: cleanInt(
+                  r["Hasil Obyek Pembenihan Ikan Dipelihara Sendiri (Ekor)"],
+                ),
+                dijualLuar: cleanInt(r["Dijual ke Lain Daerah (Ekor)"]),
+                tahun: r.Tahun?.trim() || "2024",
+              })),
+          );
+        },
+      });
+    });
+  } catch (e) {
+    return [];
+  }
 };

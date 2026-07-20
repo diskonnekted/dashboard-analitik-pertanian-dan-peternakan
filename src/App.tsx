@@ -8,6 +8,8 @@ import FoodSecurityPage from "@/pages/food-security";
 import SupplyChainPage from "@/pages/supply-chain";
 import InfoPage from "@/pages/info";
 import LivestockPage from "@/pages/livestock";
+import FisheriesPage from "@/pages/fisheries";
+import EconomicValuePage from "@/pages/economic-value";
 
 function App() {
   return (
@@ -19,6 +21,8 @@ function App() {
       <Route element={<FoodSecurityPage />} path="/food-security" />
       <Route element={<SupplyChainPage />} path="/supply-chain" />
       <Route element={<LivestockPage />} path="/livestock" />
+      <Route element={<FisheriesPage />} path="/fisheries" />
+      <Route element={<EconomicValuePage />} path="/economic-value" />
       <Route element={<InfoPage />} path="/info" />
     </Routes>
   );

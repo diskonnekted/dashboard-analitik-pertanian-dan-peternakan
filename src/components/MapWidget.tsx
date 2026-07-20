@@ -177,7 +177,7 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
 
   return (
     <div className="flex flex-col h-full w-full">
-      <div className="h-[600px] w-full z-0 relative rounded-xl overflow-hidden shadow-sm border border-divider/50">
+      <div className="h-[600px] w-full z-0 relative rounded-none overflow-hidden shadow-hd border-2 border-[#141414]">
         <MapContainer
           center={[-7.3941, 109.6965]}
           style={{ height: "100%", width: "100%" }}

@@ -73,8 +73,8 @@ export default function SuitabilityPage() {
     <DefaultLayout>
       <section className="flex flex-col gap-8 py-2">
         {/* Header */}
-        <div className="bg-emerald-100 border-2 border-[#171717] rounded-none shadow-[4px_4px_0px_0px_#171717] p-6 text-left">
-          <h1 className="text-3xl md:text-4xl font-serif font-black uppercase tracking-tight text-[#171717]">
+        <div className="bg-emerald-100 border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-6 text-left">
+          <h1 className="text-3xl md:text-4xl font-serif font-black uppercase tracking-tight text-[#141414]">
             Kesesuaian Lahan Sayuran
           </h1>
           <p className="text-xs font-mono font-bold text-neutral-600 mt-2 uppercase tracking-wide">
@@ -89,9 +89,9 @@ export default function SuitabilityPage() {
         ) : (
           <>
             {/* Filter Control Box */}
-            <div className="bg-white border-2 border-[#171717] rounded-none shadow-[4px_4px_0px_0px_#171717] p-6">
-              <div className="flex items-center gap-2 mb-4 border-b-2 border-[#171717] pb-3">
-                <ListFilter className="text-[#171717]" size={20} />
+            <div className="bg-white border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-6">
+              <div className="flex items-center gap-2 mb-4 border-b-2 border-[#141414] pb-3">
+                <ListFilter className="text-[#141414]" size={20} />
                 <h4 className="text-md font-serif font-black uppercase">Filter Analisis</h4>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -100,7 +100,7 @@ export default function SuitabilityPage() {
                   <select 
                     value={selectedKec}
                     onChange={(e) => setSelectedKec(e.target.value)}
-                    className="w-full border-2 border-[#171717] rounded-none px-3 py-2 font-mono font-bold text-xs uppercase bg-white shadow-[2px_2px_0px_0px_#171717] focus:outline-none"
+                    className="w-full border-2 border-[#141414] rounded-none px-3 py-2 font-mono font-bold text-xs uppercase bg-white shadow-[2px_2px_0px_0px_#141414] focus:outline-none"
                   >
                     {Array.from(new Set(vegData.map(d => d.kecamatan)))
                       .sort((a, b) => a.localeCompare(b))
@@ -116,7 +116,7 @@ export default function SuitabilityPage() {
                   <select 
                     value={selectedYear}
                     onChange={(e) => setSelectedYear(e.target.value)}
-                    className="w-full border-2 border-[#171717] rounded-none px-3 py-2 font-mono font-bold text-xs uppercase bg-white shadow-[2px_2px_0px_0px_#171717] focus:outline-none"
+                    className="w-full border-2 border-[#141414] rounded-none px-3 py-2 font-mono font-bold text-xs uppercase bg-white shadow-[2px_2px_0px_0px_#141414] focus:outline-none"
                   >
                     {years.map((yr) => (
                       <option key={yr} value={yr}>
@@ -131,10 +131,10 @@ export default function SuitabilityPage() {
             {/* Main Visualizations */}
             <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
               {/* Radar Chart Profile */}
-              <div className="bg-white border-2 border-[#171717] rounded-none shadow-[4px_4px_0px_0px_#171717] p-6 flex flex-col justify-between">
-                <div className="flex flex-col mb-4 border-b-2 border-[#171717] pb-3">
+              <div className="bg-white border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-6 flex flex-col justify-between">
+                <div className="flex flex-col mb-4 border-b-2 border-[#141414] pb-3">
                   <h4 className="text-md font-serif font-black uppercase flex items-center gap-2">
-                    <Compass className="text-[#171717]" size={18} />
+                    <Compass className="text-[#141414]" size={18} />
                     Radar Karakteristik
                   </h4>
                   <p className="text-xs font-mono font-bold text-neutral-500 uppercase mt-1">Visualisasi sebaran hasil panen sayuran</p>
@@ -143,26 +143,26 @@ export default function SuitabilityPage() {
                   {primaryCrop && primaryCrop.value > 0 ? (
                     <ResponsiveContainer width="100%" height="100%">
                       <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
-                        <PolarGrid stroke="#171717" strokeOpacity={0.15} />
+                        <PolarGrid stroke="#141414" strokeOpacity={0.15} />
                         <PolarAngleAxis dataKey="subject" fontSize={9} className="font-mono font-bold" />
                         <PolarRadiusAxis angle={30} domain={[0, 'auto']} fontSize={8} className="font-mono" />
-                        <Radar name="Produksi (Ton)" dataKey="produksi" stroke="#171717" strokeWidth={2} fill="#eab308" fillOpacity={0.5} />
+                        <Radar name="Produksi (Ton)" dataKey="produksi" stroke="#141414" strokeWidth={2} fill="#eab308" fillOpacity={0.5} />
                       </RadarChart>
                     </ResponsiveContainer>
                   ) : (
                     <p className="text-xs font-mono font-bold text-neutral-400 uppercase italic">Tidak ada catatan produksi sayuran pada tahun ini.</p>
                   )}
                 </div>
-                <div className="mt-4 pt-4 border-t-2 border-[#171717] text-xs font-mono font-bold text-neutral-600 uppercase">
-                  Kecamatan <span className="text-[#171717] font-black">{selectedKec}</span> memiliki produksi dominan <span className="text-emerald-600 font-black">{primaryCrop?.value > 0 ? primaryCrop.label : "N/A"}</span>.
+                <div className="mt-4 pt-4 border-t-2 border-[#141414] text-xs font-mono font-bold text-neutral-600 uppercase">
+                  Kecamatan <span className="text-[#141414] font-black">{selectedKec}</span> memiliki produksi dominan <span className="text-emerald-600 font-black">{primaryCrop?.value > 0 ? primaryCrop.label : "N/A"}</span>.
                 </div>
               </div>
 
               {/* Bar Chart Breakdown */}
-              <div className="lg:col-span-2 bg-white border-2 border-[#171717] rounded-none shadow-[4px_4px_0px_0px_#171717] p-6">
-                <div className="flex flex-col mb-4 border-b-2 border-[#171717] pb-3">
+              <div className="lg:col-span-2 bg-white border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-6">
+                <div className="flex flex-col mb-4 border-b-2 border-[#141414] pb-3">
                   <h4 className="text-md font-serif font-black uppercase flex items-center gap-2">
-                    <Tractor className="text-[#171717]" size={18} />
+                    <Tractor className="text-[#141414]" size={18} />
                     Rincian Hasil Panen Sayuran (Ton)
                   </h4>
                   <p className="text-xs font-mono font-bold text-neutral-500 uppercase mt-1">Volume produksi riil sayuran di wilayah terpilih</p>
@@ -171,30 +171,30 @@ export default function SuitabilityPage() {
                   {primaryCrop && primaryCrop.value > 0 ? (
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={cropList} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#171717" strokeOpacity={0.1} vertical={false} />
+                        <CartesianGrid strokeDasharray="3 3" stroke="#141414" strokeOpacity={0.1} vertical={false} />
                         <XAxis 
                           dataKey="label" 
                           className="font-mono font-bold text-[9px]" 
-                          tickLine={{ stroke: '#171717', strokeWidth: 2 }} 
-                          axisLine={{ stroke: '#171717', strokeWidth: 2 }} 
+                          tickLine={{ stroke: '#141414', strokeWidth: 2 }} 
+                          axisLine={{ stroke: '#141414', strokeWidth: 2 }} 
                         />
                         <YAxis 
                           className="font-mono font-bold text-[10px]" 
-                          tickLine={{ stroke: '#171717', strokeWidth: 2 }} 
-                          axisLine={{ stroke: '#171717', strokeWidth: 2 }} 
+                          tickLine={{ stroke: '#141414', strokeWidth: 2 }} 
+                          axisLine={{ stroke: '#141414', strokeWidth: 2 }} 
                         />
                         <Tooltip 
                           contentStyle={{
                             backgroundColor: "#ffffff",
-                            border: "2px solid #171717",
+                            border: "2px solid #141414",
                             borderRadius: "0px",
-                            boxShadow: "3px 3px 0px 0px #171717",
+                            boxShadow: "3px 3px 0px 0px #141414",
                             fontFamily: "monospace",
                             fontWeight: "bold",
                             fontSize: "11px",
                           }}
                         />
-                        <Bar dataKey="value" name="Produksi (Ton)" fill="#f5a524" stroke="#171717" strokeWidth={2}>
+                        <Bar dataKey="value" name="Produksi (Ton)" fill="#f5a524" stroke="#141414" strokeWidth={2}>
                           {cropList.map((entry, index) => (
                             <rect key={`rect-${index}`} fill={entry.color} />
                           ))}
@@ -211,10 +211,10 @@ export default function SuitabilityPage() {
             </div>
 
             {/* Suitability Matrix Table */}
-            <div className="bg-white border-2 border-[#171717] rounded-none shadow-[4px_4px_0px_0px_#171717] p-6">
-              <div className="flex flex-col mb-4 border-b-2 border-[#171717] pb-3">
+            <div className="bg-white border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-6">
+              <div className="flex flex-col mb-4 border-b-2 border-[#141414] pb-3">
                 <h4 className="text-lg font-serif font-black uppercase flex items-center gap-2">
-                  <Leaf className="text-[#171717]" />
+                  <Leaf className="text-[#141414]" />
                   Matriks Kesesuaian Komoditas Aktual
                 </h4>
                 <p className="text-xs font-mono font-bold text-neutral-500 uppercase mt-1">Indeks kecocokan lahan berdasarkan produktivitas rill di lapangan</p>
@@ -223,7 +223,7 @@ export default function SuitabilityPage() {
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse whitespace-nowrap">
                   <thead>
-                    <tr className="border-b-2 border-[#171717] text-xs font-mono font-bold text-neutral-700">
+                    <tr className="border-b-2 border-[#141414] text-xs font-mono font-bold text-neutral-700">
                       <th className="pb-3 px-3">NAMA KOMODITAS</th>
                       <th className="pb-3 px-3 text-right">TOTAL PANEN (Ton)</th>
                       <th className="pb-3 px-6 text-center">STATUS KESESUAIAN</th>
@@ -245,10 +245,10 @@ export default function SuitabilityPage() {
                       return (
                         <tr 
                           key={crop.key} 
-                          className="border-b border-[#171717]/20 hover:bg-neutral-50 transition-colors text-sm"
+                          className="border-b border-[#141414]/20 hover:bg-neutral-50 transition-colors text-sm"
                         >
                           <td className="py-4 px-3 font-mono font-bold text-neutral-800 uppercase text-xs flex items-center gap-2">
-                            <span className="w-3 h-3 border border-[#171717]" style={{ backgroundColor: crop.color }} />
+                            <span className="w-3 h-3 border border-[#141414]" style={{ backgroundColor: crop.color }} />
                             {crop.label}
                           </td>
                           <td className="py-4 px-3 text-right font-mono font-bold text-neutral-800">
@@ -256,7 +256,7 @@ export default function SuitabilityPage() {
                           </td>
                           <td className="py-4 px-6 text-center">
                             <span 
-                              className={`inline-flex items-center px-2 py-0.5 border-2 font-mono font-bold text-[10px] uppercase shadow-[1px_1px_0px_0px_#171717] ${status.style}`}
+                              className={`inline-flex items-center px-2 py-0.5 border-2 font-mono font-bold text-[10px] uppercase shadow-[1px_1px_0px_0px_#141414] ${status.style}`}
                             >
                               {status.label}
                             </span>

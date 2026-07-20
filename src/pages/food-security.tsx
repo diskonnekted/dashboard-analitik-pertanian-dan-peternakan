@@ -96,8 +96,8 @@ export default function FoodSecurityPage() {
     <DefaultLayout>
       <section className="flex flex-col gap-8 py-2">
         {/* Header */}
-        <div className="bg-emerald-100 border-2 border-[#171717] rounded-none shadow-[4px_4px_0px_0px_#171717] p-6 text-left">
-          <h1 className="text-3xl md:text-4xl font-serif font-black uppercase tracking-tight text-[#171717]">
+        <div className="bg-emerald-100 border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-6 text-left">
+          <h1 className="text-3xl md:text-4xl font-serif font-black uppercase tracking-tight text-[#141414]">
             Ketahanan Pangan (FSI)
           </h1>
           <p className="text-xs font-mono font-bold text-neutral-600 mt-2 uppercase tracking-wide">
@@ -113,8 +113,8 @@ export default function FoodSecurityPage() {
           <>
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-white border-2 border-[#171717] rounded-none shadow-[4px_4px_0px_0px_#171717] p-5 flex items-center gap-3">
-                <div className="p-3 border-2 border-[#171717] bg-blue-100 text-[#171717] shadow-[2px_2px_0px_0px_#171717]">
+              <div className="bg-white border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-5 flex items-center gap-3">
+                <div className="p-3 border-2 border-[#141414] bg-blue-100 text-[#141414] shadow-[2px_2px_0px_0px_#141414]">
                   <Warehouse size={22} />
                 </div>
                 <div>
@@ -123,8 +123,8 @@ export default function FoodSecurityPage() {
                 </div>
               </div>
 
-              <div className="bg-white border-2 border-[#171717] rounded-none shadow-[4px_4px_0px_0px_#171717] p-5 flex items-center gap-3">
-                <div className="p-3 border-2 border-[#171717] bg-emerald-100 text-[#171717] shadow-[2px_2px_0px_0px_#171717]">
+              <div className="bg-white border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-5 flex items-center gap-3">
+                <div className="p-3 border-2 border-[#141414] bg-emerald-100 text-[#141414] shadow-[2px_2px_0px_0px_#141414]">
                   <ShieldCheck size={22} />
                 </div>
                 <div>
@@ -133,8 +133,8 @@ export default function FoodSecurityPage() {
                 </div>
               </div>
 
-              <div className="bg-white border-2 border-[#171717] rounded-none shadow-[4px_4px_0px_0px_#171717] p-5 flex items-center gap-3">
-                <div className="p-3 border-2 border-[#171717] bg-yellow-100 text-[#171717] shadow-[2px_2px_0px_0px_#171717]">
+              <div className="bg-white border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-5 flex items-center gap-3">
+                <div className="p-3 border-2 border-[#141414] bg-yellow-100 text-[#141414] shadow-[2px_2px_0px_0px_#141414]">
                   <Warehouse size={22} />
                 </div>
                 <div>
@@ -147,8 +147,8 @@ export default function FoodSecurityPage() {
             </div>
 
             {/* Storage Gap Chart */}
-            <div className="bg-white border-2 border-[#171717] rounded-none shadow-[4px_4px_0px_0px_#171717] p-6">
-              <div className="flex flex-col mb-6 border-b-2 border-[#171717] pb-3">
+            <div className="bg-white border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-6">
+              <div className="flex flex-col mb-6 border-b-2 border-[#141414] pb-3">
                 <h4 className="text-lg font-serif font-black uppercase flex items-center gap-2">
                   <AlertCircle className="text-blue-600" />
                   Kesenjangan Produksi vs Kapasitas Lumbung
@@ -159,45 +159,45 @@ export default function FoodSecurityPage() {
               <div className="h-[350px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={combinedData} margin={{ top: 10, right: 10, left: -20, bottom: 40 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#171717" strokeOpacity={0.1} vertical={false} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#141414" strokeOpacity={0.1} vertical={false} />
                     <XAxis 
                       dataKey="kecamatan" 
                       className="font-mono font-bold text-[9px]"
-                      tickLine={{ stroke: '#171717', strokeWidth: 2 }}
-                      axisLine={{ stroke: '#171717', strokeWidth: 2 }}
+                      tickLine={{ stroke: '#141414', strokeWidth: 2 }}
+                      axisLine={{ stroke: '#141414', strokeWidth: 2 }}
                       angle={-45} 
                       textAnchor="end"
                       interval={0}
                     />
-                    <YAxis yAxisId="left" className="font-mono font-bold text-[10px]" tickLine={{ stroke: '#171717', strokeWidth: 2 }} axisLine={{ stroke: '#171717', strokeWidth: 2 }} />
-                    <YAxis yAxisId="right" orientation="right" className="font-mono font-bold text-[10px]" tickLine={{ stroke: '#171717', strokeWidth: 2 }} axisLine={{ stroke: '#171717', strokeWidth: 2 }} />
+                    <YAxis yAxisId="left" className="font-mono font-bold text-[10px]" tickLine={{ stroke: '#141414', strokeWidth: 2 }} axisLine={{ stroke: '#141414', strokeWidth: 2 }} />
+                    <YAxis yAxisId="right" orientation="right" className="font-mono font-bold text-[10px]" tickLine={{ stroke: '#141414', strokeWidth: 2 }} axisLine={{ stroke: '#141414', strokeWidth: 2 }} />
                     <Tooltip 
                       contentStyle={{
                         backgroundColor: "#ffffff",
-                        border: "2px solid #171717",
+                        border: "2px solid #141414",
                         borderRadius: "0px",
-                        boxShadow: "3px 3px 0px 0px #171717",
+                        boxShadow: "3px 3px 0px 0px #141414",
                         fontFamily: "monospace",
                         fontWeight: "bold",
                         fontSize: "11px",
                       }}
                     />
                     <Legend verticalAlign="top" height={36} wrapperStyle={{ fontFamily: 'monospace', fontWeight: 'bold', fontSize: '11px' }} />
-                    <Bar yAxisId="left" dataKey="produksiPadi" name="Produksi Padi (Ton)" fill="#93c5fd" stroke="#171717" strokeWidth={2} />
-                    <Bar yAxisId="right" dataKey="totalKapasitasSimpanan" name="Kapasitas Simpan (Ton)" fill="#a7f3d0" stroke="#171717" strokeWidth={2} />
+                    <Bar yAxisId="left" dataKey="produksiPadi" name="Produksi Padi (Ton)" fill="#93c5fd" stroke="#141414" strokeWidth={2} />
+                    <Bar yAxisId="right" dataKey="totalKapasitasSimpanan" name="Kapasitas Simpan (Ton)" fill="#a7f3d0" stroke="#141414" strokeWidth={2} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             </div>
 
             {/* Food Security Score Table */}
-            <div className="bg-white border-2 border-[#171717] rounded-none shadow-[4px_4px_0px_0px_#171717] p-6">
-              <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6 border-b-2 border-[#171717] pb-4">
+            <div className="bg-white border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-6">
+              <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6 border-b-2 border-[#141414] pb-4">
                 <div>
                   <h4 className="text-lg font-serif font-black uppercase">Status Ketahanan Cadangan Pangan</h4>
                   <p className="text-xs font-mono font-bold text-neutral-500 uppercase mt-1">Daftar kesiapan cadangan penyimpanan pangan tiap kecamatan</p>
                 </div>
-                <div className="flex items-center w-full md:w-64 border-2 border-[#171717] rounded-none px-3 py-1.5 bg-white shadow-[2px_2px_0px_0px_#171717]">
+                <div className="flex items-center w-full md:w-64 border-2 border-[#141414] rounded-none px-3 py-1.5 bg-white shadow-[2px_2px_0px_0px_#141414]">
                   <Search size={16} className="text-neutral-500 mr-2 shrink-0" />
                   <input 
                     placeholder="Cari kecamatan..." 
@@ -211,7 +211,7 @@ export default function FoodSecurityPage() {
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse whitespace-nowrap">
                   <thead>
-                    <tr className="border-b-2 border-[#171717] text-xs font-mono font-bold text-neutral-700">
+                    <tr className="border-b-2 border-[#141414] text-xs font-mono font-bold text-neutral-700">
                       <th className="pb-3 px-3">KECAMATAN</th>
                       <th className="pb-3 px-3 text-right">HASIL PANEN (Ton)</th>
                       <th className="pb-3 px-3 text-right">LUMBUNG (Unit)</th>
@@ -225,7 +225,7 @@ export default function FoodSecurityPage() {
                     {filteredData.map((item) => (
                       <tr 
                         key={item.kecamatan} 
-                        className="border-b border-[#171717]/20 hover:bg-neutral-50 transition-colors text-sm"
+                        className="border-b border-[#141414]/20 hover:bg-neutral-50 transition-colors text-sm"
                       >
                         <td className="py-3.5 px-3 font-mono font-bold text-neutral-800 uppercase text-xs">
                           {item.kecamatan}
@@ -247,7 +247,7 @@ export default function FoodSecurityPage() {
                         </td>
                         <td className="py-3.5 px-6 text-center">
                           <span 
-                            className={`inline-flex items-center px-2 py-0.5 border-2 font-mono font-bold text-[10px] uppercase shadow-[1px_1px_0px_0px_#171717] ${statusStyleMap[item.status]}`}
+                            className={`inline-flex items-center px-2 py-0.5 border-2 font-mono font-bold text-[10px] uppercase shadow-[1px_1px_0px_0px_#141414] ${statusStyleMap[item.status]}`}
                           >
                             {item.status}
                           </span>
