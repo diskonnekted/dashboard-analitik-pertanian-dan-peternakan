@@ -66,7 +66,7 @@ export default function IndexPage() {
             <img
               src="/img/dashboard.png"
               alt="Grafik Dashboard SIMPERTAN"
-              className="w-full h-auto border-2 border-[#141414] shadow-[4px_4px_0px_0px_#141414] rounded-none object-cover bg-white"
+              className="w-full h-auto object-cover"
             />
           </div>
         </section>
