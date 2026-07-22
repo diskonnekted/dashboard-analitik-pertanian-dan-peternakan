@@ -52,16 +52,19 @@ export default function IndexPage() {
   return (
     <DefaultLayout>
       <section className="flex flex-col gap-8 py-2">
-        {/* Header Section */}
-        <div className="bg-emerald-100 border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-6 text-left">
-          <h1 className="text-3xl md:text-4xl font-serif font-black uppercase tracking-tight text-[#141414]">
-            Dashboard Analitik Pertanian
-          </h1>
-          <p className="text-xs font-mono font-bold text-neutral-600 mt-2 uppercase tracking-wide">
-            Sistem Pemantauan Ketahanan Pangan & Prediksi Panen Kabupaten
-            Banjarnegara berbasis Open Data API
-          </p>
-        </div>
+        {/* Hero / intro */}
+        <section className="relative text-left animate-fade-in py-4 md:py-8">
+          
+          <div className="relative z-10">
+            
+            <h2 className="font-serif italic text-3xl sm:text-5xl mt-2 leading-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-800 to-teal-500 font-black drop-shadow-sm">
+              Dashboard Analitik Pertanian
+            </h2>
+            <p className="font-mono text-sm md:text-base font-medium text-[#4a4a4a] mt-4 max-w-2xl border-l-4 border-emerald-500 pl-4 bg-white/80 py-1">
+              Sistem Pemantauan Ketahanan Pangan & Prediksi Panen Kabupaten Banjarnegara berbasis Open Data API.
+            </p>
+          </div>
+        </section>
 
         {/* Stats Row */}
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -71,6 +74,7 @@ export default function IndexPage() {
             trend="Terhubung ke CKAN"
             trendUp={true}
             value={datasetCount}
+            color="bg-blue-300"
           />
           <StatWidget
             icon={<Sprout size={20} />}
@@ -78,6 +82,7 @@ export default function IndexPage() {
             trend="Padi & Palawija"
             trendUp={true}
             value={`${formatNum(totalSawah)} Ha`}
+            color="bg-emerald-300"
           />
           <StatWidget
             icon={<Tractor size={20} />}
@@ -85,6 +90,7 @@ export default function IndexPage() {
             trend="Tegalan & Perkebunan"
             trendUp={true}
             value={`${formatNum(totalBukanSawah)} Ha`}
+            color="bg-amber-300"
           />
           <StatWidget
             icon={<MapPin size={20} />}
@@ -92,16 +98,17 @@ export default function IndexPage() {
             trend="Terpetakan"
             trendUp={true}
             value={`${totalDesa} Desa`}
+            color="bg-purple-300"
           />
         </div>
 
         {/* Map Section */}
         <div className="w-full flex flex-col gap-4">
-          <h3 className="text-xl font-serif font-black uppercase flex items-center gap-2 text-[#141414]">
+          <h3 className="text-lg font-mono font-bold uppercase flex items-center gap-2 text-[#141414] tracking-wide">
             <MapPin className="text-emerald-600" /> Peta Sebaran Lahan Pertanian
           </h3>
-          <div className="border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-2 bg-white">
-            <div className="h-[400px] w-full rounded-none overflow-hidden">
+          <div className="group border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-2 bg-white transition-all duration-300 hover:shadow-[8px_8px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]">
+            <div className="w-full aspect-[4/3] md:aspect-[16/9] lg:aspect-[21/9] min-h-[500px] max-h-[80vh] rounded-none overflow-hidden border-2 border-transparent transition-colors duration-300 group-hover:border-emerald-100">
               <MapWidget data={lahanData} />
             </div>
           </div>

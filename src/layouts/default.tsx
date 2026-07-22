@@ -12,7 +12,10 @@ import {
   Info,
   Fish,
   DollarSign,
-  ClipboardList
+  ClipboardList,
+  Sprout,
+  Cherry,
+  Users
 } from "lucide-react";
 import { siteConfig } from "@/config/site";
 
@@ -41,11 +44,17 @@ export default function DefaultLayout({
         return <Truck className="w-4 h-4 mr-3 text-emerald-600" />;
       case "Perikanan":
         return <Fish className="w-4 h-4 mr-3 text-emerald-600" />;
+      case "Perkebunan":
+        return <Sprout className="w-4 h-4 mr-3 text-emerald-600" />;
+      case "Hortikultura":
+        return <Cherry className="w-4 h-4 mr-3 text-emerald-600" />;
+      case "Kelembagaan Tani":
+        return <Users className="w-4 h-4 mr-3 text-emerald-600" />;
       case "Nilai Ekonomi":
         return <DollarSign className="w-4 h-4 mr-3 text-emerald-600" />;
       case "Rekomendasi":
         return <ClipboardList className="w-4 h-4 mr-3 text-emerald-600" />;
-      case "Info JDN":
+      case "Info SIMPERTAN":
         return <Info className="w-4 h-4 mr-3 text-emerald-600" />;
       default:
         return <LayoutDashboard className="w-4 h-4 mr-3 text-emerald-600" />;
@@ -66,14 +75,11 @@ export default function DefaultLayout({
         
         {/* Sidebar Neo-Brutalist (Desktop) */}
         <aside className="no-print w-64 bg-white border-r-2 border-[#141414] flex flex-col flex-shrink-0 hidden md:flex">
-          {/* Brand Logo Area */}
-          <div className="p-5 border-b-2 border-[#141414] bg-emerald-100 flex items-center gap-3">
-            <div className="w-10 h-10 border-2 border-[#141414] bg-white overflow-hidden shadow-[2px_2px_0px_0px_#141414] flex items-center justify-center font-serif font-black text-lg rotate-[-2deg] text-emerald-600">
-              P
-            </div>
+          <div className="h-[88px] p-5 border-b-2 border-[#141414] bg-emerald-100 flex items-center gap-3">
+            <img src="/logo.png" alt="Logo Dinas" className="w-12 h-12 object-contain shrink-0" />
             <div>
               <span className="font-serif font-black text-xl tracking-tighter uppercase text-[#141414] mt-1 block leading-none">
-                PERTANIAN
+                SIMPERTAN
               </span>
               <span className="text-[9px] font-mono font-bold text-neutral-500 uppercase tracking-widest block mt-0.5">
                 Kab. Banjarnegara
@@ -106,7 +112,7 @@ export default function DefaultLayout({
         {/* Right Content Area */}
         <div className="flex-grow flex flex-col overflow-hidden">
           {/* Top Bar Header Neo-Brutalist */}
-          <header className="no-print bg-white border-b-2 border-[#141414] px-6 py-4 flex items-center justify-between shrink-0">
+          <header className="no-print h-[88px] bg-white border-b-2 border-[#141414] px-6 py-4 flex items-center justify-between shrink-0">
             <div className="flex items-center gap-3">
               <button 
                 className="md:hidden text-[#141414] mr-2 border-2 border-[#141414] p-1.5 bg-white shadow-[2px_2px_0px_0px_#141414]" 
@@ -120,9 +126,9 @@ export default function DefaultLayout({
             </div>
             
             <div className="flex items-center gap-4">
-              {/* JDN Badge */}
+              {/* SIMPERTAN Badge */}
               <div className="hidden sm:inline-flex items-center px-3 py-1 bg-white border-2 border-[#141414] shadow-[2px_2px_0px_0px_#141414] text-[10px] font-mono font-bold tracking-wider text-emerald-600 uppercase">
-                Sistem Informasi JDN
+                SIMPERTAN
               </div>
               
               {/* Admin Avatar */}
@@ -145,7 +151,7 @@ export default function DefaultLayout({
           
           {/* Footer */}
           <footer className="no-print bg-white border-t-2 border-[#141414] px-6 py-4 flex items-center justify-between text-xs font-mono font-bold text-neutral-600 shrink-0">
-            <p>&copy; {new Date().getFullYear()} Jaga Data Nusantara (JDN) - Analitika Pertanian</p>
+            <p>&copy; {new Date().getFullYear()} Dinas Pertanian, Perikanan dan Ketahanan Pangan Kab. Banjarnegara - SIMPERTAN</p>
             <p className="hidden sm:block">V1.2.0 • Status: OK</p>
           </footer>
         </div>
@@ -162,7 +168,12 @@ export default function DefaultLayout({
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between pb-4 border-b-2 border-[#141414]">
-              <span className="font-serif font-black text-lg text-emerald-600 uppercase">Menu Utama</span>
+              <div className="flex items-center gap-2">
+                <img src="/logo.png" alt="Logo Dinas" className="w-10 h-10 object-contain shrink-0" />
+                <span className="font-serif font-black text-sm text-[#141414] uppercase leading-none">
+                  SIMPERTAN
+                </span>
+              </div>
               <button 
                 className="border-2 border-[#141414] p-1 shadow-[2px_2px_0px_0px_#141414]" 
                 onClick={() => setIsMobileSidebarOpen(false)}

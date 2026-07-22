@@ -45,15 +45,20 @@ export default function PredictionPage() {
   return (
     <DefaultLayout>
       <section className="flex flex-col gap-8 py-2">
-        {/* Header */}
-        <div className="bg-emerald-100 border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-6 text-left">
-          <h1 className="text-3xl md:text-4xl font-serif font-black uppercase tracking-tight text-[#141414]">
+        {/* Hero / intro */}
+        <section className="relative text-left animate-fade-in py-4 md:py-8">
+          
+          
+          <div className="relative z-10">
+          
+          <h2 className="font-serif italic text-3xl sm:text-5xl mt-3 leading-tight text-[#141414]">
             Prediksi Panen Padi
-          </h1>
-          <p className="text-xs font-mono font-bold text-neutral-600 mt-2 uppercase tracking-wide">
-            Analisis produktivitas padi riil Kabupaten Banjarnegara (Data 2025) dilengkapi simulator ekspansi lahan
+          </h2>
+          <p className="font-mono text-sm md:text-base font-medium text-[#4a4a4a] mt-4 max-w-2xl border-l-4 border-emerald-500 pl-4 bg-white/80 py-1">
+            Analisis produktivitas padi riil Kabupaten Banjarnegara (Data 2025) dilengkapi simulator ekspansi lahan.
           </p>
-        </div>
+          </div>
+        </section>
 
         {loading ? (
           <div className="flex items-center justify-center h-[300px]">
@@ -64,9 +69,9 @@ export default function PredictionPage() {
             {/* Charts Row */}
             <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
               {/* Chart Comparison */}
-              <div className="lg:col-span-2 bg-white border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-6">
+              <div className="lg:col-span-2 bg-white border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-6 transition-all duration-300 hover:shadow-[8px_8px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]">
                 <div className="flex flex-col mb-4 border-b-2 border-[#141414] pb-3">
-                  <h4 className="text-lg font-serif font-black uppercase flex items-center gap-2">
+                  <h4 className="text-lg font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
                     <TrendingUp className="text-emerald-600" />
                     Profil Luas Panen vs Produksi Padi
                   </h4>
@@ -107,10 +112,10 @@ export default function PredictionPage() {
               </div>
 
               {/* Calculator Widget */}
-              <div className="bg-white border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-6 flex flex-col">
+              <div className="bg-white border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-6 flex flex-col transition-all duration-300 hover:shadow-[8px_8px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]">
                 <div className="flex items-center gap-2 mb-4 border-b-2 border-[#141414] pb-3">
                   <Calculator className="text-emerald-600" size={22} />
-                  <h4 className="text-lg font-serif font-black uppercase">Simulator Ekspansi</h4>
+                  <h4 className="text-lg font-mono font-bold uppercase tracking-wide">Simulator Ekspansi</h4>
                 </div>
                 
                 <p className="text-xs font-mono font-bold text-neutral-500 uppercase mb-4">
@@ -181,9 +186,9 @@ export default function PredictionPage() {
             </div>
 
             {/* Ranking Table */}
-            <div className="bg-white border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-6">
+            <div className="bg-white border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-6 transition-all duration-300 hover:shadow-[8px_8px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]">
               <div className="flex flex-col mb-4 border-b-2 border-[#141414] pb-3">
-                <h4 className="text-lg font-serif font-black uppercase flex items-center gap-2">
+                <h4 className="text-lg font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
                   <Sprout className="text-emerald-600" />
                   Peringkat Produktivitas Padi per Kecamatan
                 </h4>

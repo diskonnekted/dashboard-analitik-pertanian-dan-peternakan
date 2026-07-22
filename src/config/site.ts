@@ -33,6 +33,18 @@ export const siteConfig = {
       href: "/livestock",
     },
     {
+      label: "Perkebunan",
+      href: "/plantation",
+    },
+    {
+      label: "Hortikultura",
+      href: "/horticulture",
+    },
+    {
+      label: "Kelembagaan Tani",
+      href: "/farmers",
+    },
+    {
       label: "Perikanan",
       href: "/fisheries",
     },
@@ -45,7 +57,7 @@ export const siteConfig = {
       href: "/recommendations",
     },
     {
-      label: "Info JDN",
+      label: "Info SIMPERTAN",
       href: "/info",
     },
   ],
@@ -79,6 +91,18 @@ export const siteConfig = {
       href: "/livestock",
     },
     {
+      label: "Perkebunan",
+      href: "/plantation",
+    },
+    {
+      label: "Hortikultura",
+      href: "/horticulture",
+    },
+    {
+      label: "Kelembagaan Tani",
+      href: "/farmers",
+    },
+    {
       label: "Perikanan",
       href: "/fisheries",
     },
@@ -91,7 +115,7 @@ export const siteConfig = {
       href: "/recommendations",
     },
     {
-      label: "Info JDN",
+      label: "Info SIMPERTAN",
       href: "/info",
     },
   ],

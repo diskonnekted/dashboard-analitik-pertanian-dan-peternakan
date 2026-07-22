@@ -45,11 +45,11 @@ export const WarningTable = ({ data }: WarningTableProps) => {
 
   return (
     <div
-      className="bg-white border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] h-full flex flex-col p-6"
+      className="bg-white border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] h-full flex flex-col p-6 transition-all duration-300 hover:shadow-[8px_8px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]"
     >
       <div className="flex items-center gap-2 mb-4 border-b-2 border-[#141414] pb-3">
         <AlertTriangle className="text-red-600" />
-        <h4 className="text-xl font-serif font-black uppercase">Analisa Lahan Kritis</h4>
+        <h4 className="text-lg font-mono font-bold uppercase tracking-wide">Analisa Lahan Kritis</h4>
       </div>
 
       <div className="overflow-x-auto">

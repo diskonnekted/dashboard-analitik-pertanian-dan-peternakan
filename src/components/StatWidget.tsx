@@ -6,6 +6,7 @@ interface StatWidgetProps {
   icon: ReactNode;
   trend?: string;
   trendUp?: boolean;
+  color?: string;
 }
 
 export const StatWidget = ({
@@ -14,12 +15,13 @@ export const StatWidget = ({
   icon,
   trend,
   trendUp,
+  color = "bg-emerald-100",
 }: StatWidgetProps) => {
   return (
     <div
-      className="bg-white border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-5 flex flex-row items-center gap-4"
+      className="group bg-white border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-5 flex flex-row items-center gap-4 transition-all duration-300 hover:translate-y-[-4px] hover:translate-x-[-4px] hover:shadow-[8px_8px_0px_0px_#141414] cursor-pointer"
     >
-      <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center border-2 border-[#141414] bg-emerald-100 text-[#141414] shadow-[2px_2px_0px_0px_#141414] rounded-none">
+      <div className={`flex h-12 w-12 flex-shrink-0 items-center justify-center border-2 border-[#141414] text-[#141414] shadow-[2px_2px_0px_0px_#141414] rounded-none transition-transform duration-300 group-hover:rotate-6 ${color}`}>
         {icon}
       </div>
       <div className="flex flex-col">

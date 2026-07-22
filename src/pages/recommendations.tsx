@@ -199,7 +199,7 @@ export default function RecommendationsPage() {
     <DefaultLayout>
       <section className="flex flex-col gap-8 py-2 max-w-5xl mx-auto">
         {/* Toolbar (tidak ikut tercetak) */}
-        <div className="no-print flex items-center justify-between bg-white border-2 border-[#141414] p-4 shadow-[4px_4px_0px_0px_#141414]">
+        <div className="no-print flex items-center justify-between bg-white border-2 border-[#141414] p-4 shadow-[4px_4px_0px_0px_#141414] transition-all duration-300 hover:shadow-[8px_8px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]">
           <p className="text-xs font-mono font-bold uppercase text-neutral-600">
             Dokumen ini dapat dicetak atau disimpan sebagai PDF
           </p>
@@ -213,11 +213,11 @@ export default function RecommendationsPage() {
         </div>
 
         {/* Kop Dokumen */}
-        <div className="print-block bg-white border-2 border-[#141414] p-8 shadow-[4px_4px_0px_0px_#141414] text-center">
+        <div className="print-block bg-white border-2 border-[#141414] p-8 shadow-[4px_4px_0px_0px_#141414] text-center transition-all duration-300 hover:shadow-[8px_8px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]">
           <p className="text-xs font-mono font-bold uppercase tracking-widest text-neutral-500">
             Pemerintah Kabupaten Banjarnegara
           </p>
-          <h1 className="text-2xl md:text-3xl font-serif font-black uppercase tracking-tight text-[#141414] mt-3">
+          <h1 className="font-serif italic text-3xl sm:text-5xl mt-2 leading-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-800 to-teal-500 font-black drop-shadow-sm uppercase">
             Rekomendasi Strategis Pembangunan
           </h1>
           <h2 className="text-lg md:text-xl font-serif font-bold text-emerald-700 mt-1">
@@ -232,10 +232,10 @@ export default function RecommendationsPage() {
         </div>
 
         {/* Ringkasan Eksekutif */}
-        <div className="print-block bg-neutral-50 border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414] text-left">
+        <div className="print-block bg-neutral-50 border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414] text-left transition-all duration-300 hover:shadow-[8px_8px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]">
           <div className="flex items-center gap-2 mb-3 border-b border-neutral-300 pb-2">
             <Target size={18} className="text-emerald-700" />
-            <h3 className="text-md font-serif font-black uppercase">
+            <h3 className="text-md font-mono font-bold uppercase tracking-wide">
               Ringkasan Eksekutif
             </h3>
           </div>
@@ -260,7 +260,7 @@ export default function RecommendationsPage() {
                 <span className="w-10 h-10 border-2 border-[#141414] bg-white flex items-center justify-center shadow-[2px_2px_0px_0px_#141414]">
                   {s.icon}
                 </span>
-                <h3 className="text-xl font-serif font-black uppercase text-[#141414]">
+                <h3 className="text-lg font-mono font-bold uppercase text-[#141414] tracking-wide">
                   Rekomendasi Sektor {s.nama}
                 </h3>
               </div>
@@ -272,10 +272,10 @@ export default function RecommendationsPage() {
             {s.items.map((item, idx) => (
               <div
                 key={idx}
-                className="print-block bg-white border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414] text-left"
+                className="print-block bg-white border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414] text-left transition-all duration-300 hover:shadow-[8px_8px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]"
               >
                 <div className="flex items-start justify-between gap-4 mb-3">
-                  <h4 className="text-md font-serif font-black uppercase text-[#141414]">
+                  <h4 className="text-md font-mono font-bold uppercase text-[#141414] tracking-wide">
                     {idx + 1}. {item.judul}
                   </h4>
                   <span
@@ -324,10 +324,10 @@ export default function RecommendationsPage() {
         ))}
 
         {/* Rekomendasi Strategis untuk Dinas */}
-        <div className="print-block bg-white border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414] text-left">
+        <div className="print-block bg-white border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414] text-left transition-all duration-300 hover:shadow-[8px_8px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]">
           <div className="flex items-center gap-2 mb-4 border-b border-neutral-300 pb-2">
             <Building2 size={18} className="text-emerald-700" />
-            <h3 className="text-md font-serif font-black uppercase">
+            <h3 className="text-md font-mono font-bold uppercase tracking-wide">
               Rekomendasi Strategis untuk Dinas Terkait
             </h3>
           </div>
@@ -344,10 +344,10 @@ export default function RecommendationsPage() {
         </div>
 
         {/* Rekomendasi Strategis untuk Bupati */}
-        <div className="print-block bg-white border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414] text-left">
+        <div className="print-block bg-white border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414] text-left transition-all duration-300 hover:shadow-[8px_8px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]">
           <div className="flex items-center gap-2 mb-4 border-b border-neutral-300 pb-2">
             <Target size={18} className="text-emerald-700" />
-            <h3 className="text-md font-serif font-black uppercase">
+            <h3 className="text-md font-mono font-bold uppercase tracking-wide">
               Rekomendasi Strategis untuk Bupati
             </h3>
           </div>
@@ -364,13 +364,13 @@ export default function RecommendationsPage() {
         </div>
 
         {/* Blok Tanda Tangan */}
-        <div className="print-block bg-white border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414]">
+        <div className="print-block bg-white border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414] transition-all duration-300 hover:shadow-[8px_8px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]">
           <div className="text-center text-sm">
             <p className="text-neutral-600 mb-2">
               Disusun oleh,
             </p>
             <p className="font-serif font-black text-lg uppercase text-emerald-700">
-              Jaga Data Nusantara (JDN)
+              Dinas Pertanian, Perikanan dan Ketahanan Pangan Kab. Banjarnegara
             </p>
             <p className="text-[10px] font-mono font-bold text-neutral-500 uppercase tracking-widest mt-1">
               Analitika Pertanian, Peternakan &amp; Perikanan
@@ -382,7 +382,7 @@ export default function RecommendationsPage() {
         </div>
 
         <p className="text-[10px] font-mono text-neutral-500 uppercase text-center">
-          Dokumen dihasilkan oleh Sistem Analitik Pertanian JDN Kab. Banjarnegara
+          Dokumen dihasilkan oleh SIMPERTAN Distankan Kab. Banjarnegara
         </p>
       </section>
     </DefaultLayout>

@@ -72,15 +72,20 @@ export default function SuitabilityPage() {
   return (
     <DefaultLayout>
       <section className="flex flex-col gap-8 py-2">
-        {/* Header */}
-        <div className="bg-emerald-100 border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-6 text-left">
-          <h1 className="text-3xl md:text-4xl font-serif font-black uppercase tracking-tight text-[#141414]">
+        {/* Hero / intro */}
+        <section className="relative text-left animate-fade-in py-4 md:py-8">
+          
+          
+          <div className="relative z-10">
+          
+          <h2 className="font-serif italic text-3xl sm:text-5xl mt-2 leading-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-800 to-teal-500 font-black drop-shadow-sm">
             Kesesuaian Lahan Sayuran
-          </h1>
-          <p className="text-xs font-mono font-bold text-neutral-600 mt-2 uppercase tracking-wide">
-            Pemetaan kecocokan lahan aktual berdasarkan volume produksi sayuran riil Kabupaten Banjarnegara
+          </h2>
+          <p className="font-mono text-sm md:text-base font-medium text-[#4a4a4a] mt-4 max-w-2xl border-l-4 border-emerald-500 pl-4 bg-white/80 py-1">
+            Pemetaan kecocokan lahan aktual berdasarkan volume produksi sayuran riil Kabupaten Banjarnegara.
           </p>
-        </div>
+          </div>
+        </section>
 
         {loading ? (
           <div className="flex items-center justify-center h-[300px]">
@@ -89,10 +94,10 @@ export default function SuitabilityPage() {
         ) : (
           <>
             {/* Filter Control Box */}
-            <div className="bg-white border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-6">
+            <div className="bg-white border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-6 transition-all duration-300 hover:shadow-[8px_8px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]">
               <div className="flex items-center gap-2 mb-4 border-b-2 border-[#141414] pb-3">
                 <ListFilter className="text-[#141414]" size={20} />
-                <h4 className="text-md font-serif font-black uppercase">Filter Analisis</h4>
+                <h4 className="text-md font-mono font-bold uppercase tracking-wide">Filter Analisis</h4>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="flex flex-col gap-1">
@@ -131,9 +136,9 @@ export default function SuitabilityPage() {
             {/* Main Visualizations */}
             <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
               {/* Radar Chart Profile */}
-              <div className="bg-white border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-6 flex flex-col justify-between">
+              <div className="bg-white border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-6 flex flex-col justify-between transition-all duration-300 hover:shadow-[8px_8px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]">
                 <div className="flex flex-col mb-4 border-b-2 border-[#141414] pb-3">
-                  <h4 className="text-md font-serif font-black uppercase flex items-center gap-2">
+                  <h4 className="text-md font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
                     <Compass className="text-[#141414]" size={18} />
                     Radar Karakteristik
                   </h4>
@@ -159,9 +164,9 @@ export default function SuitabilityPage() {
               </div>
 
               {/* Bar Chart Breakdown */}
-              <div className="lg:col-span-2 bg-white border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-6">
+              <div className="lg:col-span-2 bg-white border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-6 transition-all duration-300 hover:shadow-[8px_8px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]">
                 <div className="flex flex-col mb-4 border-b-2 border-[#141414] pb-3">
-                  <h4 className="text-md font-serif font-black uppercase flex items-center gap-2">
+                  <h4 className="text-md font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
                     <Tractor className="text-[#141414]" size={18} />
                     Rincian Hasil Panen Sayuran (Ton)
                   </h4>
@@ -211,9 +216,9 @@ export default function SuitabilityPage() {
             </div>
 
             {/* Suitability Matrix Table */}
-            <div className="bg-white border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-6">
+            <div className="bg-white border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-6 transition-all duration-300 hover:shadow-[8px_8px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]">
               <div className="flex flex-col mb-4 border-b-2 border-[#141414] pb-3">
-                <h4 className="text-lg font-serif font-black uppercase flex items-center gap-2">
+                <h4 className="text-lg font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
                   <Leaf className="text-[#141414]" />
                   Matriks Kesesuaian Komoditas Aktual
                 </h4>

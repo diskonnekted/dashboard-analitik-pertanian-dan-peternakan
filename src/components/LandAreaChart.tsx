@@ -26,10 +26,10 @@ export const LandAreaChart = ({ data }: LandAreaChartProps) => {
 
   return (
     <div
-      className="bg-white border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] h-full flex flex-col p-6"
+      className="bg-white border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] h-full flex flex-col p-6 transition-all duration-300 hover:shadow-[8px_8px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]"
     >
       <div className="flex flex-col mb-4 border-b-2 border-[#141414] pb-3">
-        <h4 className="text-xl font-serif font-black uppercase flex items-center gap-2">
+        <h4 className="text-lg font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
           <TrendingUp className="text-emerald-600" />
           Top 15 Desa
         </h4>
@@ -42,7 +42,7 @@ export const LandAreaChart = ({ data }: LandAreaChartProps) => {
           <ResponsiveContainer height="100%" width="100%">
             <BarChart
               data={chartData}
-              margin={{ top: 10, right: 10, left: 0, bottom: 25 }}
+              margin={{ top: 10, right: 10, left: 30, bottom: 60 }}
             >
               <CartesianGrid
                 strokeDasharray="3 3"
@@ -53,7 +53,7 @@ export const LandAreaChart = ({ data }: LandAreaChartProps) => {
               <XAxis
                 angle={-45}
                 axisLine={{ stroke: '#141414', strokeWidth: 2 }}
-                className="font-mono font-bold text-[9px]"
+                className="font-mono font-bold text-[8px]"
                 dataKey="desa"
                 interval={0}
                 textAnchor="end"
@@ -61,7 +61,7 @@ export const LandAreaChart = ({ data }: LandAreaChartProps) => {
               />
               <YAxis
                 axisLine={{ stroke: '#141414', strokeWidth: 2 }}
-                className="font-mono font-bold text-[10px]"
+                className="font-mono font-bold text-[9px]"
                 tickFormatter={(value) => `${value.toLocaleString("id-ID")}`}
                 tickLine={{ stroke: '#141414', strokeWidth: 2 }}
               />
@@ -84,6 +84,7 @@ export const LandAreaChart = ({ data }: LandAreaChartProps) => {
               <Legend 
                 verticalAlign="top" 
                 height={36} 
+                formatter={(value) => <span className="text-[#141414] uppercase">{value}</span>}
                 wrapperStyle={{ 
                   fontFamily: "monospace", 
                   fontWeight: "bold", 

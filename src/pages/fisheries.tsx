@@ -355,19 +355,23 @@ export default function FisheriesPage() {
   return (
     <DefaultLayout>
       <section className="flex flex-col gap-8 py-2">
-        {/* Header Banner */}
-        <div className="bg-sky-100 border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-6 text-left">
-          <h1 className="text-3xl md:text-4xl font-serif font-black uppercase tracking-tight text-[#141414]">
+        {/* Hero / intro */}
+        <section className="relative text-left animate-fade-in py-4 md:py-8">
+          
+          
+          <div className="relative z-10">
+          
+          <h2 className="font-serif italic text-3xl sm:text-5xl mt-2 leading-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-800 to-teal-500 font-black drop-shadow-sm">
             Analitik Perikanan
-          </h1>
-          <p className="text-xs font-mono font-bold text-neutral-600 mt-2 uppercase tracking-wide">
-            Pemantauan Produksi Perikanan Budidaya, Tangkap, dan Pembenihan Ikan
-            Kabupaten Banjarnegara
+          </h2>
+          <p className="font-mono text-sm md:text-base font-medium text-[#4a4a4a] mt-4 max-w-2xl border-l-4 border-emerald-500 pl-4 bg-white/80 py-1">
+            Pemantauan Produksi Perikanan Budidaya, Tangkap, dan Pembenihan Ikan Kabupaten Banjarnegara.
           </p>
-        </div>
+          </div>
+        </section>
 
         {/* Filters */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-white border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414]">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-white border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414] transition-all duration-300 hover:shadow-[8px_8px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]">
           {/* Category Selector */}
           <div className="flex flex-col gap-2 text-left">
             <label className="text-xs font-mono font-bold uppercase text-neutral-500">
@@ -464,7 +468,7 @@ export default function FisheriesPage() {
             {/* Stats Row */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Stat 1: Total Produksi */}
-              <div className="bg-sky-50 border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414] text-left flex flex-col justify-between">
+              <div className="bg-sky-50 border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414] text-left flex flex-col justify-between transition-all duration-300 hover:shadow-[8px_8px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]">
                 <div className="flex justify-between items-start">
                   <div>
                     <h5 className="text-xs font-mono font-bold text-neutral-500 uppercase">
@@ -490,7 +494,7 @@ export default function FisheriesPage() {
               </div>
 
               {/* Stat 2: Top Kecamatan */}
-              <div className="bg-emerald-50 border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414] text-left flex flex-col justify-between">
+              <div className="bg-emerald-50 border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414] text-left flex flex-col justify-between transition-all duration-300 hover:shadow-[8px_8px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]">
                 <div className="flex justify-between items-start">
                   <div>
                     <h5 className="text-xs font-mono font-bold text-neutral-500 uppercase">
@@ -510,7 +514,7 @@ export default function FisheriesPage() {
               </div>
 
               {/* Stat 3: Komposisi Jenis */}
-              <div className="bg-violet-50 border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414] text-left">
+              <div className="bg-violet-50 border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414] text-left transition-all duration-300 hover:shadow-[8px_8px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]">
                 <h5 className="text-xs font-mono font-bold text-neutral-500 uppercase mb-3">
                   Komposisi Produksi
                 </h5>
@@ -538,9 +542,9 @@ export default function FisheriesPage() {
             </div>
 
             {/* Tren Deret Waktu */}
-            <div className="bg-white border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414]">
+            <div className="bg-white border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414] transition-all duration-300 hover:shadow-[8px_8px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]">
               <div className="mb-4 text-left border-b border-neutral-200 pb-2 flex flex-wrap items-center justify-between gap-2">
-                <h4 className="text-md font-serif font-black uppercase">
+                <h4 className="text-md font-mono font-bold uppercase tracking-wide">
                   Tren Produksi {trendData.length > 0 ? `${trendData[0].tahun}–${trendData[trendData.length - 1].tahun}` : ""} — {unit}
                   {selectedKecamatan !== "Semua" ? ` · ${selectedKecamatan}` : ""}
                 </h4>
@@ -658,9 +662,9 @@ export default function FisheriesPage() {
 
             {/* Proyeksi Tahun Depan (Regresi Linear) */}
             {projection && (
-              <div className="bg-white border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414]">
+              <div className="bg-white border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414] transition-all duration-300 hover:shadow-[8px_8px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]">
                 <div className="mb-4 text-left border-b border-neutral-200 pb-2">
-                  <h4 className="text-md font-serif font-black uppercase flex items-center gap-2">
+                  <h4 className="text-md font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
                     <TrendingUp className="text-red-600" size={18} />
                     Proyeksi {projection.nextYear} — Regresi Linear
                     {selectedKecamatan !== "Semua" ? ` · ${selectedKecamatan}` : ""}
@@ -727,9 +731,9 @@ export default function FisheriesPage() {
             )}
 
             {/* Deteksi Anomali */}
-            <div className="bg-white border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414]">
+            <div className="bg-white border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414] transition-all duration-300 hover:shadow-[8px_8px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]">
               <div className="mb-4 text-left border-b border-neutral-200 pb-2 flex flex-wrap items-center justify-between gap-2">
-                <h4 className="text-md font-serif font-black uppercase flex items-center gap-2">
+                <h4 className="text-md font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
                   <AlertTriangle className="text-red-600" size={18} />
                   Deteksi Anomali Produksi
                 </h4>
@@ -774,9 +778,9 @@ export default function FisheriesPage() {
 
             {/* CAGR per Komoditas */}
             {cagrData && (
-              <div className="bg-white border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414]">
+              <div className="bg-white border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414] transition-all duration-300 hover:shadow-[8px_8px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]">
                 <div className="mb-4 text-left border-b border-neutral-200 pb-2">
-                  <h4 className="text-md font-serif font-black uppercase">
+                  <h4 className="text-md font-mono font-bold uppercase tracking-wide">
                     Laju Pertumbuhan Tahunan (CAGR) {cagrData.periode}
                     {selectedKecamatan !== "Semua" ? ` · ${selectedKecamatan}` : ""}
                   </h4>
@@ -828,9 +832,9 @@ export default function FisheriesPage() {
             )}
 
             {/* Chart */}
-            <div className="bg-white border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414]">
+            <div className="bg-white border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414] transition-all duration-300 hover:shadow-[8px_8px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]">
               <div className="mb-4 text-left border-b border-neutral-200 pb-2">
-                <h4 className="text-md font-serif font-black uppercase">
+                <h4 className="text-md font-mono font-bold uppercase tracking-wide">
                   Produksi per Kecamatan ({selectedYear}) — dalam {unit}
                 </h4>
               </div>
@@ -918,9 +922,9 @@ export default function FisheriesPage() {
             </div>
 
             {/* Data Table */}
-            <div className="bg-white border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414]">
+            <div className="bg-white border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414] transition-all duration-300 hover:shadow-[8px_8px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]">
               <div className="mb-4 text-left border-b border-neutral-200 pb-2">
-                <h4 className="text-md font-serif font-black uppercase">
+                <h4 className="text-md font-mono font-bold uppercase tracking-wide">
                   Tabel Rincian Produksi ({selectedYear}) — {unit}
                 </h4>
               </div>

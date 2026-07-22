@@ -1,18 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,600&display=swap');
 @import "tailwindcss";
 @import "@heroui/styles";
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,600&display=swap');
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Playfair Display", Georgia, Cambria, "Times New Roman", Times, serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --color-hd: #141414;
+  --color-canvas: #f1f1ef;
+  --color-muted: #747474;
+  --color-muted2: #949494;
 }
 
 body {
   font-family: var(--font-sans);
-  background-color: #f1f1ef;
-  color: #141414;
+  background: var(--color-canvas);
+  color: var(--color-hd);
+  background-image:
+    linear-gradient(rgba(20, 20, 20, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(20, 20, 20, 0.035) 1px, transparent 1px);
+  background-size: 28px 28px;
 }
 
 /* Utilities inti gaya hard-edge / brutalist */
@@ -24,11 +31,23 @@ body {
     border: 1px solid rgba(20, 20, 20, 0.12);
   }
   .shadow-hd {
-    box-shadow: 2px 2px 0px 0px #141414;
+    box-shadow: 2px 2px 0 0 #141414;
   }
   .shadow-hd-lg {
-    box-shadow: 4px 4px 0px 0px #141414;
+    box-shadow: 4px 4px 0 0 #141414;
   }
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  border-radius: 0 !important;
+  border: 2px solid #141414;
+  box-shadow: 4px 4px 0 0 #141414;
+}
+
+.custom-popup-neobrutalism .leaflet-popup-content {
+  margin: 0 !important;
+  padding: 12px !important;
 }
 
 @custom-variant dark (&:is(.dark *));

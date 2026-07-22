@@ -175,19 +175,23 @@ export default function EconomicValuePage() {
   return (
     <DefaultLayout>
       <section className="flex flex-col gap-8 py-2">
-        {/* Header Banner */}
-        <div className="bg-emerald-100 border-2 border-[#141414] rounded-none shadow-[4px_4px_0px_0px_#141414] p-6 text-left">
-          <h1 className="text-3xl md:text-4xl font-serif font-black uppercase tracking-tight text-[#141414]">
+        {/* Hero / intro */}
+        <section className="relative text-left animate-fade-in py-4 md:py-8">
+          
+          
+          <div className="relative z-10">
+          
+          <h2 className="font-serif italic text-3xl sm:text-5xl mt-2 leading-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-800 to-teal-500 font-black drop-shadow-sm">
             Nilai Ekonomi Perikanan
-          </h1>
-          <p className="text-xs font-mono font-bold text-neutral-600 mt-2 uppercase tracking-wide">
-            Nilai Produksi, Harga Rata-rata Implisit & Kontribusi Sub-sektor
-            Perikanan Kabupaten Banjarnegara
+          </h2>
+          <p className="font-mono text-sm md:text-base font-medium text-[#4a4a4a] mt-4 max-w-2xl border-l-4 border-emerald-500 pl-4 bg-white/80 py-1">
+            Nilai Produksi, Harga Rata-rata Implisit & Kontribusi Sub-sektor Perikanan Kabupaten Banjarnegara.
           </p>
-        </div>
+          </div>
+        </section>
 
         {/* Filters */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-white border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414]">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-white border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414] transition-all duration-300 hover:shadow-[8px_8px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]">
           {/* Sub-sektor Selector */}
           <div className="flex flex-col gap-2 text-left">
             <label className="text-xs font-mono font-bold uppercase text-neutral-500">
@@ -269,7 +273,7 @@ export default function EconomicValuePage() {
             </p>
           </div>
         ) : currentData.length === 0 ? (
-          <div className="flex items-center justify-center h-[200px] bg-white border-2 border-[#141414] shadow-[4px_4px_0px_0px_#141414]">
+          <div className="flex items-center justify-center h-[200px] bg-white border-2 border-[#141414] shadow-[4px_4px_0px_0px_#141414] transition-all duration-300 hover:shadow-[8px_8px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]">
             <p className="text-neutral-500 font-mono font-bold uppercase">
               Data tidak tersedia untuk tahun ini
             </p>
@@ -279,7 +283,7 @@ export default function EconomicValuePage() {
             {/* Stats Row */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Total Nilai Ekonomi */}
-              <div className="bg-emerald-50 border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414] text-left flex flex-col justify-between">
+              <div className="bg-emerald-50 border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414] text-left flex flex-col justify-between transition-all duration-300 hover:shadow-[8px_8px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]">
                 <div className="flex justify-between items-start">
                   <span className="text-xs font-mono font-bold uppercase text-neutral-500">
                     Total Nilai Ekonomi
@@ -295,7 +299,7 @@ export default function EconomicValuePage() {
               </div>
 
               {/* Harga Rata-rata Implisit */}
-              <div className="bg-amber-50 border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414] text-left flex flex-col justify-between">
+              <div className="bg-amber-50 border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414] text-left flex flex-col justify-between transition-all duration-300 hover:shadow-[8px_8px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]">
                 <div className="flex justify-between items-start">
                   <span className="text-xs font-mono font-bold uppercase text-neutral-500">
                     Harga Rata-rata Implisit
@@ -311,7 +315,7 @@ export default function EconomicValuePage() {
               </div>
 
               {/* Jenis Kontribusi Tertinggi */}
-              <div className="bg-violet-50 border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414] text-left flex flex-col justify-between">
+              <div className="bg-violet-50 border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414] text-left flex flex-col justify-between transition-all duration-300 hover:shadow-[8px_8px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]">
                 <div className="flex justify-between items-start">
                   <span className="text-xs font-mono font-bold uppercase text-neutral-500">
                     Kontributor Terbesar
@@ -329,9 +333,9 @@ export default function EconomicValuePage() {
 
             {/* Nilai Ekonomi per Kecamatan */}
             {selectedKecamatan === "Semua" && (
-              <div className="bg-white border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414]">
+              <div className="bg-white border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414] transition-all duration-300 hover:shadow-[8px_8px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]">
                 <div className="mb-4 text-left border-b border-neutral-200 pb-2">
-                  <h4 className="text-md font-serif font-black uppercase">
+                  <h4 className="text-md font-mono font-bold uppercase tracking-wide">
                     Nilai Ekonomi per Kecamatan (Juta Rupiah)
                   </h4>
                 </div>
@@ -371,9 +375,9 @@ export default function EconomicValuePage() {
             {/* Kontribusi & Harga Implisit per Jenis */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Kontribusi Nilai per Jenis */}
-              <div className="bg-white border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414]">
+              <div className="bg-white border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414] transition-all duration-300 hover:shadow-[8px_8px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]">
                 <div className="mb-4 text-left border-b border-neutral-200 pb-2">
-                  <h4 className="text-md font-serif font-black uppercase">
+                  <h4 className="text-md font-mono font-bold uppercase tracking-wide">
                     Kontribusi Nilai per Jenis
                   </h4>
                 </div>
@@ -421,9 +425,9 @@ export default function EconomicValuePage() {
               </div>
 
               {/* Harga Implisit per Jenis */}
-              <div className="bg-white border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414]">
+              <div className="bg-white border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414] transition-all duration-300 hover:shadow-[8px_8px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]">
                 <div className="mb-4 text-left border-b border-neutral-200 pb-2">
-                  <h4 className="text-md font-serif font-black uppercase">
+                  <h4 className="text-md font-mono font-bold uppercase tracking-wide">
                     Harga Rata-rata Implisit (Rp/kg)
                   </h4>
                 </div>
@@ -461,9 +465,9 @@ export default function EconomicValuePage() {
             </div>
 
             {/* Tabel Rincian per Jenis */}
-            <div className="bg-white border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414]">
+            <div className="bg-white border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414] transition-all duration-300 hover:shadow-[8px_8px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]">
               <div className="mb-4 text-left border-b border-neutral-200 pb-2">
-                <h4 className="text-md font-serif font-black uppercase">
+                <h4 className="text-md font-mono font-bold uppercase tracking-wide">
                   Rincian per Jenis {subSektor}
                 </h4>
               </div>
