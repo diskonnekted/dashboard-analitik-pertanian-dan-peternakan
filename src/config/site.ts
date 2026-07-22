@@ -57,6 +57,10 @@ export const siteConfig = {
       href: "/recommendations",
     },
     {
+      label: "Analisis Bantuan",
+      href: "/government-assistance",
+    },
+    {
       label: "Analisis Renstra",
       href: "/renstra",
     },
@@ -117,6 +121,10 @@ export const siteConfig = {
     {
       label: "Rekomendasi",
       href: "/recommendations",
+    },
+    {
+      label: "Analisis Bantuan",
+      href: "/government-assistance",
     },
     {
       label: "Analisis Renstra",

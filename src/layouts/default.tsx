@@ -15,7 +15,8 @@ import {
   ClipboardList,
   Sprout,
   Cherry,
-  Users
+  Users,
+  Coins
 } from "lucide-react";
 import { siteConfig } from "@/config/site";
 
@@ -54,6 +55,8 @@ export default function DefaultLayout({
         return <DollarSign className="w-4 h-4 mr-3 text-emerald-600" />;
       case "Rekomendasi":
         return <ClipboardList className="w-4 h-4 mr-3 text-emerald-600" />;
+      case "Analisis Bantuan":
+        return <Coins className="w-4 h-4 mr-3 text-emerald-600" />;
       case "Analisis Renstra":
         return <TrendingUp className="w-4 h-4 mr-3 text-emerald-600" />;
       case "Info SIMPERTAN":
