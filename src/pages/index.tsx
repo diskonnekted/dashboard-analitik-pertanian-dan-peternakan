@@ -62,11 +62,11 @@ export default function IndexPage() {
               Sistem Pemantauan Ketahanan Pangan & Prediksi Panen Kabupaten Banjarnegara berbasis Open Data API.
             </p>
           </div>
-          <div className="w-full md:w-72 lg:w-96 shrink-0">
+          <div className="w-full md:w-48 lg:w-64 shrink-0 flex items-center justify-center">
             <img
               src="/img/dashboard.png"
               alt="Grafik Dashboard SIMPERTAN"
-              className="w-full h-auto object-cover"
+              className="w-full max-h-32 md:max-h-36 object-contain"
             />
           </div>
         </section>
