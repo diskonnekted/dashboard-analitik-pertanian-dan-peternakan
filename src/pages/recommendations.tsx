@@ -1,5 +1,5 @@
 import DefaultLayout from "@/layouts/default";
-import { useMemo, type ReactNode } from "react";
+import { useMemo, useState, useEffect, type ReactNode } from "react";
 import {
   Printer,
   Sprout,
@@ -9,6 +9,18 @@ import {
   Target,
   AlertCircle,
 } from "lucide-react";
+import {
+  fetchPadiProduction,
+  fetchTernakBesar,
+  fetchTernakKecil,
+  fetchPerikananBudidaya,
+  fetchLahanBanjarnegara,
+  type PadiProduction,
+  type TernakBesar,
+  type TernakKecil,
+  type PerikananBudidaya,
+  type LahanDesa
+} from "@/services/api";
 
 interface Rekomendasi {
   judul: string;
@@ -34,6 +46,37 @@ const PRIORITY_STYLE: Record<string, string> = {
 };
 
 export default function RecommendationsPage() {
+  const [padiData, setPadiData] = useState<PadiProduction[]>([]);
+  const [ternakBesar, setTernakBesar] = useState<TernakBesar[]>([]);
+  const [ternakKecil, setTernakKecil] = useState<TernakKecil[]>([]);
+  const [ikanData, setIkanData] = useState<PerikananBudidaya[]>([]);
+  const [lahanData, setLahanData] = useState<LahanDesa[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadAll = async () => {
+      try {
+        const [padi, tb, tk, ikan, lahan] = await Promise.all([
+          fetchPadiProduction(),
+          fetchTernakBesar(),
+          fetchTernakKecil(),
+          fetchPerikananBudidaya(),
+          fetchLahanBanjarnegara(),
+        ]);
+        setPadiData(padi);
+        setTernakBesar(tb);
+        setTernakKecil(tk);
+        setIkanData(ikan);
+        setLahanData(lahan);
+      } catch (err) {
+        console.error("Error loading recommendations data:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadAll();
+  }, []);
+
   const tanggalCetak = useMemo(
     () =>
       new Date().toLocaleDateString("id-ID", {
@@ -44,49 +87,111 @@ export default function RecommendationsPage() {
     [],
   );
 
-  const sektor: Sektor[] = [
+  const stats = useMemo(() => {
+    // 1. Pertanian (Padi)
+    const totalPadiProd = padiData.reduce((acc, curr) => acc + curr.produksi, 0);
+    const totalPadiLuas = padiData.reduce((acc, curr) => acc + curr.luasPanen, 0);
+    let topPadiKec = "N/A";
+    let maxPadiProd = 0;
+    padiData.forEach((item) => {
+      if (item.produksi > maxPadiProd) {
+        maxPadiProd = item.produksi;
+        topPadiKec = item.kecamatan;
+      }
+    });
+
+    // 2. Peternakan
+    const totalSapi = ternakBesar.reduce((acc, curr) => acc + curr.sapi, 0);
+    const totalKambing = ternakKecil.reduce((acc, curr) => acc + curr.kambing, 0);
+    const totalTernakPop = totalSapi + totalKambing;
+
+    const kecTernakMap: Record<string, number> = {};
+    ternakBesar.forEach((item) => {
+      kecTernakMap[item.kecamatan] = (kecTernakMap[item.kecamatan] || 0) + item.sapi;
+    });
+    ternakKecil.forEach((item) => {
+      kecTernakMap[item.kecamatan] = (kecTernakMap[item.kecamatan] || 0) + item.kambing;
+    });
+    let topTernakKec = "N/A";
+    let maxTernakPop = 0;
+    Object.entries(kecTernakMap).forEach(([kec, pop]) => {
+      if (pop > maxTernakPop) {
+        maxTernakPop = pop;
+        topTernakKec = kec;
+      }
+    });
+
+    // 3. Perikanan
+    const totalIkanProd = ikanData.reduce((acc, curr) => acc + curr.kolamPembesaran, 0);
+    let topIkanKec = "N/A";
+    let maxIkanProd = 0;
+    ikanData.forEach((item) => {
+      if (item.kolamPembesaran > maxIkanProd) {
+        maxIkanProd = item.kolamPembesaran;
+        topIkanKec = item.kecamatan;
+      }
+    });
+
+    // 4. Lahan
+    const totalSawah = lahanData.reduce((acc, curr) => acc + curr.lahanSawah, 0);
+
+    return {
+      totalPadiProd,
+      totalPadiLuas,
+      topPadiKec,
+      maxPadiProd,
+      totalTernakPop,
+      topTernakKec,
+      maxTernakPop,
+      totalIkanProd,
+      topIkanKec,
+      maxIkanProd,
+      totalSawah,
+    };
+  }, [padiData, ternakBesar, ternakKecil, ikanData, lahanData]);
+
+  const sektor: Sektor[] = useMemo(() => [
     {
       id: "pertanian",
       nama: "Pertanian",
       icon: <Sprout size={20} />,
       warna: "bg-emerald-100",
-      ringkasan:
-        "Produksi padi terkonsentrasi di beberapa kecamatan sentra, sementara alih fungsi lahan dan ketergantungan pada satu komoditas menjadi risiko utama ketahanan pangan.",
+      ringkasan: `Produksi padi di Kabupaten Banjarnegara mencapai total ${new Intl.NumberFormat("id-ID").format(Math.round(stats.totalPadiProd))} Ton dari total luas panen ${new Intl.NumberFormat("id-ID").format(Math.round(stats.totalPadiLuas))} Ha. Produksi padi ini sangat terkonsentrasi di wilayah sentra utama yaitu Kecamatan ${stats.topPadiKec} (${new Intl.NumberFormat("id-ID").format(Math.round(stats.maxPadiProd))} Ton), sementara alih fungsi lahan sawah dan ketergantungan pangan menjadi isu kritis.`,
       items: [
         {
           judul: "Diversifikasi Tanaman Pangan Selain Padi",
           masalah:
             "Ketergantungan tinggi pada padi membuat daerah rentan terhadap gagal panen dan fluktuasi harga tunggal.",
           aksi: [
-            "Dorong penanaman jagung, kedelai, dan ubi pada lahan marginal/tegalan melalui bantuan benih.",
-            "Fasilitasi pasar dan offtaker untuk komoditas non-padi agar petani punya kepastian jual.",
-            "Integrasikan data produksi palawija ke dalam sistem pemantauan seperti data padi.",
+            "Dorong penanaman jagung, kedelai, dan ubi pada lahan tegalan/bukan sawah melalui program bantuan benih terarah.",
+            "Fasilitasi kemitraan pasar (offtaker) untuk komoditas non-padi agar petani mendapatkan kepastian harga jual.",
+            "Integrasikan data produksi palawija dan hortikultura ke dalam sistem monitoring dinas pertanian.",
           ],
           dampak:
-            "Menurunkan risiko krisis pangan dan menambah sumber pendapatan petani.",
+            "Menurunkan risiko krisis pangan daerah dan mendiversifikasi pendapatan sektor riil rumah tangga tani.",
           prioritas: "Tinggi",
         },
         {
           judul: "Pengendalian Alih Fungsi Lahan Sawah",
           masalah:
-            "Tren penyusutan luas lahan sawah produktif akibat konversi ke non-pertanian.",
+            "Penyusutan luas lahan sawah produktif akibat alih fungsi lahan di wilayah strategis perkotaan dan industri.",
           aksi: [
-            "Tetapkan dan tegakkan Lahan Pertanian Pangan Berkelanjutan (LP2B) di kecamatan sentra.",
-            "Berikan insentif (keringanan pajak/bantuan input) bagi petani yang mempertahankan sawah.",
-            "Pantau perubahan tutupan lahan tiap tahun menggunakan data spasial.",
+            "Kawal ketat implementasi Lahan Pertanian Pangan Berkelanjutan (LP2B) khususnya di kecamatan sentra produksi.",
+            "Berikan insentif berupa bantuan saprotan gratis atau keringanan pajak bagi petani yang mempertahankan sawahnya.",
+            "Lakukan audit luas sawah berkala menggunakan data pemetaan geospasial terbaru.",
           ],
-          dampak: "Menjaga kapasitas produksi pangan jangka panjang.",
+          dampak: "Menjaga daya dukung kapasitas produksi pangan daerah untuk jangka panjang.",
           prioritas: "Jangka Panjang",
         },
         {
           judul: "Peningkatan Produktivitas di Kecamatan Non-Sentra",
           masalah:
-            "Kesenjangan produktivitas antara kecamatan sentra dan non-sentra masih lebar.",
+            "Kesenjangan produktivitas dan mekanisasi antara kecamatan sentra dan non-sentra yang masih lebar.",
           aksi: [
-            "Prioritaskan penyuluhan dan mekanisasi di kecamatan berproduktivitas rendah.",
-            "Perbaiki irigasi tersier pada wilayah dengan hasil per hektar di bawah rata-rata.",
+            "Gencarkan penyuluhan intensif mengenai pola tanam jajar legowo di kecamatan non-sentra.",
+            "Salurkan bantuan alat mesin pertanian (traktor, transplanter) yang dikelola kelompok tani secara transparan.",
           ],
-          dampak: "Pemerataan hasil dan kenaikan total produksi kabupaten.",
+          dampak: "Pemerataan hasil panen daerah dan peningkatan total surplus beras kabupaten.",
           prioritas: "Sedang",
         },
       ],
@@ -96,42 +201,40 @@ export default function RecommendationsPage() {
       nama: "Peternakan",
       icon: <Beef size={20} />,
       warna: "bg-orange-100",
-      ringkasan:
-        "Populasi ternak tersebar tidak merata antar kecamatan. Penguatan rantai daging dan pencatatan neraca ternak diperlukan untuk mendukung swasembada protein.",
+      ringkasan: `Populasi komoditas ternak utama sapi dan kambing tercatat sebanyak ${new Intl.NumberFormat("id-ID").format(Math.round(stats.totalTernakPop))} ekor, dengan populasi terpadat berada di wilayah Kecamatan ${stats.topTernakKec}. Rantai distribusi pasokan daging dan optimalisasi kesehatan hewan diperlukan untuk swasembada protein.`,
       items: [
         {
-          judul: "Penguatan Sentra Ternak Berbasis Data Kepadatan",
+          judul: "Penguatan Sentra Ternak Berbasis Kepadatan Populasi",
           masalah:
-            "Populasi ternak besar/kecil terkonsentrasi di sebagian kecamatan, rawan penularan penyakit.",
+            "Konsentrasi populasi ternak yang sangat padat di wilayah tertentu rawan terhadap penularan penyakit hewan menular.",
           aksi: [
-            "Bangun pos kesehatan hewan di kecamatan dengan kepadatan ternak tertinggi.",
-            "Jadwalkan vaksinasi rutin untuk mencegah penurunan populasi mendadak (deteksi anomali).",
-            "Kembangkan sentra pembibitan di kecamatan berpotensi namun populasi rendah.",
+            `Prioritaskan penempatan pusat kesehatan hewan (Puskeswan) dan petugas medik di wilayah Kecamatan ${stats.topTernakKec}.`,
+            "Lakukan desinfeksi berkala dan percepat program vaksinasi ternak di daerah padat ternak.",
+            "Kembangkan sentra pembibitan (breeding center) di kecamatan sekunder untuk menyebarkan kepadatan populasi.",
           ],
-          dampak: "Mengurangi risiko wabah dan menstabilkan populasi ternak.",
+          dampak: "Memitigasi kerugian ekonomi peternak akibat wabah penyakit dan menstabilkan laju pertumbuhan populasi.",
           prioritas: "Tinggi",
         },
         {
           judul: "Pencatatan Neraca & Pemotongan Ternak",
           masalah:
-            "Data pemasukan-pengeluaran dan pemotongan ternak belum terpantau, menyulitkan perhitungan surplus/defisit daging.",
+            "Jumlah pemotongan hewan di luar RPH (Rumah Pemotongan Hewan) masih tinggi dan belum terdokumentasi dengan baik.",
           aksi: [
-            "Wajibkan pelaporan pemotongan melalui RPH resmi untuk pengawasan mutu.",
-            "Susun neraca ternak tahunan untuk menentukan kebutuhan impor/ekspor antar daerah.",
+            "Wajibkan sertifikasi dan edukasi bagi jagal serta optimalkan penggunaan RPH pemerintah yang berstandar ASUH.",
+            "Bangun basis data neraca ternak (lalu lintas keluar-masuk hewan) secara terkomputerisasi.",
           ],
-          dampak:
-            "Kepastian pasokan daging dan dasar kebijakan swasembada protein.",
+          dampak: "Mutu daging yang beredar terjamin aman, sehat, utuh, halal, serta data pasokan pasar menjadi valid.",
           prioritas: "Sedang",
         },
         {
           judul: "Hilirisasi Produk Turunan (Susu & Kulit)",
           masalah:
-            "Produk turunan peternakan belum dioptimalkan sebagai nilai tambah ekonomi.",
+            "Sebagian besar peternak hanya menjual ternak hidup tanpa pemanfaatan produk sampingan seperti susu segar dan industri kulit.",
           aksi: [
-            "Fasilitasi UMKM pengolahan susu dan kulit di sentra ternak.",
-            "Hubungkan peternak dengan industri pengolahan melalui koperasi.",
+            "Bina kelompok wanita tani (KWT) untuk pengolahan susu pasteurisasi rasa dan pembuatan yogurt.",
+            "Gagas kemitraan dengan industri pengolahan kulit lokal guna menyerap kulit hasil RPH.",
           ],
-          dampak: "Menaikkan pendapatan peternak melalui nilai tambah.",
+          dampak: "Meningkatkan nilai tambah ekonomi sektor peternakan Banjarnegara secara signifikan.",
           prioritas: "Jangka Panjang",
         },
       ],
@@ -141,59 +244,69 @@ export default function RecommendationsPage() {
       nama: "Perikanan",
       icon: <Fish size={20} />,
       warna: "bg-sky-100",
-      ringkasan:
-        "Perikanan budidaya (kolam pembesaran) mendominasi produksi, sementara mina padi dan karamba belum tergarap. Nilai ekonomi perikanan berpotensi ditingkatkan.",
+      ringkasan: `Perikanan budidaya mencatat produksi kolam pembesaran sebesar ${new Intl.NumberFormat("id-ID").format(Math.round(stats.totalIkanProd))} Ton/Unit, didominasi oleh Kecamatan ${stats.topIkanKec}. Pemanfaatan mina padi dan karamba jaring apung masih memerlukan dorongan investasi.`,
       items: [
         {
-          judul: "Optimalisasi Perikanan Budidaya Kolam",
+          judul: "Ekspansi Budidaya Kolam ke Wilayah Potensial",
           masalah:
-            "Produksi terpusat pada kolam pembesaran di beberapa kecamatan; potensi wilayah lain belum tergarap.",
+            "Produksi ikan terpusat di wilayah tertentu, sementara kecamatan lain yang memiliki ketersediaan air melimpah belum tergarap.",
           aksi: [
-            "Perluas bantuan bibit dan pakan ke kecamatan dengan sumber air memadai.",
-            "Dampingi teknis budidaya intensif untuk menaikkan hasil per satuan luas.",
+            "Petakan kecamatan dengan irigasi teknis lancar untuk dijadikan rintisan kampung perikanan budidaya baru.",
+            "Salurkan paket bantuan benih ikan nila/mas beserta pakan mandiri berkualitas tinggi.",
           ],
-          dampak: "Kenaikan produksi ikan dan pemerataan antar kecamatan.",
+          dampak: "Peningkatan produksi perikanan air tawar serta meningkatkan kedaulatan gizi masyarakat pedesaan.",
           prioritas: "Tinggi",
         },
         {
-          judul: "Revitalisasi Mina Padi & Karamba",
+          judul: "Revitalisasi Mina Padi & Karamba Jaring Apung",
           masalah:
-            "Produksi mina padi hampir nol sejak 2019 dan karamba jaring apung sangat terbatas.",
+            "Volume produksi dari sistem mina padi dan karamba waduk menyusut tajam akibat minimnya peremajaan fasilitas.",
           aksi: [
-            "Hidupkan kembali program mina padi (penyelang/tumpang sari) di sawah beririgasi.",
-            "Manfaatkan waduk/perairan umum untuk karamba dengan kajian daya dukung lingkungan.",
+            "Sosialisasikan kembali sistem mina padi terpadu (padi + udang/ikan) yang ramah lingkungan.",
+            "Berikan bantuan jaring dan sarana karamba ramah lingkungan di area waduk/perairan umum darat.",
           ],
-          dampak: "Menambah sumber protein dan pendapatan sampingan petani.",
+          dampak: "Optimalisasi produktivitas lahan sawah basah dan peningkatan pendapatan alternatif petani.",
           prioritas: "Sedang",
         },
         {
-          judul: "Peningkatan Nilai Ekonomi & Rantai Dingin",
+          judul: "Penyediaan Fasilitas Rantai Dingin (Cold Chain)",
           masalah:
-            "Harga jual implisit rendah karena minim pengolahan dan penyimpanan pascapanen.",
+            "Kualitas kesegaran produk perikanan menurun drastis saat proses distribusi karena ketiadaan pendingin.",
           aksi: [
-            "Bangun fasilitas cold storage di sentra produksi ikan.",
+            "Fasilitasi pengadaan mesin pembuat es (ice flake machine) di pasar-pasar ikan utama.",
             "Dorong pengolahan (fillet, ikan asap) untuk menaikkan nilai jual per kg.",
           ],
-          dampak: "Nilai ekonomi perikanan naik tanpa harus menaikkan volume.",
+          dampak: "Menekan angka kehilangan hasil (post-harvest losses) dan mempertahankan nilai jual produk.",
           prioritas: "Jangka Panjang",
         },
       ],
     },
-  ];
+  ], [stats]);
 
   const strategisDinas = [
-    "Integrasikan seluruh dataset (pertanian, peternakan, perikanan) ke dalam satu dashboard pemantauan berkala agar pengambilan keputusan berbasis data.",
-    "Standarkan format pencatatan data antar UPT dan kecamatan (nama kecamatan, satuan, tahun) untuk mengurangi kesalahan analisis.",
-    "Bentuk tim reaksi cepat berdasarkan sistem deteksi anomali untuk merespons penurunan produksi tajam.",
-    "Alokasikan anggaran penyuluhan secara proporsional terhadap potensi dan kesenjangan produktivitas tiap kecamatan.",
+    "Integrasikan database SIMPERTAN dengan sistem perizinan dan bantuan dinas agar penyaluran pupuk, benih, dan alsintan 100% tepat sasaran berbasis spasial.",
+    "Terapkan standardisasi pengumpulan data berkala (bulanan) di tingkat BPP (Balai Penyuluhan Pertanian) kecamatan menggunakan form input digital seragam.",
+    "Gunakan hasil prediksi panen padi berbasis data time-series ini untuk menyusun rekomendasi alokasi kuota pupuk subsidi tahunan.",
+    "Alokasikan anggaran operasional dan penyuluhan lapangan secara proporsional terhadap luas lahan sawah dan jumlah kelompok tani aktif di tiap kecamatan.",
   ];
 
   const strategisBupati = [
-    "Jadikan ketahanan pangan sebagai prioritas RPJMD dengan target terukur untuk luas lahan lestari dan diversifikasi komoditas.",
-    "Terbitkan regulasi perlindungan Lahan Pertanian Pangan Berkelanjutan (LP2B) untuk menahan laju alih fungsi lahan.",
-    "Dorong hilirisasi hasil tani-ternak-ikan melalui insentif investasi pengolahan di tingkat kabupaten.",
-    "Perkuat kolaborasi lintas dinas (Pertanian, PUPR untuk irigasi, Perdagangan untuk pasar) dalam satu peta jalan agribisnis.",
+    "Jadikan ketahanan pangan dan kesejahteraan petani sebagai indikator kinerja utama (IKU) daerah dalam dokumen RPJMD.",
+    "Percepat penetapan Peraturan Daerah tentang Rencana Tata Ruang Wilayah (RTRW) yang melindungi zona LP2B (Lahan Pertanian Pangan Berkelanjutan).",
+    "Dorong alokasi Dana Desa minimal 20% untuk penguatan ketahanan pangan desa, berfokus pada infrastruktur irigasi desa dan jalan usaha tani.",
+    "Bangun kemitraan strategis dengan BUMN Pangan atau korporasi swasta sebagai penyerap (offtaker) hasil panen raya untuk menstabilkan harga komoditas.",
   ];
+
+  if (loading) {
+    return (
+      <DefaultLayout>
+        <div className="flex flex-col items-center justify-center h-[500px] font-mono text-sm uppercase">
+          <AlertCircle className="w-8 h-8 text-emerald-600 animate-spin mb-4" />
+          Menganalisis data riil sektor pertanian Banjarnegara...
+        </div>
+      </DefaultLayout>
+    );
+  }
 
   return (
     <DefaultLayout>
@@ -240,13 +353,13 @@ export default function RecommendationsPage() {
             </h3>
           </div>
           <p className="text-sm leading-relaxed text-neutral-800">
-            Berdasarkan analisis data produksi, tren deret waktu, deteksi
-            anomali, dan nilai ekonomi, teridentifikasi tiga isu lintas sektor:
-            (1) ketergantungan pada komoditas tunggal dan konsentrasi produksi
-            di sedikit kecamatan, (2) minimnya hilirisasi yang menekan nilai
-            tambah ekonomi, serta (3) kebutuhan penguatan pencatatan data untuk
-            respons cepat. Dokumen ini merumuskan rekomendasi teknis per sektor
-            dan langkah strategis bagi dinas serta pimpinan daerah.
+            Berdasarkan analisis data riil Kabupaten Banjarnegara terbaru, total lahan sawah tercatat sebesar{" "}
+            <span className="font-bold">{new Intl.NumberFormat("id-ID").format(Math.round(stats.totalSawah))} Ha</span> dengan total produksi padi tahunan mencapai{" "}
+            <span className="font-bold">{new Intl.NumberFormat("id-ID").format(Math.round(stats.totalPadiProd))} Ton</span>. Sektor peternakan memiliki populasi ternak utama (sapi &amp; kambing) sebanyak{" "}
+            <span className="font-bold">{new Intl.NumberFormat("id-ID").format(Math.round(stats.totalTernakPop))} ekor</span>, sedangkan perikanan kolam pembesaran mencatat produksi{" "}
+            <span className="font-bold">{new Intl.NumberFormat("id-ID").format(Math.round(stats.totalIkanProd))} Ton/Unit</span>. 
+            Teridentifikasi isu kritis berupa tingginya konsentrasi produksi di wilayah sentra utama seperti Kecamatan {stats.topPadiKec} (Padi), Kecamatan {stats.topTernakKec} (Ternak), dan Kecamatan {stats.topIkanKec} (Perikanan). 
+            Dokumen ini merumuskan rekomendasi teknis per sektor dan langkah kebijakan strategis untuk dinas serta pimpinan daerah.
           </p>
         </div>
 
