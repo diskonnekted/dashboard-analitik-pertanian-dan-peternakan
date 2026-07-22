@@ -65,10 +65,16 @@ export default function RenstraPage() {
   }, []);
 
   const stats = useMemo(() => {
-    const totalPadiProd = padiData.reduce((acc, curr) => acc + curr.produksi, 0);
-    const totalSapi = ternakBesar.reduce((acc, curr) => acc + curr.sapi + curr.sapiPerah, 0);
-    const totalKambingDomba = ternakKecil.reduce((acc, curr) => acc + curr.kambing + curr.domba, 0);
-    const totalIkanProd = ikanData.reduce(
+    // Filter all datasets to target year 2022 for accurate Renstra comparison
+    const padi2022 = padiData.filter((item) => item.tahun === "2022" || !item.tahun);
+    const tb2022 = ternakBesar.filter((item) => item.tahun === "2022");
+    const tk2022 = ternakKecil.filter((item) => item.tahun === "2022");
+    const ikan2022 = ikanData.filter((item) => item.tahun === "2022");
+
+    const totalPadiProd = padi2022.reduce((acc, curr) => acc + curr.produksi, 0);
+    const totalSapi = tb2022.reduce((acc, curr) => acc + curr.sapi + curr.sapiPerah, 0);
+    const totalKambingDomba = tk2022.reduce((acc, curr) => acc + curr.kambing + curr.domba, 0);
+    const totalIkanProd = ikan2022.reduce(
       (acc, curr) => acc + curr.kolamPembesaran + curr.karambaApung + curr.minaPenyelang + curr.minaTumpangsari,
       0
     );
@@ -194,11 +200,29 @@ export default function RenstraPage() {
             <div className="text-3xl font-serif font-black text-[#141414] mt-1">{nearSektor} / {totalSektor} Indikator</div>
             <p className="text-[10px] font-mono font-bold text-neutral-500 uppercase mt-2">Indikator dengan realisasi berkisar antara 80% s/d 99%.</p>
           </div>
-          <div className="bg-red-100 border-2 border-[#141414] p-5 shadow-[4px_4px_0px_0px_#141414] text-left">
-            <XCircle className="w-8 h-8 text-red-700 mb-3" />
-            <h4 className="font-mono font-bold uppercase text-xs text-red-800">Tingkat Keselarasan</h4>
+          <div className={`${
+            Math.round(((achievedSektor + nearSektor) / totalSektor) * 100) >= 90
+              ? "bg-emerald-100"
+              : Math.round(((achievedSektor + nearSektor) / totalSektor) * 100) >= 70
+              ? "bg-yellow-100"
+              : "bg-red-100"
+          } border-2 border-[#141414] p-5 shadow-[4px_4px_0px_0px_#141414] text-left`}>
+            {Math.round(((achievedSektor + nearSektor) / totalSektor) * 100) >= 90 ? (
+              <CheckCircle2 className="w-8 h-8 text-emerald-700 mb-3" />
+            ) : Math.round(((achievedSektor + nearSektor) / totalSektor) * 100) >= 70 ? (
+              <AlertTriangle className="w-8 h-8 text-yellow-700 mb-3" />
+            ) : (
+              <XCircle className="w-8 h-8 text-red-700 mb-3" />
+            )}
+            <h4 className={`font-mono font-bold uppercase text-xs ${
+              Math.round(((achievedSektor + nearSektor) / totalSektor) * 100) >= 90
+                ? "text-emerald-800"
+                : Math.round(((achievedSektor + nearSektor) / totalSektor) * 100) >= 70
+                ? "text-yellow-800"
+                : "text-red-800"
+            }`}>Tingkat Keselarasan</h4>
             <div className="text-3xl font-serif font-black text-[#141414] mt-1">
-              {((achievedSektor + nearSektor) / totalSektor * 100).toFixed(0)}%
+              {Math.round(((achievedSektor + nearSektor) / totalSektor) * 100)}%
             </div>
             <p className="text-[10px] font-mono font-bold text-neutral-500 uppercase mt-2">Proporsi target Renstra yang berhasil direalisasikan secara optimal.</p>
           </div>
