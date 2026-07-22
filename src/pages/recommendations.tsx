@@ -344,6 +344,49 @@ export default function RecommendationsPage() {
           </p>
         </div>
 
+        {/* Capaian Pembangunan Sektor */}
+        <div className="print-block grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="bg-emerald-100 border-2 border-[#141414] p-5 shadow-[4px_4px_0px_0px_#141414] text-left transition-all duration-300 hover:shadow-[6px_6px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]">
+            <span className="text-[9px] font-mono font-black uppercase text-emerald-800 tracking-wider block mb-1">Capaian Pertanian</span>
+            <h3 className="text-xl font-serif font-black text-[#141414] leading-tight">
+              {new Intl.NumberFormat("id-ID").format(Math.round(stats.totalPadiProd))} Ton
+            </h3>
+            <p className="text-[10px] font-mono font-bold text-neutral-600 mt-2 uppercase leading-normal">
+              Produksi padi dari luas panen {new Intl.NumberFormat("id-ID").format(Math.round(stats.totalPadiLuas))} Ha, dipimpin oleh Kecamatan {stats.topPadiKec}.
+            </p>
+          </div>
+
+          <div className="bg-orange-100 border-2 border-[#141414] p-5 shadow-[4px_4px_0px_0px_#141414] text-left transition-all duration-300 hover:shadow-[6px_6px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]">
+            <span className="text-[9px] font-mono font-black uppercase text-orange-800 tracking-wider block mb-1">Capaian Peternakan</span>
+            <h3 className="text-xl font-serif font-black text-[#141414] leading-tight">
+              {new Intl.NumberFormat("id-ID").format(Math.round(stats.totalTernakPop))} Ekor
+            </h3>
+            <p className="text-[10px] font-mono font-bold text-neutral-600 mt-2 uppercase leading-normal">
+              Total populasi sapi &amp; kambing aktif, dengan kepadatan tertinggi di Kecamatan {stats.topTernakKec}.
+            </p>
+          </div>
+
+          <div className="bg-sky-100 border-2 border-[#141414] p-5 shadow-[4px_4px_0px_0px_#141414] text-left transition-all duration-300 hover:shadow-[6px_6px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]">
+            <span className="text-[9px] font-mono font-black uppercase text-sky-800 tracking-wider block mb-1">Capaian Perikanan</span>
+            <h3 className="text-xl font-serif font-black text-[#141414] leading-tight">
+              {new Intl.NumberFormat("id-ID").format(Math.round(stats.totalIkanProd))} Ton/Unit
+            </h3>
+            <p className="text-[10px] font-mono font-bold text-neutral-600 mt-2 uppercase leading-normal">
+              Hasil perikanan budidaya kolam pembesaran dengan sentra utama di Kecamatan {stats.topIkanKec}.
+            </p>
+          </div>
+
+          <div className="bg-purple-100 border-2 border-[#141414] p-5 shadow-[4px_4px_0px_0px_#141414] text-left transition-all duration-300 hover:shadow-[6px_6px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]">
+            <span className="text-[9px] font-mono font-black uppercase text-purple-800 tracking-wider block mb-1">Total Lahan Sawah</span>
+            <h3 className="text-xl font-serif font-black text-[#141414] leading-tight">
+              {new Intl.NumberFormat("id-ID").format(Math.round(stats.totalSawah))} Ha
+            </h3>
+            <p className="text-[10px] font-mono font-bold text-neutral-600 mt-2 uppercase leading-normal">
+              Lahan sawah produktif basah beririgasi yang terpetakan untuk ketahanan pangan.
+            </p>
+          </div>
+        </div>
+
         {/* Ringkasan Eksekutif */}
         <div className="print-block bg-neutral-50 border-2 border-[#141414] p-6 shadow-[4px_4px_0px_0px_#141414] text-left transition-all duration-300 hover:shadow-[8px_8px_0px_0px_#141414] hover:translate-y-[-2px] hover:translate-x-[-2px]">
           <div className="flex items-center gap-2 mb-3 border-b border-neutral-300 pb-2">
