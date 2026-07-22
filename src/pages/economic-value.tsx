@@ -176,17 +176,21 @@ export default function EconomicValuePage() {
     <DefaultLayout>
       <section className="flex flex-col gap-8 py-2">
         {/* Hero / intro */}
-        <section className="relative text-left animate-fade-in py-4 md:py-8">
-          
-          
-          <div className="relative z-10">
-          
-          <h2 className="font-serif italic text-3xl sm:text-5xl mt-2 leading-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-800 to-teal-500 font-black drop-shadow-sm">
+        <section className="relative text-left animate-fade-in py-4 md:py-8 flex flex-col md:flex-row items-center justify-between gap-8 border-b-2 border-dashed border-neutral-300 pb-8">
+          <div className="relative z-10 flex-1">
+            <h2 className="font-serif italic text-3xl sm:text-5xl mt-2 leading-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-800 to-teal-500 font-black drop-shadow-sm">
             Nilai Ekonomi Perikanan
           </h2>
-          <p className="font-mono text-sm md:text-base font-medium text-[#4a4a4a] mt-4 max-w-2xl border-l-4 border-emerald-500 pl-4 bg-white/80 py-1">
+            <p className="font-mono text-sm md:text-base font-medium text-[#4a4a4a] mt-4 max-w-2xl border-l-4 border-emerald-500 pl-4 bg-white/80 py-1">
             Nilai Produksi, Harga Rata-rata Implisit & Kontribusi Sub-sektor Perikanan Kabupaten Banjarnegara.
           </p>
+          </div>
+          <div className="w-full md:w-48 lg:w-64 shrink-0 flex items-center justify-center">
+            <img
+              src="/img/economic-value.png"
+              alt="Nilai Ekonomi"
+              className="w-full max-h-32 md:max-h-36 object-contain"
+            />
           </div>
         </section>
 

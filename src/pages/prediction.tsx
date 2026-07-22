@@ -46,17 +46,21 @@ export default function PredictionPage() {
     <DefaultLayout>
       <section className="flex flex-col gap-8 py-2">
         {/* Hero / intro */}
-        <section className="relative text-left animate-fade-in py-4 md:py-8">
-          
-          
-          <div className="relative z-10">
-          
-          <h2 className="font-serif italic text-3xl sm:text-5xl mt-3 leading-tight text-[#141414]">
+        <section className="relative text-left animate-fade-in py-4 md:py-8 flex flex-col md:flex-row items-center justify-between gap-8 border-b-2 border-dashed border-neutral-300 pb-8">
+          <div className="relative z-10 flex-1">
+            <h2 className="font-serif italic text-3xl sm:text-5xl mt-3 leading-tight text-[#141414]">
             Prediksi Panen Padi
           </h2>
-          <p className="font-mono text-sm md:text-base font-medium text-[#4a4a4a] mt-4 max-w-2xl border-l-4 border-emerald-500 pl-4 bg-white/80 py-1">
+            <p className="font-mono text-sm md:text-base font-medium text-[#4a4a4a] mt-4 max-w-2xl border-l-4 border-emerald-500 pl-4 bg-white/80 py-1">
             Analisis produktivitas padi riil Kabupaten Banjarnegara (Data 2025) dilengkapi simulator ekspansi lahan.
           </p>
+          </div>
+          <div className="w-full md:w-48 lg:w-64 shrink-0 flex items-center justify-center">
+            <img
+              src="/img/prediction.png"
+              alt="Prediksi Panen"
+              className="w-full max-h-32 md:max-h-36 object-contain"
+            />
           </div>
         </section>
 
