@@ -318,6 +318,7 @@ export interface PadiProduction {
   luasPanen: number;
   produksi: number;
   rataRata: number;
+  tahun?: string;
 }
 
 export const fetchPadiProduction = async (): Promise<PadiProduction[]> => {
@@ -349,13 +350,20 @@ export const fetchPadiProduction = async (): Promise<PadiProduction[]> => {
 
           if (isLocal) {
             const rows = results.data as any[];
-            // Kelompokkan berdasarkan kecamatan dan ambil data tahun terbaru (misal 2024 atau 2023)
+            // Kelompokkan berdasarkan kecamatan dan ambil data tahun terbaru (misal 2022)
             const mapData = new Map<string, PadiProduction>();
 
             rows.forEach((row) => {
               const parseNum = (val: string) => {
                 if (!val) return 0;
-                const cleaned = val.toString().replace(/ /g, "").replace(/\./g, "").replace(/,/g, ".");
+                let cleaned = val.toString().trim().replace(/ /g, "");
+                // Jika mengandung koma dan tidak mengandung titik, hapus koma (format ribuan Inggris "12,971")
+                if (cleaned.includes(",") && !cleaned.includes(".")) {
+                  cleaned = cleaned.replace(/,/g, "");
+                } else {
+                  // Format Indonesia "12.971,5" -> hapus titik, ubah koma ke titik
+                  cleaned = cleaned.replace(/\./g, "").replace(/,/g, ".");
+                }
                 return parseFloat(cleaned) || 0;
               };
 
@@ -363,21 +371,24 @@ export const fetchPadiProduction = async (): Promise<PadiProduction[]> => {
               const kecName = rawKec.replace(/\s+/g, "").trim();
               if (!kecName || kecName.toLowerCase().includes("jumlah") || kecName.toLowerCase().includes("total")) return;
 
+              const year = parseInt(row["Tahun"]) || 0;
               const luasSawah = parseNum(row["Padi Sawah (Ha)"]);
               const luasLadang = parseNum(row["Padi Ladang (Ha)"]);
               const prodSawah = parseNum(row["Produksi Padi Sawah (Ton)"]);
               const prodLadang = parseNum(row["Produksi Padi Ladang(Ton)"]);
               const rataSawah = parseNum(row["Rata-rata Produksi Padi Sawah(Kw/Ha)"]);
 
-              const entry = {
+              const entry: PadiProduction = {
                 kecamatan: kecName,
                 luasPanen: luasSawah + luasLadang,
                 produksi: prodSawah + prodLadang,
                 rataRata: rataSawah,
+                tahun: year.toString(),
               };
 
               const key = kecName.toUpperCase();
-              if (!mapData.has(key)) {
+              const existing = mapData.get(key);
+              if (!existing || year > (parseInt(existing.tahun || "0") || 0)) {
                 mapData.set(key, entry);
               }
             });
