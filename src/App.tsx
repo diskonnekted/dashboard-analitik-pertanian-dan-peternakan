@@ -14,6 +14,7 @@ import RecommendationsPage from "@/pages/recommendations";
 import PlantationPage from "@/pages/plantation";
 import HorticulturePage from "@/pages/horticulture";
 import FarmersPage from "@/pages/farmers";
+import RenstraPage from "@/pages/renstra";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
       <Route element={<HorticulturePage />} path="/horticulture" />
       <Route element={<FarmersPage />} path="/farmers" />
       <Route element={<RecommendationsPage />} path="/recommendations" />
+      <Route element={<RenstraPage />} path="/renstra" />
       <Route element={<InfoPage />} path="/info" />
     </Routes>
   );

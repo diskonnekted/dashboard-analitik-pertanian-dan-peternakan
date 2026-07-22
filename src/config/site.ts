@@ -57,6 +57,10 @@ export const siteConfig = {
       href: "/recommendations",
     },
     {
+      label: "Analisis Renstra",
+      href: "/renstra",
+    },
+    {
       label: "Info SIMPERTAN",
       href: "/info",
     },
@@ -113,6 +117,10 @@ export const siteConfig = {
     {
       label: "Rekomendasi",
       href: "/recommendations",
+    },
+    {
+      label: "Analisis Renstra",
+      href: "/renstra",
     },
     {
       label: "Info SIMPERTAN",
