@@ -329,7 +329,8 @@ export const fetchPadiProduction = async (): Promise<PadiProduction[]> => {
       response = await fetchWithTimeout(
         "/dataset/9238267d-6b2e-4c44-a3f6-6d70351c75a0/resource/8180ee00-dedd-4b08-b165-ef3bd6bb7075/download/total-luas-panen-produksi-dan-rata-rata-produksi-tanaman-pangan-padi-2025.csv",
       );
-      if (!response.ok) throw new Error("Gagal online");
+      const contentType = response.headers.get("content-type") || "";
+      if (!response.ok || contentType.includes("html")) throw new Error("Gagal online");
     } catch (e) {
       console.warn("Menggunakan data padi offline lokal.");
       response = await fetch(
@@ -345,6 +346,7 @@ export const fetchPadiProduction = async (): Promise<PadiProduction[]> => {
       Papa.parse(csvText, {
         header: isLocal, // Lokal menggunakan header, online tidak
         skipEmptyLines: true,
+        transformHeader: (h) => h.trim(),
         complete: (results) => {
           const parsedData: PadiProduction[] = [];
 
@@ -371,7 +373,8 @@ export const fetchPadiProduction = async (): Promise<PadiProduction[]> => {
               const kecName = rawKec.replace(/\s+/g, "").trim();
               if (!kecName || kecName.toLowerCase().includes("jumlah") || kecName.toLowerCase().includes("total")) return;
 
-              const year = parseInt(row["Tahun"]) || 0;
+              const tahunKey = Object.keys(row).find((k) => k.trim().toLowerCase() === "tahun") || "Tahun";
+              const year = parseInt(row[tahunKey]) || 0;
               const luasSawah = parseNum(row["Padi Sawah (Ha)"]);
               const luasLadang = parseNum(row["Padi Ladang (Ha)"]);
               const prodSawah = parseNum(row["Produksi Padi Sawah (Ton)"]);
@@ -456,7 +459,8 @@ export const fetchVegetableProduction = async (): Promise<
       response = await fetchWithTimeout(
         "/dataset/226f7b4c-a07c-4248-a837-ea4dba4ec05e/resource/e6481f04-0ffd-40df-871f-7005a8d266cb/download/produksi-tanaman-sayuran-menurut-kecamatan-dan-jenis-tanaman-2018-2024.csv",
       );
-      if (!response.ok) throw new Error("Gagal online");
+      const contentType = response.headers.get("content-type") || "";
+      if (!response.ok || contentType.includes("html")) throw new Error("Gagal online");
     } catch (e) {
       console.warn("Menggunakan data sayuran offline lokal.");
       response = await fetch(
@@ -603,7 +607,8 @@ export const fetchLumbungPangan = async (): Promise<LumbungPangan[]> => {
       response = await fetchWithTimeout(
         "/dataset/bd6ca920-4cd8-49a2-8e5d-291f01e1a11e/resource/1e578131-0fc4-4db4-95a4-a3af66aa7bec/download/banyaknya-lumbung-dan-gudang-pangan-kab-banjarnegara-menurut-kecamatan-2025.csv",
       );
-      if (!response.ok) throw new Error("Gagal online");
+      const contentType = response.headers.get("content-type") || "";
+      if (!response.ok || contentType.includes("html")) throw new Error("Gagal online");
     } catch (e) {
       console.warn("Menggunakan data lumbung offline lokal.");
       response = await fetch(
