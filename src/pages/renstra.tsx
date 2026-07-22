@@ -109,7 +109,7 @@ export default function RenstraPage() {
           <span className="inline-block px-3 py-1 bg-yellow-200 border-2 border-[#141414] font-mono font-black text-xs uppercase shadow-[2px_2px_0px_0px_#141414] mb-4">
             Evaluasi Rencana Strategis (RENSTRA)
           </span>
-          <h1 className="font-serif italic text-3xl sm:text-5xl mt-2 leading-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-800 to-teal-500 font-black drop-shadow-sm uppercase">
+          <h1 className="font-serif italic text-3xl sm:text-5xl mt-2 leading-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-800 to-teal-500 font-black drop-shadow-sm">
             Analisis Capaian Akhir Periode 2022
           </h1>
           <p className="font-mono text-xs md:text-sm font-bold text-neutral-500 uppercase mt-2">
