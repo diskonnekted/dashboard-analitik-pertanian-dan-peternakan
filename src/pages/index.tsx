@@ -53,16 +53,21 @@ export default function IndexPage() {
     <DefaultLayout>
       <section className="flex flex-col gap-8 py-2">
         {/* Hero / intro */}
-        <section className="relative text-left animate-fade-in py-4 md:py-8">
-          
-          <div className="relative z-10">
-            
+        <section className="relative text-left animate-fade-in py-4 md:py-8 flex flex-col md:flex-row items-center justify-between gap-8 border-b-2 border-dashed border-neutral-300 pb-8">
+          <div className="relative z-10 flex-1">
             <h2 className="font-serif italic text-3xl sm:text-5xl mt-2 leading-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-800 to-teal-500 font-black drop-shadow-sm">
               Dashboard Analitik Pertanian
             </h2>
             <p className="font-mono text-sm md:text-base font-medium text-[#4a4a4a] mt-4 max-w-2xl border-l-4 border-emerald-500 pl-4 bg-white/80 py-1">
               Sistem Pemantauan Ketahanan Pangan & Prediksi Panen Kabupaten Banjarnegara berbasis Open Data API.
             </p>
+          </div>
+          <div className="w-full md:w-72 lg:w-96 shrink-0">
+            <img
+              src="/img/dashboard.png"
+              alt="Grafik Dashboard SIMPERTAN"
+              className="w-full h-auto border-2 border-[#141414] shadow-[4px_4px_0px_0px_#141414] rounded-none object-cover bg-white"
+            />
           </div>
         </section>
 
