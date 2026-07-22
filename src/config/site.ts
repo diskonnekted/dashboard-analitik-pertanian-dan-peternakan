@@ -1,8 +1,8 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-  name: "Banjarnegara Agro Analytics",
-  description: "Platform pemantauan ketahanan pangan dan prediksi panen.",
+  name: "SISPERTANI",
+  description: "Sistem Informasi Pertanian Kabupaten Banjarnegara.",
   navItems: [
     {
       label: "Dashboard",
@@ -65,7 +65,11 @@ export const siteConfig = {
       href: "/renstra",
     },
     {
-      label: "Info SIMPERTAN",
+      label: "Manual",
+      href: "/manual",
+    },
+    {
+      label: "Info SISPERTANI",
       href: "/info",
     },
   ],
@@ -131,7 +135,11 @@ export const siteConfig = {
       href: "/renstra",
     },
     {
-      label: "Info SIMPERTAN",
+      label: "Manual",
+      href: "/manual",
+    },
+    {
+      label: "Info SISPERTANI",
       href: "/info",
     },
   ],

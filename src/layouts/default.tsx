@@ -16,7 +16,8 @@ import {
   Sprout,
   Cherry,
   Users,
-  Coins
+  Coins,
+  BookOpen
 } from "lucide-react";
 import { siteConfig } from "@/config/site";
 
@@ -59,7 +60,9 @@ export default function DefaultLayout({
         return <Coins className="w-4 h-4 mr-3 text-emerald-600" />;
       case "Analisis Renstra":
         return <TrendingUp className="w-4 h-4 mr-3 text-emerald-600" />;
-      case "Info SIMPERTAN":
+      case "Manual":
+        return <BookOpen className="w-4 h-4 mr-3 text-emerald-600" />;
+      case "Info SISPERTANI":
         return <Info className="w-4 h-4 mr-3 text-emerald-600" />;
       default:
         return <LayoutDashboard className="w-4 h-4 mr-3 text-emerald-600" />;
@@ -84,7 +87,7 @@ export default function DefaultLayout({
             <img src="/logo.png" alt="Logo Dinas" className="w-12 h-12 object-contain shrink-0" />
             <div>
               <span className="font-serif font-black text-xl tracking-tighter uppercase text-[#141414] mt-1 block leading-none">
-                SIMPERTAN
+                SISPERTANI
               </span>
               <span className="text-[9px] font-mono font-bold text-neutral-500 uppercase tracking-widest block mt-0.5">
                 Kab. Banjarnegara
@@ -131,9 +134,9 @@ export default function DefaultLayout({
             </div>
             
             <div className="flex items-center gap-4">
-              {/* SIMPERTAN Badge */}
+              {/* SISPERTANI Badge */}
               <div className="hidden sm:inline-flex items-center px-3 py-1 bg-white border-2 border-[#141414] shadow-[2px_2px_0px_0px_#141414] text-[10px] font-mono font-bold tracking-wider text-emerald-600 uppercase">
-                SIMPERTAN
+                SISPERTANI
               </div>
               
               {/* Admin Avatar */}
@@ -156,7 +159,7 @@ export default function DefaultLayout({
           
           {/* Footer */}
           <footer className="no-print bg-white border-t-2 border-[#141414] px-6 py-4 flex items-center justify-between text-xs font-mono font-bold text-neutral-600 shrink-0">
-            <p>&copy; {new Date().getFullYear()} Dinas Pertanian, Perikanan dan Ketahanan Pangan Kab. Banjarnegara - SIMPERTAN</p>
+            <p>&copy; {new Date().getFullYear()} Dinas Pertanian, Perikanan dan Ketahanan Pangan Kab. Banjarnegara - SISPERTANI</p>
             <p className="hidden sm:block">V1.2.0 • Status: OK</p>
           </footer>
         </div>
@@ -176,7 +179,7 @@ export default function DefaultLayout({
               <div className="flex items-center gap-2">
                 <img src="/logo.png" alt="Logo Dinas" className="w-10 h-10 object-contain shrink-0" />
                 <span className="font-serif font-black text-sm text-[#141414] uppercase leading-none">
-                  SIMPERTAN
+                  SISPERTANI
                 </span>
               </div>
               <button 

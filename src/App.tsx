@@ -16,6 +16,7 @@ import HorticulturePage from "@/pages/horticulture";
 import FarmersPage from "@/pages/farmers";
 import RenstraPage from "@/pages/renstra";
 import GovernmentAssistancePage from "@/pages/government-assistance";
+import ManualPage from "@/pages/manual";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
       <Route element={<RecommendationsPage />} path="/recommendations" />
       <Route element={<GovernmentAssistancePage />} path="/government-assistance" />
       <Route element={<RenstraPage />} path="/renstra" />
+      <Route element={<ManualPage />} path="/manual" />
       <Route element={<InfoPage />} path="/info" />
     </Routes>
   );
