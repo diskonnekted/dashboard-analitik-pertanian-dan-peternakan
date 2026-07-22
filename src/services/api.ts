@@ -35,6 +35,26 @@ const setCachedData = <T>(key: string, data: T): void => {
   }
 };
 
+const fetchWithTimeout = async (
+  url: string,
+  options: RequestInit = {},
+  timeoutMs = 3000,
+): Promise<Response> => {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal,
+    });
+    clearTimeout(id);
+    return response;
+  } catch (error) {
+    clearTimeout(id);
+    throw error;
+  }
+};
+
 export interface CkanDataset {
   id: string;
   title: string;
@@ -57,7 +77,7 @@ export const fetchOpenDataPertanian = async (): Promise<CkanResponse> => {
   const cached = getCachedData<CkanResponse>(cacheKey);
 
   const fetchFresh = async (): Promise<CkanResponse> => {
-    const response = await fetch("/api/3/action/package_search?q=pertanian");
+    const response = await fetchWithTimeout("/api/3/action/package_search?q=pertanian");
     if (!response.ok) throw new Error("Network response was not ok");
     const data: CkanResponse = await response.json();
     setCachedData(cacheKey, data);
@@ -112,20 +132,16 @@ export const fetchLahanBanjarnegara = async (): Promise<LahanDesa[]> => {
       const solrQuery = 'title:"Luas Lahan Pertanian Menurut Jenis Tanah dan Desa" OR title:"Luas Lahan Bukan Sawah Menurut Jenis Penggunaan dan Desa" OR title:"Luas Wilayah (Ha) Menurut Desa dan Persentase"';
       
       let searchResponse;
-      for (let attempt = 0; attempt < 3; attempt++) {
-        try {
-          const controller = new AbortController();
-          const id = setTimeout(() => controller.abort(), 8000); // 8s timeout
-          searchResponse = await fetch(
-            `/api/3/action/package_search?q=${encodeURIComponent(solrQuery)}&rows=100`,
-            { signal: controller.signal }
-          );
-          clearTimeout(id);
-          if (searchResponse.ok) break;
-        } catch (e) {
-          if (attempt === 2) throw e;
-          await new Promise(r => setTimeout(r, 1000));
-        }
+      try {
+        const controller = new AbortController();
+        const id = setTimeout(() => controller.abort(), 3000); // 3s timeout
+        searchResponse = await fetch(
+          `/api/3/action/package_search?q=${encodeURIComponent(solrQuery)}&rows=100`,
+          { signal: controller.signal }
+        );
+        clearTimeout(id);
+      } catch (e) {
+        throw new Error("Search query failed or timed out");
       }
 
       if (!searchResponse || !searchResponse.ok) throw new Error("Gagal mengambil metadata dataset");
@@ -172,23 +188,18 @@ export const fetchLahanBanjarnegara = async (): Promise<LahanDesa[]> => {
       const allLahanData: LahanDesa[] = [];
       const concurrency = 3;
 
-      const fetchWithRetry = async (url: string, retries = 2, delayMs = 500): Promise<string> => {
-        for (let attempt = 0; attempt <= retries; attempt++) {
-          try {
-            const controller = new AbortController();
-            const id = setTimeout(() => controller.abort(), 12000); // 12s timeout
-            
-            const response = await fetch(url, { signal: controller.signal });
-            clearTimeout(id);
-            
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            return await response.text();
-          } catch (err) {
-            if (attempt === retries) throw err;
-            await new Promise(r => setTimeout(r, delayMs));
-          }
+      const fetchWithRetry = async (url: string): Promise<string> => {
+        const controller = new AbortController();
+        const id = setTimeout(() => controller.abort(), 2000); // 2s timeout
+        try {
+          const response = await fetch(url, { signal: controller.signal });
+          clearTimeout(id);
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          return await response.text();
+        } catch (err) {
+          clearTimeout(id);
+          throw err;
         }
-        throw new Error("Failed after retries");
       };
 
       for (let i = 0; i < csvUrls.length; i += concurrency) {
@@ -314,7 +325,7 @@ export const fetchPadiProduction = async (): Promise<PadiProduction[]> => {
     let response;
     let isLocal = false;
     try {
-      response = await fetch(
+      response = await fetchWithTimeout(
         "/dataset/9238267d-6b2e-4c44-a3f6-6d70351c75a0/resource/8180ee00-dedd-4b08-b165-ef3bd6bb7075/download/total-luas-panen-produksi-dan-rata-rata-produksi-tanaman-pangan-padi-2025.csv",
       );
       if (!response.ok) throw new Error("Gagal online");
@@ -431,7 +442,7 @@ export const fetchVegetableProduction = async (): Promise<
   try {
     let response;
     try {
-      response = await fetch(
+      response = await fetchWithTimeout(
         "/dataset/226f7b4c-a07c-4248-a837-ea4dba4ec05e/resource/e6481f04-0ffd-40df-871f-7005a8d266cb/download/produksi-tanaman-sayuran-menurut-kecamatan-dan-jenis-tanaman-2018-2024.csv",
       );
       if (!response.ok) throw new Error("Gagal online");
@@ -511,7 +522,7 @@ export const fetchInflationData = async (): Promise<InflationData[]> => {
   try {
     let response;
     try {
-      response = await fetch(
+      response = await fetchWithTimeout(
         "/dataset/5b935f47-a0df-4185-9328-2e13131dcd15/resource/bf424522-8fe9-46a1-99d3-3b102cf890b2/download/perbandingan_laju_inflasi_2018-2024.csv",
       );
       if (!response.ok) throw new Error("Gagal online");
@@ -578,7 +589,7 @@ export const fetchLumbungPangan = async (): Promise<LumbungPangan[]> => {
     let response;
     let isLocal = false;
     try {
-      response = await fetch(
+      response = await fetchWithTimeout(
         "/dataset/bd6ca920-4cd8-49a2-8e5d-291f01e1a11e/resource/1e578131-0fc4-4db4-95a4-a3af66aa7bec/download/banyaknya-lumbung-dan-gudang-pangan-kab-banjarnegara-menurut-kecamatan-2025.csv",
       );
       if (!response.ok) throw new Error("Gagal online");
@@ -681,7 +692,7 @@ export const fetchMarketData = async (): Promise<MarketData[]> => {
   try {
     let response;
     try {
-      response = await fetch(
+      response = await fetchWithTimeout(
         "/dataset/d6f86fd9-32b1-40c1-b7c3-ccf311271bff/resource/aa29ce02-f750-46df-b1fd-9ba681bb500c/download/banyaknya-pasar-dirinci-menurut-jenisnya-2016-2025.csv",
       );
       if (!response.ok) throw new Error("Gagal online");
@@ -1321,7 +1332,7 @@ export const fetchKelompokTani = async (): Promise<KelompokTaniRow[]> => {
   const fetchFreshData = async (): Promise<KelompokTaniRow[]> => {
     try {
       // 1. Cari dataset Kelompok Tani di CKAN
-      const searchResponse = await fetch(
+      const searchResponse = await fetchWithTimeout(
         `/api/3/action/package_search?q=title:"Banyaknya kelompok tani" OR title:"Kelompok Tani"&rows=50`
       );
 
