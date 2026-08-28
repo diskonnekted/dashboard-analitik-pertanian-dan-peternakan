@@ -350,27 +350,40 @@ export default function HorticulturePage() {
   }, [activeCategoryData, selectedKecamatan, activeMetric, cropKeys]);
 
   // CAGR Laju Pertumbuhan Tahunan
+  // Hitung dari tahun pertama yang memiliki data (nilai > 0) per komoditas
   const cagrData = useMemo(() => {
     if (trendData.length < 2) return null;
-    const first = trendData[0];
     const last = trendData[trendData.length - 1];
-    const years = parseInt(last.tahun) - parseInt(first.tahun);
-    if (!years || years <= 0) return null;
+    const lastYear = parseInt(last.tahun);
 
-    const calc = (awal: number, akhir: number): number | null => {
-      if (!awal || awal <= 0 || akhir < 0) return null;
+    // Cari tahun pertama dengan total > 0 untuk CAGR gabungan
+    const firstWithData = trendData.find((d) => (d.total || 0) > 0);
+    if (!firstWithData) return null;
+    const totalYears = lastYear - parseInt(firstWithData.tahun);
+    if (!totalYears || totalYears <= 0) return null;
+
+    const calc = (awal: number, akhir: number, years: number): number | null => {
+      if (!awal || awal <= 0 || akhir < 0 || years <= 0) return null;
       return (Math.pow(akhir / awal, 1 / years) - 1) * 100;
     };
 
-    const items = cropKeys.map((crop) => ({
-      name: crop.label,
-      cagr: calc(first[crop.label] || 0, last[crop.label] || 0),
-    }));
+    // Per komoditas: cari tahun pertama dengan data > 0
+    const items = cropKeys.map((crop) => {
+      const firstNonZero = trendData.find((d) => (d[crop.label] || 0) > 0);
+      if (!firstNonZero) {
+        return { name: crop.label, cagr: null as number | null };
+      }
+      const yrs = lastYear - parseInt(firstNonZero.tahun);
+      return {
+        name: crop.label,
+        cagr: calc(firstNonZero[crop.label] || 0, last[crop.label] || 0, yrs),
+      };
+    });
 
     return {
-      periode: `${first.tahun}–${last.tahun}`,
-      years,
-      total: calc(first.total || 0, last.total || 0),
+      periode: `${firstWithData.tahun}–${last.tahun}`,
+      years: totalYears,
+      total: calc(firstWithData.total || 0, last.total || 0, totalYears),
       items,
     };
   }, [trendData, cropKeys]);

@@ -20,6 +20,7 @@ const FarmersPage = lazy(() => import("@/pages/farmers"));
 const RenstraPage = lazy(() => import("@/pages/renstra"));
 const GovernmentAssistancePage = lazy(() => import("@/pages/government-assistance"));
 const ManualPage = lazy(() => import("@/pages/manual"));
+const ComingSoonPage = lazy(() => import("@/pages/coming-soon"));
 
 function PageLoading() {
   return (
@@ -60,6 +61,26 @@ function App() {
           <Route element={<RenstraPage />} path="/renstra" />
           <Route element={<ManualPage />} path="/manual" />
           <Route element={<InfoPage />} path="/info" />
+          {/* Routes for modules in development */}
+          <Route element={<ComingSoonPage />} path="/early-warning" />
+          <Route element={<ComingSoonPage />} path="/master-petani" />
+          <Route element={<ComingSoonPage />} path="/master-lahan" />
+          <Route element={<ComingSoonPage />} path="/master-alsintan" />
+          <Route element={<ComingSoonPage />} path="/ltt" />
+          <Route element={<ComingSoonPage />} path="/opt" />
+          <Route element={<ComingSoonPage />} path="/irigasi" />
+          <Route element={<ComingSoonPage />} path="/kawasan-hortikultura" />
+          <Route element={<ComingSoonPage />} path="/sertifikasi-mutu" />
+          <Route element={<ComingSoonPage />} path="/kemitraan" />
+          <Route element={<ComingSoonPage />} path="/kesehatan-hewan" />
+          <Route element={<ComingSoonPage />} path="/pakan-ternak" />
+          <Route element={<ComingSoonPage />} path="/kesehatan-ikan" />
+          <Route element={<ComingSoonPage />} path="/cpd" />
+          <Route element={<ComingSoonPage />} path="/penyuluhan" />
+          <Route element={<ComingSoonPage />} path="/kinerja-penyuluh" />
+          <Route element={<ComingSoonPage />} path="/monev" />
+          <Route element={<ComingSoonPage />} path="/user-management" />
+          <Route element={<ComingSoonPage />} path="/settings" />
         </Routes>
       </Suspense>
     </>

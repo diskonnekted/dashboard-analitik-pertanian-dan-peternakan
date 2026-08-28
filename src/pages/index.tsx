@@ -110,8 +110,8 @@ export default function IndexPage() {
           <h3 className="text-lg font-mono font-bold uppercase flex items-center gap-2 text-slate-800 tracking-wide">
             <MapPin className="text-emerald-600" /> Peta Sebaran Lahan Pertanian
           </h3>
-          <div className="group border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 p-2 bg-white transition-all duration-300 hover:shadow-md">
-            <div className="w-full aspect-[4/3] md:aspect-[16/9] lg:aspect-[21/9] min-h-[500px] max-h-[80vh] rounded-xl overflow-hidden border border-transparent transition-colors duration-300 group-hover:border-emerald-100">
+          <div className="border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 bg-white">
+            <div className="w-full aspect-[4/3] rounded-xl overflow-hidden">
               <MapWidget data={lahanData} />
             </div>
           </div>

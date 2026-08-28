@@ -150,10 +150,7 @@ export default function SuitabilityPage() {
 
         if (uniqueYears.length > 0) setSelectedYear(uniqueYears[0]);
 
-        const uniqueKec = Array.from(new Set(data.map((d) => d.kecamatan))).sort(
-          (a, b) => a.localeCompare(b),
-        );
-        if (uniqueKec.length > 0) setSelectedKec(uniqueKec[0]);
+        setSelectedKec("Semua Kecamatan");
       } catch (err) {
         console.error("Gagal memuat data sayuran:", err);
       } finally {
@@ -178,6 +175,42 @@ export default function SuitabilityPage() {
   };
 
   const activeData = useMemo(() => {
+    // Semua Kecamatan: agregasi seluruh kecamatan
+    if (selectedKec === "Semua Kecamatan") {
+      const yearData = vegData.filter((item) => item.tahun === selectedYear);
+      const aggregate = (items: VegetableProduction[]): VegetableProduction => {
+        const sum = (key: keyof VegetableProduction) =>
+          items.reduce((acc, d) => acc + (d[key] as number), 0);
+        return {
+          kecamatan: "Semua Kecamatan",
+          tahun: selectedYear,
+          bawangMerah: sum("bawangMerah"),
+          cabaiBesar: sum("cabaiBesar"),
+          kentang: sum("kentang"),
+          kubis: sum("kubis"),
+          petsai: sum("petsai"),
+          tomat: sum("tomat"),
+          bawangPutih: sum("bawangPutih"),
+          cabaiRawit: sum("cabaiRawit"),
+        };
+      };
+
+      if (yearData.length > 0 && yearData.some((d) => getTotalProduction(d) > 0)) {
+        return aggregate(yearData);
+      }
+
+      // Fallback: ambil tahun terbaru yang ada datanya
+      const fallbackYear = vegData
+        .filter((d) => getTotalProduction(d) > 0)
+        .map((d) => d.tahun)
+        .sort((a, b) => b.localeCompare(a))[0];
+      if (fallbackYear) {
+        return aggregate(vegData.filter((d) => d.tahun === fallbackYear));
+      }
+      return undefined;
+    }
+
+    // Per kecamatan
     const selected = vegData.find(
       (item) => item.kecamatan === selectedKec && item.tahun === selectedYear,
     );
@@ -354,6 +387,7 @@ export default function SuitabilityPage() {
                     onChange={(e) => setSelectedKec(e.target.value)}
                     className="w-full border border-slate-200 rounded-xl px-3 py-2.5 font-mono font-bold text-xs uppercase bg-white shadow-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all"
                   >
+                    <option value="Semua Kecamatan">SEMUA KECAMATAN</option>
                     {Array.from(new Set(vegData.map((d) => d.kecamatan)))
                       .sort((a, b) => a.localeCompare(b))
                       .map((kec) => (

@@ -19,18 +19,23 @@ interface MapWidgetProps {
   data?: LahanDesa[];
 }
 
-const createCustomIcon = (color: string) => {
+// Marker standar Leaflet (teardrop) dengan warna jelas
+const createColoredIcon = (color: string) => {
   return L.divIcon({
     className: 'custom-marker',
-    html: `<div style="background-color: ${color}; width: 24px; height: 24px; border-radius: 50%; border: 3px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center;"></div>`,
-    iconSize: [24, 24],
-    iconAnchor: [12, 12]
+    html: `<svg width="25" height="41" viewBox="0 0 25 41" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12.5 0C5.6 0 0 5.6 0 12.5c0 9.4 12.5 28.5 12.5 28.5S25 21.9 25 12.5C25 5.6 19.4 0 12.5 0z" fill="${color}" stroke="#ffffff" stroke-width="2"/>
+      <circle cx="12.5" cy="12.5" r="4.5" fill="#ffffff"/>
+    </svg>`,
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
   });
 };
 
-const marketIcon = createCustomIcon('#eab308'); // yellow
-const waterIcon = createCustomIcon('#3b82f6'); // blue
-const farmerIcon = createCustomIcon('#22c55e'); // green
+const marketIcon = createColoredIcon('#dc2626'); // merah — pasar/distribusi
+const waterIcon = createColoredIcon('#2563eb');   // biru — infrastruktur air
+const farmerIcon = createColoredIcon('#16a34a');  // hijau — kelompok tani
 
 const mockMarkers = [
   { id: 1, name: "Pasar Induk Banjarnegara", lat: -7.3995, lng: 109.6975, type: "Rantai Pasok", icon: marketIcon, desc: "Pusat distribusi hasil pertanian utama di Banjarnegara." },
@@ -355,8 +360,8 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
   const kecStyle = {
     fill: false,
     color: "#be123c",
-    weight: 2.5,
-    opacity: 0.95,
+    weight: 0.8,
+    opacity: 0.6,
   };
 
   const getAuxiliaryStyle = (layer: AuxiliaryGeoJsonLayer) => ({
@@ -413,11 +418,11 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
   return (
     <div className="flex flex-col h-full w-full relative group/map">
       
-      {/* --- TOP LEFT: Dropdown Choropleth --- */}
-      <div className="absolute top-4 left-4 z-[1000] bg-white border border-slate-200 shadow-sm p-2 flex flex-col gap-1 w-[220px]">
+      {/* --- TOP LEFT: Dropdown Choropleth (di bawah zoom control) --- */}
+      <div className="absolute top-[70px] left-3 z-[1000] bg-white border border-slate-200 shadow-sm p-2 flex flex-col gap-1 w-[200px] rounded-lg">
         <label className="text-[10px] font-mono font-bold uppercase text-neutral-500">Pilih Layer Metrik</label>
         <select 
-          className="font-mono text-[11px] font-bold uppercase p-1.5 border border-slate-200 focus:outline-none cursor-pointer bg-neutral-50"
+          className="font-mono text-[11px] font-bold uppercase p-1.5 border border-slate-200 focus:outline-none cursor-pointer bg-neutral-50 rounded"
           value={activeMetric}
           onChange={(e) => setActiveMetric(e.target.value as any)}
         >
@@ -428,8 +433,8 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
       </div>
 
       {/* --- TOP RIGHT: Search Bar --- */}
-      <div className="absolute top-4 right-4 z-[1000] flex">
-        <div className="bg-white border border-slate-200 shadow-sm flex items-center p-1 w-[200px] transition-all focus-within:w-[250px]">
+      <div className="absolute top-3 right-3 z-[1000] flex">
+        <div className="bg-white border border-slate-200 shadow-sm flex items-center p-1 w-[190px] transition-all focus-within:w-[230px] rounded-lg">
           <Search className="text-neutral-400 mx-2" size={16} />
           <input 
             type="text" 
@@ -445,31 +450,31 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
       </div>
 
       {/* --- BOTTOM RIGHT: Interactive Legend --- */}
-      <div className="absolute bottom-4 right-4 z-[1000] bg-white border border-slate-200 shadow-sm p-3 flex flex-col gap-2">
-        <span className="text-[10px] font-mono font-bold uppercase text-neutral-500 border-b-2 border-[#e2e8f0] pb-1">
+      <div className="absolute bottom-3 right-3 z-[1000] bg-white border border-slate-200 shadow-sm p-2.5 flex flex-col gap-1.5 rounded-lg max-w-[180px]">
+        <span className="text-[10px] font-mono font-bold uppercase text-neutral-500 border-b border-slate-200 pb-1">
           Legenda & Filter
         </span>
-        <div className="flex flex-col gap-1.5">
+        <div className="flex flex-col gap-1">
           {legendConfig.map((item, idx) => (
             <div 
               key={idx} 
-              className={`flex items-center gap-2 cursor-pointer p-1 transition-all ${activeLegendCategory === item.cat ? 'bg-neutral-100 border border-slate-200' : 'hover:bg-neutral-50 border border-transparent'}`}
+              className={`flex items-center gap-2 cursor-pointer p-0.5 transition-all ${activeLegendCategory === item.cat ? 'bg-neutral-100 border border-slate-200' : 'hover:bg-neutral-50 border border-transparent'}`}
               onClick={() => setActiveLegendCategory(activeLegendCategory === item.cat ? null : item.cat)}
             >
-              <div className="w-4 h-4 border border-slate-200" style={{ backgroundColor: item.color }}></div>
-              <span className="font-mono text-[10px] font-bold uppercase">{item.label}</span>
+              <div className="w-3.5 h-3.5 border border-slate-200" style={{ backgroundColor: item.color }}></div>
+              <span className="font-mono text-[9px] font-bold uppercase">{item.label}</span>
             </div>
           ))}
         </div>
         {activeLegendCategory !== null && (
-          <button onClick={() => setActiveLegendCategory(null)} className="mt-1 text-[9px] font-mono font-black text-red-500 hover:underline text-left">
+          <button onClick={() => setActiveLegendCategory(null)} className="mt-0.5 text-[9px] font-mono font-black text-red-500 hover:underline text-left">
             Reset Filter
           </button>
         )}
       </div>
 
       {/* --- LEAFLET MAP --- */}
-      <div className="h-[600px] w-full z-0 relative rounded-xl overflow-hidden shadow-hd border border-slate-200">
+      <div className="h-full w-full z-0 relative overflow-hidden">
         <MapContainer center={[-7.3941, 109.6965]} style={{ height: "100%", width: "100%" }} zoom={11}>
           <MapBounds data={kecGeoData} />
           

@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import DefaultLayout from "@/layouts/default";
-import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from "recharts";
 import { fetchKelompokTani, KelompokTaniRow } from "@/services/api";
 import { Calendar, TrendingUp, Filter, FileSpreadsheet, ShieldAlert } from "lucide-react";
 
@@ -26,6 +26,20 @@ const KECAMATAN_LIST = [
   "Wanadadi",
   "Wanayasa"
 ];
+
+// Prediksi sederhana dengan regresi linier least-squares
+function linearPredict(points: { x: number; y: number }[], targetX: number): number {
+  const n = points.length;
+  if (n === 0) return 0;
+  if (n === 1) return Math.round(points[0].y);
+  const sumX = points.reduce((s, p) => s + p.x, 0);
+  const sumY = points.reduce((s, p) => s + p.y, 0);
+  const sumXY = points.reduce((s, p) => s + p.x * p.y, 0);
+  const sumXX = points.reduce((s, p) => s + p.x * p.x, 0);
+  const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+  const intercept = (sumY - slope * sumX) / n;
+  return Math.max(0, Math.round(slope * targetX + intercept));
+}
 
 export default function FarmersPage() {
   const [rawData, setRawData] = useState<KelompokTaniRow[]>([]);
@@ -165,7 +179,7 @@ export default function FarmersPage() {
     return Array.from(kecMap.values()).sort((a, b) => b.totalKelompok - a.totalKelompok);
   }, [filteredData]);
 
-  // Tren Historis Kelembagaan Tani (Berdasarkan Kecamatan Terpilih)
+  // Tren Historis Kelembagaan Tani (data aktual + prediksi 2026)
   const trendData = useMemo(() => {
     const base = selectedKecamatan === "Semua"
       ? rawData
@@ -176,6 +190,8 @@ export default function FarmersPage() {
     base.forEach((d) => {
       const yr = d.tahun;
       if (!yr) return;
+      // Hanya data aktual sampai 2025
+      if (parseInt(yr) > 2025) return;
 
       if (!byYear.has(yr)) {
         byYear.set(yr, {
@@ -188,6 +204,7 @@ export default function FarmersPage() {
           "Anggota Gapoktan": 0,
           totalKelompok: 0,
           totalAnggota: 0,
+          isPrediction: false,
         });
       }
 
@@ -202,7 +219,22 @@ export default function FarmersPage() {
       entry.totalAnggota += (d.anggotaTani + d.anggotaPerikanan + d.anggotaGapoktan);
     });
 
-    return Array.from(byYear.values()).sort((a, b) => a.tahun.localeCompare(b.tahun));
+    const sorted = Array.from(byYear.values()).sort((a, b) => a.tahun.localeCompare(b.tahun));
+
+    // Tambah prediksi 2026 berdasarkan regresi linier data aktual
+    if (sorted.length >= 2) {
+      const metrics = ["totalAnggota", "Anggota Tani", "Anggota Perikanan", "Anggota Gapoktan", "Kelompok Tani", "Kelompok Perikanan", "Gapoktan", "totalKelompok"];
+      const predictedEntry: any = { tahun: "2026", isPrediction: true };
+      metrics.forEach((m) => {
+        predictedEntry[m] = linearPredict(
+          sorted.map((d) => ({ x: parseInt(d.tahun), y: d[m] })),
+          2026
+        );
+      });
+      sorted.push(predictedEntry);
+    }
+
+    return sorted;
   }, [rawData, selectedKecamatan]);
 
   const formatNum = (num: number) => {
@@ -352,9 +384,12 @@ export default function FarmersPage() {
               <div className="mb-4 text-left border-b border-slate-200 pb-3 flex flex-wrap items-center justify-between gap-2">
                 <h4 className="text-lg font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
                   <TrendingUp className="text-amber-600" />
-                  Tren Keanggotaan Lembaga Tani ({trendData.length > 0 ? `${trendData[0].tahun}–${trendData[trendData.length - 1].tahun}` : ""})
+                  Tren Keanggotaan Lembaga Tani ({trendData.filter(d => !d.isPrediction).length > 0 ? `${trendData[0].tahun}–${trendData[trendData.length - 2]?.tahun ?? trendData[trendData.length - 1].tahun}` : ""})
                   {selectedKecamatan !== "Semua" ? ` · ${selectedKecamatan}` : ""}
                 </h4>
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-50 border border-amber-200 rounded-md text-[10px] font-mono font-bold text-amber-700 uppercase">
+                  <TrendingUp size={11} /> 2026: Prediksi Regresi Linier
+                </span>
               </div>
               <div className="h-[320px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
@@ -382,13 +417,37 @@ export default function FarmersPage() {
                         fontWeight: "bold",
                         boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)",
                       }}
-                      formatter={(value: any) => [formatNum(Number(value)), ""]}
+                      formatter={(value: any, name: any, props: any) => {
+                        const label = props?.payload?.isPrediction ? `${name} (Prediksi)` : name;
+                        return [formatNum(Number(value)), label];
+                      }}
+                      labelFormatter={(label: any, payload: any) => {
+                        if (payload?.[0]?.payload?.isPrediction) return `${label} (Prediksi)`;
+                        return label;
+                      }}
                     />
                     <Legend verticalAlign="top" height={36} wrapperStyle={{ fontFamily: "monospace", fontSize: "10px", fontWeight: "bold" }} />
-                    <Line type="monotone" dataKey="totalAnggota" name="Total Anggota (Jiwa)" stroke="#64748b" strokeWidth={3} dot={{ fill: "#475569", r: 4 }} activeDot={{ r: 6 }} />
-                    <Line type="monotone" dataKey="Anggota Tani" name="Anggota Poktan" stroke="#d97706" strokeWidth={2} dot={false} />
-                    <Line type="monotone" dataKey="Anggota Perikanan" name="Anggota Pokkan" stroke="#2563eb" strokeWidth={2} dot={false} />
-                    <Line type="monotone" dataKey="Anggota Gapoktan" name="Anggota Gapoktan" stroke="#059669" strokeWidth={2} dot={false} />
+                    <ReferenceLine x="2026" stroke="#f59e0b" strokeDasharray="5 5" strokeOpacity={0.5} label={{ value: "Prediksi", position: "top", fill: "#d97706", fontSize: 10, fontFamily: "monospace", fontWeight: "bold" }} />
+                    <Line type="monotone" dataKey="totalAnggota" name="Total Anggota (Jiwa)" stroke="#64748b" strokeWidth={3} dot={(props: any) => {
+                      const { cx, cy, payload } = props;
+                      if (payload?.isPrediction) return <circle cx={cx} cy={cy} r={6} fill="#fff" stroke="#64748b" strokeWidth={2} />;
+                      return <circle cx={cx} cy={cy} r={4} fill="#475569" />;
+                    }} activeDot={{ r: 6 }} />
+                    <Line type="monotone" dataKey="Anggota Tani" name="Anggota Poktan" stroke="#d97706" strokeWidth={2} dot={(props: any) => {
+                      const { cx, cy, payload } = props;
+                      if (payload?.isPrediction) return <circle cx={cx} cy={cy} r={5} fill="#fff" stroke="#d97706" strokeWidth={2} />;
+                      return false;
+                    }} />
+                    <Line type="monotone" dataKey="Anggota Perikanan" name="Anggota Pokkan" stroke="#2563eb" strokeWidth={2} dot={(props: any) => {
+                      const { cx, cy, payload } = props;
+                      if (payload?.isPrediction) return <circle cx={cx} cy={cy} r={5} fill="#fff" stroke="#2563eb" strokeWidth={2} />;
+                      return false;
+                    }} />
+                    <Line type="monotone" dataKey="Anggota Gapoktan" name="Anggota Gapoktan" stroke="#059669" strokeWidth={2} dot={(props: any) => {
+                      const { cx, cy, payload } = props;
+                      if (payload?.isPrediction) return <circle cx={cx} cy={cy} r={5} fill="#fff" stroke="#059669" strokeWidth={2} />;
+                      return false;
+                    }} />
                   </LineChart>
                 </ResponsiveContainer>
               </div>

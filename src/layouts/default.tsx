@@ -17,7 +17,26 @@ import {
   Cherry,
   Users,
   Coins,
-  BookOpen
+  BookOpen,
+  AlertTriangle,
+  Database,
+  Tractor,
+  Crop,
+  HeartPulse,
+  Wheat,
+  Droplets,
+  Award,
+  Handshake,
+  Bone,
+  Leaf,
+  Waves,
+  Scale,
+  GraduationCap,
+  Calendar,
+  FileCheck,
+  Activity,
+  Settings,
+  UserCog,
 } from "lucide-react";
 import { siteConfig } from "@/config/site";
 
@@ -32,42 +51,90 @@ export default function DefaultLayout({
   // Helper to map route to its Lucide icon
   const getIcon = (label: string, isActive: boolean) => {
     const iconColor = isActive ? "text-white" : "text-slate-400 group-hover:text-white";
-    const classes = `w-4 h-4 mr-3 shrink-0 ${iconColor} transition-colors`;
+    const disabledColor = "text-slate-600";
+    const classes = `w-4 h-4 mr-3 shrink-0 ${isActive ? iconColor : iconColor} transition-colors`;
+    const disabledClasses = `w-4 h-4 mr-3 shrink-0 ${disabledColor}`;
+    
+    // Check if this is a disabled item
+    const item = siteConfig.navItems.find(i => i.label === label);
+    const isDisabled = item?.disabled;
+    const cls = isDisabled ? disabledClasses : classes;
+
     switch (label) {
       case "Dashboard":
-        return <LayoutDashboard className={classes} />;
-      case "Prediksi Panen":
-        return <TrendingUp className={classes} />;
+        return <LayoutDashboard className={cls} />;
+      case "Peta Sebaran & Alert":
+        return <AlertTriangle className={cls} />;
+      case "Data Petani & NPP":
+        return <Users className={cls} />;
+      case "Data Lahan & Peta Digital":
+        return <Map className={cls} />;
       case "Kesesuaian Lahan":
-        return <Map className={classes} />;
-      case "Fluktuasi Harga":
-        return <LineChart className={classes} />;
-      case "Ketahanan Pangan":
-        return <ShieldCheck className={classes} />;
-      case "Rantai Pasok":
-        return <Truck className={classes} />;
-      case "Perikanan":
-        return <Fish className={classes} />;
-      case "Perkebunan":
-        return <Sprout className={classes} />;
-      case "Hortikultura":
-        return <Cherry className={classes} />;
+        return <Crop className={cls} />;
+      case "Data Alsintan":
+        return <Tractor className={cls} />;
+      case "Luas Tambah Tanam & Luas Panen":
+        return <Wheat className={cls} />;
+      case "Prediksi Panen":
+        return <TrendingUp className={cls} />;
+      case "OPT / Hama & Penyakit":
+        return <AlertTriangle className={cls} />;
+      case "Irigasi & Tata Air":
+        return <Droplets className={cls} />;
+      case "Produksi Sayuran, Buah & Flora Hias":
+        return <Cherry className={cls} />;
+      case "Kawasan Hortikultura":
+        return <Leaf className={cls} />;
+      case "Sertifikasi & Mutu Hasil":
+        return <Award className={cls} />;
+      case "Komoditas Unggulan":
+        return <Sprout className={cls} />;
+      case "Kemitraan & Hilirisasi":
+        return <Handshake className={cls} />;
+      case "Populasi & Produksi Ternak":
+        return <Database className={cls} />;
+      case "Kesehatan Hewan & Zoonosis":
+        return <HeartPulse className={cls} />;
+      case "Pakan Ternak & Hijauan":
+        return <Bone className={cls} />;
+      case "Produksi Perikanan":
+        return <Fish className={cls} />;
+      case "Nilai Ekonomi & Pasar":
+        return <DollarSign className={cls} />;
+      case "Kesehatan Ikan & Lingkungan Perairan":
+        return <Waves className={cls} />;
+      case "Neraca Komoditas Pangan":
+        return <ShieldCheck className={cls} />;
+      case "Rantai Pasok & Distribusi":
+        return <Truck className={cls} />;
+      case "Fluktuasi Harga & Inflasi":
+        return <LineChart className={cls} />;
+      case "Cadangan Pangan Daerah":
+        return <Scale className={cls} />;
       case "Kelembagaan Tani":
-        return <Users className={classes} />;
-      case "Nilai Ekonomi":
-        return <DollarSign className={classes} />;
-      case "Rekomendasi":
-        return <ClipboardList className={classes} />;
+        return <Users className={cls} />;
+      case "Jadwal & Materi Penyuluhan":
+        return <Calendar className={cls} />;
+      case "Penilaian Kinerja Penyuluh":
+        return <GraduationCap className={cls} />;
       case "Analisis Bantuan":
-        return <Coins className={classes} />;
-      case "Analisis Renstra":
-        return <TrendingUp className={classes} />;
-      case "Manual":
-        return <BookOpen className={classes} />;
+        return <Coins className={cls} />;
+      case "Analisis Renstra & RKPD":
+        return <FileCheck className={cls} />;
+      case "Rekomendasi Kebijakan":
+        return <ClipboardList className={cls} />;
+      case "Monitoring & Evaluasi":
+        return <Activity className={cls} />;
       case "Info SISPERTANI":
-        return <Info className={classes} />;
+        return <Info className={cls} />;
+      case "Manual Book / Panduan":
+        return <BookOpen className={cls} />;
+      case "Manajemen User & Hak Akses":
+        return <UserCog className={cls} />;
+      case "Pengaturan Sistem":
+        return <Settings className={cls} />;
       default:
-        return <LayoutDashboard className={classes} />;
+        return <LayoutDashboard className={cls} />;
     }
   };
 
@@ -90,6 +157,22 @@ export default function DefaultLayout({
           <div className="space-y-1">
             {group.items.map((item) => {
               const isActive = location.pathname === item.href;
+              const isDisabled = item.disabled;
+              
+              if (isDisabled) {
+                return (
+                  <div
+                    key={item.href}
+                    className="group flex items-center px-4 py-2.5 rounded-lg font-sans font-semibold text-xs tracking-wide text-slate-600 cursor-not-allowed"
+                    title="Modul belum tersedia"
+                  >
+                    {getIcon(item.label, false)}
+                    <span className="flex-1">{item.label}</span>
+                    <span className="text-[8px] font-mono text-slate-700 bg-slate-800/60 px-1.5 py-0.5 rounded">SOON</span>
+                  </div>
+                );
+              }
+              
               return (
                 <Link
                   key={item.href}
