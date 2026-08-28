@@ -1,0 +1,230 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+@import "@heroui/styles";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+/* ============================================
+   SaaS Analytics Design Tokens
+   ============================================ */
+:root {
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-primary-900: #1e3a8a;
+
+  /* Slate / Neutral */
+  --color-slate-50: #f8fafc;
+  --color-slate-100: #f1f5f9;
+  --color-slate-200: #e2e8f0;
+  --color-slate-300: #cbd5e1;
+  --color-slate-400: #94a3b8;
+  --color-slate-500: #64748b;
+  --color-slate-600: #475569;
+  --color-slate-700: #334155;
+  --color-slate-800: #1e293b;
+  --color-slate-900: #0f172a;
+
+  /* Accent Colors */
+  --color-accent-amber-50: #fffbeb;
+  --color-accent-amber-100: #fef3c7;
+  --color-accent-amber-400: #fbbf24;
+  --color-accent-amber-500: #f59e0b;
+  --color-accent-amber-600: #d97706;
+  --color-accent-amber-700: #b45309;
+  --color-accent-amber-800: #92400e;
+
+  --color-accent-emerald-50: #ecfdf5;
+  --color-accent-emerald-100: #d1fae5;
+  --color-accent-emerald-500: #10b981;
+  --color-accent-emerald-600: #059669;
+  --color-accent-emerald-700: #047857;
+  --color-accent-emerald-800: #065f46;
+
+  --color-accent-red-50: #fef2f2;
+  --color-accent-red-100: #fee2e2;
+  --color-accent-red-400: #f87171;
+  --color-accent-red-500: #ef4444;
+  --color-accent-red-600: #dc2626;
+  --color-accent-red-700: #b91c1c;
+
+  --color-accent-purple-50: #f5f3ff;
+  --color-accent-purple-100: #ede9fe;
+  --color-accent-purple-500: #8b5cf6;
+  --color-accent-purple-600: #7c3aed;
+
+  /* Border radius */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-slate-50);
+  color: var(--color-slate-900);
+}
+
+/* ============================================
+   Modern Utility Classes
+   ============================================ */
+@layer utilities {
+  .animate-spin-slow {
+    animation: spin 8s linear infinite;
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  /* card-modern and modern utilities port */
+  .card-modern {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease-in-out;
+  }
+  .card-modern:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.08);
+    border-color: #cbd5e1;
+  }
+
+  .border-hd {
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+  }
+  
+  .border-hd-lg {
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+  }
+  
+  .border-hd-subtle {
+    border: 1px solid #f1f5f9;
+  }
+  
+  .shadow-hd {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+  
+  .shadow-hd-lg {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+  }
+
+  /* Gradients */
+  .gradient-primary {
+    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+  }
+  
+  .gradient-header {
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================
+   Leaflet Map Modern Styling
+   ============================================ */
+.leaflet-container {
+  font-family: var(--font-sans);
+  background: #f1f5f9;
+  border-radius: 12px;
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  border-radius: var(--radius-md) !important;
+  border: none !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15) !important;
+}
+
+.custom-popup-modern .leaflet-popup-content {
+  margin: 0 !important;
+  padding: 12px !important;
+}
+
+@custom-variant dark (&:is(.dark *));
+
+/* Custom Scrollbar (SaaS style) */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-slate-100);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-slate-300);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-slate-400);
+}
+
+/* ---- Print / PDF ---- */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  html,
+  body {
+    height: auto !important;
+    overflow: visible !important;
+    background: #ffffff !important;
+  }
+
+  .print-root,
+  .print-root * {
+    overflow: visible !important;
+  }
+
+  .print-root {
+    display: block !important;
+    height: auto !important;
+  }
+
+  .print-main {
+    overflow: visible !important;
+    height: auto !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+  }
+
+  .print-block {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .text-transparent.bg-clip-text {
+    color: #0f172a !important;
+    background: none !important;
+    -webkit-text-fill-color: #0f172a !important;
+  }
+
+  @page {
+    margin: 1.5cm;
+  }
+}
