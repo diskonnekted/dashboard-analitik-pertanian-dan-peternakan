@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import DefaultLayout from "@/layouts/default";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from "recharts";
-import { fetchKelompokTani, KelompokTaniRow } from "@/services/api";
+import { fetchKelompokTani, KelompokTaniRow, clearLocalStorageByPattern } from "@/services/api";
 import { Calendar, TrendingUp, Filter, FileSpreadsheet, ShieldAlert } from "lucide-react";
 
 const KECAMATAN_LIST = [
@@ -43,17 +43,22 @@ function linearPredict(points: { x: number; y: number }[], targetX: number): num
 
 export default function FarmersPage() {
   const [rawData, setRawData] = useState<KelompokTaniRow[]>([]);
-  const [selectedYear, setSelectedYear] = useState<string>("2024");
+  const [selectedYear, setSelectedYear] = useState<string | null>(null);
   const [selectedKecamatan, setSelectedKecamatan] = useState<string>("Semua");
   const [loading, setLoading] = useState<boolean>(true);
+  const [reloading, setReloading] = useState<boolean>(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadData = async () => {
+      setLoadError(null);
       try {
         const data = await fetchKelompokTani();
         setRawData(data);
       } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
         console.error("Gagal memuat data kelompok tani:", err);
+        setLoadError(msg);
       } finally {
         setLoading(false);
       }
@@ -61,19 +66,64 @@ export default function FarmersPage() {
     loadData();
   }, []);
 
+  // Setelah data dimuat, set default tahun ke tahun terbaru yang punya data aktual
+  useEffect(() => {
+    if (!loading && selectedYear === null) {
+      const dataYears = rawData
+        .map((d) => d.tahun)
+        .filter((y) => y && /^\d{4}$/.test(y) && parseInt(y) <= 2025);
+      const distinct = Array.from(new Set(dataYears)).sort((a, b) =>
+        b.localeCompare(a),
+      );
+      if (distinct.length > 0) {
+        setSelectedYear(distinct[0]);
+      }
+    }
+  }, [loading, rawData, selectedYear]);
+
+  // Tombol muat ulang: bersihkan cache localStorage untuk kunci kelompok tani, lalu ambil ulang
+  const handleReload = () => {
+    if (reloading) return;
+    setReloading(true);
+    clearLocalStorageByPattern("kelompok_tani");
+    setLoading(true);
+    setRawData([]);
+    setLoadError(null);
+    (async () => {
+      try {
+        const data = await fetchKelompokTani();
+        setRawData(data);
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        console.error("Gagal memuat ulang data kelompok tani:", err);
+        setLoadError(msg);
+      } finally {
+        setLoading(false);
+        setReloading(false);
+      }
+    })();
+  };
+
   // Format nama kecamatan agar proporsional
   const formatKecName = (name: string) => {
     return name || "Unknown";
   };
 
-  // Daftar tahun unik
+  // Daftar tahun unik (gabungan fallback tahun hardcode + tahun dari data)
   const yearsList = useMemo(() => {
-    return Array.from(new Set(rawData.map((d) => d.tahun).filter(Boolean)))
-      .sort((a, b) => b.localeCompare(a));
+    const knownYears = ["2025", "2024", "2023", "2022"];
+    const fromData = rawData
+      .map((d) => d.tahun)
+      .filter(Boolean)
+      .filter((y) => /^\d{4}$/.test(y));
+    const merged = Array.from(new Set([...knownYears, ...fromData])).sort((a, b) =>
+      b.localeCompare(a),
+    );
+    return merged;
   }, [rawData]);
 
   useEffect(() => {
-    if (yearsList.length > 0 && !yearsList.includes(selectedYear)) {
+    if (selectedYear !== null && yearsList.length > 0 && !yearsList.includes(selectedYear)) {
       setSelectedYear(yearsList[0]);
     }
   }, [yearsList, selectedYear]);
@@ -221,8 +271,9 @@ export default function FarmersPage() {
 
     const sorted = Array.from(byYear.values()).sort((a, b) => a.tahun.localeCompare(b.tahun));
 
-    // Tambah prediksi 2026 berdasarkan regresi linier data aktual
-    if (sorted.length >= 2) {
+    // Hanya tambah prediksi 2026 jika belum ada data aktual 2026 dan minimal 3 tahun aktual
+    const hasActual2026 = sorted.some((d) => d.tahun === "2026" && !d.isPrediction);
+    if (!hasActual2026 && sorted.length >= 3) {
       const metrics = ["totalAnggota", "Anggota Tani", "Anggota Perikanan", "Anggota Gapoktan", "Kelompok Tani", "Kelompok Perikanan", "Gapoktan", "totalKelompok"];
       const predictedEntry: any = { tahun: "2026", isPrediction: true };
       metrics.forEach((m) => {
@@ -264,16 +315,17 @@ export default function FarmersPage() {
         </section>
 
         {/* Filters */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white border border-slate-200 p-6 shadow-sm text-left transition-all duration-300 hover:shadow-md">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-white border border-slate-200 p-6 shadow-sm text-left transition-all duration-300 hover:shadow-md">
           {/* Tahun */}
           <div className="flex flex-col gap-2">
             <label className="text-xs font-mono font-bold uppercase text-slate-500">Tahun Data</label>
             <div className="relative">
               <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-slate-500 pointer-events-none" />
               <select
-                value={selectedYear}
+                value={selectedYear ?? ""}
                 onChange={(e) => setSelectedYear(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 border border-slate-200 font-mono text-sm font-bold bg-white focus:outline-none appearance-none cursor-pointer rounded-xl"
+                disabled={selectedYear === null}
+                className="w-full pl-9 pr-4 py-2 border border-slate-200 font-mono text-sm font-bold bg-white focus:outline-none appearance-none cursor-pointer rounded-xl disabled:opacity-50 disabled:cursor-wait"
               >
                 {yearsList.map((yr) => (
                   <option key={yr} value={yr}>
@@ -302,6 +354,20 @@ export default function FarmersPage() {
               </select>
             </div>
           </div>
+
+          {/* Aksi: Muat Ulang */}
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-mono font-bold uppercase text-slate-500">Sinkronisasi</label>
+            <button
+              type="button"
+              onClick={handleReload}
+              disabled={loading || reloading}
+              className="inline-flex items-center justify-center gap-2 w-full pl-3 pr-4 h-[38px] border border-slate-200 font-mono text-sm font-bold bg-amber-50 hover:bg-amber-100 text-amber-800 transition-all rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <FileSpreadsheet className="h-4 w-4" />
+              {reloading ? "Memuat…" : "Muat Ulang Data"}
+            </button>
+          </div>
         </div>
 
         {loading ? (
@@ -309,6 +375,30 @@ export default function FarmersPage() {
             <p className="text-slate-500 font-mono font-bold animate-pulse uppercase">
               Mengekstrak data dari CKAN Open Data...
             </p>
+          </div>
+        ) : loadError && rawData.length === 0 ? (
+          <div className="flex flex-col items-center justify-center gap-4 h-[300px] bg-rose-50 border border-rose-200 p-8 rounded-xl">
+            <ShieldAlert className="h-10 w-10 text-rose-600" />
+            <div className="text-center">
+              <h3 className="text-lg font-mono font-bold uppercase text-rose-900">
+                Gagal Memuat Data
+              </h3>
+              <p className="text-sm text-rose-700 mt-2 font-mono">
+                {loadError}
+              </p>
+              <p className="text-xs text-rose-600 mt-3 font-mono">
+                Periksa koneksi internet Anda lalu coba muat ulang.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={handleReload}
+              disabled={reloading}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-mono font-bold uppercase text-sm rounded-lg transition-all disabled:opacity-50"
+            >
+              <FileSpreadsheet className="h-4 w-4" />
+              {reloading ? "Memuat…" : "Coba Lagi"}
+            </button>
           </div>
         ) : (
           <>
@@ -384,7 +474,11 @@ export default function FarmersPage() {
               <div className="mb-4 text-left border-b border-slate-200 pb-3 flex flex-wrap items-center justify-between gap-2">
                 <h4 className="text-lg font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
                   <TrendingUp className="text-amber-600" />
-                  Tren Keanggotaan Lembaga Tani ({trendData.filter(d => !d.isPrediction).length > 0 ? `${trendData[0].tahun}–${trendData[trendData.length - 2]?.tahun ?? trendData[trendData.length - 1].tahun}` : ""})
+                  Tren Keanggotaan Lembaga Tani ({(() => {
+                    const actuals = trendData.filter((d) => !d.isPrediction);
+                    if (actuals.length === 0) return "";
+                    return `${actuals[0].tahun}–${actuals[actuals.length - 1].tahun}`;
+                  })()})
                   {selectedKecamatan !== "Semua" ? ` · ${selectedKecamatan}` : ""}
                 </h4>
                 <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-50 border border-amber-200 rounded-md text-[10px] font-mono font-bold text-amber-700 uppercase">

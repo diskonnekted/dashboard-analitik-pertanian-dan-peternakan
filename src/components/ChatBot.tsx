@@ -35,7 +35,13 @@ function renderMarkdown(text: string): string {
       .replace(/\*(.+?)\*/g, "<em>$1</em>")
       .replace(/`(.+?)`/g, '<code class="px-1 py-0.5 bg-slate-100 rounded text-[11px] font-mono">$1</code>');
 
-    // Headers
+    // Headers (h1-h6)
+    if (processed.startsWith("#### ")) {
+      if (inList) { html += "</ul>"; inList = false; }
+      if (inNumList) { html += "</ol>"; inNumList = false; }
+      html += `<p class="font-mono font-bold text-[12px] text-emerald-700 uppercase tracking-wide mt-2.5">${processed.slice(5)}</p>`;
+      continue;
+    }
     if (processed.startsWith("### ")) {
       if (inList) { html += "</ul>"; inList = false; }
       if (inNumList) { html += "</ol>"; inNumList = false; }
@@ -109,7 +115,8 @@ Aturan jawaban:
 - Berikan rekomendasi yang actionable dan realistis.
 - Jika pertanyaan di luar konteks pertanian Banjarnegara, arahkan kembali ke topik pertanian.
 - Jawab dengan ringkas namun komprehensif. Gunakan format yang rapi (bullet points, penomoran) jika perlu.
-- Jika data tidak cukup untuk menjawab, sampaikan dengan jujur dan sarankan data tambahan yang dibutuhkan.`;
+- Jika data tidak cukup untuk menjawab, sampaikan dengan jujur dan sarankan data tambahan yang dibutuhkan.
+- Anda memiliki akses ke KATALOG DATASET OPENDATA BANJARNEGARA (151 dataset). Jika pengguna menanyakan data spesifik yang mungkin tersedia di opendata.banjarnegarakab.go.id, Anda dapat menyarankan judul dataset, organisasi pemiliknya, dan menyebutkannya ada/tidak dalam katalog. Gunakan informasi katalog untuk memberikan rujukan yang akurat.`;
 
 /* ── Quick Suggestions ────────────────────────────────────── */
 const QUICK_QUESTIONS = [

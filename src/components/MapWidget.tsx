@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { MapContainer, TileLayer, GeoJSON, LayersControl, useMap, Marker, Popup as LeafletPopup, LayerGroup } from "react-leaflet";
 import L from "leaflet";
 import ReactDOMServer from "react-dom/server";
-import { Search } from "lucide-react";
+import { Search, Plus, Minus, Lock } from "lucide-react";
 
 import "leaflet/dist/leaflet.css";
 import { LahanDesa, KelompokTaniRow, fetchKelompokTani } from "@/services/api";
@@ -106,12 +106,86 @@ const MapBounds = ({ data }: { data: any }) => {
     if (data && data.features && data.features.length > 0) {
       try {
         const layer = L.geoJSON(data);
-        map.fitBounds(layer.getBounds(), { padding: [20, 20] });
+        const bounds = layer.getBounds();
+        // Paskan peta ke bounds dengan padding minimal (mendekati batas frame)
+        map.fitBounds(bounds, { padding: [10, 10] });
+        // Kunci peta agar tidak bisa digeser keluar area + tidak bisa zoom-out melewati level fit
+        const zoomAfterFit = map.getZoom();
+        map.setMinZoom(zoomAfterFit);
+        map.setMaxZoom(18);
+        map.setMaxBounds(bounds.pad(0.1));
       } catch (err) {
         console.error("Gagal mendapatkan bounds peta", err);
       }
     }
   }, [data, map]);
+  return null;
+};
+
+// Bridge antara tombol zoom kustom (DOM) dengan instance Leaflet.
+// Mengunci zoom: hanya bisa dilakukan dengan Ctrl+scroll atau Ctrl+klik tombol.
+const ZoomBridge = ({ onLockChange }: { onLockChange?: (locked: boolean) => void }) => {
+  const map = useMap();
+  useEffect(() => {
+    // 1. Matikan double-click zoom & touch zoom bawaan Leaflet
+    map.doubleClickZoom.disable();
+    map.touchZoom.disable();
+
+    // 2. Pantau status tombol Ctrl/Cmd secara global
+    const ctrlState = { down: false };
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Control" || e.key === "Meta") {
+        if (!ctrlState.down) {
+          ctrlState.down = true;
+          onLockChange?.(false);
+        }
+      }
+    };
+    const onKeyUp = (e: KeyboardEvent) => {
+      if (e.key === "Control" || e.key === "Meta") {
+        if (ctrlState.down) {
+          ctrlState.down = false;
+          onLockChange?.(true);
+        }
+      }
+    };
+    const onBlur = () => {
+      if (ctrlState.down) {
+        ctrlState.down = false;
+        onLockChange?.(true);
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("keyup", onKeyUp);
+    window.addEventListener("blur", onBlur);
+
+    // 3. Kunci scroll-wheel zoom — hanya aktif saat Ctrl ditekan
+    map.scrollWheelZoom.disable();
+    const container = map.getContainer();
+    const onWheel = (e: WheelEvent) => {
+      if (e.ctrlKey || ctrlState.down) {
+        e.preventDefault();
+        if (e.deltaY < 0) map.zoomIn();
+        else if (e.deltaY > 0) map.zoomOut();
+      }
+    };
+    container.addEventListener("wheel", onWheel, { passive: false });
+
+    // 4. Handler tombol zoom kustom — hanya aktif saat Ctrl ditekan
+    const onZoomIn = () => { if (ctrlState.down) map.zoomIn(); };
+    const onZoomOut = () => { if (ctrlState.down) map.zoomOut(); };
+    window.addEventListener("map:zoom-in", onZoomIn);
+    window.addEventListener("map:zoom-out", onZoomOut);
+
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("keyup", onKeyUp);
+      window.removeEventListener("blur", onBlur);
+      container.removeEventListener("wheel", onWheel);
+      window.removeEventListener("map:zoom-in", onZoomIn);
+      window.removeEventListener("map:zoom-out", onZoomOut);
+    };
+  }, [map, onLockChange]);
   return null;
 };
 
@@ -203,6 +277,7 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
   const [activeMetric, setActiveMetric] = useState<"lahanSawah" | "lahanBukanSawah" | "jumlah">("lahanSawah");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeLegendCategory, setActiveLegendCategory] = useState<number | null>(null);
+  const [zoomLocked, setZoomLocked] = useState(true); // true = terkunci (Ctrl dibutuhkan)
 
   useEffect(() => {
     // Load GeoJSON with localStorage cache fallback
@@ -418,18 +493,43 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
   return (
     <div className="flex flex-col h-full w-full relative group/map">
       
-      {/* --- TOP LEFT: Dropdown Choropleth (di bawah zoom control) --- */}
-      <div className="absolute top-[70px] left-3 z-[1000] bg-white border border-slate-200 shadow-sm p-2 flex flex-col gap-1 w-[200px] rounded-lg">
-        <label className="text-[10px] font-mono font-bold uppercase text-neutral-500">Pilih Layer Metrik</label>
-        <select 
-          className="font-mono text-[11px] font-bold uppercase p-1.5 border border-slate-200 focus:outline-none cursor-pointer bg-neutral-50 rounded"
-          value={activeMetric}
-          onChange={(e) => setActiveMetric(e.target.value as any)}
-        >
-          <option value="lahanSawah">Lahan Sawah (Padi)</option>
-          <option value="lahanBukanSawah">Ladang (Palawija)</option>
-          <option value="jumlah">Total Keseluruhan</option>
-        </select>
+      {/* --- TOP LEFT: Gabungan Zoom + Dropdown Layer Metrik (sejajar horizontal) --- */}
+      <div className="absolute top-3 left-3 z-[1000] flex items-stretch gap-1.5">
+        {/* Custom Zoom Buttons (terkunci — perlu Ctrl) */}
+        <div className={`flex flex-col bg-white border shadow-sm rounded-lg overflow-hidden transition-colors ${zoomLocked ? "border-amber-300" : "border-emerald-400"}`}>
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent("map:zoom-in"))}
+            className={`w-8 h-8 flex items-center justify-center border-b border-slate-200 transition-colors ${zoomLocked ? "bg-amber-50 text-amber-700 hover:bg-amber-100" : "bg-emerald-50 text-emerald-700 hover:bg-emerald-100"}`}
+            title={zoomLocked ? "Zoom Terkunci — tahan Ctrl lalu klik" : "Ctrl aktif — klik untuk zoom in"}
+          >
+            {zoomLocked ? <Lock size={13} /> : <Plus size={16} />}
+          </button>
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent("map:zoom-out"))}
+            className={`w-8 h-8 flex items-center justify-center transition-colors ${zoomLocked ? "bg-amber-50 text-amber-700 hover:bg-amber-100" : "bg-emerald-50 text-emerald-700 hover:bg-emerald-100"}`}
+            title={zoomLocked ? "Zoom Terkunci — tahan Ctrl lalu klik" : "Ctrl aktif — klik untuk zoom out"}
+          >
+            {zoomLocked ? <Lock size={13} /> : <Minus size={16} />}
+          </button>
+        </div>
+
+        {/* Dropdown Choropleth (sebelah kanan zoom buttons) */}
+        <div className="bg-white border border-slate-200 shadow-sm p-2 flex flex-col gap-1 w-[210px] rounded-lg">
+          <label className="text-[10px] font-mono font-bold uppercase text-neutral-500">Pilih Layer Metrik</label>
+          <select 
+            className="font-mono text-[11px] font-bold uppercase p-1.5 border border-slate-200 focus:outline-none cursor-pointer bg-neutral-50 rounded"
+            value={activeMetric}
+            onChange={(e) => setActiveMetric(e.target.value as any)}
+          >
+            <option value="lahanSawah">Lahan Sawah (Padi)</option>
+            <option value="lahanBukanSawah">Ladang (Palawija)</option>
+            <option value="jumlah">Total Keseluruhan</option>
+          </select>
+          <span className="text-[9px] font-mono text-neutral-500 mt-0.5">
+            <kbd className="px-1 py-0.5 bg-neutral-100 border border-slate-300 rounded text-[9px] font-bold">CTRL</kbd>
+            {" + scroll / klik untuk zoom"}
+          </span>
+        </div>
       </div>
 
       {/* --- TOP RIGHT: Search Bar --- */}
@@ -475,8 +575,9 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
 
       {/* --- LEAFLET MAP --- */}
       <div className="h-full w-full z-0 relative overflow-hidden">
-        <MapContainer center={[-7.3941, 109.6965]} style={{ height: "100%", width: "100%" }} zoom={11}>
+        <MapContainer center={[-7.3941, 109.6965]} style={{ height: "100%", width: "100%" }} zoom={11} minZoom={11} maxZoom={18} zoomControl={false}>
           <MapBounds data={kecGeoData} />
+          <ZoomBridge onLockChange={setZoomLocked} />
           
           <LayersControl position="bottomleft">
             <LayersControl.BaseLayer checked name="Basemap Standar">

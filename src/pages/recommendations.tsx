@@ -15,13 +15,27 @@ import {
   fetchTernakKecil,
   fetchPerikananBudidaya,
   fetchLahanBanjarnegara,
+  fetchOpenDataCatalog,
   type PadiProduction,
   type TernakBesar,
   type TernakKecil,
   type PerikananBudidaya,
-  type LahanDesa
+  type LahanDesa,
+  type CkanCatalog,
 } from "@/services/api";
 import ChatBot from "@/components/ChatBot";
+import {
+  describe,
+  computeConcentration,
+  computeProductivity,
+  projectTrend,
+  estimateEconomicValue,
+  formatRupiah,
+  formatPct,
+  type SectorStats,
+  type ConcentrationMetrics,
+  type TrendProjection,
+} from "@/utils/analysis";
 
 interface Rekomendasi {
   judul: string;
@@ -52,23 +66,26 @@ export default function RecommendationsPage() {
   const [ternakKecil, setTernakKecil] = useState<TernakKecil[]>([]);
   const [ikanData, setIkanData] = useState<PerikananBudidaya[]>([]);
   const [lahanData, setLahanData] = useState<LahanDesa[]>([]);
+  const [openDataCatalog, setOpenDataCatalog] = useState<CkanCatalog | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadAll = async () => {
       try {
-        const [padi, tb, tk, ikan, lahan] = await Promise.all([
+        const [padi, tb, tk, ikan, lahan, catalog] = await Promise.all([
           fetchPadiProduction(),
           fetchTernakBesar(),
           fetchTernakKecil(),
           fetchPerikananBudidaya(),
           fetchLahanBanjarnegara(),
+          fetchOpenDataCatalog(),
         ]);
         setPadiData(padi);
         setTernakBesar(tb);
         setTernakKecil(tk);
         setIkanData(ikan);
         setLahanData(lahan);
+        setOpenDataCatalog(catalog);
       } catch (err) {
         console.error("Error loading recommendations data:", err);
       } finally {
@@ -136,6 +153,35 @@ export default function RecommendationsPage() {
     // 4. Lahan
     const totalSawah = lahanData.reduce((acc, curr) => acc + curr.lahanSawah, 0);
 
+    /* ── Analisis Statistik ── */
+    const padiSeries: SectorStats = describe(padiData.map((d) => d.produksi));
+    const ternakSeries: SectorStats = describe(
+      Object.values(kecTernakMap),
+    );
+    const ikanSeries: SectorStats = describe(
+      ikanData.map((d) => d.kolamPembesaran),
+    );
+
+    const padiConcentration: ConcentrationMetrics = computeConcentration(
+      padiData.map((d) => d.produksi),
+    );
+    const ternakConcentration: ConcentrationMetrics = computeConcentration(
+      Object.values(kecTernakMap),
+    );
+    const ikanConcentration: ConcentrationMetrics = computeConcentration(
+      ikanData.map((d) => d.kolamPembesaran),
+    );
+
+    const padiProductivity = computeProductivity(totalPadiProd, totalPadiLuas);
+
+    // Estimasi nilai ekonomi
+    const econ = estimateEconomicValue({
+      padiTon: totalPadiProd,
+      sapiEkor: totalSapi,
+      kambingEkor: totalKambing,
+      ikanTon: totalIkanProd,
+    });
+
     return {
       totalPadiProd,
       totalPadiLuas,
@@ -148,8 +194,35 @@ export default function RecommendationsPage() {
       topIkanKec,
       maxIkanProd,
       totalSawah,
+      // Statistik ilmiah
+      padiSeries,
+      ternakSeries,
+      ikanSeries,
+      padiConcentration,
+      ternakConcentration,
+      ikanConcentration,
+      padiProductivity,
+      econ,
     };
   }, [padiData, ternakBesar, ternakKecil, ikanData, lahanData]);
+
+  /* Proyeksi Tren Padi (jika ada data time-series ≥ 2 tahun) */
+  const padiTrend: TrendProjection | null = useMemo(() => {
+    const series: Record<number, number> = {};
+    padiData.forEach((d) => {
+      if (d.tahun) {
+        const y = parseInt(d.tahun);
+        if (Number.isFinite(y)) {
+          series[y] = (series[y] || 0) + d.produksi;
+        }
+      }
+    });
+    const years = Object.keys(series)
+      .map(Number)
+      .sort((a, b) => a - b);
+    if (years.length < 2) return null;
+    return projectTrend(years, years.map((y) => series[y]));
+  }, [padiData]);
 
   const sektor: Sektor[] = useMemo(() => [
     {
@@ -324,6 +397,27 @@ export default function RecommendationsPage() {
       .map((d) => `  - ${d.kecamatan}: ${fmt(d.kolamPembesaran)} Ton/Unit`)
       .join("\n");
 
+    // Katalog dataset OpenData Banjarnegara (ringkasan untuk AI)
+    const catalogSection =
+      openDataCatalog && openDataCatalog.entries.length > 0
+        ? `== KATALOG DATA TERBUKA OPENDATA BANJARNEGARA (${openDataCatalog.totalDatasets} dataset) ==
+Sumber: opendata.banjarnegarakab.go.id (CKAN)
+Update terakhir katalog: ${new Date(openDataCatalog.fetchedAt).toLocaleString("id-ID")}
+
+Dataset Unggulan (40 entri teratas):
+${openDataCatalog.entries
+  .slice(0, 40)
+  .map((e, i) => {
+    const csvInfo = e.csvUrls.length > 0 ? `[CSV:${e.csvUrls.length}]` : "";
+    const xlsxInfo = e.xlsxUrls.length > 0 ? `[XLSX:${e.xlsxUrls.length}]` : "";
+    return `${i + 1}. ${e.title} | ${e.org} | ${e.tags.join(", ") || "-"} ${csvInfo}${xlsxInfo}`;
+  })
+  .join("\n")}
+
+Anda dapat merujuk pada dataset di atas ketika pengguna bertanya tentang data spesifik.
+`
+        : "== KATALOG DATA TERBUKA ==\nKatalog opendata belum berhasil dimuat saat ini.\n";
+
     return `DATA RINGKAS SISPERTANI KABUPATEN BANJARNEGARA:
 
 == SEKTOR TANAMAN PANGAN (PADI) ==
@@ -370,8 +464,33 @@ Simpul pasar dan koridor logistik antar-kecamatan menjadi tulang punggung distri
 == FLUKTUASI HARGA ==
 Data inflasi pangan multi-region (Banjarnegara, Jateng, Nasional) digunakan untuk analisis volatilitas harga.
 
-GEOGRAFI: Banjarnegara memiliki topografi bervariasi dari dataran rendah hingga dataran tinggi (Dieng, ~2000 mdpl). Iklim dipengaruhi pola muson dengan dua musim: kemarau (Apr-Okt) dan penghujan (Nov-Mar). Kawasan Dieng produktif untuk hortikultura dataran tinggi (kentang, kubis, wortel).`;
-  }, [stats, padiData, ternakBesar, ikanData]);
+GEOGRAFI: Banjarnegara memiliki topografi bervariasi dari dataran rendah hingga dataran tinggi (Dieng, ~2000 mdpl). Iklim dipengaruhi pola muson dengan dua musim: kemarau (Apr-Okt) dan penghujan (Nov-Mar). Kawasan Dieng produktif untuk hortikultura dataran tinggi (kentang, kubis, wortel).
+
+== ANALISIS STATISTIK ILMIAH ==
+Estimasi nilai ekonomi sektoral (harga acuan: gabah Rp 6.000/kg, sapi Rp 18 jt/ekor, kambing Rp 3 jt/ekor, ikan Rp 35.000/kg):
+  - Gabah kering total: ${new Intl.NumberFormat("id-ID").format(stats.econ.gabah)} IDR
+  - Total sapi: ${new Intl.NumberFormat("id-ID").format(stats.econ.sapi)} IDR
+  - Total kambing: ${new Intl.NumberFormat("id-ID").format(stats.econ.kambing)} IDR
+  - Total ikan: ${new Intl.NumberFormat("id-ID").format(stats.econ.ikan)} IDR
+  - Estimasi total agregat: ${new Intl.NumberFormat("id-ID").format(stats.econ.totalEst)} IDR
+
+Konsentrasi geografis (Indeks Herfindahl-Hirschman / HHI; 0-10000):
+  - Padi: HHI ${stats.padiConcentration.hhi} → ${stats.padiConcentration.interpretation} (Top 1 share ${stats.padiConcentration.top1Share}%)
+  - Peternakan: HHI ${stats.ternakConcentration.hhi} → ${stats.ternakConcentration.interpretation} (Top 1 share ${stats.ternakConcentration.top1Share}%)
+  - Perikanan: HHI ${stats.ikanConcentration.hhi} → ${stats.ikanConcentration.interpretation} (Top 1 share ${stats.ikanConcentration.top1Share}%)
+
+Dispersi sektoral (Koefisien Variasi, %):
+  - Padi: CV ${formatPct(stats.padiSeries.cv)} (Std Dev ${new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 }).format(stats.padiSeries.stdDev)})
+  - Peternakan: CV ${formatPct(stats.ternakSeries.cv)}
+  - Perikanan: CV ${formatPct(stats.ikanSeries.cv)}
+
+${stats.padiProductivity !== undefined ? `Produktivitas padi kabupaten: ${stats.padiProductivity.toFixed(2)} Ton/Ha (rata-rata nasional ~5,4 Ton/Ha; >6 sangat baik).\n` : ""}${padiTrend ? `Proyeksi tren padi: ${padiTrend.direction} (slope ${padiTrend.slope.toFixed(0)} ton/tahun, R²=${padiTrend.r2}, estimasi tahun depan ${new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 }).format(padiTrend.projectionNext)} Ton, perubahan ${padiTrend.pctChange > 0 ? "+" : ""}${padiTrend.pctChange}%).\n` : ""}Interpretasi praktis:
+  - HHI > 2500 = Sangat Terkonsentrasi (risiko tinggi); 1500-2500 = Terkonsentrasi; <1500 = Cukup Merata.
+  - CV > 50% = Ketimpangan produksi antarkecamatan tinggi; <30% = Merata.
+  - Gunakan metrik ini untuk memprioritaskan intervensi: wilayah dengan share tinggi butuh infrastruktur pascapanen; wilayah dengan CV tinggi butuh pemerataan teknologi.
+
+${catalogSection}`;
+  }, [stats, padiData, ternakBesar, ikanData, openDataCatalog, padiTrend]);
 
   if (loading) {
     return (
@@ -459,6 +578,131 @@ GEOGRAFI: Banjarnegara memiliki topografi bervariasi dari dataran rendah hingga 
             </h3>
             <p className="text-[10px] font-mono font-bold text-slate-600 mt-2 uppercase leading-normal">
               Lahan sawah produktif basah beririgasi yang terpetakan untuk ketahanan pangan.
+            </p>
+          </div>
+        </div>
+
+        {/* Panel Analisis Ilmiah (Statistik Deskriptif, Konsentrasi, Proyeksi, Nilai Ekonomi) */}
+        <div className="print-block bg-white border border-slate-200 p-6 shadow-sm text-left transition-all duration-300 hover:shadow-md">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <p className="text-[10px] font-mono font-black uppercase text-slate-500 tracking-widest">
+                Panel Ilmiah
+              </p>
+              <h2 className="text-lg font-serif font-bold text-slate-800">
+                Analisis Statistik Pertanian
+              </h2>
+            </div>
+            <span className="text-[9px] font-mono font-bold uppercase text-slate-500 bg-slate-100 px-2 py-1 rounded">
+              Scientific Insight
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Padi */}
+            <div className="border border-emerald-200 bg-emerald-50/50 p-4 rounded">
+              <p className="text-[10px] font-mono font-black uppercase text-emerald-800 tracking-wider mb-2">
+                Padi
+              </p>
+              <ul className="text-[11px] font-sans text-slate-700 space-y-1.5 leading-snug">
+                <li><span className="font-bold">Mean:</span> {new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 }).format(stats.padiSeries.mean)} Ton</li>
+                <li><span className="font-bold">Std Dev:</span> {new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 }).format(stats.padiSeries.stdDev)}</li>
+                <li><span className="font-bold">CV:</span> {formatPct(stats.padiSeries.cv)}</li>
+                {stats.padiProductivity !== undefined && (
+                  <li><span className="font-bold">Produktivitas:</span> {stats.padiProductivity.toFixed(2)} Ton/Ha</li>
+                )}
+                <li>
+                  <span className="font-bold">HHI:</span> {stats.padiConcentration.hhi}{" "}
+                  <span className="text-slate-500">({stats.padiConcentration.interpretation})</span>
+                </li>
+                <li>
+                  <span className="font-bold">Top 1 Share:</span> {formatPct(stats.padiConcentration.top1Share)}
+                </li>
+                {padiTrend && (
+                  <li>
+                    <span className="font-bold">Tren:</span>{" "}
+                    <span className={padiTrend.direction === "Naik" ? "text-emerald-700 font-bold" : padiTrend.direction === "Turun" ? "text-rose-700 font-bold" : "text-slate-700 font-bold"}>
+                      {padiTrend.direction} ({padiTrend.pctChange > 0 ? "+" : ""}{padiTrend.pctChange}%, R²={padiTrend.r2})
+                    </span>
+                  </li>
+                )}
+              </ul>
+            </div>
+
+            {/* Peternakan */}
+            <div className="border border-orange-200 bg-orange-50/50 p-4 rounded">
+              <p className="text-[10px] font-mono font-black uppercase text-orange-800 tracking-wider mb-2">
+                Peternakan
+              </p>
+              <ul className="text-[11px] font-sans text-slate-700 space-y-1.5 leading-snug">
+                <li><span className="font-bold">Mean:</span> {new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 }).format(stats.ternakSeries.mean)} Ekor</li>
+                <li><span className="font-bold">Std Dev:</span> {new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 }).format(stats.ternakSeries.stdDev)}</li>
+                <li><span className="font-bold">CV:</span> {formatPct(stats.ternakSeries.cv)}</li>
+                <li>
+                  <span className="font-bold">HHI:</span> {stats.ternakConcentration.hhi}{" "}
+                  <span className="text-slate-500">({stats.ternakConcentration.interpretation})</span>
+                </li>
+                <li>
+                  <span className="font-bold">Top 1 Share:</span> {formatPct(stats.ternakConcentration.top1Share)}
+                </li>
+                <li>
+                  <span className="font-bold">Top 3 Share:</span> {formatPct(stats.ternakConcentration.top3Share)}
+                </li>
+              </ul>
+            </div>
+
+            {/* Perikanan */}
+            <div className="border border-sky-200 bg-sky-50/50 p-4 rounded">
+              <p className="text-[10px] font-mono font-black uppercase text-sky-800 tracking-wider mb-2">
+                Perikanan
+              </p>
+              <ul className="text-[11px] font-sans text-slate-700 space-y-1.5 leading-snug">
+                <li><span className="font-bold">Mean:</span> {new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 }).format(stats.ikanSeries.mean)} Ton</li>
+                <li><span className="font-bold">Std Dev:</span> {new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 }).format(stats.ikanSeries.stdDev)}</li>
+                <li><span className="font-bold">CV:</span> {formatPct(stats.ikanSeries.cv)}</li>
+                <li>
+                  <span className="font-bold">HHI:</span> {stats.ikanConcentration.hhi}{" "}
+                  <span className="text-slate-500">({stats.ikanConcentration.interpretation})</span>
+                </li>
+                <li>
+                  <span className="font-bold">Top 1 Share:</span> {formatPct(stats.ikanConcentration.top1Share)}
+                </li>
+                <li>
+                  <span className="font-bold">Top 3 Share:</span> {formatPct(stats.ikanConcentration.top3Share)}
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Estimasi Nilai Ekonomi */}
+          <div className="mt-5 border-t border-slate-200 pt-4">
+            <p className="text-[10px] font-mono font-black uppercase text-slate-600 tracking-wider mb-3">
+              Estimasi Nilai Ekonomi (harga acuan pasar Banjarnegara 2024-2025)
+            </p>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+              <div className="text-center border border-slate-200 p-3 rounded bg-slate-50">
+                <p className="text-[9px] font-mono uppercase text-slate-500">Gabah Kering</p>
+                <p className="text-sm font-serif font-bold text-slate-800 mt-1">{formatRupiah(stats.econ.gabah)}</p>
+              </div>
+              <div className="text-center border border-slate-200 p-3 rounded bg-slate-50">
+                <p className="text-[9px] font-mono uppercase text-slate-500">Ternak Sapi</p>
+                <p className="text-sm font-serif font-bold text-slate-800 mt-1">{formatRupiah(stats.econ.sapi)}</p>
+              </div>
+              <div className="text-center border border-slate-200 p-3 rounded bg-slate-50">
+                <p className="text-[9px] font-mono uppercase text-slate-500">Kambing</p>
+                <p className="text-sm font-serif font-bold text-slate-800 mt-1">{formatRupiah(stats.econ.kambing)}</p>
+              </div>
+              <div className="text-center border border-slate-200 p-3 rounded bg-slate-50">
+                <p className="text-[9px] font-mono uppercase text-slate-500">Ikan Budidaya</p>
+                <p className="text-sm font-serif font-bold text-slate-800 mt-1">{formatRupiah(stats.econ.ikan)}</p>
+              </div>
+              <div className="text-center border-2 border-emerald-600 p-3 rounded bg-emerald-100">
+                <p className="text-[9px] font-mono uppercase text-emerald-800">Total Estimasi</p>
+                <p className="text-sm font-serif font-bold text-emerald-900 mt-1">{formatRupiah(stats.econ.totalEst)}</p>
+              </div>
+            </div>
+            <p className="text-[9px] font-mono text-slate-500 mt-2 italic">
+              * Asumsi: Gabah Kering Panen Rp 6.000/kg, Sapi Rp 18 jt/ekor, Kambing Rp 3 jt/ekor, Ikan Nila Rp 35.000/kg. Nilai indikatif untuk analisis kebijakan, bukan nilai transaksi riil.
             </p>
           </div>
         </div>

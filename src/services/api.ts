@@ -3,14 +3,55 @@ import Papa from "papaparse";
 const CACHE_MAX_AGE = 24 * 60 * 60 * 1000; // 24 jam limit keras
 const CACHE_STALE_AGE = 15 * 60 * 1000; // 15 menit limit stale
 
+// Guard untuk SSR / private mode: localStorage bisa undefined/throw SecurityError
+const safeLocalStorage = {
+  getItem(key: string): string | null {
+    try {
+      if (typeof localStorage === "undefined") return null;
+      return localStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  },
+  setItem(key: string, value: string): void {
+    try {
+      if (typeof localStorage === "undefined") return;
+      localStorage.setItem(key, value);
+    } catch {
+      // abaikan (quota / private mode)
+    }
+  },
+  removeItem(key: string): void {
+    try {
+      if (typeof localStorage === "undefined") return;
+      localStorage.removeItem(key);
+    } catch {
+      // abaikan
+    }
+  },
+  listKeys(): string[] {
+    try {
+      if (typeof localStorage === "undefined") return [];
+      const keys: string[] = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k) keys.push(k);
+      }
+      return keys;
+    } catch {
+      return [];
+    }
+  },
+};
+
 const getCachedData = <T>(key: string): { data: T; isStale: boolean } | null => {
   try {
-    const cached = localStorage.getItem(key);
+    const cached = safeLocalStorage.getItem(key);
     if (!cached) return null;
     const parsed = JSON.parse(cached);
     const age = Date.now() - parsed.timestamp;
     if (age > CACHE_MAX_AGE) {
-      localStorage.removeItem(key);
+      safeLocalStorage.removeItem(key);
       return null;
     }
     return {
@@ -29,16 +70,26 @@ const setCachedData = <T>(key: string, data: T): void => {
       timestamp: Date.now(),
       data,
     };
-    localStorage.setItem(key, JSON.stringify(payload));
+    safeLocalStorage.setItem(key, JSON.stringify(payload));
   } catch (e) {
     console.warn("Gagal menulis cache localStorage:", e);
   }
 };
 
+/**
+ * Hapus semua entry localStorage yang mengandung substring tertentu.
+ * Aman untuk SSR / private mode (no-op bila localStorage tidak tersedia).
+ */
+export const clearLocalStorageByPattern = (pattern: string): number => {
+  const keys = safeLocalStorage.listKeys().filter((k) => k.includes(pattern));
+  keys.forEach((k) => safeLocalStorage.removeItem(k));
+  return keys.length;
+};
+
 const fetchWithTimeout = async (
   url: string,
   options: RequestInit = {},
-  timeoutMs = 5000,
+  timeoutMs = 10000,
 ): Promise<Response> => {
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeoutMs);
@@ -86,6 +137,32 @@ export interface CkanDataset {
   organization: {
     title: string;
   };
+}
+
+export interface CkanResource {
+  id: string;
+  name: string;
+  format: string;
+  url: string;
+  description?: string;
+  datastore_active?: boolean;
+}
+
+export interface CkanCatalogEntry {
+  id: string;
+  title: string;
+  notes: string;
+  org: string;
+  tags: string[];
+  csvUrls: string[];
+  xlsxUrls: string[];
+  totalResources: number;
+}
+
+export interface CkanCatalog {
+  totalDatasets: number;
+  entries: CkanCatalogEntry[];
+  fetchedAt: string;
 }
 
 export interface CkanResponse {
@@ -145,6 +222,87 @@ export interface LahanDesa {
   jumlah: number;
   tahun: string;
 }
+
+// Katalog lengkap dataset OpenData Banjarnegara (untuk konteks ChatBot "Si Pertani")
+// Mengambil 151 dataset relevan pertanian + URL resource CSV/XLSX masing-masing
+export const fetchOpenDataCatalog = async (): Promise<CkanCatalog> => {
+  const cacheKey = "ckan_open_data_catalog_cache_v1";
+  const cached = getCachedData<CkanCatalog>(cacheKey);
+
+  const fetchFresh = async (): Promise<CkanCatalog> => {
+    // Beberapa query untuk mencakup variasi dataset yang tersedia
+    const queries = ["pertanian", "pangan", "hortikultura", "perkebunan", "peternakan", "perikanan", "lahan"];
+    const allResults: any[] = [];
+    const seen = new Set<string>();
+
+    for (const q of queries) {
+      try {
+        const response = await fetchWithTimeout(
+          `/api/3/action/package_search?q=${encodeURIComponent(q)}&rows=100`,
+        );
+        if (!response.ok) continue;
+        const data = await response.json();
+        const results = data?.result?.results || [];
+        for (const r of results) {
+          if (!seen.has(r.id)) {
+            seen.add(r.id);
+            allResults.push(r);
+          }
+        }
+      } catch (err) {
+        console.warn(`Gagal fetch katalog q=${q}:`, err);
+      }
+    }
+
+    const entries: CkanCatalogEntry[] = allResults.map((d: any) => {
+      const resources: CkanResource[] = d.resources || [];
+      return {
+        id: d.id,
+        title: d.title,
+        notes: (d.notes || "").slice(0, 200),
+        org: d.organization?.title || "Tidak diketahui",
+        tags: (d.tags || []).map((t: any) => t.display_name || t.name),
+        csvUrls: resources
+          .filter((r: any) => (r.format || "").toUpperCase() === "CSV")
+          .map((r: any) => r.url)
+          .filter(Boolean),
+        xlsxUrls: resources
+          .filter((r: any) => ["XLSX", "XLS"].includes((r.format || "").toUpperCase()))
+          .map((r: any) => r.url)
+          .filter(Boolean),
+        totalResources: resources.length,
+      };
+    });
+
+    const catalog: CkanCatalog = {
+      totalDatasets: entries.length,
+      entries,
+      fetchedAt: new Date().toISOString(),
+    };
+
+    setCachedData(cacheKey, catalog);
+    return catalog;
+  };
+
+  if (cached) {
+    if (cached.isStale) {
+      console.log("Cache katalog opendata stale. Memicu silent update...");
+      fetchFresh().catch((err) => console.warn("Gagal update background katalog:", err));
+    }
+    return cached.data;
+  }
+
+  try {
+    return await fetchFresh();
+  } catch (err) {
+    console.warn("Gagal fetch online katalog opendata, menggunakan fallback kosong.");
+    return {
+      totalDatasets: 0,
+      entries: [],
+      fetchedAt: new Date().toISOString(),
+    };
+  }
+};
 
 export const fetchLahanBanjarnegara = async (): Promise<LahanDesa[]> => {
   const cacheKey = "banjarnegara_lahan_cache_v3";
@@ -1354,26 +1512,35 @@ const fetchKelompokTaniHutan = async (): Promise<KelompokTaniRow[]> => {
 };
 
 export const fetchKelompokTani = async (): Promise<KelompokTaniRow[]> => {
-  const cacheKey = "banjarnegara_kelompok_tani_cache_v3";
-  const cached = getCachedData<KelompokTaniRow[]>(cacheKey);
+  const cacheKey = "banjarnegara_kelompok_tani_cache_v4";
 
+  const fetchFresh = async (): Promise<KelompokTaniRow[]> => {
+    let fallbackData: KelompokTaniRow[] = [];
+    try {
+      const response = await fetch("/data/kelompok-tani-fallback.json");
+      if (response.ok) {
+        fallbackData = (await response.json()) as KelompokTaniRow[];
+      }
+    } catch {
+      fallbackData = [];
+    }
+    const hutanData = await fetchKelompokTaniHutan();
+    const mergedData = mergeKelompokTaniHutan(fallbackData, hutanData);
+    setCachedData(cacheKey, mergedData);
+    return mergedData;
+  };
+
+  const cached = getCachedData<KelompokTaniRow[]>(cacheKey);
   if (cached) {
+    if (cached.isStale) {
+      fetchFresh().catch((err) =>
+        console.warn("Gagal update background kelompoktani:", err),
+      );
+    }
     return cached.data;
   }
 
-  let fallbackData: KelompokTaniRow[] = [];
-  try {
-    const response = await fetch("/data/kelompok-tani-fallback.json");
-    if (response.ok) {
-      fallbackData = (await response.json()) as KelompokTaniRow[];
-    }
-  } catch {
-    fallbackData = [];
-  }
-  const hutanData = await fetchKelompokTaniHutan();
-  const mergedData = mergeKelompokTaniHutan(fallbackData, hutanData);
-  setCachedData(cacheKey, mergedData);
-  return mergedData;
+  return fetchFresh();
 };
 
 

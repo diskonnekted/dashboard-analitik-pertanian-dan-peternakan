@@ -28,33 +28,93 @@ import {
   Sprout,
 } from "lucide-react";
 
-/* ── Skeleton ─────────────────────────────────────────────── */
-function SkeletonCard({ className = "" }: { className?: string }) {
+/* ── Skeleton (gradient shimmer berwarna) ─────────────────── */
+const skeletonThemes = [
+  {
+    wrapper: "bg-gradient-to-br from-sky-50 via-white to-blue-50 border-sky-200",
+    bar: "bg-gradient-to-r from-sky-300 to-blue-400",
+    topAccent: "bg-gradient-to-r from-sky-400 to-blue-500",
+    blob: "bg-sky-300/30",
+    icon: "bg-gradient-to-br from-sky-400 to-blue-600",
+  },
+  {
+    wrapper: "bg-gradient-to-br from-amber-50 via-white to-orange-50 border-amber-200",
+    bar: "bg-gradient-to-r from-amber-300 to-orange-400",
+    topAccent: "bg-gradient-to-r from-amber-400 to-orange-500",
+    blob: "bg-amber-300/30",
+    icon: "bg-gradient-to-br from-amber-400 to-orange-600",
+  },
+  {
+    wrapper: "bg-gradient-to-br from-emerald-50 via-white to-lime-50 border-emerald-200",
+    bar: "bg-gradient-to-r from-emerald-300 to-lime-400",
+    topAccent: "bg-gradient-to-r from-emerald-400 to-lime-500",
+    blob: "bg-emerald-300/30",
+    icon: "bg-gradient-to-br from-emerald-400 to-green-600",
+  },
+  {
+    wrapper: "bg-gradient-to-br from-violet-50 via-white to-fuchsia-50 border-violet-200",
+    bar: "bg-gradient-to-r from-violet-300 to-fuchsia-400",
+    topAccent: "bg-gradient-to-r from-violet-400 to-fuchsia-500",
+    blob: "bg-violet-300/30",
+    icon: "bg-gradient-to-br from-violet-400 to-fuchsia-600",
+  },
+];
+
+function SkeletonCard({
+  className = "",
+  themeIndex = 0,
+}: {
+  className?: string;
+  themeIndex?: number;
+}) {
+  const theme = skeletonThemes[themeIndex % skeletonThemes.length];
   return (
     <div
-      className={`bg-white border border-slate-200 rounded-2xl shadow-sm p-6 animate-pulse ${className}`}
+      className={`relative overflow-hidden ${theme.wrapper} border rounded-2xl shadow-sm p-4 md:p-5 ${className}`}
     >
-      <div className="h-4 w-24 bg-slate-200 rounded mb-4" />
-      <div className="h-3 w-16 bg-slate-100 rounded mb-2" />
-      <div className="h-3 w-20 bg-slate-100 rounded" />
+      {/* Top accent bar dengan shimmer */}
+      <div className={`absolute top-0 left-0 right-0 h-1 ${theme.topAccent}`} />
+      {/* Blob dekoratif */}
+      <div className={`absolute -top-6 -right-6 w-20 h-20 rounded-full opacity-30 blur-2xl ${theme.blob}`} />
+      {/* Icon placeholder */}
+      <div className={`relative w-9 h-9 rounded-xl mb-3 animate-pulse ${theme.icon} opacity-70 shadow-md`} />
+      {/* Value placeholder */}
+      <div className={`relative h-5 w-24 rounded mb-2 ${theme.bar} animate-pulse opacity-70`} />
+      {/* Label placeholder */}
+      <div className={`relative h-3 w-16 rounded ${theme.bar} animate-pulse opacity-50`} />
+      {/* Shimmer overlay */}
+      <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/40 to-transparent pointer-events-none" />
     </div>
   );
 }
 
-function SkeletonChart() {
+function SkeletonChart({
+  themeIndex = 0,
+}: {
+  themeIndex?: number;
+}) {
+  const theme = skeletonThemes[themeIndex % skeletonThemes.length];
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 animate-pulse">
-      <div className="h-4 w-32 bg-slate-200 rounded mb-3" />
-      <div className="h-3 w-48 bg-slate-100 rounded mb-6" />
+    <div className={`relative overflow-hidden ${theme.wrapper} border rounded-2xl shadow-sm p-6`}>
+      <div className={`absolute top-0 left-0 right-0 h-1 ${theme.topAccent}`} />
+      <div className={`absolute -top-12 -right-12 w-40 h-40 rounded-full opacity-30 blur-3xl ${theme.blob}`} />
+      <div className="relative flex flex-col mb-4">
+        <div className={`h-4 w-32 rounded mb-2 ${theme.bar} animate-pulse opacity-70`} />
+        <div className={`h-3 w-48 rounded ${theme.bar} animate-pulse opacity-50`} />
+      </div>
       <div className="flex items-end gap-2 h-[250px]">
         {Array.from({ length: 8 }).map((_, i) => (
           <div
             key={i}
-            className="flex-1 bg-slate-100 rounded-t"
-            style={{ height: `${30 + Math.random() * 60}%` }}
+            className={`flex-1 ${theme.bar} rounded-t animate-pulse opacity-70`}
+            style={{
+              height: `${30 + ((i * 11) % 60)}%`,
+              animationDelay: `${i * 80}ms`,
+            }}
           />
         ))}
       </div>
+      <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/30 to-transparent pointer-events-none" />
     </div>
   );
 }
@@ -263,33 +323,45 @@ export default function SuitabilityPage() {
       label: "Total Produksi",
       value: `${formatNum(totalAll)} Ton`,
       icon: TrendingUp,
-      color: "text-blue-600",
-      bg: "bg-blue-50",
-      ring: "ring-blue-100",
+      iconColor: "text-white",
+      iconBg: "bg-gradient-to-br from-sky-400 to-blue-600",
+      cardBg: "bg-gradient-to-br from-sky-50 via-white to-blue-50",
+      border: "border-sky-200",
+      accent: "bg-sky-500",
+      valueColor: "text-sky-900",
     },
     {
       label: "Komoditas Dominan",
       value: primaryCrop?.value > 0 ? primaryCrop.label : "N/A",
       icon: Award,
-      color: "text-amber-600",
-      bg: "bg-amber-50",
-      ring: "ring-amber-100",
+      iconColor: "text-white",
+      iconBg: "bg-gradient-to-br from-amber-400 to-orange-600",
+      cardBg: "bg-gradient-to-br from-amber-50 via-white to-orange-50",
+      border: "border-amber-200",
+      accent: "bg-amber-500",
+      valueColor: "text-amber-900",
     },
     {
       label: "Komoditas Aktif",
       value: `${activeCount} / 8`,
       icon: Sprout,
-      color: "text-emerald-600",
-      bg: "bg-emerald-50",
-      ring: "ring-emerald-100",
+      iconColor: "text-white",
+      iconBg: "bg-gradient-to-br from-emerald-400 to-green-600",
+      cardBg: "bg-gradient-to-br from-emerald-50 via-white to-lime-50",
+      border: "border-emerald-200",
+      accent: "bg-emerald-500",
+      valueColor: "text-emerald-900",
     },
     {
       label: "Layak Ekspansi",
       value: `${suitableCount} Komoditas`,
       icon: Layers,
-      color: "text-violet-600",
-      bg: "bg-violet-50",
-      ring: "ring-violet-100",
+      iconColor: "text-white",
+      iconBg: "bg-gradient-to-br from-violet-400 to-fuchsia-600",
+      cardBg: "bg-gradient-to-br from-violet-50 via-white to-fuchsia-50",
+      border: "border-violet-200",
+      accent: "bg-violet-500",
+      valueColor: "text-violet-900",
     },
   ];
 
@@ -297,31 +369,48 @@ export default function SuitabilityPage() {
     <DefaultLayout>
       <section className="flex flex-col gap-6 py-2">
         {/* ── Hero ──────────────────────────────────────── */}
-        <section className="relative overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 via-white to-blue-50/40 animate-fade-in">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-blue-100/30 rounded-full blur-3xl -translate-y-1/3 translate-x-1/4" />
-          <div className="absolute bottom-0 left-1/3 w-48 h-48 bg-amber-100/20 rounded-full blur-3xl translate-y-1/2" />
+        <section className="relative overflow-hidden rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-600 animate-fade-in shadow-lg shadow-emerald-500/20">
+          <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "radial-gradient(circle at 20% 20%, white 1px, transparent 1px), radial-gradient(circle at 80% 60%, white 1px, transparent 1px)", backgroundSize: "24px 24px, 32px 32px" }} />
+          <div className="absolute top-0 right-0 w-72 h-72 bg-amber-300/30 rounded-full blur-3xl -translate-y-1/3 translate-x-1/4" />
+          <div className="absolute bottom-0 left-1/4 w-56 h-56 bg-lime-300/30 rounded-full blur-3xl translate-y-1/2" />
+          <div className="absolute top-4 right-6 w-12 h-12 rounded-full bg-yellow-300/40 blur-xl" />
+          <div className="absolute bottom-8 right-1/3 w-8 h-8 rounded-full bg-amber-200/50 blur-md" />
           <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6 px-6 py-6 md:px-8 md:py-8">
             <div className="flex-1">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 mb-3">
-                <Leaf className="text-blue-600" size={14} />
-                <span className="text-[10px] font-mono font-bold text-blue-700 uppercase tracking-wider">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 mb-3">
+                <Leaf className="text-white" size={14} />
+                <span className="text-[10px] font-mono font-bold text-white uppercase tracking-wider">
                   Bidang Hortikultura & Perkebunan
                 </span>
               </div>
-              <h2 className="text-2xl sm:text-3xl md:text-4xl leading-tight font-bold tracking-tight text-slate-800">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl leading-tight font-black tracking-tight text-white drop-shadow-sm">
                 Kesesuaian Lahan Sayuran
               </h2>
-              <p className="text-xs md:text-sm font-medium text-slate-500 mt-2 max-w-2xl">
+              <p className="text-xs md:text-sm font-medium text-emerald-50 mt-2 max-w-2xl">
                 Pemetaan kecocokan lahan aktual berdasarkan volume produksi
                 sayuran riil Kabupaten Banjarnegara.
               </p>
+              <div className="flex flex-wrap gap-2 mt-4">
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/15 backdrop-blur-sm text-white text-[10px] font-mono font-bold uppercase border border-white/20">
+                  <Sprout size={11} /> 8 Komoditas
+                </span>
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-400/30 backdrop-blur-sm text-white text-[10px] font-mono font-bold uppercase border border-amber-200/40">
+                  <Award size={11} /> Data Aktual
+                </span>
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-cyan-300/20 backdrop-blur-sm text-white text-[10px] font-mono font-bold uppercase border border-cyan-200/30">
+                  <TrendingUp size={11} /> Real-time Analytics
+                </span>
+              </div>
             </div>
             <div className="w-full md:w-44 lg:w-52 shrink-0 flex items-center justify-center">
-              <img
-                src="/img/suitability.png"
-                alt="Kesesuaian Lahan"
-                className="w-full max-h-28 md:max-h-32 object-contain drop-shadow-sm"
-              />
+              <div className="relative">
+                <div className="absolute inset-0 bg-white/30 rounded-full blur-2xl scale-90" />
+                <img
+                  src="/img/suitability.png"
+                  alt="Kesesuaian Lahan"
+                  className="relative w-full max-h-28 md:max-h-32 object-contain drop-shadow-lg"
+                />
+              </div>
             </div>
           </div>
         </section>
@@ -331,14 +420,14 @@ export default function SuitabilityPage() {
             {/* Skeleton KPI Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {Array.from({ length: 4 }).map((_, i) => (
-                <SkeletonCard key={i} />
+                <SkeletonCard key={i} themeIndex={i} />
               ))}
             </div>
             {/* Skeleton Charts */}
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-              <SkeletonChart />
+              <SkeletonChart themeIndex={3} />
               <div className="lg:col-span-2">
-                <SkeletonChart />
+                <SkeletonChart themeIndex={1} />
               </div>
             </div>
           </>
@@ -351,17 +440,21 @@ export default function SuitabilityPage() {
                 return (
                   <div
                     key={kpi.label}
-                    className={`bg-white border border-slate-200 rounded-2xl shadow-sm p-4 md:p-5 hover:shadow-md transition-all duration-200 ring-1 ${kpi.ring}`}
+                    className={`relative overflow-hidden ${kpi.cardBg} border ${kpi.border} rounded-2xl shadow-sm p-4 md:p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200`}
                   >
-                    <div className="flex items-start justify-between mb-3">
-                      <div className={`p-2 rounded-xl ${kpi.bg}`}>
-                        <Icon className={kpi.color} size={18} />
+                    {/* Top accent bar */}
+                    <div className={`absolute top-0 left-0 right-0 h-1 ${kpi.accent}`} />
+                    {/* Decorative blob */}
+                    <div className={`absolute -top-6 -right-6 w-20 h-20 rounded-full opacity-20 blur-2xl ${kpi.accent}`} />
+                    <div className="relative flex items-start justify-between mb-3">
+                      <div className={`p-2.5 rounded-xl shadow-md ${kpi.iconBg}`}>
+                        <Icon className={kpi.iconColor} size={18} />
                       </div>
                     </div>
-                    <p className="text-lg md:text-xl font-bold text-slate-800 font-mono leading-tight">
+                    <p className={`text-lg md:text-xl font-black font-mono leading-tight ${kpi.valueColor}`}>
                       {kpi.value}
                     </p>
-                    <p className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider mt-1">
+                    <p className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider mt-1">
                       {kpi.label}
                     </p>
                   </div>
@@ -370,22 +463,29 @@ export default function SuitabilityPage() {
             </div>
 
             {/* ── Filter ─────────────────────────────────── */}
-            <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-5">
-              <div className="flex items-center gap-2 mb-4">
-                <ListFilter className="text-slate-700" size={18} />
-                <h4 className="text-sm font-mono font-bold uppercase tracking-wide text-slate-700">
+            <div className="relative overflow-hidden bg-gradient-to-r from-indigo-50 via-white to-cyan-50 border border-indigo-200 rounded-2xl shadow-sm p-5">
+              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-blue-500 to-cyan-500" />
+              <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-indigo-200/30 rounded-full blur-3xl" />
+              <div className="relative flex items-center gap-2 mb-4">
+                <div className="p-1.5 rounded-lg bg-gradient-to-br from-indigo-500 to-blue-600 shadow-md shadow-indigo-300/50">
+                  <ListFilter className="text-white" size={16} />
+                </div>
+                <h4 className="text-sm font-mono font-bold uppercase tracking-wide text-indigo-900">
                   Filter Analisis
                 </h4>
+                <span className="ml-auto text-[10px] font-mono font-bold text-indigo-600 bg-indigo-100 px-2 py-0.5 rounded-full border border-indigo-200 uppercase">
+                  {selectedKec} • {selectedYear}
+                </span>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="relative grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1.5">
-                  <span className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider">
+                  <span className="text-[10px] font-mono font-bold text-indigo-700 uppercase tracking-wider">
                     Kecamatan
                   </span>
                   <select
                     value={selectedKec}
                     onChange={(e) => setSelectedKec(e.target.value)}
-                    className="w-full border border-slate-200 rounded-xl px-3 py-2.5 font-mono font-bold text-xs uppercase bg-white shadow-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all"
+                    className="w-full border border-indigo-200 rounded-xl px-3 py-2.5 font-mono font-bold text-xs uppercase bg-white shadow-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400 transition-all hover:border-indigo-300"
                   >
                     <option value="Semua Kecamatan">SEMUA KECAMATAN</option>
                     {Array.from(new Set(vegData.map((d) => d.kecamatan)))
@@ -398,13 +498,13 @@ export default function SuitabilityPage() {
                   </select>
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <span className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider">
+                  <span className="text-[10px] font-mono font-bold text-cyan-700 uppercase tracking-wider">
                     Tahun Data
                   </span>
                   <select
                     value={selectedYear}
                     onChange={(e) => setSelectedYear(e.target.value)}
-                    className="w-full border border-slate-200 rounded-xl px-3 py-2.5 font-mono font-bold text-xs uppercase bg-white shadow-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all"
+                    className="w-full border border-cyan-200 rounded-xl px-3 py-2.5 font-mono font-bold text-xs uppercase bg-white shadow-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-cyan-300 focus:border-cyan-400 transition-all hover:border-cyan-300"
                   >
                     {years.map((yr) => (
                       <option key={yr} value={yr}>
@@ -419,15 +519,19 @@ export default function SuitabilityPage() {
             {/* ── Charts ─────────────────────────────────── */}
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
               {/* Radar */}
-              <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 flex flex-col justify-between hover:shadow-md transition-all duration-200">
-                <div className="flex flex-col mb-4">
+              <div className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-indigo-50 border border-blue-200 rounded-2xl shadow-sm p-6 flex flex-col justify-between hover:shadow-lg transition-all duration-200">
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500" />
+                <div className="absolute -top-12 -right-12 w-40 h-40 bg-blue-300/20 rounded-full blur-3xl" />
+                <div className="relative flex flex-col mb-4">
                   <div className="flex items-center gap-2 mb-1">
-                    <Compass className="text-blue-600" size={18} />
-                    <h4 className="text-sm font-mono font-bold uppercase tracking-wide text-slate-700">
+                    <div className="p-1.5 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 shadow-md shadow-blue-300/50">
+                      <Compass className="text-white" size={14} />
+                    </div>
+                    <h4 className="text-sm font-mono font-bold uppercase tracking-wide text-blue-900">
                       Radar Karakteristik
                     </h4>
                   </div>
-                  <p className="text-[10px] font-mono font-bold text-slate-400 uppercase">
+                  <p className="text-[10px] font-mono font-bold text-blue-600/70 uppercase">
                     Sebaran hasil panen sayuran
                     {activeDataYear !== selectedYear
                       ? ` (data ${activeDataYear})`
@@ -478,13 +582,13 @@ export default function SuitabilityPage() {
                     </p>
                   )}
                 </div>
-                <div className="mt-4 pt-4 border-t border-slate-100 text-xs font-mono text-slate-500">
+                <div className="relative mt-4 pt-4 border-t border-blue-200/60 text-xs font-mono text-slate-600">
                   Kecamatan{" "}
-                  <span className="text-slate-800 font-bold">
+                  <span className="text-blue-900 font-bold bg-blue-100 px-1.5 py-0.5 rounded">
                     {selectedKec}
                   </span>{" "}
                   produksi dominan{" "}
-                  <span className="text-emerald-600 font-bold">
+                  <span className="text-emerald-700 font-bold bg-emerald-100 px-1.5 py-0.5 rounded">
                     {primaryCrop?.value > 0 ? primaryCrop.label : "N/A"}
                   </span>
                   {activeDataYear !== selectedYear
@@ -495,15 +599,19 @@ export default function SuitabilityPage() {
               </div>
 
               {/* Bar Chart */}
-              <div className="lg:col-span-2 bg-white border border-slate-200 rounded-2xl shadow-sm p-6 hover:shadow-md transition-all duration-200">
-                <div className="flex flex-col mb-4">
+              <div className="relative overflow-hidden lg:col-span-2 bg-gradient-to-br from-amber-50 via-white to-orange-50 border border-amber-200 rounded-2xl shadow-sm p-6 hover:shadow-lg transition-all duration-200">
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 via-orange-500 to-red-500" />
+                <div className="absolute -top-12 -left-12 w-44 h-44 bg-amber-300/20 rounded-full blur-3xl" />
+                <div className="relative flex flex-col mb-4">
                   <div className="flex items-center gap-2 mb-1">
-                    <Tractor className="text-amber-600" size={18} />
-                    <h4 className="text-sm font-mono font-bold uppercase tracking-wide text-slate-700">
+                    <div className="p-1.5 rounded-lg bg-gradient-to-br from-amber-500 to-orange-600 shadow-md shadow-amber-300/50">
+                      <Tractor className="text-white" size={14} />
+                    </div>
+                    <h4 className="text-sm font-mono font-bold uppercase tracking-wide text-amber-900">
                       Rincian Hasil Panen Sayuran (Ton)
                     </h4>
                   </div>
-                  <p className="text-[10px] font-mono font-bold text-slate-400 uppercase">
+                  <p className="text-[10px] font-mono font-bold text-amber-700/70 uppercase">
                     Volume produksi riil sayuran di wilayah terpilih
                   </p>
                 </div>
@@ -578,7 +686,7 @@ export default function SuitabilityPage() {
                       </BarChart>
                     </ResponsiveContainer>
                   ) : (
-                    <div className="flex items-center justify-center h-full text-slate-400 font-mono font-bold uppercase italic text-sm">
+                    <div className="flex items-center justify-center h-full text-amber-700/60 font-mono font-bold uppercase italic text-sm">
                       Tidak ada catatan produksi sayuran pada tahun ini.
                     </div>
                   )}
@@ -587,24 +695,28 @@ export default function SuitabilityPage() {
             </div>
 
             {/* ── Suitability Matrix ─────────────────────── */}
-            <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 hover:shadow-md transition-all duration-200">
-              <div className="flex flex-col mb-5">
+            <div className="relative overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-lime-50 border border-emerald-200 rounded-2xl shadow-sm p-6 hover:shadow-lg transition-all duration-200">
+              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 via-green-500 to-lime-500" />
+              <div className="absolute -bottom-12 -right-12 w-48 h-48 bg-emerald-300/20 rounded-full blur-3xl" />
+              <div className="relative flex flex-col mb-5">
                 <div className="flex items-center gap-2 mb-1">
-                  <Leaf className="text-emerald-600" size={18} />
-                  <h4 className="text-base font-mono font-bold uppercase tracking-wide text-slate-700">
+                  <div className="p-1.5 rounded-lg bg-gradient-to-br from-emerald-500 to-green-600 shadow-md shadow-emerald-300/50">
+                    <Leaf className="text-white" size={14} />
+                  </div>
+                  <h4 className="text-base font-mono font-bold uppercase tracking-wide text-emerald-900">
                     Matriks Kesesuaian Komoditas Aktual
                   </h4>
                 </div>
-                <p className="text-[10px] font-mono font-bold text-slate-400 uppercase">
+                <p className="text-[10px] font-mono font-bold text-emerald-700/70 uppercase">
                   Indeks kecocokan lahan berdasarkan produktivitas riil di
                   lapangan
                 </p>
               </div>
 
-              <div className="overflow-x-auto">
+              <div className="relative overflow-x-auto rounded-xl border border-emerald-100">
                 <table className="w-full text-left border-collapse whitespace-nowrap">
                   <thead>
-                    <tr className="border-b border-slate-200 text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider">
+                    <tr className="bg-gradient-to-r from-emerald-100 via-green-50 to-lime-100 border-b-2 border-emerald-300 text-[10px] font-mono font-black text-emerald-900 uppercase tracking-wider">
                       <th className="pb-3 px-3">Komoditas</th>
                       <th className="pb-3 px-3 text-right">Panen (Ton)</th>
                       <th className="pb-3 px-3 text-right">% Share</th>
@@ -613,21 +725,22 @@ export default function SuitabilityPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {sortedCrops.map((crop) => {
+                    {sortedCrops.map((crop, idx) => {
                       const status = getSuitabilityStatus(crop.value);
                       const rec = getRecommendation(crop.value);
                       const maxVal = sortedCrops[0]?.value || 1;
                       const barWidth = (crop.value / maxVal) * 100;
+                      const rowStripe = idx % 2 === 0 ? "bg-white/60" : "bg-emerald-50/40";
 
                       return (
                         <tr
                           key={crop.key}
-                          className="border-b border-slate-100 hover:bg-slate-50/70 transition-colors text-sm"
+                          className={`border-b border-emerald-100/60 ${rowStripe} hover:bg-emerald-100/40 transition-colors text-sm`}
                         >
                           <td className="py-4 px-3">
                             <div className="flex items-center gap-2.5">
                               <span
-                                className="w-3.5 h-3.5 rounded-md shrink-0"
+                                className="w-3.5 h-3.5 rounded-md shrink-0 shadow-sm ring-1 ring-black/5"
                                 style={{ backgroundColor: crop.color }}
                               />
                               <span className="font-mono font-bold text-slate-800 text-xs">
@@ -653,7 +766,7 @@ export default function SuitabilityPage() {
                           </td>
                           <td className="py-4 px-6">
                             <span
-                              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-mono font-bold text-[10px] uppercase tracking-wide ${status.badge}`}
+                              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-mono font-bold text-[10px] uppercase tracking-wide shadow-sm ${status.badge}`}
                             >
                               <span
                                 className={`w-1.5 h-1.5 rounded-full ${status.dot}`}
@@ -661,7 +774,7 @@ export default function SuitabilityPage() {
                               {status.label}
                             </span>
                           </td>
-                          <td className="py-4 px-3 text-slate-500 text-[10px] font-mono whitespace-normal max-w-xs leading-relaxed">
+                          <td className="py-4 px-3 text-slate-600 text-[10px] font-mono whitespace-normal max-w-xs leading-relaxed">
                             {rec}
                           </td>
                         </tr>
