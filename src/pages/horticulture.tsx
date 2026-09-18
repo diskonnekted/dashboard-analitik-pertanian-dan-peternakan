@@ -3,6 +3,7 @@ import DefaultLayout from "@/layouts/default";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { fetchVegetableArea, fetchVegetableProduction, fetchFruitProduction, fetchAnnualHorticultureProduction, VegetableArea, VegetableProduction, FruitProduction, AnnualHorticultureProduction } from "@/services/api";
 import { Sprout, Calendar, MapPin, TrendingUp, Filter, AlertTriangle, ShieldCheck, FileSpreadsheet, Pizza } from "lucide-react";
+import { PageHeader, KpiCard, SectionCard, TrendPill, Badge, LoadingSpinner } from "@/components/ui";
 
 type Category = "sayuran" | "buah";
 type Metric = "luas" | "produksi" | "produktivitas";
@@ -504,35 +505,24 @@ export default function HorticulturePage() {
     <DefaultLayout>
       <section className="flex flex-col gap-8 py-2">
         {/* Hero / intro */}
-        <section className="relative text-left animate-fade-in py-4 md:py-8 flex flex-col md:flex-row items-center justify-between gap-8 border-b border-slate-200 pb-8">
-          <div className="relative z-10 flex-1">
-            <h2 className="text-2xl sm:text-4xl leading-tight font-bold tracking-tight text-slate-800">
-            Analitik Hortikultura
-          </h2>
-            <p className="text-xs md:text-sm font-medium text-slate-500 mt-2 max-w-2xl border-l border-blue-500 pl-3">
-            Pemantauan Produksi dan Lahan Sayuran & Buah-Buahan Kabupaten Banjarnegara.
-          </p>
-          </div>
-          <div className="w-full md:w-48 lg:w-64 shrink-0 flex items-center justify-center">
-            <img
-              src="/img/horticulture.png"
-              alt="Hortikultura"
-              className="w-full max-h-32 md:max-h-36 object-contain"
-            />
-          </div>
-        </section>
+        <PageHeader
+          icon={<Sprout className="h-6 w-6" />}
+          title="Analitik Hortikultura"
+          subtitle="Pemantauan produksi dan lahan sayuran & buah-buahan per kecamatan di Kabupaten Banjarnegara."
+          actions={<Badge tone="blue">Tahun {selectedYear}</Badge>}
+        />
 
         {/* Category & Filters Panel */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 bg-white border border-slate-200 p-6 shadow-sm text-left transition-all duration-300 hover:shadow-md">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 bg-white border border-slate-200 rounded-lg p-4 shadow-sm text-left">
           {/* Sub-Sektor Hortikultura */}
           <div className="flex flex-col gap-2">
-            <label className="text-xs font-mono font-bold uppercase text-slate-500">Sub-Sektor</label>
+            <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">Sub-Sektor</label>
             <div className="grid grid-cols-2 gap-2">
               <button
                 onClick={() => setCategory("sayuran")}
-                className={`py-2 px-1 border border-slate-200 font-mono font-bold text-xs uppercase flex items-center justify-center gap-1 transition-all ${
+                className={`py-2 px-1 border border-slate-200 text-xs font-semibold uppercase flex items-center justify-center gap-1 transition-all ${
                   category === "sayuran"
-                    ? "bg-blue-600 text-white shadow-sm"
+                    ? "bg-blue-800 text-white shadow-sm"
                     : "bg-white text-slate-800 hover:bg-slate-100 shadow-sm"
                 }`}
               >
@@ -541,9 +531,9 @@ export default function HorticulturePage() {
               </button>
               <button
                 onClick={() => setCategory("buah")}
-                className={`py-2 px-1 border border-slate-200 font-mono font-bold text-xs uppercase flex items-center justify-center gap-1 transition-all ${
+                className={`py-2 px-1 border border-slate-200 text-xs font-semibold uppercase flex items-center justify-center gap-1 transition-all ${
                   category === "buah"
-                    ? "bg-blue-600 text-white shadow-sm"
+                    ? "bg-blue-800 text-white shadow-sm"
                     : "bg-white text-slate-800 hover:bg-slate-100 shadow-sm"
                 }`}
               >
@@ -555,9 +545,9 @@ export default function HorticulturePage() {
 
           {/* Metrik Analisis */}
           <div className="flex flex-col gap-2">
-            <label className="text-xs font-mono font-bold uppercase text-slate-500">Metrik Analisis</label>
+            <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">Metrik Analisis</label>
             {category === "buah" ? (
-              <div className="py-2 px-3 border border-slate-200 bg-slate-50 text-slate-400 font-mono font-bold text-xs uppercase flex items-center justify-center gap-1">
+              <div className="py-2 px-3 border border-slate-200 bg-slate-50 text-slate-400 text-xs font-semibold uppercase flex items-center justify-center gap-1">
                 <Sprout size={14} />
                 Hanya Produksi (Ton)
               </div>
@@ -565,9 +555,9 @@ export default function HorticulturePage() {
               <div className="grid grid-cols-3 gap-2">
                 <button
                   onClick={() => setMetric("luas")}
-                  className={`py-1.5 px-0.5 border border-slate-200 font-mono font-bold text-[9px] sm:text-[10px] uppercase flex items-center justify-center gap-0.5 transition-all ${
+                  className={`py-1.5 px-0.5 border border-slate-200 text-[9px] sm:text-[10px] font-semibold uppercase flex items-center justify-center gap-0.5 transition-all ${
                     metric === "luas"
-                      ? "bg-blue-600 text-white shadow-sm"
+                      ? "bg-blue-800 text-white shadow-sm"
                       : "bg-white text-slate-800 hover:bg-slate-100 shadow-sm"
                   }`}
                 >
@@ -575,9 +565,9 @@ export default function HorticulturePage() {
                 </button>
                 <button
                   onClick={() => setMetric("produksi")}
-                  className={`py-1.5 px-0.5 border border-slate-200 font-mono font-bold text-[9px] sm:text-[10px] uppercase flex items-center justify-center gap-0.5 transition-all ${
+                  className={`py-1.5 px-0.5 border border-slate-200 text-[9px] sm:text-[10px] font-semibold uppercase flex items-center justify-center gap-0.5 transition-all ${
                     metric === "produksi"
-                      ? "bg-blue-600 text-white shadow-sm"
+                      ? "bg-blue-800 text-white shadow-sm"
                       : "bg-white text-slate-800 hover:bg-slate-100 shadow-sm"
                   }`}
                 >
@@ -585,9 +575,9 @@ export default function HorticulturePage() {
                 </button>
                 <button
                   onClick={() => setMetric("produktivitas")}
-                  className={`py-1.5 px-0.5 border border-slate-200 font-mono font-bold text-[9px] sm:text-[10px] uppercase flex items-center justify-center gap-0.5 transition-all ${
+                  className={`py-1.5 px-0.5 border border-slate-200 text-[9px] sm:text-[10px] font-semibold uppercase flex items-center justify-center gap-0.5 transition-all ${
                     metric === "produktivitas"
-                      ? "bg-blue-600 text-white shadow-sm"
+                      ? "bg-blue-800 text-white shadow-sm"
                       : "bg-white text-slate-800 hover:bg-slate-100 shadow-sm"
                   }`}
                 >
@@ -599,13 +589,13 @@ export default function HorticulturePage() {
 
           {/* Tahun Dropdown */}
           <div className="flex flex-col gap-2">
-            <label className="text-xs font-mono font-bold uppercase text-slate-500">Tahun Data</label>
+            <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">Tahun Data</label>
             <div className="relative">
               <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-slate-500 pointer-events-none" />
               <select
                 value={selectedYear}
                 onChange={(e) => setSelectedYear(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 border border-slate-200 font-mono text-sm font-bold bg-white focus:outline-none appearance-none cursor-pointer rounded-xl"
+                className="w-full pl-9 pr-4 py-2 border border-slate-200 text-sm font-medium bg-white focus:outline-none appearance-none cursor-pointer rounded-md"
               >
                 {yearsList.map((yr) => (
                   <option key={yr} value={yr}>
@@ -618,13 +608,13 @@ export default function HorticulturePage() {
 
           {/* Kecamatan Dropdown */}
           <div className="flex flex-col gap-2">
-            <label className="text-xs font-mono font-bold uppercase text-slate-500">Pilih Kecamatan</label>
+            <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">Pilih Kecamatan</label>
             <div className="relative">
               <Filter className="absolute left-3 top-2.5 h-4 w-4 text-slate-500 pointer-events-none" />
               <select
                 value={selectedKecamatan}
                 onChange={(e) => setSelectedKecamatan(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 border border-slate-200 font-mono text-sm font-bold bg-white focus:outline-none appearance-none cursor-pointer rounded-xl"
+                className="w-full pl-9 pr-4 py-2 border border-slate-200 text-sm font-medium bg-white focus:outline-none appearance-none cursor-pointer rounded-md"
               >
                 {uniqueKecamatan.map((kec) => (
                   <option key={kec} value={kec}>
@@ -637,61 +627,35 @@ export default function HorticulturePage() {
         </div>
 
         {loading ? (
-          <div className="flex items-center justify-center h-[300px]">
-            <p className="text-slate-500 font-mono font-bold animate-pulse uppercase">
-              Memuat data hortikultura...
-            </p>
-          </div>
+          <LoadingSpinner label="Memuat data hortikultura" />
         ) : (
           <>
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Stat 1: Metric Value */}
-              <div className="bg-amber-50 border border-slate-200 p-6 shadow-sm text-left flex flex-col justify-between transition-all duration-300 hover:shadow-md">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h5 className="text-xs font-mono font-bold text-slate-500 uppercase">
-                      Total {metricLabel}
-                    </h5>
-                    <h3 className="text-3xl font-serif font-black uppercase text-slate-800 mt-1">
-                      {formatNum(stats.total)}
-                    </h3>
-                  </div>
-                  <div className="p-2 border border-slate-200 bg-white">
-                    {category === "sayuran" && activeMetric === "luas" ? <Sprout size={20} /> : <Pizza size={20} />}
-                  </div>
-                </div>
-                <div className="text-[10px] font-mono text-slate-500 mt-4 uppercase flex flex-col gap-1">
-                  {category === "sayuran" && <span>Luas Panen Total: {formatNum(stats.totalLuas)} Ha</span>}
-                  <span>Volume Produksi Total: {formatNum(stats.totalProduksi)} Ton</span>
-                </div>
-              </div>
+              <KpiCard
+                icon={category === "sayuran" && activeMetric === "luas" ? <Sprout size={20} /> : <Pizza size={20} />}
+                label={`Total ${metricLabel}`}
+                value={formatNum(stats.total)}
+                color="bg-amber-300"
+                hint={
+                  category === "buah"
+                    ? `Volume Produksi ${formatNum(stats.totalProduksi)} Ton`
+                    : `Luas Panen ${formatNum(stats.totalLuas)} Ha · Produksi ${formatNum(stats.totalProduksi)} Ton`
+                }
+              />
 
               {/* Stat 2: Top Kecamatan */}
-              <div className="bg-emerald-50 border border-slate-200 p-6 shadow-sm text-left flex flex-col justify-between transition-all duration-300 hover:shadow-md">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h5 className="text-xs font-mono font-bold text-slate-500 uppercase">
-                      Kecamatan Tertinggi
-                    </h5>
-                    <h3 className="text-2xl font-serif font-black uppercase text-slate-800 mt-1 break-words leading-tight">
-                      {stats.topDistrict}
-                    </h3>
-                  </div>
-                  <div className="p-2 border border-slate-200 bg-white">
-                    <MapPin size={20} />
-                  </div>
-                </div>
-                <p className="text-xs font-mono text-slate-500 mt-4 uppercase">
-                  Nilai: {formatNum(stats.topVal)} {category === "buah" ? "Ton" : activeMetric === "luas" ? "Ha" : activeMetric === "produksi" ? "Ton" : "Ton/Ha"}
-                </p>
-              </div>
+              <KpiCard
+                icon={<MapPin size={20} />}
+                label="Kecamatan Tertinggi"
+                value={stats.topDistrict}
+                color="bg-emerald-300"
+                hint={`Nilai ${formatNum(stats.topVal)} ${category === "buah" ? "Ton" : activeMetric === "luas" ? "Ha" : activeMetric === "produksi" ? "Ton" : "Ton/Ha"} (${selectedYear})`}
+              />
 
               {/* Stat 3: Komposisi Komoditas */}
-              <div className="bg-violet-50 border border-slate-200 p-6 shadow-sm text-left transition-all duration-300 hover:shadow-md">
-                <h5 className="text-xs font-mono font-bold text-slate-500 uppercase mb-3">
-                  Komposisi Komoditas
-                </h5>
+              <SectionCard title="Komposisi Komoditas" bodyClassName="p-5 flex flex-col justify-center">
                 <div className="flex flex-col gap-2 max-h-[160px] overflow-y-auto pr-1">
                   {stats.breakdown.map((item, idx) => {
                     const percentage =
@@ -705,7 +669,7 @@ export default function HorticulturePage() {
 
                     return (
                       <div key={item.name} className="flex flex-col gap-0.5">
-                        <div className="flex justify-between text-[10px] font-mono font-bold uppercase">
+                        <div className="flex justify-between text-[11px] font-semibold text-slate-600">
                           <span className="truncate max-w-[120px]">{item.name}</span>
                           <span>
                             {formatNum(item.value)} {category === "buah" ? "Ton" : activeMetric === "luas" ? "Ha" : activeMetric === "produksi" ? "Ton" : "T/Ha"}{" "}
@@ -714,7 +678,7 @@ export default function HorticulturePage() {
                         </div>
                         <div className="w-full bg-slate-200 h-1.5 rounded-full">
                           <div
-                            className="h-full"
+                            className="h-full rounded-full"
                             style={{
                               width: `${percentage}%`,
                               backgroundColor: [
@@ -734,54 +698,51 @@ export default function HorticulturePage() {
                     );
                   })}
                 </div>
-              </div>
+              </SectionCard>
             </div>
 
             {/* Annual Regency Ranking */}
-            <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
-              <div className="mb-5 text-left border-b border-slate-200 pb-3 flex flex-wrap items-center justify-between gap-3">
-                <div>
-                  <h4 className="text-lg font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
-                    <FileSpreadsheet className="text-emerald-600" />
-                    Produksi Buah & Sayuran Tahunan Kabupaten
-                  </h4>
-                  <p className="text-[10px] font-mono font-bold text-slate-500 uppercase mt-1">
-                    Data BPS 2025, satuan dikonversi dari kwintal ke ton
-                  </p>
+            <SectionCard
+              title="Produksi Buah & Sayuran Tahunan Kabupaten"
+              icon={<FileSpreadsheet size={16} className="text-emerald-600" />}
+              actions={
+                <div className="text-right">
+                  <p className="text-[11px] font-semibold uppercase text-slate-500">Total Produksi 2025</p>
+                  <p className="text-xl font-bold tabular-nums text-slate-800">{formatNum(annualRanking.total)} Ton</p>
                 </div>
-                <div className="text-right font-mono">
-                  <p className="text-[10px] font-bold uppercase text-slate-500">Total Produksi 2025</p>
-                  <p className="text-xl font-black text-slate-800">{formatNum(annualRanking.total)} Ton</p>
-                </div>
-              </div>
+              }
+            >
+              <p className="text-xs text-slate-500 mb-4">
+                Data BPS 2025, satuan dikonversi dari kuintal ke ton
+              </p>
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2 h-[320px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={annualRanking.items} layout="vertical" margin={{ top: 5, right: 20, left: 40, bottom: 5 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#64748b" strokeOpacity={0.1} horizontal={false} />
-                      <XAxis type="number" tickFormatter={(v) => formatNum(v)} tick={{ fill: "#475569", fontSize: 10, fontFamily: "monospace", fontWeight: "bold" }} />
-                      <YAxis dataKey="jenisTanaman" type="category" width={110} tick={{ fill: "#475569", fontSize: 10, fontFamily: "monospace", fontWeight: "bold" }} />
+                      <XAxis type="number" tickFormatter={(v) => formatNum(v)} tick={{ fill: "#475569", fontSize: 10 }} />
+                      <YAxis dataKey="jenisTanaman" type="category" width={110} tick={{ fill: "#475569", fontSize: 10 }} />
                       <Tooltip
                         formatter={(value) => [`${formatNum(Number(value || 0))} Ton`, "Produksi"]}
-                        contentStyle={{ backgroundColor: "#fff", border: "1px solid #cbd5e1", borderRadius: 8, fontFamily: "monospace", fontWeight: "bold", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)" }}
+                        contentStyle={{ backgroundColor: "#fff", border: "1px solid #cbd5e1", borderRadius: 8, fontSize: "12px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)" }}
                       />
                       <Bar dataKey="produksiTon" fill="#059669" stroke="#cbd5e1" strokeWidth={1} radius={[0, 4, 4, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
-                <div className="border border-slate-200 bg-emerald-50 p-4 flex flex-col gap-3">
+                <div className="border border-slate-200 bg-emerald-50 rounded-lg p-4 flex flex-col gap-3">
                   <div>
-                    <p className="text-[10px] font-mono font-bold uppercase text-slate-500">Komoditas Dominan</p>
-                    <h5 className="text-3xl font-serif font-black uppercase text-slate-800 leading-tight mt-1">
+                    <p className="text-[11px] font-semibold uppercase text-slate-500">Komoditas Dominan</p>
+                    <h5 className="text-2xl font-bold text-slate-800 leading-tight mt-1">
                       {annualRanking.top?.jenisTanaman || "-"}
                     </h5>
-                    <p className="text-sm font-mono font-bold text-emerald-700 mt-2">
+                    <p className="text-sm font-semibold tabular-nums text-emerald-700 mt-2">
                       {formatNum(annualRanking.top?.produksiTon || 0)} Ton
                     </p>
                   </div>
                   <div className="border-t border-slate-200 pt-3 flex flex-col gap-2 max-h-[210px] overflow-y-auto pr-1">
                     {annualRanking.items.slice(0, 6).map((item, idx) => (
-                      <div key={item.jenisTanaman} className="flex items-center justify-between gap-3 text-xs font-mono font-bold bg-white border border-slate-200 px-2 py-1">
+                      <div key={item.jenisTanaman} className="flex items-center justify-between gap-3 text-xs font-semibold tabular-nums bg-white border border-slate-200 rounded-md px-2 py-1">
                         <span className="truncate">{idx + 1}. {item.jenisTanaman}</span>
                         <span className="shrink-0">{formatNum(item.produksiTon)} Ton</span>
                       </div>
@@ -789,34 +750,36 @@ export default function HorticulturePage() {
                   </div>
                 </div>
               </div>
-            </div>
+            </SectionCard>
 
             {/* Time-Series Trend */}
-            <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
-              <div className="mb-4 text-left border-b border-slate-200 pb-3 flex flex-wrap items-center justify-between gap-2">
-                <h4 className="text-lg font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
-                  <TrendingUp className="text-emerald-600" />
-                  Tren Perkembangan {metricLabel} {category === "sayuran" ? "Sayuran" : "Buah"}
-                  {selectedKecamatan !== "Semua" ? ` · ${selectedKecamatan}` : ""}
-                </h4>
-                {activeMetric !== "produktivitas" && cagrData && (
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 border border-slate-200 font-mono font-bold text-[10px] uppercase bg-emerald-100 text-emerald-800">
-                    CAGR: {cagrData.total === null ? "N/A" : `${cagrData.total >= 0 ? "+" : ""}${formatPct(cagrData.total)}%`} ({cagrData.periode})
-                  </span>
-                )}
-              </div>
+            <SectionCard
+              title={`Tren Perkembangan ${metricLabel} ${category === "sayuran" ? "Sayuran" : "Buah"}${
+                selectedKecamatan !== "Semua" ? ` · ${selectedKecamatan}` : ""
+              }`}
+              icon={<TrendingUp size={16} className="text-emerald-600" />}
+              actions={
+                activeMetric !== "produktivitas" && cagrData ? (
+                  cagrData.total === null ? (
+                    <Badge tone="slate">CAGR N/A · {cagrData.periode}</Badge>
+                  ) : (
+                    <TrendPill value={cagrData.total} label={`CAGR ${cagrData.periode}`} />
+                  )
+                ) : undefined
+              }
+            >
               <div className="h-[320px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={trendWithProjection} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#64748b" strokeOpacity={0.1} vertical={false} />
                     <XAxis
                       dataKey="tahun"
-                      tick={{ fill: "#475569", fontSize: 11, fontFamily: "monospace", fontWeight: "bold" }}
+                      tick={{ fill: "#475569", fontSize: 11 }}
                       axisLine={{ stroke: "#cbd5e1", strokeWidth: 1 }}
                       tickLine={{ stroke: "#cbd5e1" }}
                     />
                     <YAxis
-                      tick={{ fill: "#475569", fontSize: 10, fontFamily: "monospace", fontWeight: "bold" }}
+                      tick={{ fill: "#475569", fontSize: 10 }}
                       axisLine={{ stroke: "#cbd5e1", strokeWidth: 1 }}
                       tickLine={{ stroke: "#cbd5e1" }}
                       tickFormatter={(v) => formatNum(v)}
@@ -826,14 +789,12 @@ export default function HorticulturePage() {
                         backgroundColor: "#ffffff",
                         border: "1px solid #cbd5e1",
                         borderRadius: "8px",
-                        fontFamily: "monospace",
                         fontSize: "12px",
-                        fontWeight: "bold",
                         boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)",
                       }}
                       formatter={(value: any) => [formatNum(Number(value)), ""]}
                     />
-                    <Legend verticalAlign="top" height={36} wrapperStyle={{ fontFamily: "monospace", fontSize: "10px", fontWeight: "bold" }} />
+                    <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: "10px" }} />
                     <Line type="monotone" dataKey="total" name={`Total ${category === "buah" ? "Ton" : activeMetric === "luas" ? "Ha" : activeMetric === "produksi" ? "Ton" : "Rata-Rata"}`} stroke="#64748b" strokeWidth={3} dot={{ fill: "#475569", r: 4 }} activeDot={{ r: 6 }} connectNulls={false} />
                     {activeMetric !== "produktivitas" && (
                       <Line type="monotone" dataKey="proyeksi" name="Proyeksi" stroke="#ef4444" strokeWidth={2} strokeDasharray="6 4" dot={{ fill: "#ef4444", r: 4 }} connectNulls={true} />
@@ -856,35 +817,32 @@ export default function HorticulturePage() {
                   </LineChart>
                 </ResponsiveContainer>
               </div>
-            </div>
+            </SectionCard>
 
             {/* Regression Projections (only for Area and Production, not productivity ratio) */}
             {activeMetric !== "produktivitas" && projection && (
-              <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
-                <div className="mb-4 text-left border-b border-slate-200 pb-2">
-                  <h4 className="text-md font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
-                    <TrendingUp className="text-emerald-600" size={18} />
-                    Proyeksi Garis Tren Hortikultura ({projection.nextYear})
-                  </h4>
-                  <p className="text-[10px] font-mono font-bold text-slate-500 uppercase mt-1">
-                    Estimasi model regresi linier (least-squares) berdasarkan tren historis
-                  </p>
-                </div>
+              <SectionCard
+                title={`Proyeksi Garis Tren Hortikultura (${projection.nextYear})`}
+                icon={<TrendingUp size={16} className="text-emerald-600" />}
+              >
+                <p className="text-xs text-slate-500 mb-4">
+                  Estimasi model regresi linier (least-squares) berdasarkan tren historis
+                </p>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
-                  <div className="border border-slate-200 bg-emerald-50 p-4 shadow-sm flex flex-col justify-between">
-                    <span className="text-[10px] font-mono font-bold uppercase text-slate-500">
+                  <div className="border border-emerald-100 bg-emerald-50 rounded-lg p-4 flex flex-col justify-between">
+                    <span className="text-[11px] font-semibold uppercase text-slate-500">
                       Prediksi {projection.nextYear} ({activeMetric === "luas" ? "Ha" : "Ton"})
                     </span>
-                    <span className="text-2xl font-serif font-black text-slate-800 mt-2">
+                    <span className="text-2xl font-bold tabular-nums text-slate-800 mt-2">
                       {formatNum(projection.predicted)}
                     </span>
                   </div>
-                  <div className="border border-slate-200 bg-white p-4 shadow-sm flex flex-col justify-between">
-                    <span className="text-[10px] font-mono font-bold uppercase text-slate-500">
+                  <div className="border border-slate-200 bg-white rounded-lg p-4 flex flex-col justify-between">
+                    <span className="text-[11px] font-semibold uppercase text-slate-500">
                       Perubahan vs {projection.lastTahun}
                     </span>
                     <span
-                      className={`text-2xl font-serif font-black mt-2 ${
+                      className={`text-2xl font-bold tabular-nums mt-2 ${
                         projection.deltaPct === null
                           ? "text-slate-400"
                           : projection.deltaPct >= 0
@@ -897,12 +855,12 @@ export default function HorticulturePage() {
                         : `${projection.deltaPct >= 0 ? "▲" : "▼"} ${formatPct(Math.abs(projection.deltaPct))}%`}
                     </span>
                   </div>
-                  <div className="border border-slate-200 bg-white p-4 shadow-sm flex flex-col justify-between">
-                    <span className="text-[10px] font-mono font-bold uppercase text-slate-500">
+                  <div className="border border-slate-200 bg-white rounded-lg p-4 flex flex-col justify-between">
+                    <span className="text-[11px] font-semibold uppercase text-slate-500">
                       Keandalan Model (R²)
                     </span>
                     <span
-                      className={`text-2xl font-serif font-black mt-2 ${
+                      className={`text-2xl font-bold tabular-nums mt-2 ${
                         projection.r2 >= 0.7
                           ? "text-emerald-600"
                           : projection.r2 >= 0.4
@@ -914,23 +872,18 @@ export default function HorticulturePage() {
                     </span>
                   </div>
                 </div>
-              </div>
+              </SectionCard>
             )}
 
             {/* Anomaly Detection */}
             {activeMetric !== "produktivitas" && (
-              <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
-                <div className="mb-4 text-left border-b border-slate-200 pb-2 flex flex-wrap items-center justify-between gap-2">
-                  <h4 className="text-md font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
-                    <AlertTriangle className="text-red-600" size={18} />
-                    Deteksi Anomali Hortikultura
-                  </h4>
-                  <span className="text-[10px] font-mono font-bold text-slate-500 uppercase">
-                    Penurunan Tajam &gt; {Math.abs(ANOMALY_THRESHOLD)}% YoY
-                  </span>
-                </div>
+              <SectionCard
+                title="Deteksi Anomali Hortikultura"
+                icon={<AlertTriangle size={16} className="text-red-600" />}
+                actions={<Badge tone="red">Penurunan &gt; {Math.abs(ANOMALY_THRESHOLD)}% YoY</Badge>}
+              >
                 {anomalies.length === 0 ? (
-                  <div className="flex items-center gap-2 p-3 bg-emerald-50 border border-slate-200 text-[11px] font-mono font-bold text-emerald-800 uppercase text-left">
+              <div className="flex items-center gap-2 p-3 bg-emerald-50 border border-emerald-100 rounded-lg text-xs font-semibold text-emerald-800 text-left">
                     <ShieldCheck size={14} />
                     Tidak ada anomali penurunan tajam terdeteksi pada komoditas hortikultura di wilayah ini.
                   </div>
@@ -939,48 +892,43 @@ export default function HorticulturePage() {
                     {anomalies.map((a) => (
                       <div
                         key={a.tahun}
-                        className="flex flex-wrap items-center justify-between gap-3 p-3 bg-red-50 border border-slate-200 shadow-sm text-left"
+                        className="flex flex-wrap items-center justify-between gap-3 p-3 bg-red-50 border border-red-100 rounded-lg text-left"
                       >
                         <div className="flex items-center gap-3">
-                          <span className="inline-flex items-center px-2 py-0.5 bg-red-600 text-white font-mono font-black text-sm">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-red-800 text-white text-xs font-bold tabular-nums">
                             {a.tahun}
                           </span>
                           <div>
-                            <p className="text-[11px] font-mono font-bold uppercase text-red-800">
+                            <p className="text-xs font-semibold text-red-700">
                               Mengalami penurunan {formatPct(Math.abs(a.pct))}% dibandingkan {a.prevTahun}
                             </p>
-                            <p className="text-[10px] font-mono text-slate-600 uppercase">
+                            <p className="text-[11px] text-slate-500">
                               Penyumbang penurunan terbesar: {a.penyumbang} (Selisih: {formatNum(a.selisih)} {activeMetric === "luas" ? "Ha" : "Ton"})
                             </p>
                           </div>
                         </div>
-                        <span className="text-xl font-serif font-black text-red-600">
+                        <span className="text-xl font-bold tabular-nums text-red-600">
                           ▼ {formatPct(Math.abs(a.pct))}%
                         </span>
                       </div>
                     ))}
                   </div>
                 )}
-              </div>
+              </SectionCard>
             )}
 
             {/* CAGR Breakdown */}
             {activeMetric !== "produktivitas" && cagrData && (
-              <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
-                <div className="mb-4 text-left border-b border-slate-200 pb-2">
-                  <h4 className="text-md font-mono font-bold uppercase tracking-wide">
-                    Rata-rata Laju Pertumbuhan Komoditas (CAGR) {cagrData.periode}
-                  </h4>
-                  <p className="text-[10px] font-mono font-bold text-slate-500 uppercase mt-1">
-                    Laju pertumbuhan majemuk per tahun per komoditas ({selectedKecamatan !== "Semua" ? selectedKecamatan : "Seluruh Banjarnegara"})
-                  </p>
-                </div>
+              <SectionCard title={`Rata-rata Laju Pertumbuhan Komoditas (CAGR) ${cagrData.periode}`}>
+                <p className="text-xs text-slate-500 mb-4">
+                  Laju pertumbuhan majemuk per tahun per komoditas ({selectedKecamatan !== "Semua" ? selectedKecamatan : "Seluruh Banjarnegara"})
+                </p>
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 text-left">
-                  <div className="border border-slate-200 bg-slate-800 text-white p-4 flex flex-col justify-between">
-                    <span className="text-[10px] font-mono font-bold uppercase text-slate-400">
+                  <div className="border border-slate-800 bg-slate-800 text-white rounded-lg p-4 flex flex-col justify-between">
+                    <span className="text-[11px] font-semibold uppercase text-slate-400">
                       Total Gabungan
                     </span>
-                    <span className="text-2xl font-serif font-black mt-2">
+                    <span className="text-2xl font-bold tabular-nums mt-2">
                       {cagrData.total === null
                         ? "N/A"
                         : `${cagrData.total >= 0 ? "+" : ""}${formatPct(cagrData.total)}%`}
@@ -989,13 +937,13 @@ export default function HorticulturePage() {
                   {cagrData.items.map((item) => (
                     <div
                       key={item.name}
-                      className="border border-slate-200 bg-white p-4 flex flex-col justify-between shadow-sm"
+                      className="border border-slate-200 bg-white rounded-lg p-4 flex flex-col justify-between"
                     >
-                      <span className="text-[10px] font-mono font-bold uppercase text-slate-500 leading-tight">
+                      <span className="text-[11px] font-semibold uppercase text-slate-500 leading-tight">
                         {item.name}
                       </span>
                       <span
-                        className={`text-2xl font-serif font-black mt-2 ${
+                        className={`text-2xl font-bold tabular-nums mt-2 ${
                           item.cagr === null
                             ? "text-slate-400"
                             : item.cagr >= 0
@@ -1014,20 +962,17 @@ export default function HorticulturePage() {
                     </div>
                   ))}
                 </div>
-              </div>
+              </SectionCard>
             )}
 
             {/* Distribution Chart */}
-            <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
-              <div className="flex flex-col mb-6 border-b border-slate-200 pb-3 text-left">
-                <h4 className="text-lg font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
-                  <FileSpreadsheet className="text-emerald-600" />
-                  Sebaran Nilai Komoditas per Kecamatan ({selectedYear})
-                </h4>
-                <p className="text-xs font-mono font-bold text-slate-500 uppercase mt-1">
-                  Kontribusi masing-masing kecamatan terhadap {metricLabel} hortikultura
-                </p>
-              </div>
+            <SectionCard
+              title={`Sebaran Nilai Komoditas per Kecamatan (${selectedYear})`}
+              icon={<FileSpreadsheet size={16} className="text-emerald-600" />}
+            >
+              <p className="text-xs text-slate-500 mb-4">
+                Kontribusi masing-masing kecamatan terhadap {metricLabel} hortikultura
+              </p>
 
               <div className="h-[420px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
@@ -1035,7 +980,7 @@ export default function HorticulturePage() {
                     <CartesianGrid strokeDasharray="3 3" stroke="#64748b" strokeOpacity={0.1} vertical={false} />
                     <XAxis
                       dataKey="name"
-                      tick={{ fill: "#475569", fontSize: 10, fontFamily: "monospace", fontWeight: "bold" }}
+                      tick={{ fill: "#475569", fontSize: 10 }}
                       axisLine={{ stroke: "#cbd5e1", strokeWidth: 1 }}
                       tickLine={{ stroke: "#cbd5e1" }}
                       interval={0}
@@ -1045,7 +990,7 @@ export default function HorticulturePage() {
                     />
                     <YAxis
                       width={70}
-                      tick={{ fill: "#475569", fontSize: 10, fontFamily: "monospace", fontWeight: "bold" }}
+                      tick={{ fill: "#475569", fontSize: 10 }}
                       axisLine={{ stroke: "#cbd5e1", strokeWidth: 1 }}
                       tickLine={{ stroke: "#cbd5e1" }}
                     />
@@ -1054,13 +999,11 @@ export default function HorticulturePage() {
                         backgroundColor: "#ffffff",
                         border: "1px solid #cbd5e1",
                         borderRadius: "8px",
-                        fontFamily: "monospace",
                         fontSize: "12px",
-                        fontWeight: "bold",
                         boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)",
                       }}
                     />
-                    <Legend verticalAlign="top" height={36} wrapperStyle={{ fontFamily: "monospace", fontSize: "10px", fontWeight: "bold" }} />
+                    <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: "10px" }} />
                     {cropKeys.map((crop, idx) => {
                       const colors = [
                         "#059669",
@@ -1086,45 +1029,40 @@ export default function HorticulturePage() {
                   </BarChart>
                 </ResponsiveContainer>
               </div>
-            </div>
+            </SectionCard>
 
             {/* Data Table */}
-            <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
-              <div className="mb-4 text-left border-b border-slate-200 pb-2">
-                <h4 className="text-md font-mono font-bold uppercase tracking-wide">
-                  Tabel Rincian Data Perkecamatan ({selectedYear})
-                </h4>
-                <p className="text-[10px] font-mono font-bold text-slate-500 uppercase mt-1">
-                  Nilai yang ditampilkan adalah {metricLabel}
-                </p>
-              </div>
+            <SectionCard title={`Tabel Rincian Data Perkecamatan (${selectedYear})`}>
+              <p className="text-xs text-slate-500 mb-3">
+                Nilai yang ditampilkan adalah {metricLabel}
+              </p>
               <div className="overflow-x-auto">
-                <table className="w-full text-left font-mono text-sm border-collapse">
+                <table className="w-full text-left text-sm border-collapse">
                   <thead>
-                    <tr className="border-b border-slate-200 bg-slate-100">
-                      <th className="p-3 border-r border-slate-200 font-bold uppercase text-xs">No</th>
-                      <th className="p-3 border-r border-slate-200 font-bold uppercase text-xs">Kecamatan</th>
+                    <tr className="border-b border-slate-200 bg-slate-50">
+                      <th className="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">No</th>
+                      <th className="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">Kecamatan</th>
                       {cropKeys.map((c) => (
-                        <th key={c.key} className="p-3 border-r border-slate-200 font-bold uppercase text-xs text-right truncate max-w-[100px]">
+                        <th key={c.key} className="px-3 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wide text-slate-500 truncate max-w-[100px]">
                           {c.label}
                         </th>
                       ))}
-                      <th className="p-3 font-bold uppercase text-xs text-right">Total</th>
+                      <th className="px-3 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wide text-slate-500">Total</th>
                     </tr>
                   </thead>
                   <tbody>
                     {chartData.map((row, idx) => (
-                      <tr key={row.name} className="border-b border-slate-200 hover:bg-slate-50">
-                        <td className="p-3 border-r border-slate-200 text-xs font-bold">{idx + 1}</td>
-                        <td className="p-3 border-r border-slate-200 text-xs font-bold uppercase truncate max-w-[120px]">
+                      <tr key={row.name} className="border-b border-slate-100 hover:bg-slate-50">
+                        <td className="px-3 py-2.5 text-xs font-semibold text-slate-500">{idx + 1}</td>
+                        <td className="px-3 py-2.5 text-xs font-semibold truncate max-w-[120px]">
                           {row.name}
                         </td>
                         {cropKeys.map((c) => (
-                          <td key={c.key} className="p-3 border-r border-slate-200 text-xs text-right">
+                          <td key={c.key} className="px-3 py-2.5 text-xs text-right tabular-nums">
                             {formatNum(row[c.label] || 0)}
                           </td>
                         ))}
-                        <td className="p-3 text-xs font-black text-right bg-slate-50">
+                        <td className="px-3 py-2.5 text-xs font-bold text-right bg-slate-50 tabular-nums">
                           {formatNum(row.total)}
                         </td>
                       </tr>
@@ -1132,7 +1070,7 @@ export default function HorticulturePage() {
                   </tbody>
                 </table>
               </div>
-            </div>
+            </SectionCard>
           </>
         )}
       </section>
