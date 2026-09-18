@@ -6,11 +6,35 @@ import { Calendar, MapPin, FileSpreadsheet, ArrowDownToLine, ArrowUpFromLine, Sl
 
 type Category = "pemasukan" | "pengeluaran" | "luar-rph" | "daging-unggas";
 
-const CATEGORY_META: Record<Category, { label: string; sub: string; unit: string; icon: any }> = {
-  "pemasukan": { label: "Pemasukan Ternak", sub: "Ternak yang masuk ke Kabupaten Banjarnegara", unit: "ekor", icon: ArrowDownToLine },
-  "pengeluaran": { label: "Pengeluaran Ternak Potong", sub: "Ternak potong yang keluar dari Kabupaten", unit: "ekor", icon: ArrowUpFromLine },
-  "luar-rph": { label: "Pemotongan di Luar RPH", sub: "Perkiraan ternak yang dipotong di luar RPH", unit: "ekor", icon: Slice },
-  "daging-unggas": { label: "Produksi Daging Unggas", sub: "Produksi daging unggas per kecamatan", unit: "kg", icon: Drumstick },
+const CATEGORY_META: Record<Category, { label: string; sub: string; unit: string; icon: any; note: string }> = {
+  "pemasukan": {
+    label: "Pemasukan Ternak",
+    sub: "Ternak yang masuk ke Kabupaten Banjarnegara",
+    unit: "ekor",
+    icon: ArrowDownToLine,
+    note: "Bersifat catatan transaksi: hanya kecamatan dengan aktivitas pemasukan tercatat yang memiliki nilai (mayoritas di Kecamatan Madukara). Tanda \"–\" berarti tidak ada catatan pada sumber data, bukan nol.",
+  },
+  "pengeluaran": {
+    label: "Pengeluaran Ternak Potong",
+    sub: "Ternak potong yang keluar dari Kabupaten",
+    unit: "ekor",
+    icon: ArrowUpFromLine,
+    note: "Bersifat catatan transaksi: hanya kecamatan dengan aktivitas pengeluaran tercatat yang memiliki nilai (mayoritas di Kecamatan Madukara). Tanda \"–\" berarti tidak ada catatan pada sumber data, bukan nol.",
+  },
+  "luar-rph": {
+    label: "Pemotongan di Luar RPH",
+    sub: "Perkiraan ternak yang dipotong di luar RPH",
+    unit: "ekor",
+    icon: Slice,
+    note: "Perkiraan tahunan pemotongan di luar Rumah Potong Hewan. Tahun 2019 dan 2022 tidak tersedia pada sumber data (tidak direkap), sehingga tidak ditampilkan pada tren.",
+  },
+  "daging-unggas": {
+    label: "Produksi Daging Unggas",
+    sub: "Produksi daging unggas per kecamatan",
+    unit: "kg",
+    icon: Drumstick,
+    note: "Tanda \"–\" pada sel tertentu berarti jenis unggas tersebut tidak dibudidayakan / tidak tercatat di kecamatan yang bersangkutan.",
+  },
 };
 
 const CATEGORY_TAB: Record<Category, string> = {
@@ -32,6 +56,7 @@ export default function LivestockFlowPage() {
   const [category, setCategory] = useState<Category>("pemasukan");
   const [selectedYear, setSelectedYear] = useState<string>("");
   const [selectedKecamatan, setSelectedKecamatan] = useState<string>("Semua");
+  const [hideEmpty, setHideEmpty] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -74,6 +99,25 @@ export default function LivestockFlowPage() {
   const yearsList = useMemo(() => {
     return Array.from(new Set(activeData.map((d) => d.tahun).filter(Boolean)))
       .sort((a, b) => b.localeCompare(a));
+  }, [activeData]);
+
+  // Tahun yang benar-benar memiliki data tercatat (total seluruh kecamatan > 0).
+  // Tahun tanpa rekap (mis. 2019 & 2022 pada Luar RPH) tidak ditampilkan di tren
+  // agar tidak menghasilkan lekukan nol yang menyesatkan.
+  const yearsWithData = useMemo(() => {
+    const byYear = new Map<string, number>();
+    activeData.forEach((d) => {
+      const yr = d.tahun;
+      if (!yr) return;
+      let sum = 0;
+      d.items.forEach((it) => (sum += it.jumlah || 0));
+      byYear.set(yr, (byYear.get(yr) || 0) + sum);
+    });
+    return new Set(
+      Array.from(byYear.entries())
+        .filter(([, v]) => v > 0)
+        .map(([k]) => k)
+    );
   }, [activeData]);
 
   useEffect(() => {
@@ -137,6 +181,17 @@ export default function LivestockFlowPage() {
       .sort((a, b) => b.total - a.total);
   }, [filteredData, jenisList]);
 
+  // Baris yang ditampilkan pada grafik & tabel rincian:
+  // secara default hanya kecamatan dengan data tercatat
+  const displayData = useMemo(() => {
+    return hideEmpty ? chartData.filter((r) => r.total > 0) : chartData;
+  }, [chartData, hideEmpty]);
+
+  // Kecamatan aktif dengan data (untuk keterangan "dari N kecamatan")
+  const districtsReported = useMemo(() => {
+    return chartData.filter((r) => r.total > 0).length;
+  }, [chartData]);
+
   const trendData = useMemo(() => {
     const base = selectedKecamatan === "Semua"
       ? activeData
@@ -160,8 +215,11 @@ export default function LivestockFlowPage() {
       });
     });
 
-    return Array.from(byYear.values()).sort((a, b) => a.tahun.localeCompare(b.tahun));
-  }, [activeData, selectedKecamatan, jenisList]);
+    return Array.from(byYear.values())
+      // buang tahun tanpa rekap data (seluruh kecamatan "-")
+      .filter((d) => yearsWithData.has(d.tahun))
+      .sort((a, b) => a.tahun.localeCompare(b.tahun));
+  }, [activeData, selectedKecamatan, jenisList, yearsWithData]);
 
   // CAGR Laju Pertumbuhan Tahunan per jenis ternak
   const cagrData = useMemo(() => {
@@ -262,10 +320,15 @@ export default function LivestockFlowPage() {
 
     return Array.from(map.entries())
       .map(([name, value]) => ({ name, value }))
+      // hanya kecamatan yang memiliki catatan data
+      .filter((r) => r.value > 0)
       .sort((a, b) => b.value - a.value);
   }, [activeData, selectedKecamatan, jenisList]);
 
   const formatNum = (num: number) => new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 }).format(num);
+
+  // Sel tanpa catatan pada sumber ("-") ditampilkan sebagai en-dash, bukan nol
+  const formatCell = (v: number) => (v > 0 ? formatNum(v) : "–");
 
   const formatPct = (val: number) =>
     new Intl.NumberFormat("id-ID", {
@@ -332,7 +395,9 @@ export default function LivestockFlowPage() {
                   className="w-full pl-9 pr-3 py-2 text-sm text-slate-900 bg-white border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700/20 focus:border-blue-700 appearance-none cursor-pointer"
                 >
                   {yearsList.map((yr) => (
-                    <option key={yr} value={yr}>{yr}</option>
+                    <option key={yr} value={yr}>
+                      {yearsWithData.has(yr) ? yr : `${yr} — tanpa data`}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -364,7 +429,38 @@ export default function LivestockFlowPage() {
             {" · "}<span className="text-slate-800 font-medium">{selectedYear || "—"}</span>
             {" · "}<span className="text-slate-800 font-medium">{selectedKecamatan}</span>
           </p>
+          <div className="flex flex-wrap items-center justify-between gap-3 mt-3 pt-3 border-t border-slate-100">
+            <label className="flex items-center gap-2 text-xs text-slate-700 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={hideEmpty}
+                onChange={(e) => setHideEmpty(e.target.checked)}
+                className="h-3.5 w-3.5 rounded-sm border-slate-300 text-blue-800 focus:ring-blue-700/20 cursor-pointer"
+              />
+              Tampilkan hanya kecamatan dengan data tercatat
+            </label>
+            {!loading && selectedYear && yearsList.length > 0 && (
+              <span className="text-xs text-slate-600">
+                Kecamatan melapor: <span className="font-semibold text-slate-900 tabular-nums">{districtsReported}</span> dari {chartData.length}
+              </span>
+            )}
+          </div>
         </section>
+
+        {/* Catatan ketersediaan data per jenis */}
+        <div className="bg-blue-50 border border-blue-100 rounded-lg px-4 py-3 text-xs leading-relaxed text-slate-700">
+          <span className="font-semibold text-blue-800">Catatan data: </span>
+          {CATEGORY_META[category].note}
+        </div>
+
+        {/* Peringatan tahun tanpa rekap */}
+        {!loading && selectedYear && !yearsWithData.has(selectedYear) && (
+          <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 text-sm text-amber-800">
+            Tidak ada nilai tercatat pada tahun <span className="font-semibold">{selectedYear}</span> untuk jenis data ini —
+            seluruh entri pada sumber bertanda "-" (tidak direkap). Pilih tahun lain, atau lihat tren yang hanya
+            mencakup tahun dengan data.
+          </div>
+        )}
 
         {loading ? (
           <div className="flex flex-col items-center justify-center h-64 gap-3 bg-white border border-slate-200 rounded-lg">
@@ -399,10 +495,11 @@ export default function LivestockFlowPage() {
                   </p>
                 </div>
                 <p className="text-2xl font-semibold text-slate-900 mt-2">
-                  {stats.topDistrict}
+                  {stats.topVal > 0 ? stats.topDistrict : "—"}
                 </p>
                 <p className="text-xs text-slate-700 mt-1.5 tabular-nums">
-                  {formatNum(stats.topVal)} {unit} · {selectedYear}
+                  {stats.topVal > 0 ? `${formatNum(stats.topVal)} ${unit}` : "tidak ada data tercatat"}
+                  {" · "}{selectedYear}
                 </p>
               </div>
 
@@ -448,7 +545,7 @@ export default function LivestockFlowPage() {
               <div className="p-5">
                 <div className="h-[420px] w-full">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 80 }}>
+                    <BarChart data={displayData} margin={{ top: 10, right: 10, left: 0, bottom: 80 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
                       <XAxis
                         dataKey="name"
@@ -493,7 +590,8 @@ export default function LivestockFlowPage() {
                   <p className="text-xs text-slate-700 mt-0.5">
                     {selectedKecamatan !== "Semua" ? `Kecamatan ${selectedKecamatan}` : "Seluruh Kabupaten Banjarnegara"}
                     {" · "}
-                    {yearsList.length > 0 && `${yearsList[yearsList.length - 1]}–${yearsList[0]}`}
+                    {trendData.length > 1 && `${trendData[0].tahun}–${trendData[trendData.length - 1].tahun}`}
+                    {yearsList.some((y) => !yearsWithData.has(y)) && " · tahun tanpa rekap tidak diikutkan"}
                   </p>
                 </div>
                 {cagrData && (
@@ -677,9 +775,9 @@ export default function LivestockFlowPage() {
                 </h2>
                 <p className="text-xs text-slate-700 mt-0.5">
                   Kumulatif {CATEGORY_META[category].label} ({unit}) ·{" "}
-                  {yearsList.length > 0 && `${yearsList[yearsList.length - 1]}–${yearsList[0]}`}
+                  {trendData.length > 1 && `${trendData[0].tahun}–${trendData[trendData.length - 1].tahun}`}
                   {" · "}
-                  {selectedKecamatan !== "Semua" ? `Kecamatan ${selectedKecamatan}` : "Seluruh kecamatan (10 teratas)"}
+                  {selectedKecamatan !== "Semua" ? `Kecamatan ${selectedKecamatan}` : "hanya kecamatan dengan catatan (10 teratas)"}
                 </p>
               </div>
               <div className="overflow-x-auto">
@@ -729,6 +827,7 @@ export default function LivestockFlowPage() {
                 </h2>
                 <p className="text-xs text-slate-700 mt-0.5">
                   {CATEGORY_META[category].label} · Satuan {unit} · Tahun {selectedYear}
+                  {" · "}<span className="text-slate-600">"–" = tidak ada catatan pada sumber</span>
                 </p>
               </div>
               <div className="overflow-x-auto">
@@ -755,13 +854,13 @@ export default function LivestockFlowPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
-                    {chartData.map((row, idx) => (
+                    {displayData.map((row, idx) => (
                       <tr key={row.name} className="hover:bg-slate-50">
                         <td className="px-4 py-2.5 text-slate-600 tabular-nums">{idx + 1}</td>
                         <td className="px-4 py-2.5 text-slate-900 font-medium">{row.name}</td>
                         {jenisList.map((j) => (
                           <td key={j} className="px-4 py-2.5 text-right text-slate-800 tabular-nums">
-                            {formatNum(row[j] || 0)}
+                            {formatCell(row[j] || 0)}
                           </td>
                         ))}
                         <td className="px-4 py-2.5 text-right font-semibold text-slate-900 tabular-nums bg-slate-50">
@@ -769,7 +868,7 @@ export default function LivestockFlowPage() {
                         </td>
                       </tr>
                     ))}
-                    {chartData.length > 0 && (
+                    {displayData.length > 0 && (
                       <tr className="border-t-2 border-slate-300 bg-slate-50 font-semibold">
                         <td className="px-4 py-3" />
                         <td className="px-4 py-3 text-slate-900">Kabupaten Banjarnegara</td>
@@ -777,7 +876,7 @@ export default function LivestockFlowPage() {
                           const sum = chartData.reduce((a, r) => a + (r[j] || 0), 0);
                           return (
                             <td key={j} className="px-4 py-3 text-right text-slate-900 tabular-nums">
-                              {formatNum(sum)}
+                              {formatCell(sum)}
                             </td>
                           );
                         })}
