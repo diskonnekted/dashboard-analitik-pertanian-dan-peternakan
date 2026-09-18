@@ -1,5 +1,6 @@
 import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
+import { LoadingSpinner } from "@/components/ui";
 
 
 const IndexPage = lazy(() => import("@/pages/index"));
@@ -25,16 +26,7 @@ const ManualPage = lazy(() => import("@/pages/manual"));
 const ComingSoonPage = lazy(() => import("@/pages/coming-soon"));
 
 function PageLoading() {
-  return (
-    <div className="flex items-center justify-center min-h-[60vh]">
-      <div className="flex flex-col items-center gap-3">
-        <div className="w-8 h-8 border-2 border-slate-300 border-t-blue-600 rounded-full animate-spin" />
-        <p className="text-xs font-mono font-semibold text-slate-400 uppercase tracking-wider">
-          Memuat modul...
-        </p>
-      </div>
-    </div>
-  );
+  return <LoadingSpinner height="min-h-[60vh]" label="Memuat halaman..." />;
 }
 
 function App() {

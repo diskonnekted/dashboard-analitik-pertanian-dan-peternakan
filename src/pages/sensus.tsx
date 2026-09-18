@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import DefaultLayout from "@/layouts/default";
+import { LoadingSpinner } from "@/components/ui";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { fetchSt2023DesaExtra, St2023DesaExtra } from "@/services/api";
 import { MapPin, Users, Home, TrendingUp, Fish, Wheat, FileSpreadsheet } from "lucide-react";
@@ -310,10 +311,7 @@ export default function SensusPage() {
         </section>
 
         {loading ? (
-          <div className="flex flex-col items-center justify-center h-64 gap-3 bg-white border border-slate-200 rounded-lg">
-            <div className="w-8 h-8 border-2 border-slate-200 border-t-blue-800 rounded-full animate-spin" />
-            <p className="text-sm text-slate-700">Memuat data sensus…</p>
-          </div>
+          <LoadingSpinner label="Memuat data sensus…" />
         ) : rows.length === 0 ? (
           <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 text-sm text-amber-800">
             Data ST2023 per-desa belum tersedia. Jalankan skrip ekstraksi

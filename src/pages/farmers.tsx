@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import DefaultLayout from "@/layouts/default";
+import { LoadingSpinner } from "@/components/ui";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from "recharts";
 import { fetchKelompokTani, KelompokTaniRow, clearLocalStorageByPattern } from "@/services/api";
 import { Calendar, TrendingUp, Filter, FileSpreadsheet, ShieldAlert } from "lucide-react";
@@ -371,11 +372,7 @@ export default function FarmersPage() {
         </div>
 
         {loading ? (
-          <div className="flex items-center justify-center h-[300px]">
-            <p className="text-slate-500 font-mono font-bold animate-pulse uppercase">
-              Mengekstrak data dari CKAN Open Data...
-            </p>
-          </div>
+          <LoadingSpinner label="Mengekstrak data dari CKAN Open Data..." />
         ) : loadError && rawData.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-4 h-[300px] bg-rose-50 border border-rose-200 p-8 rounded-xl">
             <ShieldAlert className="h-10 w-10 text-rose-600" />

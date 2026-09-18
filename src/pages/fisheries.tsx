@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import DefaultLayout from "@/layouts/default";
+import { LoadingSpinner } from "@/components/ui";
 import {
   BarChart,
   Bar,
@@ -462,11 +463,7 @@ export default function FisheriesPage() {
         </div>
 
         {loading ? (
-          <div className="flex items-center justify-center h-[300px]">
-            <p className="text-slate-500 font-mono font-bold animate-pulse uppercase">
-              Memuat data perikanan...
-            </p>
-          </div>
+          <LoadingSpinner label="Memuat data perikanan..." />
         ) : (
           <>
             {/* Stats Row */}

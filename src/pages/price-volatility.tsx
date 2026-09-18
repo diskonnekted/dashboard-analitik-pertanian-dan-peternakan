@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import DefaultLayout from "@/layouts/default";
+import { LoadingSpinner } from "@/components/ui";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { fetchInflationData, InflationData } from "@/services/api";
 import { TrendingUp, AlertTriangle, ShieldAlert, Award } from "lucide-react";
@@ -94,9 +95,7 @@ export default function PriceVolatilityPage() {
         </section>
 
         {loading ? (
-          <div className="flex items-center justify-center h-[300px]">
-            <p className="text-slate-500 font-mono font-bold animate-pulse uppercase">Memuat data fluktuasi harga...</p>
-          </div>
+          <LoadingSpinner label="Memuat data fluktuasi harga..." />
         ) : (
           <>
             {/* Chart Section */}

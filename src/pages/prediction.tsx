@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import DefaultLayout from "@/layouts/default";
+import { LoadingSpinner } from "@/components/ui";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from "recharts";
 import { fetchPadiProduction, PadiProduction, fetchPadiHistory, PadiHistoryPoint } from "@/services/api";
 import { AlertCircle, MapPin } from "lucide-react";
@@ -122,10 +123,7 @@ export default function PredictionPage() {
         </header>
 
         {loading ? (
-          <div className="flex flex-col items-center justify-center h-64 gap-3 bg-white border border-slate-200 rounded-lg">
-            <div className="w-8 h-8 border-2 border-slate-200 border-t-blue-800 rounded-full animate-spin" />
-            <p className="text-sm text-slate-700">Memuat data padi…</p>
-          </div>
+          <LoadingSpinner label="Memuat data padi…" />
         ) : (
           <>
             {/* ===== Tren & Prediksi ===== */}

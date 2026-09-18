@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import DefaultLayout from "@/layouts/default";
+import { LoadingSpinner } from "@/components/ui";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { fetchPemasukanTernak, fetchPengeluaranTernak, fetchLuarRPH, fetchDagingUnggas, TernakFlow } from "@/services/api";
 import { Calendar, MapPin, FileSpreadsheet, ArrowDownToLine, ArrowUpFromLine, Slice, Drumstick } from "lucide-react";
@@ -463,10 +464,7 @@ export default function LivestockFlowPage() {
         )}
 
         {loading ? (
-          <div className="flex flex-col items-center justify-center h-64 gap-3 bg-white border border-slate-200 rounded-lg">
-            <div className="w-8 h-8 border-2 border-slate-200 border-t-blue-800 rounded-full animate-spin" />
-            <p className="text-sm text-slate-700">Memuat data ternak…</p>
-          </div>
+          <LoadingSpinner label="Memuat data ternak…" />
         ) : (
           <>
             {/* ===== Kartu Ringkasan ===== */}

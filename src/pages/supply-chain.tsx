@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import DefaultLayout from "@/layouts/default";
+import { LoadingSpinner } from "@/components/ui";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { fetchMarketData, MarketData } from "@/services/api";
 import { Truck, Store, ArrowRight, ShieldCheck } from "lucide-react";
@@ -172,9 +173,7 @@ export default function SupplyChainPage() {
         </section>
 
         {loading ? (
-          <div className="flex items-center justify-center h-[300px]">
-            <p className="text-slate-500 font-mono font-bold animate-pulse uppercase">Memuat data logistik...</p>
-          </div>
+          <LoadingSpinner label="Memuat data logistik..." />
         ) : (
           <>
             {/* Analisis Kesiapan Koridor Logistik */}
