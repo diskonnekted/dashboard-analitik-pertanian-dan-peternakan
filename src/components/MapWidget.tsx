@@ -2,7 +2,8 @@ import { useEffect, useState, useMemo } from "react";
 import { MapContainer, TileLayer, GeoJSON, LayersControl, useMap, LayerGroup } from "react-leaflet";
 import L from "leaflet";
 import ReactDOMServer from "react-dom/server";
-import { Search, Plus, Minus, Lock } from "lucide-react";
+import { Search, Plus, Minus, Lock, AlertTriangle, RotateCw } from "lucide-react";
+import { LoadingSpinner } from "@/components/ui";
 
 import "leaflet/dist/leaflet.css";
 import { LahanDesa, KelompokTaniRow, fetchKelompokTani, fetchSt2023DesaExtra, St2023DesaExtra } from "@/services/api";
@@ -431,6 +432,8 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
   const [auxiliaryLayers, setAuxiliaryLayers] = useState<Record<string, any>>({});
   const [taniData, setTaniData] = useState<KelompokTaniRow[]>([]);
   const [st2023Data, setSt2023Data] = useState<St2023DesaExtra[]>([]);
+  const [mapLoadError, setMapLoadError] = useState<string | null>(null);
+  const [reloadToken, setReloadToken] = useState(0);
   
   // States for interactive features
   const [activeMetric, setActiveMetric] = useState<"lahanSawah" | "lahanBukanSawah" | "jumlah">("lahanSawah");
@@ -438,12 +441,18 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
   const [activeLegendCategory, setActiveLegendCategory] = useState<number | null>(null);
   const [zoomLocked, setZoomLocked] = useState(true); // true = terkunci (Ctrl dibutuhkan)
 
+  const coreMapLoading = !desaGeoData && !mapLoadError;
+  const handleRetry = () => {
+    setMapLoadError(null);
+    setReloadToken((t) => t + 1);
+  };
+
   useEffect(() => {
     // Load GeoJSON with localStorage cache fallback
-    const loadGeoJSON = async (url: string, cacheKey: string, setter: (d: any) => void) => {
+    const loadGeoJSON = async (url: string, cacheKey: string, setter: (d: any) => void): Promise<boolean> => {
       const cached = localStorage.getItem(cacheKey);
       if (cached) {
-        try { setter(JSON.parse(cached)); return; } catch {}
+        try { setter(JSON.parse(cached)); return true; } catch {}
       }
       try {
         const res = await fetch(url);
@@ -451,13 +460,21 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
         const data = await res.json();
         try { localStorage.setItem(cacheKey, JSON.stringify(data)); } catch {}
         setter(data);
+        return true;
       } catch (err) {
         console.error(`Gagal memuat ${url}:`, err);
+        return false;
       }
     };
 
-    loadGeoJSON("/peta_desa_v3.geojson", "geojson_desa_cache", setDesaGeoData);
-    loadGeoJSON("/peta_kecamatan.geojson", "geojson_kec_cache", setKecGeoData);
+    Promise.all([
+      loadGeoJSON("/peta_desa_v3.geojson", "geojson_desa_cache", setDesaGeoData),
+      loadGeoJSON("/peta_kecamatan.geojson", "geojson_kec_cache", setKecGeoData),
+    ]).then(([desaOk]) => {
+      if (!desaOk) {
+        setMapLoadError("Peta batas desa gagal dimuat. Periksa koneksi internet Anda, lalu coba lagi.");
+      }
+    });
     Promise.all(
       auxiliaryGeoJsonLayers.map(async (layer) => {
         const cacheKey = `geojson_aux_${layer.key}`;
@@ -476,7 +493,7 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
       .catch((err) => console.error("Gagal memuat layer GeoJSON tambahan:", err));
     fetchKelompokTani().then(setTaniData).catch((err) => console.error("Gagal memuat data kelompok tani:", err));
     fetchSt2023DesaExtra().then(setSt2023Data).catch((err) => console.error("Gagal memuat data ST2023 per-desa:", err));
-  }, []);
+  }, [reloadToken]);
 
   const isKecamatanMatch = (kecGeo: string, kecCsv: string) => {
     if (!kecGeo || !kecCsv) return true;
@@ -822,6 +839,27 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
 
       {/* --- LEAFLET MAP --- */}
       <div className="h-full w-full z-0 relative overflow-hidden">
+        {(coreMapLoading || mapLoadError) && (
+          <div className="absolute inset-0 z-[1100] flex flex-col items-center justify-center bg-white">
+            {coreMapLoading ? (
+              <LoadingSpinner height="h-40" label="Memuat peta wilayah..." />
+            ) : (
+              <div className="max-w-xs px-4 text-center">
+                <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-md bg-red-100 text-red-600">
+                  <AlertTriangle className="h-5 w-5" />
+                </div>
+                <p className="text-sm font-semibold text-slate-800">Peta gagal dimuat</p>
+                <p className="mt-1 text-xs leading-relaxed text-slate-500">{mapLoadError}</p>
+                <button
+                  onClick={handleRetry}
+                  className="mt-4 inline-flex items-center gap-1.5 rounded-md bg-blue-800 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-blue-900"
+                >
+                  <RotateCw className="h-3.5 w-3.5" /> Coba Lagi
+                </button>
+              </div>
+            )}
+          </div>
+        )}
         <MapContainer center={[-7.3941, 109.6965]} style={{ height: "100%", width: "100%" }} zoom={11} minZoom={5} maxZoom={18} zoomControl={false}>
           <MapBounds data={kecGeoData} />
           <ZoomBridge onLockChange={setZoomLocked} />
