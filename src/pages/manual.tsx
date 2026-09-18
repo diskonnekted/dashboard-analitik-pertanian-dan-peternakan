@@ -3,6 +3,7 @@ import { PageHeader, SectionCard, Badge } from "@/components/ui";
 import {
   BookOpen,
   CheckCircle2,
+  FileDown,
   FileText,
   Globe2,
   MapPinned,
@@ -40,6 +41,7 @@ const canDo = [
   "Menggunakan filter/dropdown yang tersedia.",
   "Membuka detail wilayah pada peta.",
   "Membaca rekomendasi strategis.",
+  "Mengunduh manual lengkap (DOCX) dari tombol di atas.",
   "Mencetak atau menyimpan halaman tertentu sebagai PDF.",
 ];
 
@@ -132,6 +134,13 @@ export default function ManualPage() {
           actions={
             <>
               <Badge tone="emerald">Manual Pengunjung / Guest</Badge>
+              <a
+                href="/Manual_Pengguna_SISPERTANI.docx"
+                download
+                className="no-print inline-flex items-center justify-center gap-1.5 rounded-md bg-blue-800 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-blue-900"
+              >
+                <FileDown className="h-3.5 w-3.5" /> Unduh Manual Lengkap (DOCX)
+              </a>
               <button
                 className="no-print inline-flex items-center justify-center gap-1.5 rounded-md bg-blue-800 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-blue-900"
                 onClick={() => window.print()}
