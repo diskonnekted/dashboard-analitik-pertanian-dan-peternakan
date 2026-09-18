@@ -1,4 +1,5 @@
 import DefaultLayout from "@/layouts/default";
+import { PageHeader, SectionCard, Badge } from "@/components/ui";
 import {
   BookOpen,
   CheckCircle2,
@@ -10,6 +11,8 @@ import {
   ShieldCheck,
   Smartphone,
   XCircle,
+  Palette,
+  Wrench,
 } from "lucide-react";
 
 const menuItems = [
@@ -83,186 +86,275 @@ const guideSections = [
 ];
 
 const colorMeanings = [
-  ["Hijau", "Nilai tinggi, kondisi baik, atau potensi kuat.", "bg-emerald-200"],
-  ["Kuning/Amber", "Perlu perhatian, potensi sedang, atau transisi.", "bg-amber-200"],
-  ["Merah", "Risiko/peringatan atau prioritas intervensi.", "bg-red-200"],
-  ["Biru", "Informasi pendukung atau kategori tertentu.", "bg-blue-200"],
-  ["Abu-abu", "Data tidak tersedia atau belum cocok.", "bg-slate-200"],
+  ["Hijau", "Nilai tinggi, kondisi baik, atau potensi kuat.", "bg-emerald-300"],
+  ["Kuning/Amber", "Perlu perhatian, potensi sedang, atau transisi.", "bg-amber-300"],
+  ["Merah", "Risiko/peringatan atau prioritas intervensi.", "bg-red-300"],
+  ["Biru", "Informasi pendukung atau kategori tertentu.", "bg-blue-300"],
+  ["Abu-abu", "Data tidak tersedia atau belum cocok.", "bg-slate-300"],
 ];
 
-const SectionTitle = ({ children }: { children: React.ReactNode }) => (
-  <h3 className="text-md font-mono font-black uppercase tracking-wide text-slate-800 border-b border-slate-200 pb-2 mb-4 flex items-center gap-2">
-    <FileText size={18} className="text-emerald-700" />
-    {children}
-  </h3>
-);
+const quickSteps = ["Buka aplikasi", "Pilih menu", "Lihat data", "Gunakan filter", "Cetak bila perlu"];
+
+const accessCards = [
+  {
+    icon: <Globe2 className="h-5 w-5" />,
+    boxClass: "bg-blue-100 text-blue-700",
+    label: "Alamat Aplikasi",
+    value: "https://pertanian.sistemdata.id",
+    breakAll: true,
+  },
+  {
+    icon: <ShieldCheck className="h-5 w-5" />,
+    boxClass: "bg-emerald-100 text-emerald-700",
+    label: "Jenis Akses",
+    value: "Tanpa Login",
+    breakAll: false,
+  },
+  {
+    icon: <Smartphone className="h-5 w-5" />,
+    boxClass: "bg-purple-100 text-purple-700",
+    label: "Perangkat",
+    value: "Desktop, laptop, tablet, dan ponsel.",
+    breakAll: false,
+  },
+];
 
 export default function ManualPage() {
   return (
     <DefaultLayout>
       <section className="flex flex-col gap-8 py-2 max-w-6xl mx-auto">
-        <div className="print-block bg-white border border-slate-200 p-6 md:p-8 shadow-sm">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div>
-              <span className="inline-flex items-center gap-2 px-3 py-1 bg-yellow-200 border border-slate-200 font-mono font-black text-xs uppercase shadow-sm mb-4">
-                <BookOpen size={15} /> Manual Pengunjung / Guest
-              </span>
-              <h1 className="text-2xl sm:text-4xl leading-tight font-bold tracking-tight text-slate-800">
-                Panduan Penggunaan SISPERTANI
-              </h1>
-              <p className="font-mono text-sm md:text-base font-bold text-slate-600 mt-4 max-w-3xl border-l-4 border-emerald-500 pl-4 bg-emerald-50 py-2">
-                Manual ringkas untuk pengunjung yang ingin membaca data, grafik, peta, dan rekomendasi Dasbor Analitik Pertanian Kabupaten Banjarnegara tanpa login.
+        {/* Hero / kop panduan */}
+        <PageHeader
+          className="print-block"
+          icon={<BookOpen className="h-6 w-6" />}
+          title="Panduan Penggunaan SISPERTANI"
+          subtitle="Manual ringkas untuk pengunjung yang ingin membaca data, grafik, peta, dan rekomendasi Dasbor Analitik Pertanian Kabupaten Banjarnegara tanpa login."
+          actions={
+            <>
+              <Badge tone="emerald">Manual Pengunjung / Guest</Badge>
+              <button
+                className="no-print inline-flex items-center justify-center gap-1.5 rounded-md bg-blue-800 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-blue-900"
+                onClick={() => window.print()}
+              >
+                <Printer className="h-3.5 w-3.5" /> Cetak / Simpan PDF
+              </button>
+            </>
+          }
+        />
+
+        {/* Kartu akses ringkas */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {accessCards.map((card) => (
+            <div
+              key={card.label}
+              className="print-block bg-white border border-slate-200 rounded-lg shadow-sm p-5"
+            >
+              <div
+                className={`flex h-9 w-9 items-center justify-center rounded-md mb-3 ${card.boxClass}`}
+              >
+                {card.icon}
+              </div>
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+                {card.label}
+              </p>
+              <p
+                className={`mt-1 text-sm font-semibold text-slate-800 ${
+                  card.breakAll ? "break-all" : ""
+                }`}
+              >
+                {card.value}
               </p>
             </div>
-            <button
-              className="no-print inline-flex items-center justify-center gap-2 px-4 py-3 bg-emerald-200 border border-slate-200 font-mono font-black text-xs uppercase shadow-sm hover:bg-emerald-300 transition-all"
-              onClick={() => window.print()}
-            >
-              <Printer size={18} /> Cetak / Simpan PDF
-            </button>
-          </div>
+          ))}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="print-block bg-emerald-100 border border-slate-200 p-5 shadow-sm">
-            <Globe2 className="w-8 h-8 text-emerald-700 mb-3" />
-            <h4 className="font-mono font-black uppercase text-xs text-emerald-800">Alamat Aplikasi</h4>
-            <p className="font-mono text-sm font-bold mt-2 break-all">https://pertanian.sistemdata.id</p>
-          </div>
-          <div className="print-block bg-yellow-100 border border-slate-200 p-5 shadow-sm">
-            <ShieldCheck className="w-8 h-8 text-yellow-700 mb-3" />
-            <h4 className="font-mono font-black uppercase text-xs text-yellow-800">Jenis Akses</h4>
-            <p className="font-serif text-2xl font-black mt-2">Tanpa Login</p>
-          </div>
-          <div className="print-block bg-blue-100 border border-slate-200 p-5 shadow-sm">
-            <Smartphone className="w-8 h-8 text-blue-700 mb-3" />
-            <h4 className="font-mono font-black uppercase text-xs text-blue-800">Perangkat</h4>
-            <p className="font-mono text-sm font-bold mt-2">Desktop, laptop, tablet, dan ponsel.</p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="print-block bg-white border border-slate-200 p-6 shadow-sm">
-            <SectionTitle>Yang Dapat Dilakukan Guest</SectionTitle>
-            <ul className="space-y-2">
+        {/* Hak & batasan akses guest */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <SectionCard
+            className="print-block"
+            title="Yang Dapat Dilakukan Guest"
+            icon={<CheckCircle2 size={16} className="text-emerald-600" />}
+          >
+            <ul className="space-y-2.5">
               {canDo.map((item) => (
-                <li key={item} className="flex gap-3 text-sm text-slate-700">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+                <li key={item} className="flex gap-3 text-sm text-slate-600 leading-relaxed">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
                   <span>{item}</span>
                 </li>
               ))}
             </ul>
-          </div>
-          <div className="print-block bg-white border border-slate-200 p-6 shadow-sm">
-            <SectionTitle>Batasan Akses Guest</SectionTitle>
-            <ul className="space-y-2">
+          </SectionCard>
+          <SectionCard
+            className="print-block"
+            title="Batasan Akses Guest"
+            icon={<XCircle size={16} className="text-red-600" />}
+          >
+            <ul className="space-y-2.5">
               {cannotDo.map((item) => (
-                <li key={item} className="flex gap-3 text-sm text-slate-700">
-                  <XCircle className="w-5 h-5 text-red-600 shrink-0" />
+                <li key={item} className="flex gap-3 text-sm text-slate-600 leading-relaxed">
+                  <XCircle className="h-4 w-4 text-red-600 shrink-0 mt-0.5" />
                   <span>{item}</span>
                 </li>
               ))}
             </ul>
-          </div>
+          </SectionCard>
         </div>
 
-        <div className="print-block bg-white border border-slate-200 p-6 shadow-sm">
-          <SectionTitle>Alur Cepat Penggunaan</SectionTitle>
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
-            {["Buka aplikasi", "Pilih menu", "Lihat data", "Gunakan filter", "Cetak bila perlu"].map((step, index) => (
-              <div key={step} className="bg-emerald-50 border border-slate-200 p-4 text-center shadow-sm">
-                <div className="mx-auto w-8 h-8 rounded-full bg-yellow-300 border border-slate-200 flex items-center justify-center font-mono font-black mb-3">
+        {/* Alur cepat penggunaan */}
+        <SectionCard
+          className="print-block"
+          title="Alur Cepat Penggunaan"
+          icon={<MousePointerClick size={16} className="text-blue-600" />}
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-4">
+            {quickSteps.map((step, index) => (
+              <div
+                key={step}
+                className="bg-slate-50 border border-slate-200 rounded-lg p-4 text-center"
+              >
+                <div className="mx-auto flex h-6 w-6 items-center justify-center rounded-md bg-blue-800 text-xs font-semibold text-white mb-3">
                   {index + 1}
                 </div>
-                <p className="font-mono font-black text-xs uppercase">{step}</p>
+                <p className="text-xs font-semibold text-slate-800">{step}</p>
               </div>
             ))}
           </div>
-        </div>
+        </SectionCard>
 
-        <div className="print-block bg-white border border-slate-200 p-6 shadow-sm">
-          <SectionTitle>Daftar Menu untuk Pengunjung</SectionTitle>
-          <div className="overflow-x-auto border border-slate-200">
-            <table className="w-full text-left text-sm">
-              <thead className="bg-emerald-100 border-b border-slate-200">
-                <tr>
-                  <th className="p-3 font-mono font-black uppercase text-xs">Menu</th>
-                  <th className="p-3 font-mono font-black uppercase text-xs">Fungsi</th>
+        {/* Daftar menu pengunjung */}
+        <SectionCard
+          className="print-block"
+          title="Daftar Menu untuk Pengunjung"
+          icon={<FileText size={16} className="text-indigo-600" />}
+        >
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm border-collapse">
+              <thead>
+                <tr className="border-b border-slate-200 bg-slate-50">
+                  <th className="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+                    Menu
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+                    Fungsi
+                  </th>
                 </tr>
               </thead>
               <tbody>
-                {menuItems.map(([menu, desc], index) => (
-                  <tr key={menu} className={index % 2 === 0 ? "bg-white" : "bg-slate-50"}>
-                    <td className="p-3 border-b border-slate-200 font-mono font-black uppercase text-xs whitespace-nowrap">{menu}</td>
-                    <td className="p-3 border-b border-slate-200 text-slate-700">{desc}</td>
+                {menuItems.map(([menu, desc]) => (
+                  <tr key={menu} className="border-b border-slate-100 hover:bg-slate-50">
+                    <td className="px-3 py-2.5 font-semibold text-slate-800 whitespace-nowrap">
+                      {menu}
+                    </td>
+                    <td className="px-3 py-2.5 text-slate-600">{desc}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-        </div>
+        </SectionCard>
 
-        <div className="print-block bg-white border border-slate-200 p-6 shadow-sm">
-          <SectionTitle>Panduan Menggunakan Peta Interaktif</SectionTitle>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div className="bg-emerald-50 border border-slate-200 p-5">
-              <MapPinned className="w-7 h-7 text-emerald-700 mb-3" />
-              <h4 className="font-mono font-black uppercase text-sm mb-2">Layer & Legenda</h4>
-              <p className="text-sm text-slate-700 leading-relaxed">
-                Pilih metrik Lahan Sawah, Ladang, atau Total Keseluruhan. Klik kategori pada legenda untuk menyaring wilayah berdasarkan rentang luasan.
+        {/* Panduan peta interaktif */}
+        <SectionCard
+          className="print-block"
+          title="Panduan Menggunakan Peta Interaktif"
+          icon={<MapPinned size={16} className="text-emerald-600" />}
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+              <div className="flex h-9 w-9 items-center justify-center rounded-md bg-emerald-100 text-emerald-700 mb-3">
+                <MapPinned className="h-5 w-5" />
+              </div>
+              <h4 className="text-xs font-semibold tracking-wide text-slate-800 mb-1.5">
+                Layer & Legenda
+              </h4>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Pilih metrik Lahan Sawah, Ladang, atau Total Keseluruhan. Klik kategori pada legenda
+                untuk menyaring wilayah berdasarkan rentang luasan.
               </p>
             </div>
-            <div className="bg-yellow-50 border border-slate-200 p-5">
-              <MousePointerClick className="w-7 h-7 text-yellow-700 mb-3" />
-              <h4 className="font-mono font-black uppercase text-sm mb-2">Cari & Klik Desa</h4>
-              <p className="text-sm text-slate-700 leading-relaxed">
-                Gunakan kotak pencarian untuk menemukan desa. Klik area desa untuk melihat popup berisi luas sawah, lahan bukan sawah, total luas, dan data kelembagaan tani bila tersedia.
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+              <div className="flex h-9 w-9 items-center justify-center rounded-md bg-amber-100 text-amber-700 mb-3">
+                <MousePointerClick className="h-5 w-5" />
+              </div>
+              <h4 className="text-xs font-semibold tracking-wide text-slate-800 mb-1.5">
+                Cari & Klik Desa
+              </h4>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Gunakan kotak pencarian untuk menemukan desa. Klik area desa untuk melihat popup
+                berisi luas sawah, lahan bukan sawah, total luas, dan data kelembagaan tani bila
+                tersedia.
               </p>
             </div>
           </div>
-        </div>
+        </SectionCard>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {guideSections.map((section) => (
-            <div key={section.title} className="print-block bg-white border border-slate-200 p-5 shadow-sm">
-              <h4 className="font-mono font-black uppercase text-sm text-emerald-800 mb-2">{section.title}</h4>
-              <p className="text-sm text-slate-700 leading-relaxed">{section.body}</p>
-            </div>
-          ))}
-        </div>
-
-        <div className="print-block bg-white border border-slate-200 p-6 shadow-sm">
-          <SectionTitle>Cara Membaca Warna</SectionTitle>
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
-            {colorMeanings.map(([name, desc, bg]) => (
-              <div key={name} className={`${bg} border border-slate-200 p-4 shadow-sm`}>
-                <h4 className="font-mono font-black uppercase text-xs mb-2">{name}</h4>
-                <p className="text-xs text-slate-700 leading-relaxed">{desc}</p>
+        {/* Panduan per halaman */}
+        <SectionCard
+          className="print-block"
+          title="Panduan per Halaman"
+          icon={<FileText size={16} className="text-blue-600" />}
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {guideSections.map((section) => (
+              <div key={section.title} className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+                <h4 className="text-xs font-semibold text-slate-800 mb-1.5 leading-tight">
+                  {section.title}
+                </h4>
+                <p className="text-xs text-slate-500 leading-relaxed">{section.body}</p>
               </div>
             ))}
           </div>
-        </div>
+        </SectionCard>
 
-        <div className="print-block bg-red-50 border border-slate-200 p-6 shadow-sm">
-          <SectionTitle>Troubleshooting & Catatan</SectionTitle>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-slate-700 leading-relaxed">
-            <div>
-              <h4 className="font-mono font-black uppercase text-xs mb-2">Jika data tidak muncul</h4>
-              <ol className="list-decimal pl-5 space-y-1">
+        {/* Cara membaca warna */}
+        <SectionCard
+          className="print-block"
+          title="Cara Membaca Warna"
+          icon={<Palette size={16} className="text-purple-600" />}
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
+            {colorMeanings.map(([name, desc, swatch]) => (
+              <div key={name} className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className={`h-3 w-3 rounded-sm border border-slate-300 ${swatch}`} />
+                  <h4 className="text-xs font-semibold text-slate-800">{name}</h4>
+                </div>
+                <p className="text-[11px] text-slate-500 leading-relaxed">{desc}</p>
+              </div>
+            ))}
+          </div>
+        </SectionCard>
+
+        {/* Troubleshooting & catatan */}
+        <SectionCard
+          className="print-block"
+          title="Troubleshooting & Catatan"
+          icon={<Wrench size={16} className="text-red-600" />}
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+              <h4 className="text-xs font-semibold tracking-wide text-slate-800 mb-2">
+                Jika data tidak muncul
+              </h4>
+              <ol className="list-decimal pl-5 space-y-1 text-sm text-slate-600">
                 <li>Refresh halaman browser.</li>
                 <li>Gunakan hard refresh: Ctrl + Shift + R.</li>
                 <li>Pastikan koneksi internet stabil.</li>
                 <li>Coba buka dengan browser lain.</li>
               </ol>
             </div>
-            <div>
-              <h4 className="font-mono font-black uppercase text-xs mb-2">Batasan data</h4>
-              <p>
-                Data mengikuti ketersediaan sumber lokal dan Open Data. Wilayah abu-abu pada peta berarti data belum tersedia atau nama wilayah belum cocok. Hasil analisis adalah alat bantu dan tetap perlu validasi instansi/lapangan.
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+              <h4 className="text-xs font-semibold tracking-wide text-slate-800 mb-2">
+                Batasan data
+              </h4>
+              <p className="text-sm text-slate-600 leading-relaxed">
+                Data mengikuti ketersediaan sumber lokal dan Open Data. Wilayah abu-abu pada peta
+                berarti data belum tersedia atau nama wilayah belum cocok. Hasil analisis adalah
+                alat bantu dan tetap perlu validasi instansi/lapangan.
               </p>
             </div>
           </div>
-        </div>
+        </SectionCard>
       </section>
     </DefaultLayout>
   );
