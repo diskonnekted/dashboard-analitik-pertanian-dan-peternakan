@@ -8,7 +8,7 @@
 }
 
 /* ============================================
-   SaaS Analytics Design Tokens
+   SISPERTANI Design Tokens — gaya government (opsi B)
    ============================================ */
 :root {
   --color-primary-50: #eff6ff;
@@ -87,49 +87,22 @@ body {
     animation: fade-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
-  /* card-modern and modern utilities port */
-  .card-modern {
-    background: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
-    transition: all 0.2s ease-in-out;
-  }
-  .card-modern:hover {
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.08);
-    border-color: #cbd5e1;
-  }
 
-  .border-hd {
-    border: 1px solid #e2e8f0;
-    border-radius: 10px;
-  }
-  
-  .border-hd-lg {
-    border: 1px solid #cbd5e1;
-    border-radius: 12px;
-  }
-  
-  .border-hd-subtle {
-    border: 1px solid #f1f5f9;
-  }
-  
-  .shadow-hd {
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  }
-  
-  .shadow-hd-lg {
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
-  }
 
-  /* Gradients */
-  .gradient-primary {
-    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
-  }
+
+
   
-  .gradient-header {
-    background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
-  }
+
+  
+
+  
+
+  
+
+
+
+  
+
 }
 
 @keyframes fade-in {
@@ -143,14 +116,7 @@ body {
   }
 }
 
-@keyframes shimmer {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(200%);
-  }
-}
+
 
 /* ============================================
    Leaflet Map Modern Styling
@@ -175,7 +141,7 @@ body {
 
 @custom-variant dark (&:is(.dark *));
 
-/* Custom Scrollbar (SaaS style) */
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;

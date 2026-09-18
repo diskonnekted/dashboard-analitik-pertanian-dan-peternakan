@@ -3,6 +3,7 @@ import DefaultLayout from "@/layouts/default";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { fetchTernakKecil, fetchTernakBesar, fetchUnggas, TernakKecil, TernakBesar, Unggas } from "@/services/api";
 import { Beef, Squirrel, Bird, Calendar, MapPin, TrendingUp, Filter, AlertTriangle, ShieldCheck } from "lucide-react";
+import { PageHeader, KpiCard, SectionCard, TrendPill, Badge, LoadingSpinner } from "@/components/ui";
 
 type Category = "besar" | "kecil" | "unggas";
 
@@ -342,35 +343,24 @@ export default function LivestockPage() {
     <DefaultLayout>
       <section className="flex flex-col gap-8 py-2">
         {/* Hero / intro */}
-        <section className="relative text-left animate-fade-in py-4 md:py-8 flex flex-col md:flex-row items-center justify-between gap-8 border-b border-slate-200 pb-8">
-          <div className="relative z-10 flex-1">
-            <h2 className="text-2xl sm:text-4xl leading-tight font-bold tracking-tight text-slate-800">
-            Analitik Peternakan & Unggas
-          </h2>
-            <p className="text-xs md:text-sm font-medium text-slate-500 mt-2 max-w-2xl border-l-2 border-blue-500 pl-3">
-            Pemantauan Populasi Ternak Besar, Ternak Kecil, dan Unggas Kabupaten Banjarnegara.
-          </p>
-          </div>
-          <div className="w-full md:w-48 lg:w-64 shrink-0 flex items-center justify-center">
-            <img
-              src="/img/livestock.png"
-              alt="Peternakan"
-              className="w-full max-h-32 md:max-h-36 object-contain"
-            />
-          </div>
-        </section>
+        <PageHeader
+          icon={<Beef className="h-6 w-6" />}
+          title="Analitik Peternakan & Unggas"
+          subtitle="Pemantauan populasi ternak besar, ternak kecil, dan unggas per kecamatan di Kabupaten Banjarnegara."
+          actions={<Badge tone="blue">Tahun {selectedYear}</Badge>}
+        />
 
         {/* Filters */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-white border border-slate-200 rounded-lg p-4 shadow-sm">
           {/* Category Selector */}
           <div className="flex flex-col gap-2 text-left">
-            <label className="text-xs font-mono font-bold uppercase text-slate-500">Kategori Ternak</label>
+            <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">Kategori Ternak</label>
             <div className="grid grid-cols-3 gap-2">
               <button 
                 onClick={() => setCategory("besar")} 
-                className={`py-2 px-3 border border-slate-200 font-mono font-bold text-xs uppercase flex items-center justify-center gap-1 transition-all ${
+                className={`py-2 px-3 border border-slate-200 text-xs font-semibold uppercase flex items-center justify-center gap-1 transition-all ${
                   category === "besar"
-                    ? "bg-blue-600 text-white shadow-sm"
+                    ? "bg-blue-800 text-white shadow-sm"
                     : "bg-white text-slate-800 hover:bg-slate-100 shadow-sm"
                 }`}
               >
@@ -379,9 +369,9 @@ export default function LivestockPage() {
               </button>
               <button 
                 onClick={() => setCategory("kecil")} 
-                className={`py-2 px-3 border border-slate-200 font-mono font-bold text-xs uppercase flex items-center justify-center gap-1 transition-all ${
+                className={`py-2 px-3 border border-slate-200 text-xs font-semibold uppercase flex items-center justify-center gap-1 transition-all ${
                   category === "kecil"
-                    ? "bg-blue-600 text-white shadow-sm"
+                    ? "bg-blue-800 text-white shadow-sm"
                     : "bg-white text-slate-800 hover:bg-slate-100 shadow-sm"
                 }`}
               >
@@ -390,9 +380,9 @@ export default function LivestockPage() {
               </button>
               <button 
                 onClick={() => setCategory("unggas")} 
-                className={`py-2 px-3 border border-slate-200 font-mono font-bold text-xs uppercase flex items-center justify-center gap-1 transition-all ${
+                className={`py-2 px-3 border border-slate-200 text-xs font-semibold uppercase flex items-center justify-center gap-1 transition-all ${
                   category === "unggas"
-                    ? "bg-blue-600 text-white shadow-sm"
+                    ? "bg-blue-800 text-white shadow-sm"
                     : "bg-white text-slate-800 hover:bg-slate-100 shadow-sm"
                 }`}
               >
@@ -404,13 +394,13 @@ export default function LivestockPage() {
 
           {/* Year Selector */}
           <div className="flex flex-col gap-2 text-left">
-            <label className="text-xs font-mono font-bold uppercase text-slate-500">Tahun Data</label>
+            <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">Tahun Data</label>
             <div className="relative">
               <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-slate-500 pointer-events-none" />
               <select 
                 value={selectedYear} 
                 onChange={(e) => setSelectedYear(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 border border-slate-200 font-mono text-sm font-bold bg-white focus:outline-none appearance-none cursor-pointer rounded-xl"
+                className="w-full pl-9 pr-4 py-2 border border-slate-200 text-sm font-medium bg-white focus:outline-none appearance-none cursor-pointer rounded-md"
               >
                 {yearsList.map(yr => (
                   <option key={yr} value={yr}>{yr}</option>
@@ -421,13 +411,13 @@ export default function LivestockPage() {
 
           {/* Kecamatan Selector */}
           <div className="flex flex-col gap-2 text-left">
-            <label className="text-xs font-mono font-bold uppercase text-slate-500">Pilih Kecamatan</label>
+            <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">Pilih Kecamatan</label>
             <div className="relative">
               <Filter className="absolute left-3 top-2.5 h-4 w-4 text-slate-500 pointer-events-none" />
               <select 
                 value={selectedKecamatan} 
                 onChange={(e) => setSelectedKecamatan(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 border border-slate-200 font-mono text-sm font-bold bg-white focus:outline-none appearance-none cursor-pointer rounded-xl"
+                className="w-full pl-9 pr-4 py-2 border border-slate-200 text-sm font-medium bg-white focus:outline-none appearance-none cursor-pointer rounded-md"
               >
                 {uniqueKecamatan.map(kec => (
                   <option key={kec} value={kec}>{kec}</option>
@@ -438,96 +428,76 @@ export default function LivestockPage() {
         </div>
 
         {loading ? (
-          <div className="flex items-center justify-center h-[300px]">
-            <p className="text-slate-500 font-mono font-bold animate-pulse uppercase">Memuat data peternakan...</p>
-          </div>
+          <LoadingSpinner label="Memuat data peternakan" />
         ) : (
           <>
             {/* Stats Row */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Stat 1: Total Populasi */}
-              <div className="bg-amber-50 border border-slate-200 p-6 shadow-sm text-left flex flex-col justify-between transition-all duration-300 hover:shadow-md">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h5 className="text-xs font-mono font-bold text-slate-500 uppercase">Total Populasi</h5>
-                    <h3 className="text-3xl font-serif font-black uppercase text-slate-800 mt-1">{formatNum(stats.total)}</h3>
-                  </div>
-                  <div className="p-2 border border-slate-200 bg-white">
-                    {category === "besar" ? <Beef size={20} /> : category === "kecil" ? <Squirrel size={20} /> : <Bird size={20} />}
-                  </div>
-                </div>
-                <p className="text-xs font-mono text-slate-500 mt-4 uppercase">Ekor ternak terdata di Banjarnegara ({selectedYear})</p>
-              </div>
+              <KpiCard
+                icon={category === "besar" ? <Beef size={20} /> : category === "kecil" ? <Squirrel size={20} /> : <Bird size={20} />}
+                label="Total Populasi"
+                value={formatNum(stats.total)}
+                unit="ekor"
+                color="bg-amber-300"
+                hint={`Ternak terdata di Banjarnegara (${selectedYear})`}
+              />
 
               {/* Stat 2: Top Kecamatan */}
-              <div className="bg-emerald-50 border border-slate-200 p-6 shadow-sm text-left flex flex-col justify-between transition-all duration-300 hover:shadow-md">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h5 className="text-xs font-mono font-bold text-slate-500 uppercase">Kecamatan Terpadat</h5>
-                    <h3 className="text-2xl font-serif font-black uppercase text-slate-800 mt-1 break-words leading-tight">{stats.topDistrict}</h3>
-                  </div>
-                  <div className="p-2 border border-slate-200 bg-white">
-                    <MapPin size={20} />
-                  </div>
-                </div>
-                <p className="text-xs font-mono text-slate-500 mt-4 uppercase">Populasi: {formatNum(stats.topVal)} ekor</p>
-              </div>
+              <KpiCard
+                icon={<MapPin size={20} />}
+                label="Kecamatan Terpadat"
+                value={stats.topDistrict}
+                color="bg-emerald-300"
+                hint={`Populasi ${formatNum(stats.topVal)} ekor (${selectedYear})`}
+              />
 
               {/* Stat 3: Komposisi Jenis */}
-              <div className="bg-violet-50 border border-slate-200 p-6 shadow-sm text-left transition-all duration-300 hover:shadow-md">
-                <h5 className="text-xs font-mono font-bold text-slate-500 uppercase mb-3">Komposisi Populasi</h5>
-                <div className="flex flex-col gap-2">
+              <SectionCard title="Komposisi Populasi" bodyClassName="p-5 flex flex-col justify-center">
+                <div className="flex flex-col gap-2.5">
                   {stats.breakdown.map((item, idx) => {
                     const percentage = stats.total > 0 ? (item.value / stats.total) * 100 : 0;
                     return (
                       <div key={item.name} className="flex flex-col gap-1">
-                      <div className="flex justify-between text-xs font-mono font-bold uppercase">
+                      <div className="flex justify-between text-xs font-semibold text-slate-600">
                         <span>{item.name}</span>
                         <span>{formatNum(item.value)} ({percentage.toFixed(1)}%)</span>
                       </div>
-                      <div className="w-full bg-slate-200 h-2 border border-slate-200">
-                        <div className="h-full" style={{ width: `${percentage}%`, backgroundColor: ["#f59e0b", "#3b82f6", "#8b5cf6", "#10b981", "#ef4444", "#f472b6", "#a855f7"][idx % 7] }}></div>
+                      <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                        <div className="h-full rounded-full" style={{ width: `${percentage}%`, backgroundColor: ["#f59e0b", "#3b82f6", "#8b5cf6", "#10b981", "#ef4444", "#f472b6", "#a855f7"][idx % 7] }}></div>
                       </div>
                       </div>
 
                     );
                   })}
                 </div>
-              </div>
+              </SectionCard>
             </div>
 
             {/* Tren Deret Waktu */}
-            <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
-              <div className="mb-4 text-left border-b border-slate-200 pb-3 flex flex-wrap items-center justify-between gap-2">
-                <h4 className="text-lg font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
-                  <TrendingUp className="text-amber-600" />
-                  Tren Populasi {trendData.length > 0 ? `${trendData[0].tahun}–${trendData[trendData.length - 1].tahun}` : ""}
-                  {selectedKecamatan !== "Semua" ? ` · ${selectedKecamatan}` : ""}
-                </h4>
-                {trendGrowth && (
-                  <span
-                    className={`inline-flex items-center gap-1 px-2 py-0.5 border border-slate-200 font-mono font-bold text-[10px] uppercase ${
-                      trendGrowth.pct >= 0
-                        ? "bg-emerald-100 text-emerald-800"
-                        : "bg-red-100 text-red-800"
-                    }`}
-                  >
-                    {trendGrowth.pct >= 0 ? "▲" : "▼"} {formatNum(Math.abs(trendGrowth.pct))}% ({trendGrowth.first.tahun}→{trendGrowth.last.tahun})
-                  </span>
-                )}
-              </div>
+            <SectionCard
+              title={`Tren Populasi ${trendData.length > 0 ? `${trendData[0].tahun}–${trendData[trendData.length - 1].tahun}` : ""}${
+                selectedKecamatan !== "Semua" ? ` · ${selectedKecamatan}` : ""
+              }`}
+              icon={<TrendingUp size={16} className="text-amber-600" />}
+              actions={
+                trendGrowth ? (
+                  <TrendPill value={trendGrowth.pct} label={`${trendGrowth.first.tahun}→${trendGrowth.last.tahun}`} />
+                ) : undefined
+              }
+            >
               <div className="h-[320px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={trendWithProjection} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#64748b" strokeOpacity={0.1} vertical={false} />
                     <XAxis
                       dataKey="tahun"
-                      tick={{ fill: "#475569", fontSize: 11, fontFamily: "monospace", fontWeight: "bold" }}
+                      tick={{ fill: "#475569", fontSize: 11 }}
                       axisLine={{ stroke: "#cbd5e1", strokeWidth: 1 }}
                       tickLine={{ stroke: "#cbd5e1" }}
                     />
                     <YAxis
-                      tick={{ fill: "#475569", fontSize: 10, fontFamily: "monospace", fontWeight: "bold" }}
+                      tick={{ fill: "#475569", fontSize: 10 }}
                       axisLine={{ stroke: "#cbd5e1", strokeWidth: 1 }}
                       tickLine={{ stroke: "#cbd5e1" }}
                       tickFormatter={(v) => formatNum(v)}
@@ -537,14 +507,12 @@ export default function LivestockPage() {
                         backgroundColor: "#ffffff",
                         border: "1px solid #e2e8f0",
                         borderRadius: 8,
-                        fontFamily: "monospace",
                         fontSize: "12px",
-                        fontWeight: "bold",
                         boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)",
                       }}
                       formatter={(value: any) => [formatNum(Number(value)), ""]}
                     />
-                    <Legend verticalAlign="top" height={36} wrapperStyle={{ fontFamily: "monospace", fontSize: "11px", fontWeight: "bold" }} />
+                    <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: "11px" }} />
                     <Line type="monotone" dataKey="total" name="Total" stroke="#64748b" strokeWidth={3} dot={{ fill: "#475569", r: 4 }} activeDot={{ r: 6 }} connectNulls={false} />
                     <Line type="monotone" dataKey="proyeksi" name="Proyeksi" stroke="#ef4444" strokeWidth={2} strokeDasharray="6 4" dot={{ fill: "#ef4444", r: 4 }} connectNulls={true} />
                     {seriesKeys.map((s, idx) => {
@@ -556,36 +524,34 @@ export default function LivestockPage() {
                   </LineChart>
                 </ResponsiveContainer>
               </div>
-            </div>
+            </SectionCard>
 
             {/* Proyeksi Tahun Depan (Regresi Linear) */}
             {projection && (
-              <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
-                <div className="mb-4 text-left border-b border-slate-200 pb-2">
-                  <h4 className="text-md font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
-                    <TrendingUp className="text-red-600" size={18} />
-                    Proyeksi {projection.nextYear} — Regresi Linear
-                    {selectedKecamatan !== "Semua" ? ` · ${selectedKecamatan}` : ""}
-                  </h4>
-                  <p className="text-[10px] font-mono font-bold text-slate-500 uppercase mt-1">
-                    Perkiraan berdasarkan tren garis lurus (least-squares) atas total populasi
-                  </p>
-                </div>
+              <SectionCard
+                title={`Proyeksi ${projection.nextYear} — Regresi Linear${
+                  selectedKecamatan !== "Semua" ? ` · ${selectedKecamatan}` : ""
+                }`}
+                icon={<TrendingUp size={16} className="text-red-600" />}
+              >
+                <p className="text-xs text-slate-500 mb-4">
+                  Perkiraan berdasarkan tren garis lurus (least-squares) atas total populasi
+                </p>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div className="border border-slate-200 bg-red-50 p-4 shadow-sm flex flex-col justify-between">
-                    <span className="text-[10px] font-mono font-bold uppercase text-slate-500">
+                  <div className="border border-red-100 bg-red-50 rounded-lg p-4 flex flex-col justify-between">
+                    <span className="text-[11px] font-semibold uppercase text-slate-500">
                       Perkiraan {projection.nextYear} (ekor)
                     </span>
-                    <span className="text-2xl font-serif font-black text-slate-800 mt-2">
+                    <span className="text-2xl font-bold tabular-nums text-slate-800 mt-2">
                       {formatNum(projection.predicted)}
                     </span>
                   </div>
-                  <div className="border border-slate-200 bg-white p-4 shadow-sm flex flex-col justify-between">
-                    <span className="text-[10px] font-mono font-bold uppercase text-slate-500">
+                  <div className="border border-slate-200 bg-white rounded-lg p-4 flex flex-col justify-between">
+                    <span className="text-[11px] font-semibold uppercase text-slate-500">
                       Perubahan vs {projection.lastTahun}
                     </span>
                     <span
-                      className={`text-2xl font-serif font-black mt-2 ${
+                      className={`text-2xl font-bold tabular-nums mt-2 ${
                         projection.deltaPct === null
                           ? "text-slate-400"
                           : projection.deltaPct >= 0
@@ -598,12 +564,12 @@ export default function LivestockPage() {
                         : `${projection.deltaPct >= 0 ? "▲" : "▼"} ${formatPct(Math.abs(projection.deltaPct))}%`}
                     </span>
                   </div>
-                  <div className="border border-slate-200 bg-white p-4 shadow-sm flex flex-col justify-between">
-                    <span className="text-[10px] font-mono font-bold uppercase text-slate-500">
+                  <div className="border border-slate-200 bg-white rounded-lg p-4 flex flex-col justify-between">
+                    <span className="text-[11px] font-semibold uppercase text-slate-500">
                       Keandalan Model (R²)
                     </span>
                     <span
-                      className={`text-2xl font-serif font-black mt-2 ${
+                      className={`text-2xl font-bold tabular-nums mt-2 ${
                         projection.r2 >= 0.7
                           ? "text-emerald-600"
                           : projection.r2 >= 0.4
@@ -615,29 +581,24 @@ export default function LivestockPage() {
                     </span>
                   </div>
                 </div>
-                <p className="text-[10px] font-mono text-slate-500 uppercase mt-3">
+                <p className="text-xs text-slate-400 mt-3">
                   {projection.r2 >= 0.7
                     ? "Tren cukup konsisten — proyeksi relatif dapat diandalkan."
                     : projection.r2 >= 0.4
                       ? "Tren agak fluktuatif — proyeksi perlu kehati-hatian."
                       : "Data sangat fluktuatif — proyeksi kurang dapat diandalkan."}
                 </p>
-              </div>
+              </SectionCard>
             )}
 
             {/* Deteksi Anomali */}
-            <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
-              <div className="mb-4 text-left border-b border-slate-200 pb-2 flex flex-wrap items-center justify-between gap-2">
-                <h4 className="text-md font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
-                  <AlertTriangle className="text-red-600" size={18} />
-                  Deteksi Anomali Populasi
-                </h4>
-                <span className="text-[10px] font-mono font-bold text-slate-500 uppercase">
-                  Ambang penurunan tajam: {ANOMALY_THRESHOLD}% YoY
-                </span>
-              </div>
+            <SectionCard
+              title="Deteksi Anomali Populasi"
+              icon={<AlertTriangle size={16} className="text-red-600" />}
+              actions={<Badge tone="red">Ambang {ANOMALY_THRESHOLD}% YoY</Badge>}
+            >
               {anomalies.length === 0 ? (
-                <div className="flex items-center gap-2 p-3 bg-emerald-50 border border-slate-200 text-[11px] font-mono font-bold text-emerald-800 uppercase">
+                <div className="flex items-center gap-2 p-3 bg-emerald-50 border border-emerald-100 rounded-lg text-xs font-semibold text-emerald-800">
                   <ShieldCheck size={14} />
                   Tidak ada penurunan tajam terdeteksi pada periode ini
                   {selectedKecamatan !== "Semua" ? ` (${selectedKecamatan})` : ""}.
@@ -647,49 +608,47 @@ export default function LivestockPage() {
                   {anomalies.map((a) => (
                     <div
                       key={a.tahun}
-                      className="flex flex-wrap items-center justify-between gap-3 p-3 bg-red-50 border border-slate-200 shadow-sm"
+                      className="flex flex-wrap items-center justify-between gap-3 p-3 bg-red-50 border border-red-100 rounded-lg"
                     >
                       <div className="flex items-center gap-3">
-                        <span className="inline-flex items-center px-2 py-0.5 bg-red-600 text-white border border-slate-200 font-mono font-black text-sm">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-red-800 text-white text-xs font-bold tabular-nums">
                           {a.tahun}
                         </span>
                         <div className="text-left">
-                          <p className="text-[11px] font-mono font-bold uppercase text-red-800">
+                          <p className="text-xs font-semibold text-red-700">
                             Turun {formatNum(Math.abs(a.pct))}% dari {a.prevTahun}
                           </p>
-                          <p className="text-[10px] font-mono text-slate-600 uppercase">
+                          <p className="text-[11px] text-slate-500">
                             Penyumbang utama: {a.penyumbang} · {formatNum(Math.abs(a.selisih))} ekor
                           </p>
                         </div>
                       </div>
-                      <span className="text-xl font-serif font-black text-red-600">
+                      <span className="text-xl font-bold tabular-nums text-red-600">
                         ▼ {formatNum(Math.abs(a.pct))}%
                       </span>
                     </div>
                   ))}
                 </div>
               )}
-            </div>
+            </SectionCard>
 
             {/* CAGR per Komoditas */}
             {cagrData && (
-              <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
-                <div className="mb-4 text-left border-b border-slate-200 pb-2">
-                  <h4 className="text-md font-mono font-bold uppercase tracking-wide">
-                    Laju Pertumbuhan Tahunan (CAGR) {cagrData.periode}
-                    {selectedKecamatan !== "Semua" ? ` · ${selectedKecamatan}` : ""}
-                  </h4>
-                  <p className="text-[10px] font-mono font-bold text-slate-500 uppercase mt-1">
-                    Rata-rata pertumbuhan majemuk populasi per tahun selama {cagrData.years} tahun
-                  </p>
-                </div>
+              <SectionCard
+                title={`Laju Pertumbuhan Tahunan (CAGR) ${cagrData.periode}${
+                  selectedKecamatan !== "Semua" ? ` · ${selectedKecamatan}` : ""
+                }`}
+              >
+                <p className="text-xs text-slate-500 mb-4">
+                  Rata-rata pertumbuhan majemuk populasi per tahun selama {cagrData.years} tahun
+                </p>
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
                   {/* Kartu Total */}
-                  <div className="border border-slate-200 bg-slate-800 text-white p-4 flex flex-col justify-between">
-                    <span className="text-[10px] font-mono font-bold uppercase text-slate-400">
+                  <div className="border border-slate-800 bg-slate-800 text-white rounded-lg p-4 flex flex-col justify-between">
+                    <span className="text-[11px] font-semibold uppercase text-slate-400">
                       Total
                     </span>
-                    <span className="text-2xl font-serif font-black mt-2">
+                    <span className="text-2xl font-bold tabular-nums mt-2">
                       {cagrData.total === null
                         ? "N/A"
                         : `${cagrData.total >= 0 ? "+" : ""}${formatPct(cagrData.total)}%`}
@@ -700,11 +659,11 @@ export default function LivestockPage() {
                       key={item.name}
                       className="border border-slate-200 bg-white p-4 flex flex-col justify-between shadow-sm"
                     >
-                      <span className="text-[10px] font-mono font-bold uppercase text-slate-500 leading-tight">
+                      <span className="text-[11px] font-semibold uppercase text-slate-500 leading-tight">
                         {item.name}
                       </span>
                       <span
-                        className={`text-2xl font-serif font-black mt-2 ${
+                        className={`text-2xl font-bold tabular-nums mt-2 ${
                           item.cagr === null
                             ? "text-slate-400"
                             : item.cagr >= 0
@@ -723,20 +682,17 @@ export default function LivestockPage() {
                     </div>
                   ))}
                 </div>
-              </div>
+              </SectionCard>
             )}
 
             {/* Chart Area */}
-            <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
-              <div className="flex flex-col mb-6 border-b border-slate-200 pb-3 text-left">
-                <h4 className="text-lg font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
-                  <TrendingUp className="text-amber-600" />
-                  Grafik Sebaran Populasi Ternak ({selectedYear})
-                </h4>
-                <p className="text-xs font-mono font-bold text-slate-500 uppercase mt-1">
-                  Populasi per Kecamatan di Banjarnegara Tahun {selectedYear}
-                </p>
-              </div>
+            <SectionCard
+              title={`Grafik Sebaran Populasi Ternak (${selectedYear})`}
+              icon={<TrendingUp size={16} className="text-amber-600" />}
+            >
+              <p className="text-xs text-slate-500 mb-4">
+                Populasi per Kecamatan di Banjarnegara Tahun {selectedYear}
+              </p>
               
               <div className="h-[420px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
@@ -744,7 +700,7 @@ export default function LivestockPage() {
                     <CartesianGrid strokeDasharray="3 3" stroke="#64748b" strokeOpacity={0.1} vertical={false} />
                     <XAxis 
                       dataKey="name" 
-                      tick={{ fill: "#475569", fontSize: 10, fontFamily: "monospace", fontWeight: "bold" }}
+                      tick={{ fill: "#475569", fontSize: 10 }}
                       axisLine={{ stroke: "#cbd5e1", strokeWidth: 1 }}
                       tickLine={{ stroke: "#cbd5e1" }}
                       interval={0}
@@ -754,7 +710,7 @@ export default function LivestockPage() {
                     />
                     <YAxis 
                       width={70}
-                      tick={{ fill: "#475569", fontSize: 10, fontFamily: "monospace", fontWeight: "bold" }}
+                      tick={{ fill: "#475569", fontSize: 10 }}
                       axisLine={{ stroke: "#cbd5e1", strokeWidth: 1 }}
                       tickLine={{ stroke: "#cbd5e1" }}
                     />
@@ -763,13 +719,11 @@ export default function LivestockPage() {
                         backgroundColor: "#ffffff",
                         border: "1px solid #e2e8f0",
                         borderRadius: 8,
-                        fontFamily: "monospace",
                         fontSize: "12px",
-                        fontWeight: "bold",
                         boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)"
                       }}
                     />
-                    <Legend verticalAlign="top" height={36} wrapperStyle={{ fontFamily: "monospace", fontSize: "11px", fontWeight: "bold" }} />
+                    <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: "11px" }} />
                     {stats.breakdown.map((item, idx) => {
                       const colors = ["#f59e0b", "#3b82f6", "#8b5cf6", "#10b981", "#ef4444", "#f472b6", "#a855f7"];
                       return (
@@ -785,23 +739,20 @@ export default function LivestockPage() {
                   </BarChart>
                 </ResponsiveContainer>
               </div>
-            </div>
+            </SectionCard>
 
             {/* Data Table */}
-            <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
-              <div className="mb-4 text-left border-b border-slate-200 pb-2">
-                <h4 className="text-md font-mono font-bold uppercase tracking-wide">Tabel Rincian Populasi ({selectedYear})</h4>
-              </div>
+            <SectionCard title={`Tabel Rincian Populasi (${selectedYear})`}>
               <div className="overflow-x-auto">
-                <table className="w-full text-left font-mono text-sm border-collapse">
+                <table className="w-full text-left text-sm border-collapse">
                   <thead>
-                    <tr className="border-b border-slate-200 bg-slate-100">
-                      <th className="p-3 border-r border-slate-200 font-bold uppercase text-xs">No</th>
-                      <th className="p-3 border-r border-slate-200 font-bold uppercase text-xs">Kecamatan</th>
+                    <tr className="border-b border-slate-200 bg-slate-50">
+                      <th className="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">No</th>
+                      <th className="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">Kecamatan</th>
                       {stats.breakdown.map((b, idx) => (
-                        <th key={idx} className="p-3 border-r border-slate-200 font-bold uppercase text-xs text-right">{b.name}</th>
+                        <th key={idx} className="px-3 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wide text-slate-500">{b.name}</th>
                       ))}
-                      <th className="p-3 font-bold uppercase text-xs text-right">Total</th>
+                      <th className="px-3 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wide text-slate-500">Total</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -810,20 +761,20 @@ export default function LivestockPage() {
                       const displayKeys = Object.keys(row).filter(k => k !== "name" && k !== "total");
                       
                       return (
-                        <tr key={`${row.name}-${idx}`} className="border-b border-slate-200 hover:bg-slate-50 transition-colors">
-                          <td className="p-3 border-r border-slate-200 text-xs font-bold">{idx + 1}</td>
-                          <td className="p-3 border-r border-slate-200 font-bold uppercase">{row.name}</td>
+                        <tr key={`${row.name}-${idx}`} className="border-b border-slate-100 hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-xs font-semibold text-slate-500">{idx + 1}</td>
+                          <td className="px-3 py-2.5 font-semibold">{row.name}</td>
                           {displayKeys.map((key, i) => (
-                            <td key={i} className="p-3 border-r border-slate-200 text-right">{formatNum(row[key])}</td>
+                            <td key={i} className="px-3 py-2.5 text-right tabular-nums">{formatNum(row[key])}</td>
                           ))}
-                          <td className="p-3 font-bold text-right bg-slate-50">{formatNum(row.total)}</td>
+                          <td className="px-3 py-2.5 font-bold text-right bg-slate-50 tabular-nums">{formatNum(row.total)}</td>
                         </tr>
                       );
                     })}
                   </tbody>
                 </table>
               </div>
-            </div>
+            </SectionCard>
           </>
         )}
       </section>

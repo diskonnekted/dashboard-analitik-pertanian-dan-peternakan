@@ -180,7 +180,7 @@ export default function DefaultLayout({
                   onClick={onLinkClick}
                   className={`group flex items-center px-4 py-2.5 rounded-lg font-sans font-semibold text-xs tracking-wide transition-all duration-150 ${
                     isActive 
-                      ? 'bg-blue-600 text-white shadow-md shadow-blue-600/10' 
+                      ? 'bg-blue-800 text-white' 
                       : 'text-slate-400 hover:bg-slate-800 hover:text-white'
                   }`}
                 >

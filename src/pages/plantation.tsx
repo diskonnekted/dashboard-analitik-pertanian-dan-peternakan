@@ -3,6 +3,7 @@ import DefaultLayout from "@/layouts/default";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { fetchPlantationArea, fetchPlantationProduction, PlantationArea, PlantationProduction } from "@/services/api";
 import { Sprout, TreePine, Calendar, MapPin, TrendingUp, Filter, AlertTriangle, ShieldCheck, FileSpreadsheet, Activity } from "lucide-react";
+import { PageHeader, KpiCard, SectionCard, TrendPill, Badge, LoadingSpinner } from "@/components/ui";
 
 type Metric = "luas" | "produksi" | "produktivitas";
 
@@ -416,35 +417,24 @@ export default function PlantationPage() {
     <DefaultLayout>
       <section className="flex flex-col gap-8 py-2">
         {/* Hero / intro */}
-        <section className="relative text-left animate-fade-in py-4 md:py-8 flex flex-col md:flex-row items-center justify-between gap-8 border-b border-slate-200 pb-8">
-          <div className="relative z-10 flex-1">
-            <h2 className="text-2xl sm:text-4xl leading-tight font-bold tracking-tight text-slate-800">
-            Analitik Perkebunan & Komoditas
-          </h2>
-            <p className="text-xs md:text-sm font-medium text-slate-500 mt-2 max-w-2xl border-l-2 border-blue-500 pl-3">
-            Analisis Luas Lahan, Hasil Produksi, dan Produktivitas Perkebunan Kabupaten Banjarnegara.
-          </p>
-          </div>
-          <div className="w-full md:w-48 lg:w-64 shrink-0 flex items-center justify-center">
-            <img
-              src="/img/plantation.png"
-              alt="Perkebunan"
-              className="w-full max-h-32 md:max-h-36 object-contain"
-            />
-          </div>
-        </section>
+        <PageHeader
+          icon={<TreePine className="h-6 w-6" />}
+          title="Analitik Perkebunan & Komoditas"
+          subtitle="Analisis luas lahan, hasil produksi, dan produktivitas perkebunan Kabupaten Banjarnegara."
+          actions={<Badge tone="blue">Tahun {selectedYear}</Badge>}
+        />
 
         {/* Filters Panel */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-white border border-slate-200 rounded-lg p-4 shadow-sm">
           {/* Metric Selector */}
           <div className="flex flex-col gap-2 text-left">
-            <label className="text-xs font-mono font-bold uppercase text-slate-500">Metrik Analisis</label>
+            <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">Metrik Analisis</label>
             <div className="grid grid-cols-3 gap-2">
               <button
                 onClick={() => setMetric("luas")}
-                className={`py-2 px-1 border border-slate-200 font-mono font-bold text-[10px] sm:text-xs uppercase flex items-center justify-center gap-1 transition-all ${
+                className={`py-2 px-1 border border-slate-200 text-[10px] sm:text-xs font-semibold uppercase flex items-center justify-center gap-1 transition-all ${
                   metric === "luas"
-                    ? "bg-blue-600 text-white shadow-sm"
+                    ? "bg-blue-800 text-white shadow-sm"
                     : "bg-white text-slate-800 hover:bg-slate-100 shadow-sm"
                 }`}
               >
@@ -453,9 +443,9 @@ export default function PlantationPage() {
               </button>
               <button
                 onClick={() => setMetric("produksi")}
-                className={`py-2 px-1 border border-slate-200 font-mono font-bold text-[10px] sm:text-xs uppercase flex items-center justify-center gap-1 transition-all ${
+                className={`py-2 px-1 border border-slate-200 text-[10px] sm:text-xs font-semibold uppercase flex items-center justify-center gap-1 transition-all ${
                   metric === "produksi"
-                    ? "bg-blue-600 text-white shadow-sm"
+                    ? "bg-blue-800 text-white shadow-sm"
                     : "bg-white text-slate-800 hover:bg-slate-100 shadow-sm"
                 }`}
               >
@@ -464,9 +454,9 @@ export default function PlantationPage() {
               </button>
               <button
                 onClick={() => setMetric("produktivitas")}
-                className={`py-2 px-1 border border-slate-200 font-mono font-bold text-[10px] sm:text-xs uppercase flex items-center justify-center gap-1 transition-all ${
+                className={`py-2 px-1 border border-slate-200 text-[10px] sm:text-xs font-semibold uppercase flex items-center justify-center gap-1 transition-all ${
                   metric === "produktivitas"
-                    ? "bg-blue-600 text-white shadow-sm"
+                    ? "bg-blue-800 text-white shadow-sm"
                     : "bg-white text-slate-800 hover:bg-slate-100 shadow-sm"
                 }`}
               >
@@ -478,13 +468,13 @@ export default function PlantationPage() {
 
           {/* Year Dropdown */}
           <div className="flex flex-col gap-2 text-left">
-            <label className="text-xs font-mono font-bold uppercase text-slate-500">Tahun Data</label>
+            <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">Tahun Data</label>
             <div className="relative">
               <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-slate-500 pointer-events-none" />
               <select
                 value={selectedYear}
                 onChange={(e) => setSelectedYear(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 border border-slate-200 font-mono text-sm font-bold bg-white focus:outline-none appearance-none cursor-pointer rounded-xl"
+                className="w-full pl-9 pr-4 py-2 border border-slate-200 text-sm font-medium bg-white focus:outline-none appearance-none cursor-pointer rounded-md"
               >
                 {yearsList.map((yr) => (
                   <option key={yr} value={yr}>
@@ -497,13 +487,13 @@ export default function PlantationPage() {
 
           {/* Kecamatan Dropdown */}
           <div className="flex flex-col gap-2 text-left">
-            <label className="text-xs font-mono font-bold uppercase text-slate-500">Pilih Kecamatan</label>
+            <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">Pilih Kecamatan</label>
             <div className="relative">
               <Filter className="absolute left-3 top-2.5 h-4 w-4 text-slate-500 pointer-events-none" />
               <select
                 value={selectedKecamatan}
                 onChange={(e) => setSelectedKecamatan(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 border border-slate-200 font-mono text-sm font-bold bg-white focus:outline-none appearance-none cursor-pointer rounded-xl"
+                className="w-full pl-9 pr-4 py-2 border border-slate-200 text-sm font-medium bg-white focus:outline-none appearance-none cursor-pointer rounded-md"
               >
                 {uniqueKecamatan.map((kec) => (
                   <option key={kec} value={kec}>
@@ -516,62 +506,32 @@ export default function PlantationPage() {
         </div>
 
         {loading ? (
-          <div className="flex items-center justify-center h-[300px]">
-            <p className="text-slate-500 font-mono font-bold animate-pulse uppercase">
-              Memuat data perkebunan...
-            </p>
-          </div>
+          <LoadingSpinner label="Memuat data perkebunan" />
         ) : (
           <>
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Stat 1: Metric Value */}
-              <div className="bg-amber-50 border border-slate-200 p-6 shadow-sm text-left flex flex-col justify-between transition-all duration-300 hover:shadow-md">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h5 className="text-xs font-mono font-bold text-slate-500 uppercase">
-                      Total {metricLabel}
-                    </h5>
-                    <h3 className="text-3xl font-serif font-black uppercase text-slate-800 mt-1">
-                      {formatNum(stats.total)}
-                    </h3>
-                  </div>
-                  <div className="p-2 border border-slate-200 bg-white">
-                    {metric === "luas" ? <TreePine size={20} /> : metric === "produksi" ? <Sprout size={20} /> : <Activity size={20} />}
-                  </div>
-                </div>
-                <div className="text-[10px] font-mono text-slate-500 mt-4 uppercase flex flex-col gap-1">
-                  <span>Luas Lahan Total: {formatNum(stats.totalLuas)} Ha</span>
-                  <span>Produksi Total: {formatNum(stats.totalProduksi)} Ton</span>
-                </div>
-              </div>
+              <KpiCard
+                icon={metric === "luas" ? <TreePine size={20} /> : metric === "produksi" ? <Sprout size={20} /> : <Activity size={20} />}
+                label={`Total ${metricLabel}`}
+                value={formatNum(stats.total)}
+                color="bg-amber-300"
+                hint={`Luas Lahan ${formatNum(stats.totalLuas)} Ha · Produksi ${formatNum(stats.totalProduksi)} Ton`}
+              />
 
               {/* Stat 2: Top Kecamatan */}
-              <div className="bg-emerald-50 border border-slate-200 p-6 shadow-sm text-left flex flex-col justify-between transition-all duration-300 hover:shadow-md">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h5 className="text-xs font-mono font-bold text-slate-500 uppercase">
-                      Kecamatan Tertinggi
-                    </h5>
-                    <h3 className="text-2xl font-serif font-black uppercase text-slate-800 mt-1 break-words leading-tight">
-                      {stats.topDistrict}
-                    </h3>
-                  </div>
-                  <div className="p-2 border border-slate-200 bg-white">
-                    <MapPin size={20} />
-                  </div>
-                </div>
-                <p className="text-xs font-mono text-slate-500 mt-4 uppercase">
-                  Nilai: {formatNum(stats.topVal)} {metric === "luas" ? "Ha" : metric === "produksi" ? "Ton" : "Ton/Ha"}
-                </p>
-              </div>
+              <KpiCard
+                icon={<MapPin size={20} />}
+                label="Kecamatan Tertinggi"
+                value={stats.topDistrict}
+                color="bg-emerald-300"
+                hint={`Nilai ${formatNum(stats.topVal)} ${metric === "luas" ? "Ha" : metric === "produksi" ? "Ton" : "Ton/Ha"} (${selectedYear})`}
+              />
 
               {/* Stat 3: Komposisi Komoditas */}
-              <div className="bg-violet-50 border border-slate-200 p-6 shadow-sm text-left transition-all duration-300 hover:shadow-md">
-                <h5 className="text-xs font-mono font-bold text-slate-500 uppercase mb-3">
-                  Komposisi Komoditas
-                </h5>
-                <div className="flex flex-col gap-2 max-h-[160px] overflow-y-auto pr-1">
+              <SectionCard title="Komposisi Komoditas" bodyClassName="p-5 flex flex-col justify-center">
+                <div className="flex flex-col gap-2.5 max-h-[160px] overflow-y-auto pr-1">
                   {stats.breakdown.map((item, idx) => {
                     const percentage =
                       metric === "produktivitas"
@@ -584,16 +544,16 @@ export default function PlantationPage() {
 
                     return (
                       <div key={item.name} className="flex flex-col gap-0.5">
-                        <div className="flex justify-between text-[10px] font-mono font-bold uppercase">
+                        <div className="flex justify-between text-[11px] font-semibold text-slate-600">
                           <span className="truncate max-w-[120px]">{item.name}</span>
                           <span>
                             {formatNum(item.value)} {metric === "luas" ? "Ha" : metric === "produksi" ? "Ton" : "T/Ha"}{" "}
                             {metric !== "produktivitas" && `(${percentage.toFixed(1)}%)`}
                           </span>
                         </div>
-                        <div className="w-full bg-slate-200 h-1.5 border border-slate-200">
+                        <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
                           <div
-                            className="h-full"
+                            className="h-full rounded-full"
                             style={{
                               width: `${percentage}%`,
                               backgroundColor: [
@@ -614,35 +574,37 @@ export default function PlantationPage() {
                     );
                   })}
                 </div>
-              </div>
+              </SectionCard>
             </div>
 
             {/* Time-Series Trend */}
-            <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
-              <div className="mb-4 text-left border-b border-slate-200 pb-3 flex flex-wrap items-center justify-between gap-2">
-                <h4 className="text-lg font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
-                  <TrendingUp className="text-emerald-600" />
-                  Tren Perkembangan {metricLabel}
-                  {selectedKecamatan !== "Semua" ? ` · ${selectedKecamatan}` : ""}
-                </h4>
-                {metric !== "produktivitas" && cagrData && (
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 border border-slate-200 font-mono font-bold text-[10px] uppercase bg-emerald-100 text-emerald-800">
-                    CAGR: {cagrData.total === null ? "N/A" : `${cagrData.total >= 0 ? "+" : ""}${formatPct(cagrData.total)}%`} ({cagrData.periode})
-                  </span>
-                )}
-              </div>
+            <SectionCard
+              title={`Tren Perkembangan ${metricLabel}${
+                selectedKecamatan !== "Semua" ? ` · ${selectedKecamatan}` : ""
+              }`}
+              icon={<TrendingUp size={16} className="text-emerald-600" />}
+              actions={
+                metric !== "produktivitas" && cagrData ? (
+                  cagrData.total === null ? (
+                    <Badge tone="slate">CAGR N/A · {cagrData.periode}</Badge>
+                  ) : (
+                    <TrendPill value={cagrData.total} label={`CAGR ${cagrData.periode}`} />
+                  )
+                ) : undefined
+              }
+            >
               <div className="h-[320px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={trendWithProjection} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#64748b" strokeOpacity={0.1} vertical={false} />
                     <XAxis
                       dataKey="tahun"
-                      tick={{ fill: "#475569", fontSize: 11, fontFamily: "monospace", fontWeight: "bold" }}
+                      tick={{ fill: "#475569", fontSize: 11 }}
                       axisLine={{ stroke: "#cbd5e1", strokeWidth: 1 }}
                       tickLine={{ stroke: "#cbd5e1" }}
                     />
                     <YAxis
-                      tick={{ fill: "#475569", fontSize: 10, fontFamily: "monospace", fontWeight: "bold" }}
+                      tick={{ fill: "#475569", fontSize: 10 }}
                       axisLine={{ stroke: "#cbd5e1", strokeWidth: 1 }}
                       tickLine={{ stroke: "#cbd5e1" }}
                       tickFormatter={(v) => formatNum(v)}
@@ -652,14 +614,12 @@ export default function PlantationPage() {
                         backgroundColor: "#ffffff",
                         border: "1px solid #e2e8f0",
                         borderRadius: "8px",
-                        fontFamily: "monospace",
                         fontSize: "12px",
-                        fontWeight: "bold",
                         boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)",
                       }}
                       formatter={(value: any) => [formatNum(Number(value)), ""]}
                     />
-                    <Legend verticalAlign="top" height={36} wrapperStyle={{ fontFamily: "monospace", fontSize: "10px", fontWeight: "bold" }} />
+                    <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: "10px" }} />
                     <Line type="monotone" dataKey="total" name={`Total ${metric === "luas" ? "Ha" : metric === "produksi" ? "Ton" : "Rata-Rata"}`} stroke="#64748b" strokeWidth={3} dot={{ fill: "#475569", r: 4 }} activeDot={{ r: 6 }} connectNulls={false} />
                     {metric !== "produktivitas" && (
                       <Line type="monotone" dataKey="proyeksi" name="Proyeksi" stroke="#ef4444" strokeWidth={2} strokeDasharray="6 4" dot={{ fill: "#ef4444", r: 4 }} connectNulls={true} />
@@ -683,35 +643,32 @@ export default function PlantationPage() {
                   </LineChart>
                 </ResponsiveContainer>
               </div>
-            </div>
+            </SectionCard>
 
             {/* Regression Projections (only for Area and Production, not productivity ratio) */}
             {metric !== "produktivitas" && projection && (
-              <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
-                <div className="mb-4 text-left border-b border-slate-200 pb-2">
-                  <h4 className="text-md font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
-                    <TrendingUp className="text-emerald-600" size={18} />
-                    Proyeksi Garis Tren Perkebunan ({projection.nextYear})
-                  </h4>
-                  <p className="text-[10px] font-mono font-bold text-slate-500 uppercase mt-1">
-                    Estimasi model regresi linier (least-squares) berdasarkan tren historis
-                  </p>
-                </div>
+              <SectionCard
+                title={`Proyeksi Garis Tren Perkebunan (${projection.nextYear})`}
+                icon={<TrendingUp size={16} className="text-emerald-600" />}
+              >
+                <p className="text-xs text-slate-500 mb-4">
+                  Estimasi model regresi linier (least-squares) berdasarkan tren historis
+                </p>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
-                  <div className="border border-slate-200 bg-emerald-50 p-4 shadow-sm flex flex-col justify-between">
-                    <span className="text-[10px] font-mono font-bold uppercase text-slate-500">
+                  <div className="border border-emerald-100 bg-emerald-50 rounded-lg p-4 flex flex-col justify-between">
+                    <span className="text-[11px] font-semibold uppercase text-slate-500">
                       Prediksi {projection.nextYear} ({metric === "luas" ? "Ha" : "Ton"})
                     </span>
-                    <span className="text-2xl font-serif font-black text-slate-800 mt-2">
+                    <span className="text-2xl font-bold tabular-nums text-slate-800 mt-2">
                       {formatNum(projection.predicted)}
                     </span>
                   </div>
-                  <div className="border border-slate-200 bg-white p-4 shadow-sm flex flex-col justify-between">
-                    <span className="text-[10px] font-mono font-bold uppercase text-slate-500">
+                  <div className="border border-slate-200 bg-white rounded-lg p-4 flex flex-col justify-between">
+                    <span className="text-[11px] font-semibold uppercase text-slate-500">
                       Perubahan vs {projection.lastTahun}
                     </span>
                     <span
-                      className={`text-2xl font-serif font-black mt-2 ${
+                      className={`text-2xl font-bold tabular-nums mt-2 ${
                         projection.deltaPct === null
                           ? "text-slate-400"
                           : projection.deltaPct >= 0
@@ -724,12 +681,12 @@ export default function PlantationPage() {
                         : `${projection.deltaPct >= 0 ? "▲" : "▼"} ${formatPct(Math.abs(projection.deltaPct))}%`}
                     </span>
                   </div>
-                  <div className="border border-slate-200 bg-white p-4 shadow-sm flex flex-col justify-between">
-                    <span className="text-[10px] font-mono font-bold uppercase text-slate-500">
+                  <div className="border border-slate-200 bg-white rounded-lg p-4 flex flex-col justify-between">
+                    <span className="text-[11px] font-semibold uppercase text-slate-500">
                       Keandalan Model (R²)
                     </span>
                     <span
-                      className={`text-2xl font-serif font-black mt-2 ${
+                      className={`text-2xl font-bold tabular-nums mt-2 ${
                         projection.r2 >= 0.7
                           ? "text-emerald-600"
                           : projection.r2 >= 0.4
@@ -741,23 +698,18 @@ export default function PlantationPage() {
                     </span>
                   </div>
                 </div>
-              </div>
+              </SectionCard>
             )}
 
             {/* Anomaly Detection */}
             {metric !== "produktivitas" && (
-              <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
-                <div className="mb-4 text-left border-b border-slate-200 pb-2 flex flex-wrap items-center justify-between gap-2">
-                  <h4 className="text-md font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
-                    <AlertTriangle className="text-red-600" size={18} />
-                    Deteksi Anomali Luas / Produksi Perkebunan
-                  </h4>
-                  <span className="text-[10px] font-mono font-bold text-slate-500 uppercase">
-                    Penurunan Tajam &gt; {Math.abs(ANOMALY_THRESHOLD)}% YoY
-                  </span>
-                </div>
+              <SectionCard
+                title="Deteksi Anomali Luas / Produksi Perkebunan"
+                icon={<AlertTriangle size={16} className="text-red-600" />}
+                actions={<Badge tone="red">Penurunan &gt; {Math.abs(ANOMALY_THRESHOLD)}% YoY</Badge>}
+              >
                 {anomalies.length === 0 ? (
-                  <div className="flex items-center gap-2 p-3 bg-emerald-50 border border-slate-200 text-[11px] font-mono font-bold text-emerald-800 uppercase text-left">
+              <div className="flex items-center gap-2 p-3 bg-emerald-50 border border-emerald-100 rounded-lg text-xs font-semibold text-emerald-800 text-left">
                     <ShieldCheck size={14} />
                     Tidak ada anomali penurunan tajam terdeteksi pada komoditas perkebunan di wilayah ini.
                   </div>
@@ -766,48 +718,43 @@ export default function PlantationPage() {
                     {anomalies.map((a) => (
                       <div
                         key={a.tahun}
-                        className="flex flex-wrap items-center justify-between gap-3 p-3 bg-red-50 border border-slate-200 shadow-sm text-left"
+                        className="flex flex-wrap items-center justify-between gap-3 p-3 bg-red-50 border border-red-100 rounded-lg text-left"
                       >
                         <div className="flex items-center gap-3">
-                          <span className="inline-flex items-center px-2 py-0.5 bg-red-600 text-white border border-slate-200 font-mono font-black text-sm">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-red-800 text-white text-xs font-bold tabular-nums">
                             {a.tahun}
                           </span>
                           <div>
-                            <p className="text-[11px] font-mono font-bold uppercase text-red-800">
+                            <p className="text-xs font-semibold text-red-700">
                               Mengalami penurunan {formatPct(Math.abs(a.pct))}% dibandingkan {a.prevTahun}
                             </p>
-                            <p className="text-[10px] font-mono text-slate-600 uppercase">
+                            <p className="text-[11px] text-slate-500">
                               Penyumbang penurunan terbesar: {a.penyumbang} (Selisih: {formatNum(a.selisih)} {metric === "luas" ? "Ha" : "Ton"})
                             </p>
                           </div>
                         </div>
-                        <span className="text-xl font-serif font-black text-red-600">
+                        <span className="text-xl font-bold tabular-nums text-red-600">
                           ▼ {formatPct(Math.abs(a.pct))}%
                         </span>
                       </div>
                     ))}
                   </div>
                 )}
-              </div>
+              </SectionCard>
             )}
 
             {/* CAGR Breakdown */}
             {metric !== "produktivitas" && cagrData && (
-              <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
-                <div className="mb-4 text-left border-b border-slate-200 pb-2">
-                  <h4 className="text-md font-mono font-bold uppercase tracking-wide">
-                    Rata-rata Laju Pertumbuhan Komoditas (CAGR) {cagrData.periode}
-                  </h4>
-                  <p className="text-[10px] font-mono font-bold text-slate-500 uppercase mt-1">
-                    Laju pertumbuhan majemuk per tahun per komoditas ({selectedKecamatan !== "Semua" ? selectedKecamatan : "Seluruh Banjarnegara"})
-                  </p>
-                </div>
+              <SectionCard title={`Rata-rata Laju Pertumbuhan Komoditas (CAGR) ${cagrData.periode}`}>
+                <p className="text-xs text-slate-500 mb-4">
+                  Laju pertumbuhan majemuk per tahun per komoditas ({selectedKecamatan !== "Semua" ? selectedKecamatan : "Seluruh Banjarnegara"})
+                </p>
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 text-left">
-                  <div className="border border-slate-200 bg-slate-800 text-white p-4 flex flex-col justify-between">
-                    <span className="text-[10px] font-mono font-bold uppercase text-slate-400">
+                  <div className="border border-slate-800 bg-slate-800 text-white rounded-lg p-4 flex flex-col justify-between">
+                    <span className="text-[11px] font-semibold uppercase text-slate-400">
                       Total Gabungan
                     </span>
-                    <span className="text-2xl font-serif font-black mt-2">
+                    <span className="text-2xl font-bold tabular-nums mt-2">
                       {cagrData.total === null
                         ? "N/A"
                         : `${cagrData.total >= 0 ? "+" : ""}${formatPct(cagrData.total)}%`}
@@ -816,13 +763,13 @@ export default function PlantationPage() {
                   {cagrData.items.map((item) => (
                     <div
                       key={item.name}
-                      className="border border-slate-200 bg-white p-4 flex flex-col justify-between shadow-sm"
+                      className="border border-slate-200 bg-white rounded-lg p-4 flex flex-col justify-between"
                     >
-                      <span className="text-[10px] font-mono font-bold uppercase text-slate-500 leading-tight">
+                      <span className="text-[11px] font-semibold uppercase text-slate-500 leading-tight">
                         {item.name}
                       </span>
                       <span
-                        className={`text-2xl font-serif font-black mt-2 ${
+                        className={`text-2xl font-bold tabular-nums mt-2 ${
                           item.cagr === null
                             ? "text-slate-400"
                             : item.cagr >= 0
@@ -841,20 +788,17 @@ export default function PlantationPage() {
                     </div>
                   ))}
                 </div>
-              </div>
+              </SectionCard>
             )}
 
             {/* Distribution Map/Chart */}
-            <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
-              <div className="flex flex-col mb-6 border-b border-slate-200 pb-3 text-left">
-                <h4 className="text-lg font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
-                  <FileSpreadsheet className="text-emerald-600" />
-                  Sebaran Nilai Komoditas per Kecamatan ({selectedYear})
-                </h4>
-                <p className="text-xs font-mono font-bold text-slate-500 uppercase mt-1">
-                  Kontribusi masing-masing kecamatan terhadap {metricLabel} perkebunan
-                </p>
-              </div>
+            <SectionCard
+              title={`Sebaran Nilai Komoditas per Kecamatan (${selectedYear})`}
+              icon={<FileSpreadsheet size={16} className="text-emerald-600" />}
+            >
+              <p className="text-xs text-slate-500 mb-4">
+                Kontribusi masing-masing kecamatan terhadap {metricLabel} perkebunan
+              </p>
 
               <div className="h-[420px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
@@ -862,7 +806,7 @@ export default function PlantationPage() {
                     <CartesianGrid strokeDasharray="3 3" stroke="#64748b" strokeOpacity={0.1} vertical={false} />
                     <XAxis
                       dataKey="name"
-                      tick={{ fill: "#475569", fontSize: 10, fontFamily: "monospace", fontWeight: "bold" }}
+                      tick={{ fill: "#475569", fontSize: 10 }}
                       axisLine={{ stroke: "#cbd5e1", strokeWidth: 1 }}
                       tickLine={{ stroke: "#cbd5e1" }}
                       interval={0}
@@ -872,7 +816,7 @@ export default function PlantationPage() {
                     />
                     <YAxis
                       width={70}
-                      tick={{ fill: "#475569", fontSize: 10, fontFamily: "monospace", fontWeight: "bold" }}
+                      tick={{ fill: "#475569", fontSize: 10 }}
                       axisLine={{ stroke: "#cbd5e1", strokeWidth: 1 }}
                       tickLine={{ stroke: "#cbd5e1" }}
                     />
@@ -881,13 +825,11 @@ export default function PlantationPage() {
                         backgroundColor: "#ffffff",
                         border: "1px solid #e2e8f0",
                         borderRadius: "8px",
-                        fontFamily: "monospace",
                         fontSize: "12px",
-                        fontWeight: "bold",
                         boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)",
                       }}
                     />
-                    <Legend verticalAlign="top" height={36} wrapperStyle={{ fontFamily: "monospace", fontSize: "10px", fontWeight: "bold" }} />
+                    <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: "10px" }} />
                     {cropKeys.map((crop, idx) => {
                       const colors = [
                         "#059669",
@@ -914,45 +856,40 @@ export default function PlantationPage() {
                   </BarChart>
                 </ResponsiveContainer>
               </div>
-            </div>
+            </SectionCard>
 
             {/* Data Table */}
-            <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
-              <div className="mb-4 text-left border-b border-slate-200 pb-2">
-                <h4 className="text-md font-mono font-bold uppercase tracking-wide">
-                  Tabel Rincian Data Perkecamatan ({selectedYear})
-                </h4>
-                <p className="text-[10px] font-mono font-bold text-slate-500 uppercase mt-1">
-                  Nilai yang ditampilkan adalah {metricLabel}
-                </p>
-              </div>
+            <SectionCard title={`Tabel Rincian Data Perkecamatan (${selectedYear})`}>
+              <p className="text-xs text-slate-500 mb-3">
+                Nilai yang ditampilkan adalah {metricLabel}
+              </p>
               <div className="overflow-x-auto">
-                <table className="w-full text-left font-mono text-sm border-collapse">
+                <table className="w-full text-left text-sm border-collapse">
                   <thead>
-                    <tr className="border-b border-slate-200 bg-slate-100">
-                      <th className="p-3 border-r border-slate-200 font-bold uppercase text-xs">No</th>
-                      <th className="p-3 border-r border-slate-200 font-bold uppercase text-xs">Kecamatan</th>
+                    <tr className="border-b border-slate-200 bg-slate-50">
+                      <th className="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">No</th>
+                      <th className="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">Kecamatan</th>
                       {cropKeys.map((c) => (
-                        <th key={c.key} className="p-3 border-r border-slate-200 font-bold uppercase text-xs text-right truncate max-w-[100px]">
+                        <th key={c.key} className="px-3 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wide text-slate-500 truncate max-w-[100px]">
                           {c.label}
                         </th>
                       ))}
-                      <th className="p-3 font-bold uppercase text-xs text-right">Total</th>
+                      <th className="px-3 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wide text-slate-500">Total</th>
                     </tr>
                   </thead>
                   <tbody>
                     {chartData.map((row, idx) => (
-                      <tr key={row.name} className="border-b border-slate-200 hover:bg-slate-50">
-                        <td className="p-3 border-r border-slate-200 text-xs font-bold">{idx + 1}</td>
-                        <td className="p-3 border-r border-slate-200 text-xs font-bold uppercase truncate max-w-[120px]">
+                      <tr key={row.name} className="border-b border-slate-100 hover:bg-slate-50">
+                        <td className="px-3 py-2.5 text-xs font-semibold text-slate-500">{idx + 1}</td>
+                        <td className="px-3 py-2.5 text-xs font-semibold truncate max-w-[120px]">
                           {row.name}
                         </td>
                         {cropKeys.map((c) => (
-                          <td key={c.key} className="p-3 border-r border-slate-200 text-xs text-right">
+                          <td key={c.key} className="px-3 py-2.5 text-xs text-right tabular-nums">
                             {formatNum(row[c.label] || 0)}
                           </td>
                         ))}
-                        <td className="p-3 text-xs font-black text-right bg-slate-50">
+                        <td className="px-3 py-2.5 text-xs font-bold text-right bg-slate-50 tabular-nums">
                           {formatNum(row.total)}
                         </td>
                       </tr>
@@ -960,7 +897,7 @@ export default function PlantationPage() {
                   </tbody>
                 </table>
               </div>
-            </div>
+            </SectionCard>
           </>
         )}
       </section>
