@@ -30,6 +30,14 @@ bun.lockb
 # Windows reserved device name artifact
 NUL
 
+# Raw source data & scraping workspace (not shipped to repo)
+data-source/
+*.bak
+
+# Python cache
+__pycache__/
+*.pyc
+
 # Environment variables
 .env
 .env.local

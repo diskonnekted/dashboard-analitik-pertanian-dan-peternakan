@@ -34,6 +34,10 @@ export const siteConfig = {
           label: "Prediksi Panen",
           href: "/prediction",
         },
+        {
+          label: "Tanaman Pangan (Palawija)",
+          href: "/food-crops",
+        },
       ],
     },
     // 4. Bidang Hortikultura
@@ -63,6 +67,10 @@ export const siteConfig = {
         {
           label: "Populasi & Produksi Ternak",
           href: "/livestock",
+        },
+        {
+          label: "Lalu Lintas & Pemotongan Ternak",
+          href: "/livestock-flow",
         },
       ],
     },

@@ -1,7 +1,11 @@
 import Papa from "papaparse";
 
-const CACHE_MAX_AGE = 24 * 60 * 60 * 1000; // 24 jam limit keras
 const CACHE_STALE_AGE = 15 * 60 * 1000; // 15 menit limit stale
+// Catatan: tidak ada lagi limit umur keras. Cache localStorage berperan sebagai
+// "storage darurat" per-browser: saat CKAN down berhari-hari, data terakhir yang
+// berhasil diambil tetap dilayani (stale-if-error), dan diperbarui otomatis
+// di background begitu CKAN pulih. Snapshot statis di /data/snapshots/ tetap
+// menjadi fallback saat browser belum pernah punya cache sama sekali.
 
 // Guard untuk SSR / private mode: localStorage bisa undefined/throw SecurityError
 const safeLocalStorage = {
@@ -50,10 +54,8 @@ const getCachedData = <T>(key: string): { data: T; isStale: boolean } | null => 
     if (!cached) return null;
     const parsed = JSON.parse(cached);
     const age = Date.now() - parsed.timestamp;
-    if (age > CACHE_MAX_AGE) {
-      safeLocalStorage.removeItem(key);
-      return null;
-    }
+    // Cache tidak pernah dibuang karena umur — data basi lebih baik daripada
+    // tidak ada data saat server CKAN sedang down (stale-if-error).
     return {
       data: parsed.data as T,
       isStale: age > CACHE_STALE_AGE,
@@ -196,21 +198,41 @@ export const fetchOpenDataPertanian = async (): Promise<CkanResponse> => {
   try {
     return await fetchFresh();
   } catch (err) {
-    console.warn("Gagal fetch online open data, menggunakan fallback lokal.");
-    return {
-      success: true,
-      result: {
-        count: 14,
-        results: [
-          {
-            id: "lahan-pertanian",
-            title: "Luas Lahan Pertanian Menurut Jenis Tanah dan Desa",
-            notes: "Fallback data lokal",
-            organization: { title: "Dinas Pertanian" }
-          }
-        ]
-      }
-    };
+    // Lapis 2: snapshot katalog lokal (hasil scripts/sync-ckan-snapshot.ps1)
+    try {
+      console.warn("CKAN tidak terjangkau, memakai snapshot katalog lokal...");
+      const snap = await fetchWithTimeout("/data/snapshots/ckan-catalog.json");
+      if (!snap.ok) throw new Error("Snapshot tidak ditemukan");
+      const catalog = (await snap.json()) as CkanCatalog;
+      return {
+        success: true,
+        result: {
+          count: catalog.totalDatasets,
+          results: catalog.entries.map((e) => ({
+            id: e.id,
+            title: e.title,
+            notes: e.notes,
+            organization: { title: e.org },
+          })),
+        },
+      };
+    } catch (e2) {
+      console.warn("Gagal fetch online open data & snapshot, menggunakan fallback minimal.", err);
+      return {
+        success: true,
+        result: {
+          count: 14,
+          results: [
+            {
+              id: "lahan-pertanian",
+              title: "Luas Lahan Pertanian Menurut Jenis Tanah dan Desa",
+              notes: "Fallback data lokal",
+              organization: { title: "Dinas Pertanian" }
+            }
+          ]
+        }
+      };
+    }
   }
 };
 
@@ -295,12 +317,22 @@ export const fetchOpenDataCatalog = async (): Promise<CkanCatalog> => {
   try {
     return await fetchFresh();
   } catch (err) {
-    console.warn("Gagal fetch online katalog opendata, menggunakan fallback kosong.");
-    return {
-      totalDatasets: 0,
-      entries: [],
-      fetchedAt: new Date().toISOString(),
-    };
+    // Lapis 2: snapshot katalog lokal (hasil scripts/sync-ckan-snapshot.ps1)
+    try {
+      console.warn("CKAN tidak terjangkau, memakai snapshot katalog lokal...");
+      const snap = await fetchWithTimeout("/data/snapshots/ckan-catalog.json");
+      if (!snap.ok) throw new Error("Snapshot tidak ditemukan");
+      const catalog = (await snap.json()) as CkanCatalog;
+      setCachedData(cacheKey, catalog);
+      return catalog;
+    } catch (e2) {
+      console.warn("Gagal fetch online katalog opendata & snapshot, menggunakan fallback kosong.", err);
+      return {
+        totalDatasets: 0,
+        entries: [],
+        fetchedAt: new Date().toISOString(),
+      };
+    }
   }
 };
 
@@ -308,23 +340,44 @@ export const fetchLahanBanjarnegara = async (): Promise<LahanDesa[]> => {
   const cacheKey = "banjarnegara_lahan_cache_v3";
   const cached = getCachedData<LahanDesa[]>(cacheKey);
 
-  const loadFallback = async (): Promise<LahanDesa[]> => {
-    const response = await fetch("/data/lahan-fallback.json");
-    const fallbackData = (await response.json()) as LahanDesa[];
-    setCachedData(cacheKey, fallbackData);
-    return fallbackData;
-  };
-
-  if (cached && Array.isArray(cached.data) && cached.data.length > 0) {
-    return cached.data;
-  }
-
+  // Fetch-first: file lokal kecil (~50KB), selalu ambil yang terbaru.
+  // Cache localStorage HANYA dipakai sebagai darurat saat fetch gagal (offline).
   try {
-    return await loadFallback();
+    const response = await fetch("/data/lahan-fallback.json", { cache: "no-cache" });
+    const data = (await response.json()) as LahanDesa[];
+    setCachedData(cacheKey, data);
+    return data;
   } catch (error) {
-    console.error("Gagal memuat data lahan fallback:", error);
+    console.warn("Gagal memuat data lahan; memakai cache localStorage darurat.", error);
+    if (cached && Array.isArray(cached.data) && cached.data.length > 0) {
+      return cached.data;
+    }
     return [];
   }
+};
+
+// Normalisasi nama kecamatan dari sumber CKAN/Distan yang kadang memuat
+// letter-spacing ("B a w a n g" -> "Bawang"), prefix angka ("2. Purwareja Klampok"),
+// atau salah eja ("Purwonegoro" -> "Purwanegara", "Purworejo Klampok" -> "Purwareja Klampok").
+const KECAMATAN_VARIANTS: Record<string, string> = {
+  "PURWONEGORO": "Purwanegara",
+  "PURWOREJO KLAMPOK": "Purwareja Klampok",
+  "PURWOREJOKLAMPOK": "Purwareja Klampok",
+};
+
+const normalizeKecamatanName = (raw: string): string => {
+  if (!raw) return "";
+  let name = raw
+    .replace(/^\d+\.\s*/, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  const tokens = name.split(" ").filter(Boolean);
+  if (tokens.length > 1 && tokens.every((t) => t.length === 1)) {
+    name = tokens.join("");
+  }
+  const variant = KECAMATAN_VARIANTS[name.toUpperCase()];
+  if (variant) name = variant;
+  return name;
 };
 
 export interface PadiProduction {
@@ -336,7 +389,7 @@ export interface PadiProduction {
 }
 
 export const fetchPadiProduction = async (): Promise<PadiProduction[]> =>
-  withCache("cache_padi_production_v1", async () => {
+  withCache("cache_padi_production_v2", async () => {
   try {
     let response;
     let isLocal = false;
@@ -347,11 +400,18 @@ export const fetchPadiProduction = async (): Promise<PadiProduction[]> =>
       const contentType = response.headers.get("content-type") || "";
       if (!response.ok || contentType.includes("html")) throw new Error("Gagal online");
     } catch (e) {
-      console.warn("Menggunakan data padi offline lokal.");
-      response = await fetch(
-        "/14. Distankan KP/Luas  Panen,  Produksi dan Rata-rata Produksi/Luas Panen, Produksi dan Rata-rata Produksi Padi Sawah Dan Padi Ladang CSV.csv",
-      );
-      isLocal = true;
+      // Lapis 2: snapshot CKAN lokal (format identik dgn file CKAN -> isLocal tetap false)
+      try {
+        console.warn("CKAN padi gagal, mencoba snapshot lokal...");
+        response = await fetchWithTimeout("/data/snapshots/padi-2025.csv");
+        if (!response.ok) throw new Error("Snapshot tidak ditemukan");
+      } catch (e2) {
+        console.warn("Menggunakan data padi offline lokal.");
+        response = await fetch(
+          "/14. Distankan KP/Luas  Panen,  Produksi dan Rata-rata Produksi/Luas Panen, Produksi dan Rata-rata Produksi Padi Sawah Dan Padi Ladang CSV.csv",
+        );
+        isLocal = true;
+      }
     }
 
     if (!response.ok) throw new Error("Gagal mengambil data produksi padi");
@@ -385,7 +445,7 @@ export const fetchPadiProduction = async (): Promise<PadiProduction[]> =>
               };
 
               const rawKec = row["Kecamatan"] || "";
-              const kecName = rawKec.replace(/\s+/g, "").trim();
+              const kecName = normalizeKecamatanName(rawKec);
               if (!kecName || kecName.toLowerCase().includes("jumlah") || kecName.toLowerCase().includes("total")) return;
 
               const tahunKey = Object.keys(row).find((k) => k.trim().toLowerCase() === "tahun") || "Tahun";
@@ -430,7 +490,7 @@ export const fetchPadiProduction = async (): Promise<PadiProduction[]> =>
                 return parseFloat(val.replace(/,/g, "")) || 0;
               };
 
-              const nameClean = row[0].replace(/\s+/g, "").trim();
+              const nameClean = normalizeKecamatanName(row[0]);
 
               parsedData.push({
                 kecamatan: nameClean,
@@ -451,6 +511,229 @@ export const fetchPadiProduction = async (): Promise<PadiProduction[]> =>
     return [];
   }
   });
+
+// ---- Riwayat Tahunan Produksi Padi (2018–2025) ----
+export interface PadiHistoryPoint {
+  tahun: string;
+  luasPanen: number;
+  produksi: number;
+  rataRata: number;
+}
+
+export const fetchPadiHistory = async (): Promise<PadiHistoryPoint[]> => {
+  const parseNum = (val: string): number => {
+    if (!val) return 0;
+    let cleaned = val.toString().trim().replace(/ /g, "");
+    if (cleaned.includes(",") && !cleaned.includes(".")) {
+      cleaned = cleaned.replace(/,/g, "");
+    } else {
+      cleaned = cleaned.replace(/\./g, "").replace(/,/g, ".");
+    }
+    return parseFloat(cleaned) || 0;
+  };
+
+  const aggregate = (
+    agg: Map<string, { luas: number; produksi: number; areaWeighted: number }>,
+    year: string,
+    luas: number,
+    produksi: number,
+    rata: number,
+  ) => {
+    const cur = agg.get(year) || { luas: 0, produksi: 0, areaWeighted: 0 };
+    cur.luas += luas;
+    cur.produksi += produksi;
+    cur.areaWeighted += rata * luas;
+    agg.set(year, cur);
+  };
+
+  const toPoints = (agg: Map<string, { luas: number; produksi: number; areaWeighted: number }>): PadiHistoryPoint[] =>
+    Array.from(agg.entries())
+      .map(([tahun, v]) => ({
+        tahun,
+        luasPanen: v.luas,
+        produksi: v.produksi,
+        rataRata: v.luas > 0 ? v.areaWeighted / v.luas : 0,
+      }))
+      .sort((a, b) => parseInt(a.tahun) - parseInt(b.tahun));
+
+  const agg = new Map<string, { luas: number; produksi: number; areaWeighted: number }>();
+
+  try {
+    // 1. Data historis multi-tahun (2018–2024) dari CSV lokal
+    const localRes = await fetch(
+      "/14. Distankan KP/Luas  Panen,  Produksi dan Rata-rata Produksi/Luas Panen, Produksi dan Rata-rata Produksi Padi Sawah Dan Padi Ladang CSV.csv",
+    );
+    if (localRes.ok) {
+      const localText = await localRes.text();
+      await new Promise<void>((resolve) => {
+        Papa.parse(localText, {
+          header: true,
+          skipEmptyLines: true,
+          transformHeader: (h) => h.trim(),
+          complete: (results) => {
+            const rows = results.data as any[];
+            rows.forEach((row) => {
+              const kecName = normalizeKecamatanName(row["Kecamatan"] || "");
+              if (!kecName || kecName.toLowerCase().includes("jumlah") || kecName.toLowerCase().includes("total")) return;
+              const tahunKey = Object.keys(row).find((k) => k.trim().toLowerCase() === "tahun") || "Tahun";
+              const year = parseInt(row[tahunKey]) || 0;
+              if (!year) return;
+              const luas = parseNum(row["Padi Sawah (Ha)"]) + parseNum(row["Padi Ladang (Ha)"]);
+              const produksi = parseNum(row["Produksi Padi Sawah (Ton)"]) + parseNum(row["Produksi Padi Ladang(Ton)"]);
+              const rata = parseNum(row["Rata-rata Produksi Padi Sawah(Kw/Ha)"]);
+              aggregate(agg, year.toString(), luas, produksi, rata);
+            });
+            resolve();
+          },
+          error: () => resolve(),
+        });
+      });
+    }
+
+    // 2. Titik 2025 (snapshot lokal, fallback online CKAN)
+    let snapText: string | null = null;
+    try {
+      const snapRes = await fetchWithTimeout("/data/snapshots/padi-2025.csv");
+      if (snapRes.ok) snapText = await snapRes.text();
+    } catch (e) {
+      snapText = null;
+    }
+    if (!snapText) {
+      const onlineRes = await fetchWithTimeout(
+        "/dataset/9238267d-6b2e-4c44-a3f6-6d70351c75a0/resource/8180ee00-dedd-4b08-b165-ef3bd6bb7075/download/total-luas-panen-produksi-dan-rata-rata-produksi-tanaman-pangan-padi-2025.csv",
+      );
+      if (onlineRes.ok) snapText = await onlineRes.text();
+    }
+
+    if (snapText) {
+      await new Promise<void>((resolve) => {
+        Papa.parse(snapText, {
+          header: false,
+          skipEmptyLines: true,
+          complete: (results) => {
+            const rows = results.data as string[][];
+            for (let i = 4; i < rows.length; i++) {
+              const row = rows[i];
+              if (!row[0] || row[0].toLowerCase().includes("jumlah") || row[0].toLowerCase().includes("total")) continue;
+              const nameClean = normalizeKecamatanName(row[0]);
+              if (!nameClean) continue;
+              const cleanNum = (val: string) => {
+                if (!val) return 0;
+                return parseFloat(val.replace(/,/g, "")) || 0;
+              };
+              const luas = cleanNum(row[1]);
+              const produksi = cleanNum(row[2]);
+              const rata = cleanNum(row[3]);
+              aggregate(agg, "2025", luas, produksi, rata);
+            }
+            resolve();
+          },
+          error: () => resolve(),
+        });
+      });
+    }
+
+    return toPoints(agg);
+  } catch (error) {
+    console.error("Error fetchPadiHistory:", error);
+    return toPoints(agg);
+  }
+};
+
+// ---- Tanaman Pangan (Palawija) ----
+
+export interface FoodCropItem {
+  komoditas: string;
+  luasPanen: number;
+  produksi: number;
+  rataRata: number;
+}
+
+export interface FoodCropRow {
+  kecamatan: string;
+  tahun: string;
+  items: FoodCropItem[];
+}
+
+const cleanFloat = (val?: string | number): number => {
+  if (val == null) return 0;
+  const s = String(val).trim();
+  if (!s || s === "-") return 0;
+  return parseFloat(s.replace(/,/g, "")) || 0;
+};
+
+// Struktur CSV palawija: [Kecamatan, LuasPanen A, Produksi A, RataA, LuasPanen B, Produksi B, RataB, Tahun]
+const parseFoodCrop = (
+  text: string,
+  komoditasA: string,
+  komoditasB: string,
+): Promise<FoodCropRow[]> =>
+  new Promise((resolve) => {
+    Papa.parse(text, {
+      header: false,
+      skipEmptyLines: true,
+      complete: (results) => {
+        const rows = results.data as string[][];
+        const out: FoodCropRow[] = [];
+        for (let i = 1; i < rows.length; i++) {
+          const r = rows[i];
+          if (!r || !r[0]) continue;
+          const kec = normalizeKecamatanName(r[0]);
+          if (!kec || kec.toLowerCase().includes("jumlah") || kec.toLowerCase().includes("total")) continue;
+          out.push({
+            kecamatan: kec,
+            tahun: (r[7] || "").trim(),
+            items: [
+              { komoditas: komoditasA, luasPanen: cleanFloat(r[1]), produksi: cleanFloat(r[2]), rataRata: cleanFloat(r[3]) },
+              { komoditas: komoditasB, luasPanen: cleanFloat(r[4]), produksi: cleanFloat(r[5]), rataRata: cleanFloat(r[6]) },
+            ],
+          });
+        }
+        resolve(out);
+      },
+      error: () => resolve([]),
+    });
+  });
+
+const fetchTanamanPangan = async (
+  path: string,
+  cacheKey: string,
+  komoditasA: string,
+  komoditasB: string,
+): Promise<FoodCropRow[]> =>
+  withCache(cacheKey, async () => {
+    try {
+      const res = await fetch(path);
+      if (!res.ok) throw new Error("Gagal mengambil data");
+      return await parseFoodCrop(await res.text(), komoditasA, komoditasB);
+    } catch {
+      return [];
+    }
+  });
+
+export const fetchJagungUbiKayu = (): Promise<FoodCropRow[]> =>
+  fetchTanamanPangan(
+    "/14. Distankan KP/Luas  Panen,  Produksi dan Rata-rata Produksi/Luas Panen, Produksi dan Rata-rata Produksi Tanaman Pangan (Jagung dan Ubi Kayu) CSV.csv",
+    "cache_jagung_ubi_kayu_v1",
+    "Jagung",
+    "Ubi Kayu",
+  );
+
+export const fetchKacangKedelai = (): Promise<FoodCropRow[]> =>
+  fetchTanamanPangan(
+    "/14. Distankan KP/Luas  Panen,  Produksi dan Rata-rata Produksi/Luas Panen, Produksi dan Rata-rata Produksi Tanaman Pangan (Kacang Tanah dan Kedelai) CSV.csv",
+    "cache_kacang_kedelai_v1",
+    "Kacang Tanah",
+    "Kedelai",
+  );
+
+export const fetchUbiKacangHijau = (): Promise<FoodCropRow[]> =>
+  fetchTanamanPangan(
+    "/14. Distankan KP/Luas  Panen,  Produksi dan Rata-rata Produksi/Luas Panen, Produksi dan Rata-rata Produksi Tanaman Pangan (Ubi Jalar dan Kacang Hijau) CSV.csv",
+    "cache_ubi_kacang_hijau_v1",
+    "Ubi Jalar",
+    "Kacang Hijau",
+  );
 
 export interface VegetableProduction {
   kecamatan: string;
@@ -478,10 +761,17 @@ export const fetchVegetableProduction = async (): Promise<
       const contentType = response.headers.get("content-type") || "";
       if (!response.ok || contentType.includes("html")) throw new Error("Gagal online");
     } catch (e) {
-      console.warn("Menggunakan data sayuran offline lokal.");
-      response = await fetch(
-        "/14. Distankan KP/Produksi Tanaman Sayuran Menurut Kecamatan dan Jenis Tanaman (ton)/Produksi Tanaman Sayuran Menurut Kecamatan dan Jenis Tanaman CSV.csv",
-      );
+      // Lapis 2: snapshot CKAN lokal
+      try {
+        console.warn("CKAN sayuran gagal, mencoba snapshot lokal...");
+        response = await fetchWithTimeout("/data/snapshots/sayuran-2018-2024.csv");
+        if (!response.ok) throw new Error("Snapshot tidak ditemukan");
+      } catch (e2) {
+        console.warn("Menggunakan data sayuran offline lokal.");
+        response = await fetch(
+          "/14. Distankan KP/Produksi Tanaman Sayuran Menurut Kecamatan dan Jenis Tanaman (ton)/Produksi Tanaman Sayuran Menurut Kecamatan dan Jenis Tanaman CSV.csv",
+        );
+      }
     }
 
     if (!response.ok) throw new Error("Gagal mengambil data produksi sayuran");
@@ -501,11 +791,9 @@ export const fetchVegetableProduction = async (): Promise<
                 return parseFloat(val.toString().replace(/,/g, "")) || 0;
               };
 
-              const kecClean = (row["Kecamatan"] || row["kecamatan"] || "")
-                .toString()
-                .replace(/^\d+\.\s*/, "")
-                .replace(/\s+/g, "")
-                .trim();
+              const kecClean = normalizeKecamatanName(
+                row["Kecamatan"] || row["kecamatan"] || "",
+              );
 
               const tahunKey = Object.keys(row).find(k => k.trim().toLowerCase() === "tahun") || "Tahun";
 
@@ -561,8 +849,14 @@ export const fetchInflationData = async (): Promise<InflationData[]> =>
       );
       if (!response.ok) throw new Error("Gagal online");
     } catch (e) {
-      console.warn("Menggunakan data inflasi fallback lokal.");
-      return [
+      // Lapis 2: snapshot CKAN lokal (format CSV identik -> lanjut parsing normal)
+      try {
+        console.warn("CKAN inflasi gagal, mencoba snapshot lokal...");
+        response = await fetchWithTimeout("/data/snapshots/inflasi-2018-2024.csv");
+        if (!response.ok) throw new Error("Snapshot tidak ditemukan");
+      } catch (e2) {
+        console.warn("Menggunakan data inflasi fallback lokal.");
+        return [
         { pembanding: "Banjarnegara", inflasi: 2.1, tahun: "2024" },
         { pembanding: "Jawa Tengah", inflasi: 2.3, tahun: "2024" },
         { pembanding: "Nasional", inflasi: 2.5, tahun: "2024" },
@@ -579,6 +873,7 @@ export const fetchInflationData = async (): Promise<InflationData[]> =>
         { pembanding: "Jawa Tengah", inflasi: 1.56, tahun: "2020" },
         { pembanding: "Nasional", inflasi: 1.68, tahun: "2020" },
       ];
+      }
     }
 
     const csvText = await response.text();
@@ -619,7 +914,7 @@ export interface LumbungPangan {
 }
 
 export const fetchLumbungPangan = async (): Promise<LumbungPangan[]> =>
-  withCache("cache_lumbung_pangan_v1", async () => {
+  withCache("cache_lumbung_pangan_v2", async () => {
   try {
     let response;
     let isLocal = false;
@@ -630,11 +925,18 @@ export const fetchLumbungPangan = async (): Promise<LumbungPangan[]> =>
       const contentType = response.headers.get("content-type") || "";
       if (!response.ok || contentType.includes("html")) throw new Error("Gagal online");
     } catch (e) {
-      console.warn("Menggunakan data lumbung offline lokal.");
-      response = await fetch(
-        "/14. Distankan KP/Banyaknya Lumbung dan Gudang Pangan/Banyaknya Lumbung dan Gudang Pangan CSV.csv",
-      );
-      isLocal = true;
+      // Lapis 2: snapshot CKAN lokal (format identik dgn CKAN -> isLocal tetap false)
+      try {
+        console.warn("CKAN lumbung gagal, mencoba snapshot lokal...");
+        response = await fetchWithTimeout("/data/snapshots/lumbung-pangan-2025.csv");
+        if (!response.ok) throw new Error("Snapshot tidak ditemukan");
+      } catch (e2) {
+        console.warn("Menggunakan data lumbung offline lokal.");
+        response = await fetch(
+          "/14. Distankan KP/Banyaknya Lumbung dan Gudang Pangan/Banyaknya Lumbung dan Gudang Pangan CSV.csv",
+        );
+        isLocal = true;
+      }
     }
 
     if (!response.ok) throw new Error("Gagal mengambil data lumbung pangan");
@@ -659,7 +961,7 @@ export const fetchLumbungPangan = async (): Promise<LumbungPangan[]> =>
               };
 
               const rawKec = row["Kecamatan"] || "";
-              const kecName = rawKec.replace(/\s+/g, "").trim();
+              const kecName = normalizeKecamatanName(rawKec);
               if (!kecName || kecName.toLowerCase().includes("jumlah") || kecName.toLowerCase().includes("total")) return;
 
               const unit = parseNum(row["Jumlah (Unit)"] || row["jumlah_unit"]);
@@ -698,7 +1000,7 @@ export const fetchLumbungPangan = async (): Promise<LumbungPangan[]> =>
               };
 
               parsedData.push({
-                kecamatan: row[0].replace(/\s+/g, "").trim(),
+                kecamatan: normalizeKecamatanName(row[0]),
                 lumbungUnit: cleanNum(row[1]),
                 lumbungKapasitas: cleanNum(row[2]),
                 gudangLuas: cleanNum(row[3]),
@@ -734,15 +1036,22 @@ export const fetchMarketData = async (): Promise<MarketData[]> =>
       );
       if (!response.ok) throw new Error("Gagal online");
     } catch (e) {
-      console.warn("Menggunakan data pasar fallback lokal.");
-      return [
-        { jenis: "Pasar Rakyat (Umum)", jumlah: 12, tahun: "2025" },
-        { jenis: "Pasar Hewan", jumlah: 2, tahun: "2025" },
-        { jenis: "Pasar Desa", jumlah: 45, tahun: "2025" },
-        { jenis: "Pasar Rakyat (Umum)", jumlah: 12, tahun: "2024" },
-        { jenis: "Pasar Hewan", jumlah: 2, tahun: "2024" },
-        { jenis: "Pasar Desa", jumlah: 45, tahun: "2024" },
-      ];
+      // Lapis 2: snapshot CKAN lokal (format identik -> lanjut parsing normal)
+      try {
+        console.warn("CKAN pasar gagal, mencoba snapshot lokal...");
+        response = await fetchWithTimeout("/data/snapshots/pasar-2016-2025.csv");
+        if (!response.ok) throw new Error("Snapshot tidak ditemukan");
+      } catch (e2) {
+        console.warn("Menggunakan data pasar fallback lokal.");
+        return [
+          { jenis: "Pasar Rakyat (Umum)", jumlah: 12, tahun: "2025" },
+          { jenis: "Pasar Hewan", jumlah: 2, tahun: "2025" },
+          { jenis: "Pasar Desa", jumlah: 45, tahun: "2025" },
+          { jenis: "Pasar Rakyat (Umum)", jumlah: 12, tahun: "2024" },
+          { jenis: "Pasar Hewan", jumlah: 2, tahun: "2024" },
+          { jenis: "Pasar Desa", jumlah: 45, tahun: "2024" },
+        ];
+      }
     }
 
     const csvText = await response.text();
@@ -885,6 +1194,102 @@ export const fetchUnggas = async (): Promise<Unggas[]> =>
     });
   } catch (e) { return []; }
   });
+
+// ---- Lalu Lintas & Pemotongan Ternak ----
+
+export interface TernakFlowItem {
+  jenis: string;
+  jumlah: number;
+}
+
+export interface TernakFlow {
+  kecamatan: string;
+  tahun: string;
+  unit: string;
+  items: TernakFlowItem[];
+}
+
+// Struktur CSV lalu-lintas ternak: [Kecamatan, Jumlah Jenis1..N, Tahun]
+const parseTernakFlow = (
+  text: string,
+  jenisLabels: string[],
+  unit: string,
+): Promise<TernakFlow[]> =>
+  new Promise((resolve) => {
+    Papa.parse(text, {
+      header: false,
+      skipEmptyLines: true,
+      complete: (results) => {
+        const rows = results.data as string[][];
+        const out: TernakFlow[] = [];
+        for (let i = 1; i < rows.length; i++) {
+          const r = rows[i];
+          if (!r || !r[0]) continue;
+          const kec = normalizeKecamatanName(r[0]);
+          if (!kec || kec.toLowerCase().includes("jumlah")) continue;
+          out.push({
+            kecamatan: kec,
+            tahun: (r[jenisLabels.length + 1] || "").trim(),
+            unit,
+            items: jenisLabels.map((j, idx) => ({
+              jenis: j,
+              jumlah: cleanInt(r[idx + 1]),
+            })),
+          });
+        }
+        resolve(out);
+      },
+      error: () => resolve([]),
+    });
+  });
+
+const fetchTernakFlow = async (
+  path: string,
+  cacheKey: string,
+  jenisLabels: string[],
+  unit: string,
+): Promise<TernakFlow[]> =>
+  withCache(cacheKey, async () => {
+    try {
+      const res = await fetch(path);
+      if (!res.ok) throw new Error("Gagal mengambil data");
+      return await parseTernakFlow(await res.text(), jenisLabels, unit);
+    } catch {
+      return [];
+    }
+  });
+
+export const fetchPemasukanTernak = (): Promise<TernakFlow[]> =>
+  fetchTernakFlow(
+    "/14. Distankan KP/Banyaknya Pemasukan Ternak ke Kabupaten Banjarnegara/Banyaknya Pemasukan Ternak Ke Kabupaten Banjarnegara CSV.csv",
+    "cache_pemasukan_ternak_v1",
+    ["Sapi Perah", "Sapi Potong", "Kerbau", "Kuda", "Kambing", "Domba"],
+    "ekor",
+  );
+
+export const fetchPengeluaranTernak = (): Promise<TernakFlow[]> =>
+  fetchTernakFlow(
+    "/14. Distankan KP/Banyaknya Pengeluaran Ternak Potong ke Kabupaten Banjarnegara/Banyaknya Pengeluaran Ternak Potong ke Kabupaten Banjarnegara dan jenis Ternak CSV.csv",
+    "cache_pengeluaran_ternak_v1",
+    ["Sapi Perah", "Sapi Potong", "Kerbau", "Kuda", "Kambing", "Domba"],
+    "ekor",
+  );
+
+export const fetchLuarRPH = (): Promise<TernakFlow[]> =>
+  fetchTernakFlow(
+    "/14. Distankan KP/Jumlah (Perkiraan) Ternak yang Dipotong di Luar RPH/Jumlah (Perkiraan ) Ternak Yang di potong di luar RPH CSV.csv",
+    "cache_luar_rph_v1",
+    ["Sapi", "Kerbau", "Babi", "Kambing", "Domba"],
+    "ekor",
+  );
+
+export const fetchDagingUnggas = (): Promise<TernakFlow[]> =>
+  fetchTernakFlow(
+    "/14. Distankan KP/Produksi Daging Unggas Menurut Kecamatan dan Jenis Unggas/Produksi Daging Unggas Menurut Kecamatan dan Jenis Unggas CSV.csv",
+    "cache_daging_unggas_v1",
+    ["Ayam Ras Layer", "Ayam Kampung", "Itik"],
+    "kg",
+  );
 
 // ---- Perikanan ----
 
@@ -1542,5 +1947,38 @@ export const fetchKelompokTani = async (): Promise<KelompokTaniRow[]> => {
 
   return fetchFresh();
 };
+
+// ===================== ST2023 PER-DESA (EKSTRAKSI PDF BPS) =====================
+// Data per-desa dari PDF Hasil Sensus Pertanian 2023 (BPS) untuk kecamatan yang
+// tidak punya data kelembagaan/CKAN (saat ini: Kalibening, Banjarmangu).
+// Diekstrak oleh scripts/scraping/extract-st2023-extra.py
+//   -> digabung scripts/build-st2023-extra-fallback.ps1
+//   -> public/data/st2023-desa-fallback.json
+export interface St2023DesaExtra {
+  desa: string;
+  kecamatan: string;
+  rumahTanggaPetani?: number; // RT petani (Tabel 2.9)
+  petani?: number; // petani, orang (Tabel 2.9)
+  rtAnggotaKelompok?: number; // RTUP anggota kelompok tani/peternak/nelayan (Tabel 5.1)
+  rtBukanAnggotaKelompok?: number;
+  rtup?: number; // total RTUP (Tabel 5.1)
+  rtPerikanan?: number; // RT usaha perikanan (Tabel 10.1)
+  rtPerikananBudidaya?: number;
+  rtPerikananTangkap?: number;
+  ternak?: Record<string, number>; // populasi ternak (ekor) per 1 Mei 2023 (Tabel 9.9)
+  sumber?: string;
+}
+
+export const fetchSt2023DesaExtra = async (): Promise<St2023DesaExtra[]> =>
+  withCache("cache_st2023_desa_extra_v1", async () => {
+    try {
+      const response = await fetch("/data/st2023-desa-fallback.json");
+      if (!response.ok) throw new Error("Gagal mengambil data ST2023 per-desa");
+      return (await response.json()) as St2023DesaExtra[];
+    } catch (e) {
+      console.warn("fetchSt2023DesaExtra: file ST2023 per-desa belum tersedia.", e);
+      return [];
+    }
+  });
 
 

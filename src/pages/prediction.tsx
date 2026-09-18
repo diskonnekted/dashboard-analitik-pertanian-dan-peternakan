@@ -1,11 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import DefaultLayout from "@/layouts/default";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { fetchPadiProduction, PadiProduction } from "@/services/api";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from "recharts";
+import { fetchPadiProduction, PadiProduction, fetchPadiHistory, PadiHistoryPoint } from "@/services/api";
 import { Sprout, Calculator, TrendingUp, AlertCircle, Leaf } from "lucide-react";
 
 export default function PredictionPage() {
   const [padiData, setPadiData] = useState<PadiProduction[]>([]);
+  const [padiHistory, setPadiHistory] = useState<PadiHistoryPoint[]>([]);
   const [selectedKec, setSelectedKec] = useState<string>("");
   const [expansionHa, setExpansionHa] = useState<string>("50");
   const [loading, setLoading] = useState<boolean>(true);
@@ -13,8 +14,9 @@ export default function PredictionPage() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const data = await fetchPadiProduction();
+        const [data, history] = await Promise.all([fetchPadiProduction(), fetchPadiHistory()]);
         setPadiData(data);
+        setPadiHistory(history);
         if (data.length > 0) {
           const sorted = [...data].sort((a, b) => a.kecamatan.localeCompare(b.kecamatan));
           setSelectedKec(sorted[0].kecamatan);
@@ -27,6 +29,55 @@ export default function PredictionPage() {
     };
     loadData();
   }, []);
+
+  // Proyeksi produksi padi (regresi linier ke tahun berikutnya)
+  const historyProjection = useMemo(() => {
+    if (padiHistory.length < 2) return null;
+    const pts = padiHistory.map((d) => ({ x: parseInt(d.tahun), y: d.produksi }));
+    const n = pts.length;
+    const sumX = pts.reduce((a, p) => a + p.x, 0);
+    const sumY = pts.reduce((a, p) => a + p.y, 0);
+    const sumXY = pts.reduce((a, p) => a + p.x * p.y, 0);
+    const sumXX = pts.reduce((a, p) => a + p.x * p.x, 0);
+    const denom = n * sumXX - sumX * sumX;
+    if (denom === 0) return null;
+    const slope = (n * sumXY - sumX * sumY) / denom;
+    const intercept = (sumY - slope * sumX) / n;
+    const meanY = sumY / n;
+    const ssTot = pts.reduce((a, p) => a + Math.pow(p.y - meanY, 2), 0);
+    const ssRes = pts.reduce((a, p) => a + Math.pow(p.y - (slope * p.x + intercept), 2), 0);
+    const r2 = ssTot === 0 ? 0 : 1 - ssRes / ssTot;
+    const nextYear = pts[n - 1].x + 1;
+    const predicted = Math.max(0, slope * nextYear + intercept);
+    const lastVal = pts[n - 1].y;
+    const deltaPct = lastVal > 0 ? ((predicted - lastVal) / lastVal) * 100 : null;
+    return {
+      nextYear: String(nextYear),
+      predicted,
+      deltaPct,
+      r2,
+      lastTahun: String(pts[n - 1].x),
+    };
+  }, [padiHistory]);
+
+  const historyChartData = useMemo(() => {
+    const base = padiHistory.map((d) => ({
+      tahun: d.tahun,
+      produksi: d.produksi,
+      luasPanen: d.luasPanen,
+      proyeksi: undefined as number | undefined,
+    }));
+    if (historyProjection && base.length > 0) {
+      base[base.length - 1].proyeksi = base[base.length - 1].produksi;
+      base.push({
+        tahun: historyProjection.nextYear,
+        produksi: undefined as any,
+        luasPanen: undefined as any,
+        proyeksi: historyProjection.predicted,
+      } as any);
+    }
+    return base;
+  }, [padiHistory, historyProjection]);
 
   const activeKecData = padiData.find(item => item.kecamatan === selectedKec);
 
@@ -105,6 +156,70 @@ export default function PredictionPage() {
           </div>
         ) : (
           <>
+            {/* Tren & Prediksi Produksi Padi */}
+            <div className="relative overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-teal-50 border border-emerald-200 rounded-2xl shadow-sm p-5 hover:shadow-lg transition-all duration-200">
+              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500" />
+              <div className="absolute -top-12 -left-12 w-44 h-44 bg-emerald-300/20 rounded-full blur-3xl" />
+              <div className="relative flex flex-col mb-4 border-b border-emerald-200/60 pb-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <div className="p-1.5 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 shadow-md shadow-emerald-300/50">
+                      <TrendingUp className="text-white" size={14} />
+                    </div>
+                    <h4 className="text-base font-mono font-bold text-emerald-900">
+                      Tren & Prediksi Produksi Padi Kabupaten (2018–{historyProjection ? historyProjection.nextYear : "2026"})
+                    </h4>
+                  </div>
+                  {historyProjection && (
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 text-[10px] font-mono font-bold">
+                      Proyeksi {historyProjection.nextYear}: {formatNum(historyProjection.predicted)} Ton
+                    </span>
+                  )}
+                </div>
+                <p className="text-[11px] font-mono font-bold text-emerald-700/70 uppercase tracking-wide">
+                  Garis tren historis (2018–2025) dengan proyeksi linier ke tahun berikutnya
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
+                <div className="lg:col-span-3 h-[320px] w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={historyChartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#cbd5e1" strokeOpacity={0.4} vertical={false} />
+                      <XAxis dataKey="tahun" tick={{ fill: '#475569', fontSize: 11, fontFamily: 'monospace', fontWeight: 'bold' }} />
+                      <YAxis yAxisId="left" tick={{ fill: '#059669', fontSize: 10, fontFamily: 'monospace', fontWeight: 'bold' }} tickFormatter={(v) => formatNum(v)} />
+                      <YAxis yAxisId="right" orientation="right" tick={{ fill: '#2563eb', fontSize: 10, fontFamily: 'monospace', fontWeight: 'bold' }} tickFormatter={(v) => formatNum(v)} />
+                      <Tooltip contentStyle={{ backgroundColor: "#ffffff", border: "1px solid #cbd5e1", borderRadius: 12, fontFamily: "monospace", fontSize: 12, fontWeight: "bold" }} formatter={(value: any, name: any) => [`${formatNum(Number(value))}${name === "Luas Panen (Ha)" ? " Ha" : " Ton"}`, name]} />
+                      <Legend verticalAlign="top" height={36} wrapperStyle={{ fontFamily: "monospace", fontSize: 10, fontWeight: "bold" }} />
+                      <Line yAxisId="left" type="monotone" dataKey="produksi" name="Produksi Aktual (Ton)" stroke="#059669" strokeWidth={3} dot={{ fill: '#059669', r: 4 }} activeDot={{ r: 6 }} connectNulls={false} />
+                      <Line yAxisId="left" type="monotone" dataKey="proyeksi" name="Proyeksi (Ton)" stroke="#ef4444" strokeWidth={2} strokeDasharray="6 4" dot={{ fill: '#ef4444', r: 4 }} connectNulls={true} />
+                      <Line yAxisId="right" type="monotone" dataKey="luasPanen" name="Luas Panen (Ha)" stroke="#2563eb" strokeWidth={2} dot={{ fill: '#2563eb', r: 3 }} connectNulls={false} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="flex flex-col gap-3">
+                  {historyProjection && (
+                    <>
+                      <div className="border border-emerald-200 bg-white rounded-xl p-3 shadow-sm">
+                        <p className="text-[10px] uppercase font-mono font-bold text-emerald-700">Prediksi {historyProjection.nextYear}</p>
+                        <p className="text-lg font-mono font-bold text-emerald-900">{formatNum(historyProjection.predicted)} Ton</p>
+                      </div>
+                      <div className="border border-slate-200 bg-white rounded-xl p-3 shadow-sm">
+                        <p className="text-[10px] uppercase font-mono font-bold text-slate-500">Perubahan vs {historyProjection.lastTahun}</p>
+                        <p className={`text-lg font-mono font-bold ${historyProjection.deltaPct === null ? "text-slate-400" : historyProjection.deltaPct >= 0 ? "text-emerald-600" : "text-red-600"}`}>
+                          {historyProjection.deltaPct === null ? "N/A" : `${historyProjection.deltaPct >= 0 ? "▲" : "▼"} ${formatNum(Math.abs(historyProjection.deltaPct))}%`}
+                        </p>
+                      </div>
+                      <div className="border border-slate-200 bg-white rounded-xl p-3 shadow-sm">
+                        <p className="text-[10px] uppercase font-mono font-bold text-slate-500">Keandalan (R²)</p>
+                        <p className={`text-lg font-mono font-bold ${historyProjection.r2 >= 0.7 ? "text-emerald-600" : historyProjection.r2 >= 0.4 ? "text-amber-600" : "text-red-600"}`}>{formatNum(historyProjection.r2 * 100)}%</p>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+
             {/* Charts Row */}
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
               {/* Chart Comparison */}

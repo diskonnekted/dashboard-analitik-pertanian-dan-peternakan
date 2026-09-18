@@ -1,0 +1,545 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.7036604,
+          -7.3893617
+        ]
+      },
+      "properties": {
+        "name": "Pasar Salak",
+        "kategori": "Pasar Buah",
+        "alamat": "Pasar Salak, Parakancanggah, Kec. Banjarnegara, Kab. Banjarnegara, Jawa Tengah 53412"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.6902551,
+          -7.3817975
+        ]
+      },
+      "properties": {
+        "name": "Pasar Hewan Petambakan",
+        "kategori": "Pasar Hewan",
+        "alamat": "JM9R+74J, Satu, Petambakan, Kec. Madukara, Kab. Banjarnegara, Jawa Tengah 53482"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.555066,
+          -7.4384468
+        ]
+      },
+      "properties": {
+        "name": "Pasar Ikan Purwonegoro",
+        "kategori": "Pasar Ikan",
+        "alamat": "Purwonegoro, Purwanegara, Karangplak, Purwonegoro, Kec. Purwanegara, Kab. Banjarnegara, Jawa Tengah 53472"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.702145,
+          -7.3940648
+        ]
+      },
+      "properties": {
+        "name": "Pasar Ikan Segar",
+        "kategori": "Pasar Ikan",
+        "alamat": "Kijagapati, Krandegan, Kec. Banjarnegara, Kab. Banjarnegara, Jawa Tengah 53414"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.796504,
+          -7.4120719
+        ]
+      },
+      "properties": {
+        "name": "Pasar Bandingan",
+        "kategori": "Pasar Tradisional",
+        "alamat": "Bandingan, Kec. Sigaluh, Kab. Banjarnegara, Jawa Tengah 53481"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.8286019,
+          -7.2073668
+        ]
+      },
+      "properties": {
+        "name": "Pasar Batur",
+        "kategori": "Pasar Tradisional",
+        "alamat": "Kab, Jl. Raya Batur No.1, Sumberejo I, Batur, Kec. Batur, Kab. Banjarnegara, Jawa Tengah 53456"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.6977307,
+          -7.390052
+        ]
+      },
+      "properties": {
+        "name": "Pasar Bugel Krandegan",
+        "kategori": "Pasar Tradisional",
+        "alamat": "Margamulya 02/01, Krandegan, Kec. Banjarnegara, Kab. Banjarnegara, Jawa Tengah 53414"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.6280569,
+          -7.397727
+        ]
+      },
+      "properties": {
+        "name": "Pasar Caplek",
+        "kategori": "Pasar Tradisional",
+        "alamat": "JJ2H+W63, Jl. Raya Brengkok - Banjarnegara, Mantiranom, Mantrianom, Kec. Bawang, Kab. Banjarnegara, Jawa Tengah 53471"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.6929349,
+          -7.3427229
+        ]
+      },
+      "properties": {
+        "name": "Pasar Gripit",
+        "kategori": "Pasar Tradisional",
+        "alamat": "MM5V+48R pasar, Pasar gripit Tepat Jalan Raya No.pertigaan, Sarang Panjang, Kesenet, Kec. Banjarmangu, Kab. Banjarnegara, Jawa Tengah 53452"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.5867442,
+          -7.3111177
+        ]
+      },
+      "properties": {
+        "name": "Pasar Jembangan",
+        "kategori": "Pasar Tradisional",
+        "alamat": "MHQP+HM5, Gemanti, Jembangan, Kec. Punggelan, Kab. Banjarnegara, Jawa Tengah 53462"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.6378956,
+          -7.2213242
+        ]
+      },
+      "properties": {
+        "name": "Pasar Kalibening",
+        "kategori": "Pasar Tradisional",
+        "alamat": "QJHQ+F5C, Kalibening, Kec. Kalibening, Kab. Banjarnegara, Jawa Tengah 53458"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.7403368,
+          -7.2713765
+        ]
+      },
+      "properties": {
+        "name": "Pasar Karangkobar",
+        "kategori": "Pasar Tradisional",
+        "alamat": "UPTD III, Pasar Umum, Jl. Raya Karangkobar Pejawaran, Karangkobar Wetan, Karangkobar, Kec. Karangkobar, Kab. Banjarnegara, Jawa Tengah 53453"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.6912471,
+          -7.4607559
+        ]
+      },
+      "properties": {
+        "name": "Pasar Kebutuhduwur",
+        "kategori": "Pasar Tradisional",
+        "alamat": "Desa No.Rt 02/05, Kutasari, Kebutuhduwur, Kec. Pagedongan, Kab. Banjarnegara, Jawa Tengah 53418"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.7033102,
+          -7.3953392
+        ]
+      },
+      "properties": {
+        "name": "Pasar Kota",
+        "kategori": "Pasar Tradisional",
+        "alamat": "Jl. Pemuda No.46, Krandegan, Parakancanggah, Kec. Banjarnegara, Kab. Banjarnegara, Jawa Tengah 53474"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.6600643,
+          -7.459971
+        ]
+      },
+      "properties": {
+        "name": "Pasar Kotak Amba",
+        "kategori": "Pasar Tradisional",
+        "alamat": "GMR6+228, Siwaru, Lebakwangi, Kec. Pagedongan, Kab. Banjarnegara, Jawa Tengah 53418"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.7466112,
+          -7.3793202
+        ]
+      },
+      "properties": {
+        "name": "Pasar Madukara",
+        "kategori": "Pasar Tradisional",
+        "alamat": "Jl. Raya Madukara, Sidutu, Pekauman, Kec. Madukara, Kab. Banjarnegara, Jawa Tengah 53482"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.5238832,
+          -7.4532649
+        ]
+      },
+      "properties": {
+        "name": "Pasar Mandiraja",
+        "kategori": "Pasar Tradisional",
+        "alamat": "GGVF+Q6Q, Jl. Klinik Lama Jalan, Mandiraja Kulon, Kec. Mandiraja, Kab. Banjarnegara, Jawa Tengah 53473"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.5591935,
+          -7.3973264
+        ]
+      },
+      "properties": {
+        "name": "Pasar Manis",
+        "kategori": "Pasar Tradisional",
+        "alamat": "JH35+3M8, Badamita, Kec. Rakit, Kab. Banjarnegara, Jawa Tengah 53463"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.5817841,
+          -7.3530677
+        ]
+      },
+      "properties": {
+        "name": "Pasar Manis Punggelan",
+        "kategori": "Pasar Tradisional",
+        "alamat": "JHWJ+QPF, Jl. Ps. Manis, Kepering, Punggelan, Kec. Punggelan, Kab. Banjarnegara, Jawa Tengah 53462"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.6263617,
+          -7.3669577
+        ]
+      },
+      "properties": {
+        "name": "Pasar Pagi",
+        "kategori": "Pasar Tradisional",
+        "alamat": "JJMG+4HR, Dusun Dua, Wanadadi, Kec. Wanadadi, Kab. Banjarnegara, Jawa Tengah 53461"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.6959433,
+          -7.3952896
+        ]
+      },
+      "properties": {
+        "name": "Pasar Pagi Sandemaning",
+        "kategori": "Pasar Tradisional",
+        "alamat": "13, Jl. Dipayuda No.rt.02, RW.04, Krandegan, Kec. Banjarnegara, Kab. Banjarnegara, Jawa Tengah 53418"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.6439677,
+          -7.3103113
+        ]
+      },
+      "properties": {
+        "name": "Pasar Pon",
+        "kategori": "Pasar Tradisional",
+        "alamat": "MJQV+VHG, Pasar pon, Gumpang, Tlaga, Kec. Punggelan, Kab. Banjarnegara, Jawa Tengah 53462"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.5454375,
+          -7.3535625
+        ]
+      },
+      "properties": {
+        "name": "Pasar Pon (PonLine)",
+        "kategori": "Pasar Tradisional",
+        "alamat": "Danakerta I, Danakerta, Kec. Punggelan, Kab. Banjarnegara, Jawa Tengah 53462"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.6541172,
+          -7.3979985
+        ]
+      },
+      "properties": {
+        "name": "Pasar Pucang",
+        "kategori": "Pasar Tradisional",
+        "alamat": "JM24+MW6, Jl. Raya Pucang, Blater, Pucang, Kec. Bawang, Kab. Banjarnegara, Jawa Tengah 53471"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.4294685,
+          -7.4725991
+        ]
+      },
+      "properties": {
+        "name": "Pasar Purwareja Klampok",
+        "kategori": "Pasar Tradisional",
+        "alamat": "GCHH+2W7, Jl. Pramuka No.563, Dusun Kalikidang Lor, Purworejo, Kec. Purwareja Klampok, Kab. Banjarnegara, Jawa Tengah 53474"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.5295102,
+          -7.4349578
+        ]
+      },
+      "properties": {
+        "name": "Pasar Rakit",
+        "kategori": "Pasar Tradisional",
+        "alamat": "HG8H+2R6, Rakit, Kec. Rakit, Kab. Banjarnegara, Jawa Tengah 53463"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.540739,
+          -7.467791
+        ]
+      },
+      "properties": {
+        "name": "Pasar Setu Merden",
+        "kategori": "Pasar Tradisional",
+        "alamat": "GGJR+V7Q, Jln.Raya Demang Jl. Sutawijaya, Rawawungu, Merden, Kec. Purwanegara, Kab. Banjarnegara, Jawa Tengah 53472"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.5929474,
+          -7.4169052
+        ]
+      },
+      "properties": {
+        "name": "Pasar Tradisional Gumiwang",
+        "kategori": "Pasar Tradisional",
+        "alamat": "HHJQ+CP5, Jl. Raya Gumiwang Purwonegoro, Kompleks Pasar, Gumiwang, Kec. Purwanegara, Kab. Banjarnegara, Jawa Tengah 53472"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.8297855,
+          -7.4231215
+        ]
+      },
+      "properties": {
+        "name": "Pasar Tunggoro",
+        "kategori": "Pasar Tradisional",
+        "alamat": "HRGH+QW3, Jurang, Tunggara, Kec. Sigaluh, Kab. Banjarnegara, Jawa Tengah 53481"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.7693356,
+          -7.3354431
+        ]
+      },
+      "properties": {
+        "name": "Pasar Wage Aribaya",
+        "kategori": "Pasar Tradisional",
+        "alamat": "MQ79+RPG, Unnamed Road, Bawang, Aribaya, Kec. Pagentan, Kab. Banjarnegara, Jawa Tengah 53455"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.6857086,
+          -7.3995034
+        ]
+      },
+      "properties": {
+        "name": "Pasar Wage Baru",
+        "kategori": "Pasar Tradisional",
+        "alamat": "HMXP+58P, Jl. Serma Mukhlas No.182, Kutabanjarnegara, Kec. Banjarnegara, Kab. Banjarnegara, Jawa Tengah 53418"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.6742421,
+          -7.3031816
+        ]
+      },
+      "properties": {
+        "name": "Pasar Wage Beji",
+        "kategori": "Pasar Tradisional",
+        "alamat": "MMWF+PMH, Jl. Kalibening - Gripit, Kali Jambe, Beji, Kec. Banjarmangu, Kab. Banjarnegara, Jawa Tengah 53452"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.5777876,
+          -7.3950026
+        ]
+      },
+      "properties": {
+        "name": "Pasar Wage Lengkong",
+        "kategori": "Pasar Tradisional",
+        "alamat": "JH3H+X4V, Jalan Raya, Blimbing, Lengkong, Rakit, Banjarnegara, Central Java 53463"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.6265856,
+          -7.3679362
+        ]
+      },
+      "properties": {
+        "name": "Pasar Wanadadi",
+        "kategori": "Pasar Tradisional",
+        "alamat": "Jl. Hos Cokroaminoto No.234, Dusun Dua, Wanadadi, Kec. Wanadadi, Kab. Banjarnegara, Jawa Tengah 53461"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.6062857,
+          -7.4594496
+        ]
+      },
+      "properties": {
+        "name": "Pasar Wanadri",
+        "kategori": "Pasar Tradisional",
+        "alamat": "Dusun I, Wanadri, Kec. Bawang, Kab. Banjarnegara, Jawa Tengah 53471"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.7043898,
+          -7.3917189
+        ]
+      },
+      "properties": {
+        "name": "Pasar Unggas Kota",
+        "kategori": "Pasar Unggas",
+        "alamat": "JP53+8QC, Jl. Letnan Karjono No.10, Parakancanggah, Krandegan, Kec. Banjarnegara, Kab. Banjarnegara, Jawa Tengah 53474"
+      }
+    }
+  ]
+}

@@ -23,6 +23,7 @@ export const WarningTable = ({ data }: WarningTableProps) => {
     return {
       id: idx,
       desa: row.desa,
+      kecamatan: row.kecamatan,
       status: status as "Aman" | "Waspada" | "Bahaya",
       isu: isu,
       lahan: row.jumlah,
@@ -77,9 +78,12 @@ export const WarningTable = ({ data }: WarningTableProps) => {
                 >
                   <td className="py-4 px-2 font-mono font-bold uppercase text-neutral-800 text-xs">
                     {item.desa}
+                    <span className="block font-sans font-normal normal-case text-[10px] text-neutral-400 mt-0.5">
+                      {item.kecamatan}
+                    </span>
                   </td>
                   <td className="py-4 px-2 text-right font-mono font-bold text-neutral-800">
-                    {item.lahan.toLocaleString("id-ID")}
+                    {item.lahan.toLocaleString("id-ID", { maximumFractionDigits: 4 })}
                   </td>
                   <td className="py-4 px-6 text-center">
                     <span

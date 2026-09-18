@@ -39,7 +39,7 @@ export default function IndexPage() {
 
   const totalSawah = lahanData.reduce((acc, curr) => acc + curr.lahanSawah, 0);
   const totalBukanSawah = lahanData.reduce(
-    (acc, curr) => acc + (curr.jumlah - curr.lahanSawah),
+    (acc, curr) => acc + curr.lahanBukanSawah,
     0,
   );
   const totalDesa = lahanData.length;

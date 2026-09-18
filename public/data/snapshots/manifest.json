@@ -1,0 +1,41 @@
+{
+    "fetchedAt":  "2026-09-17T05:15:23.4261850Z",
+    "files":  [
+                  {
+                      "name":  "padi-2025.csv",
+                      "source":  "/dataset/9238267d-6b2e-4c44-a3f6-6d70351c75a0/resource/8180ee00-dedd-4b08-b165-ef3bd6bb7075/download/total-luas-panen-produksi-dan-rata-rata-produksi-tanaman-pangan-padi-2025.csv",
+                      "bytes":  844,
+                      "status":  "ok"
+                  },
+                  {
+                      "name":  "sayuran-2018-2024.csv",
+                      "source":  "/dataset/226f7b4c-a07c-4248-a837-ea4dba4ec05e/resource/e6481f04-0ffd-40df-871f-7005a8d266cb/download/produksi-tanaman-sayuran-menurut-kecamatan-dan-jenis-tanaman-2018-2024.csv",
+                      "bytes":  5990,
+                      "status":  "ok"
+                  },
+                  {
+                      "name":  "inflasi-2018-2024.csv",
+                      "source":  "/dataset/5b935f47-a0df-4185-9328-2e13131dcd15/resource/bf424522-8fe9-46a1-99d3-3b102cf890b2/download/perbandingan_laju_inflasi_2018-2024.csv",
+                      "bytes":  1009,
+                      "status":  "ok"
+                  },
+                  {
+                      "name":  "lumbung-pangan-2025.csv",
+                      "source":  "/dataset/bd6ca920-4cd8-49a2-8e5d-291f01e1a11e/resource/1e578131-0fc4-4db4-95a4-a3af66aa7bec/download/banyaknya-lumbung-dan-gudang-pangan-kab-banjarnegara-menurut-kecamatan-2025.csv",
+                      "bytes":  589,
+                      "status":  "ok"
+                  },
+                  {
+                      "name":  "pasar-2016-2025.csv",
+                      "source":  "/dataset/d6f86fd9-32b1-40c1-b7c3-ccf311271bff/resource/aa29ce02-f750-46df-b1fd-9ba681bb500c/download/banyaknya-pasar-dirinci-menurut-jenisnya-2016-2025.csv",
+                      "bytes":  572,
+                      "status":  "ok"
+                  },
+                  {
+                      "name":  "ckan-catalog.json",
+                      "source":  "package_search x7",
+                      "bytes":  242651,
+                      "status":  "ok (170 dataset)"
+                  }
+              ]
+}
