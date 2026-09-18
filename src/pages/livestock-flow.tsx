@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import DefaultLayout from "@/layouts/default";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { fetchPemasukanTernak, fetchPengeluaranTernak, fetchLuarRPH, fetchDagingUnggas, TernakFlow } from "@/services/api";
-import { Beef, Calendar, MapPin, TrendingUp, Filter, FileSpreadsheet, ArrowDownToLine, ArrowUpFromLine, Slice, Drumstick } from "lucide-react";
+import { Calendar, MapPin, FileSpreadsheet, ArrowDownToLine, ArrowUpFromLine, Slice, Drumstick } from "lucide-react";
 
 type Category = "pemasukan" | "pengeluaran" | "luar-rph" | "daging-unggas";
 
@@ -13,7 +13,15 @@ const CATEGORY_META: Record<Category, { label: string; sub: string; unit: string
   "daging-unggas": { label: "Produksi Daging Unggas", sub: "Produksi daging unggas per kecamatan", unit: "kg", icon: Drumstick },
 };
 
-const COLORS = ["#059669", "#2563eb", "#d97706", "#db2777", "#7c3aed", "#ea580c"];
+const CATEGORY_TAB: Record<Category, string> = {
+  "pemasukan": "Pemasukan",
+  "pengeluaran": "Pengeluaran",
+  "luar-rph": "Luar RPH",
+  "daging-unggas": "Daging Unggas",
+};
+
+// Palet warna formal: biru pemerintahan + warna pelengkap yang tenang
+const COLORS = ["#1d4ed8", "#0d9488", "#b45309", "#be185d", "#6d28d9", "#4d7c0f"];
 
 export default function LivestockFlowPage() {
   const [pemasukan, setPemasukan] = useState<TernakFlow[]>([]);
@@ -265,384 +273,532 @@ export default function LivestockFlowPage() {
       maximumFractionDigits: 1,
     }).format(val);
 
+  const ActiveIcon = CATEGORY_META[category].icon;
+
   return (
     <DefaultLayout>
-      <section className="flex flex-col gap-8 py-4">
-        {/* Hero */}
-        <section className="relative text-left py-8 border-b-4 border-amber-600 bg-white shadow-sm">
-          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-400 rounded-b" />
-          <div className="flex items-start gap-5 mb-3">
-            <div className="p-4 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 border-4 border-amber-400 mt-1 shadow-xl shadow-amber-500/30">
-              <Beef className="text-white" size={32} />
-            </div>
-            <div>
-              <h2 className="text-3xl sm:text-4xl leading-tight font-black tracking-tight text-slate-900">
-                Ternak & Daging
-              </h2>
-              <p className="text-base text-slate-600 mt-1.5 font-medium">
-                Pemasukan, pengeluaran, luar RPH, dan produksi daging unggas per kecamatan
-              </p>
-            </div>
-          </div>
-        </section>
+      <div className="flex flex-col gap-6">
+        {/* ===== Kepala Halaman ===== */}
+        <header className="border-b border-slate-200 pb-5">
+          <p className="text-xs font-semibold uppercase tracking-widest text-blue-800">
+            Bidang Peternakan
+          </p>
+          <h1 className="text-2xl font-semibold text-slate-900 mt-1.5">
+            Lalu Lintas Ternak & Produksi Daging
+          </h1>
+          <p className="text-sm text-slate-500 mt-1 max-w-3xl">
+            Data pemasukan ternak, pengeluaran ternak potong, perkiraan pemotongan
+            di luar Rumah Potong Hewan (RPH), serta produksi daging unggas
+            per kecamatan Kabupaten Banjarnegara.
+          </p>
+        </header>
 
-        {/* Filter Panel */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          <div className="bg-gradient-to-br from-amber-500 to-orange-500 p-6 rounded-3xl shadow-xl shadow-amber-600/20 text-white flex flex-col gap-4 border-2 border-amber-400">
-            <div className="flex items-center justify-between">
-              <label className="text-xs font-mono font-black uppercase tracking-widest opacity-90">Jenis Data</label>
-              <Beef size={16} />
-            </div>
-            <div className="flex flex-col gap-3">
-              {(Object.keys(CATEGORY_META) as Category[]).map((c) => {
-                const CIcon = CATEGORY_META[c].icon;
-                return (
+        {/* ===== Panel Filter ===== */}
+        <section className="bg-white border border-slate-200 rounded-lg p-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+            {/* Jenis data */}
+            <div className="xl:col-span-2">
+              <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">
+                Jenis Data
+              </label>
+              <div className="flex rounded-md border border-slate-300 overflow-hidden bg-white">
+                {(Object.keys(CATEGORY_META) as Category[]).map((c) => (
                   <button
                     key={c}
                     onClick={() => setCategory(c)}
-                    className={`py-2.5 px-4 rounded-xl font-mono font-black text-xs uppercase flex items-center justify-start gap-3 transition-all ${
+                    className={`flex-1 py-2 px-2 text-xs font-medium transition-colors ${
                       category === c
-                        ? "bg-white text-amber-700 shadow-lg shadow-amber-500/40 transform scale-105"
-                        : "bg-white/15 hover:bg-white/25 text-white"
+                        ? "bg-blue-800 text-white"
+                        : "text-slate-600 hover:bg-slate-50"
                     }`}
                   >
-                    <CIcon size={14} />
-                    {CATEGORY_META[c].label}
+                    {CATEGORY_TAB[c]}
                   </button>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="bg-gradient-to-br from-orange-500 to-red-500 p-6 rounded-3xl shadow-xl shadow-orange-600/20 text-white flex flex-col gap-4 border-2 border-orange-400">
-            <div className="flex items-center justify-between">
-              <label className="text-xs font-mono font-black uppercase tracking-widest opacity-90">Satuan</label>
-              <Beef size={16} />
-            </div>
-            <div className="py-2.5 px-4 rounded-xl font-mono font-black text-sm uppercase flex items-center gap-3 bg-white/15">
-              <Beef size={14} />
-              {unit}
-            </div>
-            <span className="text-xs font-mono text-orange-100 uppercase text-center">{CATEGORY_META[category].sub}</span>
-          </div>
-
-          <div className="bg-gradient-to-br from-sky-500 to-blue-500 p-6 rounded-3xl shadow-xl shadow-sky-600/20 text-white flex flex-col gap-4 border-2 border-sky-400">
-            <div className="flex items-center justify-between">
-              <label className="text-xs font-mono font-black uppercase tracking-widest opacity-90">Tahun Data</label>
-              <Calendar size={16} />
-            </div>
-            <div className="relative">
-              <Calendar className="absolute left-4 top-3 h-5 w-5 text-sky-200 pointer-events-none" />
-              <select
-                value={selectedYear}
-                onChange={(e) => setSelectedYear(e.target.value)}
-                className="w-full pl-10 pr-5 py-3 font-mono text-sm font-black bg-white text-sky-700 focus:outline-none appearance-none cursor-pointer rounded-xl shadow-lg shadow-sky-500/30 hover:shadow-xl transition-all"
-              >
-                {yearsList.map((yr) => (
-                  <option key={yr} value={yr}>{yr}</option>
                 ))}
-              </select>
+              </div>
             </div>
-          </div>
 
-          <div className="bg-gradient-to-br from-violet-500 to-purple-500 p-6 rounded-3xl shadow-xl shadow-violet-600/20 text-white flex flex-col gap-4 border-2 border-violet-400">
-            <div className="flex items-center justify-between">
-              <label className="text-xs font-mono font-black uppercase tracking-widest opacity-90">Kecamatan</label>
-              <MapPin size={16} />
+            {/* Tahun */}
+            <div>
+              <label htmlFor="ls-year" className="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">
+                Tahun
+              </label>
+              <div className="relative">
+                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+                <select
+                  id="ls-year"
+                  value={selectedYear}
+                  onChange={(e) => setSelectedYear(e.target.value)}
+                  className="w-full pl-9 pr-3 py-2 text-sm text-slate-700 bg-white border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700/20 focus:border-blue-700 appearance-none cursor-pointer"
+                >
+                  {yearsList.map((yr) => (
+                    <option key={yr} value={yr}>{yr}</option>
+                  ))}
+                </select>
+              </div>
             </div>
-            <div className="relative">
-              <Filter className="absolute left-4 top-3 h-5 w-5 text-violet-200 pointer-events-none" />
-              <select
-                value={selectedKecamatan}
-                onChange={(e) => setSelectedKecamatan(e.target.value)}
-                className="w-full pl-10 pr-5 py-3 font-mono text-sm font-black bg-white text-violet-700 focus:outline-none appearance-none cursor-pointer rounded-xl shadow-lg shadow-violet-500/30 hover:shadow-xl transition-all"
-              >
-                {uniqueKecamatan.map((kec) => (
-                  <option key={kec} value={kec}>{kec}</option>
-                ))}
-              </select>
+
+            {/* Kecamatan */}
+            <div>
+              <label htmlFor="ls-kec" className="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">
+                Kecamatan
+              </label>
+              <div className="relative">
+                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+                <select
+                  id="ls-kec"
+                  value={selectedKecamatan}
+                  onChange={(e) => setSelectedKecamatan(e.target.value)}
+                  className="w-full pl-9 pr-3 py-2 text-sm text-slate-700 bg-white border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700/20 focus:border-blue-700 appearance-none cursor-pointer"
+                >
+                  {uniqueKecamatan.map((kec) => (
+                    <option key={kec} value={kec}>{kec}</option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
-        </div>
+          <p className="text-xs text-slate-400 mt-3 border-t border-slate-100 pt-3">
+            Menampilkan: <span className="text-slate-600 font-medium">{CATEGORY_META[category].label}</span>
+            {" · "}<span className="text-slate-600 font-medium">Satuan {unit}</span>
+            {" · "}<span className="text-slate-600 font-medium">{selectedYear || "—"}</span>
+            {" · "}<span className="text-slate-600 font-medium">{selectedKecamatan}</span>
+          </p>
+        </section>
 
         {loading ? (
-          <div className="flex flex-col items-center justify-center h-[400px] gap-6">
-            <div className="w-14 h-14 border-6 border-amber-200 border-t-amber-600 rounded-full animate-spin" />
-            <p className="text-slate-400 font-mono text-sm uppercase tracking-widest">Memuat data ternak…</p>
+          <div className="flex flex-col items-center justify-center h-64 gap-3 bg-white border border-slate-200 rounded-lg">
+            <div className="w-8 h-8 border-2 border-slate-200 border-t-blue-800 rounded-full animate-spin" />
+            <p className="text-sm text-slate-500">Memuat data ternak…</p>
           </div>
         ) : (
           <>
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-gradient-to-br from-amber-500 via-orange-400 to-orange-500 p-8 text-white shadow-2xl shadow-amber-500/40 rounded-3xl flex flex-col justify-between relative overflow-hidden border-4 border-amber-300">
-            <div className="absolute top-0 right-0 -mr-10 -mt-10 w-40 h-40 bg-white/20 rounded-full blur-3xl" />
-            <div>
-              <h5 className="text-xs font-mono font-black uppercase tracking-widest text-amber-100 mb-3">Total {CATEGORY_META[category].label}</h5>
-              <h3 className="text-5xl font-serif font-black leading-none drop-shadow-md">{formatNum(stats.total)}</h3>
-            </div>
-            <div className="mt-8 flex items-center gap-3">
-              <span className="px-4 py-2 rounded-full bg-amber-500/50 backdrop-blur-md border-2 border-amber-300/50 text-xs font-mono font-bold uppercase shadow-lg">
-                {CATEGORY_META[category].label}
-              </span>
-              <span className="text-sm font-mono text-amber-100 font-bold">{selectedYear}</span>
-            </div>
-          </div>
-
-          <div className="bg-gradient-to-br from-rose-500 via-pink-400 to-pink-500 p-8 text-white shadow-2xl shadow-rose-500/40 rounded-3xl flex flex-col justify-between relative overflow-hidden border-4 border-rose-300">
-            <div className="absolute top-0 right-0 -mr-10 -mt-10 w-40 h-40 bg-white/20 rounded-full blur-3xl" />
-            <div>
-              <h5 className="text-xs font-mono font-black uppercase tracking-widest text-rose-100 mb-3">Kecamatan Tertinggi</h5>
-              <h3 className="text-3xl font-serif font-black leading-tight break-words drop-shadow-md">{stats.topDistrict}</h3>
-            </div>
-            <p className="mt-8 text-sm font-mono text-rose-100 font-bold uppercase">
-              {formatNum(stats.topVal)} {unit}
-            </p>
-          </div>
-
-          <div className="bg-white border-4 border-purple-400 p-8 shadow-2xl shadow-purple-500/20 rounded-3xl flex flex-col justify-between">
-            <h5 className="text-xs font-mono font-black uppercase tracking-widest text-purple-700 mb-6">Komposisi</h5>
-            <div className="flex flex-col gap-4">
-              {stats.breakdown.map((item, idx) => {
-                const pct = stats.total > 0 ? (item.value / stats.total) * 100 : 0;
-                return (
-                  <div key={item.name} className="flex items-center justify-between gap-4">
-                    <span className="text-xs font-mono font-black uppercase text-slate-600 min-w-[90px]">{item.name}</span>
-                    <div className="flex-1 bg-slate-100 h-3 rounded-full overflow-hidden relative shadow-inner">
-                      <div className="absolute inset-y-0 left-0" style={{ width: `${pct}%`, backgroundColor: COLORS[idx % COLORS.length] }} />
-                    </div>
-                    <span className="text-xs font-mono font-black text-slate-800 w-16 text-right">{pct.toFixed(1)}%</span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-
-            {/* Distribution Chart */}
-            <div className="bg-white border-4 border-amber-200 p-8 shadow-2xl shadow-amber-100 rounded-3xl">
-              <div className="flex flex-col mb-8 border-b-4 border-amber-100 pb-4 text-left">
-                <div className="flex items-center gap-4 mb-2">
-                  <div className="p-3 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-xl shadow-amber-500/30">
-                    <FileSpreadsheet size={24} />
-                  </div>
-                  <h4 className="text-2xl font-mono font-black uppercase text-slate-800">
-                    Sebaran {CATEGORY_META[category].label} per Kecamatan
-                  </h4>
+            {/* ===== Kartu Ringkasan ===== */}
+            <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-white border border-slate-200 border-l-4 border-l-blue-800 rounded-lg p-5">
+                <div className="flex items-center gap-2.5 text-blue-800">
+                  <ActiveIcon size={16} />
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    Total {CATEGORY_META[category].label}
+                  </p>
                 </div>
-                <p className="text-sm font-mono text-amber-600 uppercase font-bold">Kontribusi masing-masing kecamatan • {selectedYear}</p>
+                <p className="text-3xl font-semibold text-slate-900 mt-2 tabular-nums">
+                  {formatNum(stats.total)}
+                </p>
+                <p className="text-xs text-slate-500 mt-1.5">
+                  {unit} · {selectedYear}
+                  {selectedKecamatan !== "Semua" ? ` · ${selectedKecamatan}` : " · Seluruh kecamatan"}
+                </p>
               </div>
-              <div className="h-[480px] w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 90 }}>
-                    <CartesianGrid strokeDasharray="4 4" stroke="#fde68a" vertical={false} />
-                    <XAxis dataKey="name" tick={{ fill: "#78350f", fontSize: 11, fontFamily: "monospace", fontWeight: "black" }} interval={0} angle={-45} textAnchor="end" height={80} />
-                    <YAxis width={70} tick={{ fill: "#78350f", fontSize: 11, fontFamily: "monospace", fontWeight: "black" }} tickFormatter={(v) => formatNum(v)} />
-                    <Tooltip contentStyle={{ backgroundColor: "#fffbeb", border: "2px solid #fde68a", borderRadius: 16, fontFamily: "monospace", fontSize: 12, fontWeight: "black", boxShadow: "0 10px 24px rgba(245,158,11,0.2)" }} formatter={(value: any) => [formatNum(Number(value)), ""]} />
-                    <Legend verticalAlign="top" height={40} wrapperStyle={{ fontFamily: "monospace", fontSize: 11, fontWeight: "black" }} />
-                    {jenisList.map((j, idx) => (
-                      <Bar key={j} dataKey={j} stackId="a" fill={COLORS[idx % COLORS.length]} stroke="#b45309" strokeWidth={1} radius={[4, 4, 0, 0]} />
-                    ))}
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
 
-            {/* Trend */}
-            <div className="bg-white border-4 border-amber-200 p-8 shadow-2xl shadow-amber-100 rounded-3xl">
-              <div className="flex flex-col mb-8 border-b-4 border-amber-100 pb-4">
-                <div className="flex items-center justify-between gap-4 flex-wrap">
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-xl shadow-amber-500/30">
-                      <TrendingUp size={24} />
-                    </div>
-                    <div>
-                      <h4 className="text-2xl font-mono font-black uppercase text-slate-800">
-                        Tren {CATEGORY_META[category].label}
-                      </h4>
-                      <p className="text-xs font-mono text-slate-500 uppercase font-bold">{selectedKecamatan !== "Semua" ? ` · ${selectedKecamatan}` : " · Seluruh Banjarnegara"}</p>
-                    </div>
-                  </div>
-                  {cagrData && (
-                    <span className="px-4 py-2 rounded-full bg-amber-600 text-white font-mono font-black text-sm uppercase shadow-xl shadow-amber-600/40 border-2 border-amber-400">
-                      CAGR: {cagrData.total === null ? "N/A" : `${cagrData.total >= 0 ? "+" : ""}${formatPct(cagrData.total)}%`}
-                    </span>
-                  )}
+              <div className="bg-white border border-slate-200 border-l-4 border-l-teal-700 rounded-lg p-5">
+                <div className="flex items-center gap-2.5 text-teal-700">
+                  <MapPin size={16} />
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    Kecamatan Tertinggi
+                  </p>
                 </div>
+                <p className="text-2xl font-semibold text-slate-900 mt-2">
+                  {stats.topDistrict}
+                </p>
+                <p className="text-xs text-slate-500 mt-1.5 tabular-nums">
+                  {formatNum(stats.topVal)} {unit} · {selectedYear}
+                </p>
               </div>
-              <div className="h-[360px] w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={trendWithProjection} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="4 4" stroke="#fde68a" vertical={false} />
-                    <XAxis dataKey="tahun" tick={{ fill: "#78350f", fontSize: 10, fontFamily: "monospace", fontWeight: "black" }} />
-                    <YAxis tick={{ fill: "#78350f", fontSize: 10, fontFamily: "monospace", fontWeight: "black" }} tickFormatter={(v) => formatNum(v)} />
-                    <Tooltip contentStyle={{ backgroundColor: "#fffbeb", border: "2px solid #fde68a", borderRadius: 12, fontFamily: "monospace", fontSize: 12, fontWeight: "black", boxShadow: "0 6px 16px rgba(245,158,11,0.15)" }} formatter={(value: any) => [formatNum(Number(value)), ""]} />
-                    <Legend verticalAlign="top" height={36} wrapperStyle={{ fontFamily: "monospace", fontSize: 10, fontWeight: "black" }} />
-                    <Line type="monotone" dataKey="total" name="Total" stroke="#d97706" strokeWidth={3} dot={{ fill: '#d97706', r: 4 }} activeDot={{ r: 6 }} connectNulls={false} />
-                    <Line type="monotone" dataKey="proyeksi" name="Proyeksi" stroke="#dc2626" strokeWidth={2} strokeDasharray="8 4" dot={{ fill: '#dc2626', r: 4 }} connectNulls={true} />
-                    {jenisList.map((j, idx) => (
-                      <Line key={j} type="monotone" dataKey={j} stroke={COLORS[idx % COLORS.length]} strokeWidth={2} dot={false} />
-                    ))}
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
 
-            {/* Regression Projections */}
-            {projection && (
-              <div className="bg-white border-4 border-orange-200 p-8 shadow-2xl shadow-orange-100 rounded-3xl">
-                <div className="flex items-center gap-4 mb-6 border-b-4 border-orange-100 pb-4">
-                  <div className="p-3 rounded-2xl bg-gradient-to-br from-orange-500 to-red-500 text-white shadow-xl shadow-orange-500/30">
-                    <TrendingUp size={22} />
-                  </div>
-                  <div>
-                    <h4 className="text-xl font-mono font-black uppercase text-slate-800">Proyeksi Garis Tren</h4>
-                    <p className="text-xs font-mono text-orange-600 uppercase font-bold">Ternak • {projection.nextYear}</p>
-                  </div>
+              <div className="bg-white border border-slate-200 border-l-4 border-l-amber-600 rounded-lg p-5">
+                <div className="flex items-center gap-2.5 text-amber-600">
+                  <FileSpreadsheet size={16} />
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    Komposisi Jenis Ternak
+                  </p>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-left">
-                  <div className="border-4 border-orange-500 bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 p-6 shadow-lg flex flex-col justify-between rounded-2xl">
-                    <span className="text-xs font-mono font-black uppercase text-orange-700 tracking-wider">
-                      Prediksi {projection.nextYear} ({unit})
-                    </span>
-                    <span className="text-3xl font-serif font-black text-slate-800 mt-3">
-                      {formatNum(projection.predicted)}
-                    </span>
-                  </div>
-                  <div className="border-4 border-slate-200 bg-white p-6 shadow-lg flex flex-col justify-between rounded-2xl">
-                    <span className="text-xs font-mono font-black uppercase text-slate-500">
-                      Perubahan vs {projection.lastTahun}
-                    </span>
-                    <span className={`text-3xl font-serif font-black mt-3 ${projection.deltaPct === null ? "text-slate-400" : projection.deltaPct >= 0 ? "text-emerald-600" : "text-red-600"}`}>
-                      {projection.deltaPct === null ? "N/A" : `${projection.deltaPct >= 0 ? "▲" : "▼"} ${formatPct(Math.abs(projection.deltaPct))}%`}
-                    </span>
-                  </div>
-                  <div className="border-4 border-slate-200 bg-white p-6 shadow-lg flex flex-col justify-between rounded-2xl">
-                    <span className="text-xs font-mono font-black uppercase text-slate-500">
-                      Keandalan Model (R²)
-                    </span>
-                    <span className={`text-3xl font-serif font-black mt-3 ${projection.r2 >= 0.7 ? "text-emerald-600" : projection.r2 >= 0.4 ? "text-amber-600" : "text-red-600"}`}>
-                      {formatPct(projection.r2 * 100)}%
-                    </span>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* CAGR Breakdown */}
-            {cagrData && (
-              <div className="bg-white border-4 border-purple-200 p-8 shadow-2xl shadow-purple-100 rounded-3xl">
-                <div className="flex items-center gap-4 mb-6 border-b-4 border-purple-100 pb-4">
-                  <div className="p-3 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 text-white shadow-xl shadow-purple-500/30">
-                    <FileSpreadsheet size={22} />
-                  </div>
-                  <div>
-                    <h4 className="text-xl font-mono font-black uppercase text-slate-800">CAGR Per Jenis</h4>
-                    <p className="text-xs font-mono text-purple-600 uppercase font-bold">{cagrData.periode}</p>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
-                  <div className="border-4 border-slate-900 bg-slate-900 text-white p-6 flex flex-col justify-between rounded-2xl shadow-xl">
-                    <span className="text-xs font-mono font-black uppercase text-slate-400 tracking-wider">Total Gabungan</span>
-                    <span className="text-4xl font-serif font-black mt-3">
-                      {cagrData.total === null ? "N/A" : `${cagrData.total >= 0 ? "+" : ""}${formatPct(cagrData.total)}%`}
-                    </span>
-                  </div>
-                  {cagrData.items.map((item) => (
-                    <div key={item.name} className="border-4 border-slate-200 bg-white p-6 flex flex-col justify-between shadow-xl rounded-2xl">
-                      <span className="text-xs font-mono font-black uppercase text-slate-600 leading-tight">{item.name}</span>
-                      <span className={`text-3xl font-serif font-black mt-3 ${item.cagr === null ? "text-slate-400" : item.cagr >= 0 ? "text-emerald-600" : "text-red-600"}`}>
-                        {item.cagr === null ? "N/A" : <>{item.cagr >= 0 ? "▲" : "▼"} {formatPct(Math.abs(item.cagr))}%</>}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Ranking Kecamatan */}
-            <div className="bg-white border-4 border-amber-200 p-8 shadow-2xl shadow-amber-100 rounded-3xl">
-              <div className="flex items-center justify-between mb-6 border-b-4 border-amber-100 pb-4">
-                <div className="flex items-center gap-4">
-                  <div className="p-3 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-xl shadow-amber-500/30">
-                    <FileSpreadsheet size={22} />
-                  </div>
-                  <div>
-                    <h4 className="text-xl font-mono font-black uppercase text-slate-800">Ranking Kecamatan</h4>
-                    <p className="text-xs font-mono text-amber-600 uppercase font-bold">
-                      Kumulatif {yearsList[yearsList.length - 1]}–{yearsList[0]}
-                    </p>
-                  </div>
-                </div>
-                <span className="text-xs font-mono font-bold text-amber-600 uppercase">
-                  Total {unit} seluruh tahun
-                </span>
-              </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 text-left">
-                {kecamatanRanking.slice(0, 10).map((item, idx) => {
-                  const medal = idx === 0 ? "🥇" : idx === 1 ? "🥈" : idx === 2 ? "🥉" : null;
-                  const colors = idx === 0 ? "border-amber-500 bg-amber-50/50" : "border-slate-200 bg-white";
-                  const iconBg = idx < 3 ? "bg-amber-500" : "bg-slate-100";
-                  return (
-                    <div key={item.name} className={`border-4 p-5 flex flex-col gap-2 shadow-lg rounded-2xl transition-all hover:shadow-xl ${colors}`}>
-                      <div className="flex items-center justify-between gap-2">
-                        <span className={`inline-flex items-center justify-center w-7 h-7 rounded-lg text-xs font-black font-mono ${iconBg} ${idx < 3 ? "text-white" : "text-slate-500"}`}>
-                          {medal || (idx + 1)}
+                <div className="mt-3 flex flex-col gap-2.5">
+                  {stats.breakdown.map((item, idx) => {
+                    const pct = stats.total > 0 ? (item.value / stats.total) * 100 : 0;
+                    return (
+                      <div key={item.name} className="flex items-center gap-2 text-xs">
+                        <span className="w-24 shrink-0 text-slate-600 truncate">{item.name}</span>
+                        <div className="flex-1 h-2 bg-slate-100 rounded-sm overflow-hidden">
+                          <div
+                            className="h-full"
+                            style={{ width: `${pct}%`, backgroundColor: COLORS[idx % COLORS.length] }}
+                          />
+                        </div>
+                        <span className="w-12 text-right font-medium text-slate-700 tabular-nums">
+                          {pct.toFixed(1)}%
                         </span>
-                        <span className="text-xs font-mono font-black uppercase text-slate-700 truncate">{item.name}</span>
                       </div>
-                      <span className="text-3xl font-serif font-black text-slate-800 leading-tight">{formatNum(item.value)}</span>
-                      <span className="text-[10px] font-mono text-slate-400 uppercase font-bold">{unit}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Data Table */}
-            <div className="bg-white border-4 border-slate-200 p-8 shadow-2xl shadow-slate-200/50 rounded-3xl">
-              <div className="flex items-center justify-between mb-6 border-b-4 border-slate-100 pb-4">
-                <div className="flex items-center gap-4">
-                  <div className="p-3 rounded-2xl bg-slate-900 text-white shadow-xl shadow-slate-900/30">
-                    <FileSpreadsheet size={22} />
-                  </div>
-                  <div>
-                    <h4 className="text-xl font-mono font-black uppercase text-slate-800">Tabel Rincian Data</h4>
-                    <p className="text-xs font-mono text-slate-500 uppercase font-bold">
-                      Perkecamatan • {selectedYear} • Satuan: {unit}
-                    </p>
-                  </div>
+                    );
+                  })}
                 </div>
               </div>
-              <div className="overflow-x-auto rounded-2xl border-2 border-slate-200 shadow-sm">
-                <table className="w-full text-left font-mono text-sm border-collapse">
-                  <thead>
-                    <tr className="bg-slate-900 text-white">
-                      <th className="p-4 border-r border-slate-700 font-black uppercase text-xs whitespace-nowrap w-12">#</th>
-                      <th className="p-4 border-r border-slate-700 font-black uppercase text-xs">Kecamatan</th>
-                      {jenisList.map((j) => (
-                        <th key={j} className="p-4 border-r border-slate-700 font-black uppercase text-xs text-right whitespace-nowrap">{j}</th>
+            </section>
+
+            {/* ===== Grafik Sebaran ===== */}
+            <section className="bg-white border border-slate-200 rounded-lg">
+              <div className="px-5 pt-4 pb-3 border-b border-slate-200">
+                <h2 className="text-base font-semibold text-slate-900">
+                  Sebaran {CATEGORY_META[category].label} per Kecamatan
+                </h2>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Satuan {unit} · Tahun {selectedYear}
+                </p>
+              </div>
+              <div className="p-5">
+                <div className="h-[420px] w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 80 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+                      <XAxis
+                        dataKey="name"
+                        tick={{ fill: "#475569", fontSize: 11 }}
+                        interval={0}
+                        angle={-45}
+                        textAnchor="end"
+                        height={70}
+                      />
+                      <YAxis
+                        width={70}
+                        tick={{ fill: "#475569", fontSize: 11 }}
+                        tickFormatter={(v) => formatNum(v)}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: "#ffffff",
+                          border: "1px solid #e2e8f0",
+                          borderRadius: 8,
+                          fontSize: 12,
+                          boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
+                        }}
+                        formatter={(value: any) => [formatNum(Number(value)), ""]}
+                      />
+                      <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: 12 }} />
+                      {jenisList.map((j, idx) => (
+                        <Bar key={j} dataKey={j} stackId="a" fill={COLORS[idx % COLORS.length]} />
                       ))}
-                      <th className="p-4 font-black uppercase text-xs text-right bg-slate-800">Total</th>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            </section>
+
+            {/* ===== Tren & Proyeksi ===== */}
+            <section className="bg-white border border-slate-200 rounded-lg">
+              <div className="px-5 pt-4 pb-3 border-b border-slate-200 flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <h2 className="text-base font-semibold text-slate-900">
+                    Tren {CATEGORY_META[category].label}
+                  </h2>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    {selectedKecamatan !== "Semua" ? `Kecamatan ${selectedKecamatan}` : "Seluruh Kabupaten Banjarnegara"}
+                    {" · "}
+                    {yearsList.length > 0 && `${yearsList[yearsList.length - 1]}–${yearsList[0]}`}
+                  </p>
+                </div>
+                {cagrData && (
+                  <div className="text-right">
+                    <p className="text-xs text-slate-500 uppercase tracking-wide">CAGR {cagrData.periode}</p>
+                    <p className={`text-lg font-semibold tabular-nums ${
+                      cagrData.total === null ? "text-slate-400" : cagrData.total >= 0 ? "text-green-700" : "text-red-700"
+                    }`}>
+                      {cagrData.total === null
+                        ? "N/A"
+                        : `${cagrData.total >= 0 ? "▲" : "▼"} ${formatPct(Math.abs(cagrData.total))}% / tahun`}
+                    </p>
+                  </div>
+                )}
+              </div>
+              <div className="p-5">
+                <div className="h-[320px] w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={trendWithProjection} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+                      <XAxis dataKey="tahun" tick={{ fill: "#475569", fontSize: 11 }} />
+                      <YAxis tick={{ fill: "#475569", fontSize: 11 }} tickFormatter={(v) => formatNum(v)} />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: "#ffffff",
+                          border: "1px solid #e2e8f0",
+                          borderRadius: 8,
+                          fontSize: 12,
+                          boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
+                        }}
+                        formatter={(value: any) => [formatNum(Number(value)), ""]}
+                      />
+                      <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: 12 }} />
+                      <Line
+                        type="monotone"
+                        dataKey="total"
+                        name="Total"
+                        stroke="#1e3a8a"
+                        strokeWidth={2.5}
+                        dot={{ fill: "#1e3a8a", r: 3 }}
+                        activeDot={{ r: 5 }}
+                        connectNulls={false}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="proyeksi"
+                        name="Proyeksi (tren)"
+                        stroke="#dc2626"
+                        strokeWidth={2}
+                        strokeDasharray="6 4"
+                        dot={{ fill: "#dc2626", r: 3, strokeDasharray: "0" }}
+                        connectNulls={true}
+                      />
+                      {jenisList.map((j, idx) => (
+                        <Line
+                          key={j}
+                          type="monotone"
+                          dataKey={j}
+                          stroke={COLORS[idx % COLORS.length]}
+                          strokeWidth={1.5}
+                          dot={false}
+                        />
+                      ))}
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+
+                {projection && (
+                  <dl className="mt-4 grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-slate-200 border border-slate-200 rounded-md overflow-hidden bg-white">
+                    <div className="p-4">
+                      <dt className="text-xs font-medium text-slate-500 uppercase tracking-wide">
+                        Prediksi {projection.nextYear} ({unit})
+                      </dt>
+                      <dd className="text-xl font-semibold text-slate-900 mt-1 tabular-nums">
+                        {formatNum(projection.predicted)}
+                      </dd>
+                    </div>
+                    <div className="p-4">
+                      <dt className="text-xs font-medium text-slate-500 uppercase tracking-wide">
+                        Perubahan vs {projection.lastTahun}
+                      </dt>
+                      <dd className={`text-xl font-semibold mt-1 tabular-nums ${
+                        projection.deltaPct === null
+                          ? "text-slate-400"
+                          : projection.deltaPct >= 0
+                          ? "text-green-700"
+                          : "text-red-700"
+                      }`}>
+                        {projection.deltaPct === null
+                          ? "N/A"
+                          : `${projection.deltaPct >= 0 ? "▲" : "▼"} ${formatPct(Math.abs(projection.deltaPct))}%`}
+                      </dd>
+                    </div>
+                    <div className="p-4">
+                      <dt className="text-xs font-medium text-slate-500 uppercase tracking-wide">
+                        Keandalan Model (R²)
+                      </dt>
+                      <dd className={`text-xl font-semibold mt-1 tabular-nums ${
+                        projection.r2 >= 0.7 ? "text-green-700" : projection.r2 >= 0.4 ? "text-amber-600" : "text-red-700"
+                      }`}>
+                        {formatPct(projection.r2 * 100)}%
+                      </dd>
+                    </div>
+                  </dl>
+                )}
+                {projection && (
+                  <p className="text-xs text-slate-400 mt-2">
+                    * Proyeksi menggunakan model regresi linier (kuadrat terkecil) atas tren historis;
+                    garis putus-putus merah pada grafik menunjukkan estimasi {projection.nextYear}.
+                  </p>
+                )}
+              </div>
+            </section>
+
+            {/* ===== CAGR per Jenis ===== */}
+            {cagrData && (
+              <section className="bg-white border border-slate-200 rounded-lg">
+                <div className="px-5 pt-4 pb-3 border-b border-slate-200">
+                  <h2 className="text-base font-semibold text-slate-900">
+                    Laju Pertumbuhan Tahunan (CAGR) per Jenis Ternak
+                  </h2>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Periode {cagrData.periode} · {cagrData.years} tahun
+                  </p>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="bg-slate-50 text-slate-600">
+                        <th className="px-5 py-2.5 text-left text-xs font-semibold uppercase tracking-wide border-b border-slate-200">
+                          Jenis Ternak
+                        </th>
+                        <th className="px-5 py-2.5 text-right text-xs font-semibold uppercase tracking-wide border-b border-slate-200">
+                          CAGR / Tahun
+                        </th>
+                        <th className="px-5 py-2.5 text-left text-xs font-semibold uppercase tracking-wide border-b border-slate-200">
+                          Arah Tren
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      <tr className="bg-blue-50/40 font-semibold">
+                        <td className="px-5 py-2.5 text-slate-900">Total Gabungan</td>
+                        <td className={`px-5 py-2.5 text-right tabular-nums ${
+                          cagrData.total === null ? "text-slate-400" : cagrData.total >= 0 ? "text-green-700" : "text-red-700"
+                        }`}>
+                          {cagrData.total === null
+                            ? "N/A"
+                            : `${cagrData.total >= 0 ? "+" : "−"}${formatPct(Math.abs(cagrData.total))}%`}
+                        </td>
+                        <td className="px-5 py-2.5 text-slate-600">
+                          {cagrData.total === null ? "—" : cagrData.total >= 0 ? "Meningkat" : "Menurun"}
+                        </td>
+                      </tr>
+                      {cagrData.items.map((item) => (
+                        <tr key={item.name} className="hover:bg-slate-50">
+                          <td className="px-5 py-2.5 text-slate-700">{item.name}</td>
+                          <td className={`px-5 py-2.5 text-right tabular-nums ${
+                            item.cagr === null ? "text-slate-400" : item.cagr >= 0 ? "text-green-700" : "text-red-700"
+                          }`}>
+                            {item.cagr === null
+                              ? "N/A"
+                              : `${item.cagr >= 0 ? "+" : "−"}${formatPct(Math.abs(item.cagr))}%`}
+                          </td>
+                          <td className="px-5 py-2.5 text-slate-600">
+                            {item.cagr === null ? "—" : item.cagr >= 0 ? "Meningkat" : "Menurun"}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            )}
+
+            {/* ===== Peringkat Kecamatan ===== */}
+            <section className="bg-white border border-slate-200 rounded-lg">
+              <div className="px-5 pt-4 pb-3 border-b border-slate-200">
+                <h2 className="text-base font-semibold text-slate-900">
+                  Peringkat Kecamatan
+                </h2>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Kumulatif {CATEGORY_META[category].label} ({unit}) ·{" "}
+                  {yearsList.length > 0 && `${yearsList[yearsList.length - 1]}–${yearsList[0]}`}
+                  {" · "}
+                  {selectedKecamatan !== "Semua" ? `Kecamatan ${selectedKecamatan}` : "Seluruh kecamatan (10 teratas)"}
+                </p>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="bg-slate-50 text-slate-600">
+                      <th className="px-5 py-2.5 text-left text-xs font-semibold uppercase tracking-wide border-b border-slate-200 w-20">
+                        Peringkat
+                      </th>
+                      <th className="px-5 py-2.5 text-left text-xs font-semibold uppercase tracking-wide border-b border-slate-200">
+                        Kecamatan
+                      </th>
+                      <th className="px-5 py-2.5 text-right text-xs font-semibold uppercase tracking-wide border-b border-slate-200">
+                        Total ({unit})
+                      </th>
                     </tr>
                   </thead>
-                  <tbody>
-                    {chartData.map((row, idx) => (
-                      <tr key={row.name} className={`border-b border-slate-200 hover:bg-amber-50/60 transition-colors ${idx % 2 === 1 ? "bg-slate-50/60" : "bg-white"}`}>
-                        <td className="p-4 border-r border-slate-100 text-xs font-black text-slate-400">{idx + 1}</td>
-                        <td className="p-4 border-r border-slate-100 text-xs font-black uppercase text-slate-700">{row.name}</td>
-                        {jenisList.map((j) => (
-                          <td key={j} className="p-4 border-r border-slate-100 text-xs text-right text-slate-600 font-medium">{formatNum(row[j] || 0)}</td>
-                        ))}
-                        <td className="p-4 text-xs font-black text-right bg-slate-900 text-white">{formatNum(row.total)}</td>
+                  <tbody className="divide-y divide-slate-100">
+                    {kecamatanRanking.slice(0, 10).map((item, idx) => (
+                      <tr
+                        key={item.name}
+                        className={`hover:bg-slate-50 ${idx < 3 ? "bg-blue-50/30" : ""}`}
+                      >
+                        <td className="px-5 py-2.5 tabular-nums">
+                          <span className={`inline-flex items-center justify-center w-6 h-6 rounded-sm text-xs font-semibold ${
+                            idx < 3 ? "bg-blue-800 text-white" : "bg-slate-100 text-slate-600"
+                          }`}>
+                            {idx + 1}
+                          </span>
+                        </td>
+                        <td className="px-5 py-2.5 text-slate-800 font-medium">{item.name}</td>
+                        <td className="px-5 py-2.5 text-right text-slate-700 tabular-nums">
+                          {formatNum(item.value)}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
-            </div>
+            </section>
+
+            {/* ===== Tabel Rincian ===== */}
+            <section className="bg-white border border-slate-200 rounded-lg">
+              <div className="px-5 pt-4 pb-3 border-b border-slate-200">
+                <h2 className="text-base font-semibold text-slate-900">
+                  Tabel Rincian Data per Kecamatan
+                </h2>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  {CATEGORY_META[category].label} · Satuan {unit} · Tahun {selectedYear}
+                </p>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="bg-slate-50 text-slate-600">
+                      <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wide border-b border-slate-200 w-12">
+                        No
+                      </th>
+                      <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wide border-b border-slate-200">
+                        Kecamatan
+                      </th>
+                      {jenisList.map((j) => (
+                        <th
+                          key={j}
+                          className="px-4 py-2.5 text-right text-xs font-semibold uppercase tracking-wide border-b border-slate-200 whitespace-nowrap"
+                        >
+                          {j} ({unit})
+                        </th>
+                      ))}
+                      <th className="px-4 py-2.5 text-right text-xs font-semibold uppercase tracking-wide border-b border-slate-200 whitespace-nowrap bg-slate-100">
+                        Total ({unit})
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {chartData.map((row, idx) => (
+                      <tr key={row.name} className="hover:bg-slate-50">
+                        <td className="px-4 py-2.5 text-slate-400 tabular-nums">{idx + 1}</td>
+                        <td className="px-4 py-2.5 text-slate-800 font-medium">{row.name}</td>
+                        {jenisList.map((j) => (
+                          <td key={j} className="px-4 py-2.5 text-right text-slate-600 tabular-nums">
+                            {formatNum(row[j] || 0)}
+                          </td>
+                        ))}
+                        <td className="px-4 py-2.5 text-right font-semibold text-slate-900 tabular-nums bg-slate-50">
+                          {formatNum(row.total)}
+                        </td>
+                      </tr>
+                    ))}
+                    {chartData.length > 0 && (
+                      <tr className="border-t-2 border-slate-300 bg-slate-50 font-semibold">
+                        <td className="px-4 py-3" />
+                        <td className="px-4 py-3 text-slate-900">Kabupaten Banjarnegara</td>
+                        {jenisList.map((j) => {
+                          const sum = chartData.reduce((a, r) => a + (r[j] || 0), 0);
+                          return (
+                            <td key={j} className="px-4 py-3 text-right text-slate-900 tabular-nums">
+                              {formatNum(sum)}
+                            </td>
+                          );
+                        })}
+                        <td className="px-4 py-3 text-right text-slate-900 tabular-nums">
+                          {formatNum(chartData.reduce((a, r) => a + r.total, 0))}
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            {/* ===== Catatan Sumber ===== */}
+            <p className="text-xs text-slate-400 text-center pb-2">
+              Sumber: Dinas Pertanian dan Ketahanan Pangan Kabupaten Banjarnegara,
+              melalui Portal Open Data Banjarnegara (opendata.banjarnegarakab.go.id).
+            </p>
           </>
         )}
-      </section>
+      </div>
     </DefaultLayout>
   );
 }
