@@ -24,6 +24,10 @@ export const siteConfig = {
           label: "Kesesuaian Lahan",
           href: "/suitability",
         },
+        {
+          label: "Sensus Pertanian 2023 (BPS)",
+          href: "/sensus-2023",
+        },
       ],
     },
     // 3. Bidang Tanaman Pangan

@@ -18,6 +18,7 @@ const PlantationPage = lazy(() => import("@/pages/plantation"));
 const HorticulturePage = lazy(() => import("@/pages/horticulture"));
 const FoodCropsPage = lazy(() => import("@/pages/food-crops"));
 const LivestockFlowPage = lazy(() => import("@/pages/livestock-flow"));
+const SensusPage = lazy(() => import("@/pages/sensus"));
 const FarmersPage = lazy(() => import("@/pages/farmers"));
 const RenstraPage = lazy(() => import("@/pages/renstra"));
 const GovernmentAssistancePage = lazy(() => import("@/pages/government-assistance"));
@@ -59,6 +60,7 @@ function App() {
           <Route element={<PlantationPage />} path="/plantation" />
           <Route element={<HorticulturePage />} path="/horticulture" />
           <Route element={<FoodCropsPage />} path="/food-crops" />
+          <Route element={<SensusPage />} path="/sensus-2023" />
           <Route element={<FarmersPage />} path="/farmers" />
           <Route element={<RecommendationsPage />} path="/recommendations" />
           <Route element={<GovernmentAssistancePage />} path="/government-assistance" />
