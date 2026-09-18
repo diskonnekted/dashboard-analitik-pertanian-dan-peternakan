@@ -79,10 +79,6 @@ body {
    Modern Utility Classes
    ============================================ */
 @layer utilities {
-  .animate-spin-slow {
-    animation: spin 8s linear infinite;
-  }
-
   .animate-fade-in {
     animation: fade-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
   }

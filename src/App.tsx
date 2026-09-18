@@ -1,7 +1,6 @@
-import { Suspense, lazy, useCallback, useState } from "react";
+import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 
-import { AppLoader } from "@/components/AppLoader";
 
 const IndexPage = lazy(() => import("@/pages/index"));
 const PredictionPage = lazy(() => import("@/pages/prediction"));
@@ -39,12 +38,8 @@ function PageLoading() {
 }
 
 function App() {
-  const [isLoading, setIsLoading] = useState(true);
-  const handleLoaderComplete = useCallback(() => setIsLoading(false), []);
-
   return (
     <>
-      {isLoading && <AppLoader onComplete={handleLoaderComplete} />}
       <Suspense fallback={<PageLoading />}>
         <Routes>
           <Route element={<IndexPage />} path="/" />
