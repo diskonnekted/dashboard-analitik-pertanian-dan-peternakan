@@ -286,7 +286,7 @@ export default function LivestockFlowPage() {
           <h1 className="text-2xl font-semibold text-slate-900 mt-1.5">
             Lalu Lintas Ternak & Produksi Daging
           </h1>
-          <p className="text-sm text-slate-500 mt-1 max-w-3xl">
+          <p className="text-sm text-slate-700 mt-1 max-w-3xl">
             Data pemasukan ternak, pengeluaran ternak potong, perkiraan pemotongan
             di luar Rumah Potong Hewan (RPH), serta produksi daging unggas
             per kecamatan Kabupaten Banjarnegara.
@@ -298,7 +298,7 @@ export default function LivestockFlowPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
             {/* Jenis data */}
             <div className="xl:col-span-2">
-              <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">
+              <label className="block text-xs font-semibold text-slate-800 uppercase tracking-wide mb-1.5">
                 Jenis Data
               </label>
               <div className="flex rounded-md border border-slate-300 overflow-hidden bg-white">
@@ -309,7 +309,7 @@ export default function LivestockFlowPage() {
                     className={`flex-1 py-2 px-2 text-xs font-medium transition-colors ${
                       category === c
                         ? "bg-blue-800 text-white"
-                        : "text-slate-600 hover:bg-slate-50"
+                        : "text-slate-800 hover:bg-slate-50"
                     }`}
                   >
                     {CATEGORY_TAB[c]}
@@ -320,16 +320,16 @@ export default function LivestockFlowPage() {
 
             {/* Tahun */}
             <div>
-              <label htmlFor="ls-year" className="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">
+              <label htmlFor="ls-year" className="block text-xs font-semibold text-slate-800 uppercase tracking-wide mb-1.5">
                 Tahun
               </label>
               <div className="relative">
-                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-600 pointer-events-none" />
                 <select
                   id="ls-year"
                   value={selectedYear}
                   onChange={(e) => setSelectedYear(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 text-sm text-slate-700 bg-white border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700/20 focus:border-blue-700 appearance-none cursor-pointer"
+                  className="w-full pl-9 pr-3 py-2 text-sm text-slate-900 bg-white border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700/20 focus:border-blue-700 appearance-none cursor-pointer"
                 >
                   {yearsList.map((yr) => (
                     <option key={yr} value={yr}>{yr}</option>
@@ -340,16 +340,16 @@ export default function LivestockFlowPage() {
 
             {/* Kecamatan */}
             <div>
-              <label htmlFor="ls-kec" className="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">
+              <label htmlFor="ls-kec" className="block text-xs font-semibold text-slate-800 uppercase tracking-wide mb-1.5">
                 Kecamatan
               </label>
               <div className="relative">
-                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-600 pointer-events-none" />
                 <select
                   id="ls-kec"
                   value={selectedKecamatan}
                   onChange={(e) => setSelectedKecamatan(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 text-sm text-slate-700 bg-white border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700/20 focus:border-blue-700 appearance-none cursor-pointer"
+                  className="w-full pl-9 pr-3 py-2 text-sm text-slate-900 bg-white border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700/20 focus:border-blue-700 appearance-none cursor-pointer"
                 >
                   {uniqueKecamatan.map((kec) => (
                     <option key={kec} value={kec}>{kec}</option>
@@ -358,18 +358,18 @@ export default function LivestockFlowPage() {
               </div>
             </div>
           </div>
-          <p className="text-xs text-slate-400 mt-3 border-t border-slate-100 pt-3">
-            Menampilkan: <span className="text-slate-600 font-medium">{CATEGORY_META[category].label}</span>
-            {" · "}<span className="text-slate-600 font-medium">Satuan {unit}</span>
-            {" · "}<span className="text-slate-600 font-medium">{selectedYear || "—"}</span>
-            {" · "}<span className="text-slate-600 font-medium">{selectedKecamatan}</span>
+          <p className="text-xs text-slate-600 mt-3 border-t border-slate-100 pt-3">
+            Menampilkan: <span className="text-slate-800 font-medium">{CATEGORY_META[category].label}</span>
+            {" · "}<span className="text-slate-800 font-medium">Satuan {unit}</span>
+            {" · "}<span className="text-slate-800 font-medium">{selectedYear || "—"}</span>
+            {" · "}<span className="text-slate-800 font-medium">{selectedKecamatan}</span>
           </p>
         </section>
 
         {loading ? (
           <div className="flex flex-col items-center justify-center h-64 gap-3 bg-white border border-slate-200 rounded-lg">
             <div className="w-8 h-8 border-2 border-slate-200 border-t-blue-800 rounded-full animate-spin" />
-            <p className="text-sm text-slate-500">Memuat data ternak…</p>
+            <p className="text-sm text-slate-700">Memuat data ternak…</p>
           </div>
         ) : (
           <>
@@ -378,14 +378,14 @@ export default function LivestockFlowPage() {
               <div className="bg-white border border-slate-200 border-l-4 border-l-blue-800 rounded-lg p-5">
                 <div className="flex items-center gap-2.5 text-blue-800">
                   <ActiveIcon size={16} />
-                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-700">
                     Total {CATEGORY_META[category].label}
                   </p>
                 </div>
                 <p className="text-3xl font-semibold text-slate-900 mt-2 tabular-nums">
                   {formatNum(stats.total)}
                 </p>
-                <p className="text-xs text-slate-500 mt-1.5">
+                <p className="text-xs text-slate-700 mt-1.5">
                   {unit} · {selectedYear}
                   {selectedKecamatan !== "Semua" ? ` · ${selectedKecamatan}` : " · Seluruh kecamatan"}
                 </p>
@@ -394,14 +394,14 @@ export default function LivestockFlowPage() {
               <div className="bg-white border border-slate-200 border-l-4 border-l-teal-700 rounded-lg p-5">
                 <div className="flex items-center gap-2.5 text-teal-700">
                   <MapPin size={16} />
-                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-700">
                     Kecamatan Tertinggi
                   </p>
                 </div>
                 <p className="text-2xl font-semibold text-slate-900 mt-2">
                   {stats.topDistrict}
                 </p>
-                <p className="text-xs text-slate-500 mt-1.5 tabular-nums">
+                <p className="text-xs text-slate-700 mt-1.5 tabular-nums">
                   {formatNum(stats.topVal)} {unit} · {selectedYear}
                 </p>
               </div>
@@ -409,7 +409,7 @@ export default function LivestockFlowPage() {
               <div className="bg-white border border-slate-200 border-l-4 border-l-amber-600 rounded-lg p-5">
                 <div className="flex items-center gap-2.5 text-amber-600">
                   <FileSpreadsheet size={16} />
-                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-700">
                     Komposisi Jenis Ternak
                   </p>
                 </div>
@@ -418,14 +418,14 @@ export default function LivestockFlowPage() {
                     const pct = stats.total > 0 ? (item.value / stats.total) * 100 : 0;
                     return (
                       <div key={item.name} className="flex items-center gap-2 text-xs">
-                        <span className="w-24 shrink-0 text-slate-600 truncate">{item.name}</span>
+                        <span className="w-24 shrink-0 text-slate-800 truncate">{item.name}</span>
                         <div className="flex-1 h-2 bg-slate-100 rounded-sm overflow-hidden">
                           <div
                             className="h-full"
                             style={{ width: `${pct}%`, backgroundColor: COLORS[idx % COLORS.length] }}
                           />
                         </div>
-                        <span className="w-12 text-right font-medium text-slate-700 tabular-nums">
+                        <span className="w-12 text-right font-medium text-slate-900 tabular-nums">
                           {pct.toFixed(1)}%
                         </span>
                       </div>
@@ -441,7 +441,7 @@ export default function LivestockFlowPage() {
                 <h2 className="text-base font-semibold text-slate-900">
                   Sebaran {CATEGORY_META[category].label} per Kecamatan
                 </h2>
-                <p className="text-xs text-slate-500 mt-0.5">
+                <p className="text-xs text-slate-700 mt-0.5">
                   Satuan {unit} · Tahun {selectedYear}
                 </p>
               </div>
@@ -452,7 +452,7 @@ export default function LivestockFlowPage() {
                       <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
                       <XAxis
                         dataKey="name"
-                        tick={{ fill: "#475569", fontSize: 11 }}
+                        tick={{ fill: "#1e293b", fontSize: 11 }}
                         interval={0}
                         angle={-45}
                         textAnchor="end"
@@ -460,7 +460,7 @@ export default function LivestockFlowPage() {
                       />
                       <YAxis
                         width={70}
-                        tick={{ fill: "#475569", fontSize: 11 }}
+                        tick={{ fill: "#1e293b", fontSize: 11 }}
                         tickFormatter={(v) => formatNum(v)}
                       />
                       <Tooltip
@@ -490,7 +490,7 @@ export default function LivestockFlowPage() {
                   <h2 className="text-base font-semibold text-slate-900">
                     Tren {CATEGORY_META[category].label}
                   </h2>
-                  <p className="text-xs text-slate-500 mt-0.5">
+                  <p className="text-xs text-slate-700 mt-0.5">
                     {selectedKecamatan !== "Semua" ? `Kecamatan ${selectedKecamatan}` : "Seluruh Kabupaten Banjarnegara"}
                     {" · "}
                     {yearsList.length > 0 && `${yearsList[yearsList.length - 1]}–${yearsList[0]}`}
@@ -498,9 +498,9 @@ export default function LivestockFlowPage() {
                 </div>
                 {cagrData && (
                   <div className="text-right">
-                    <p className="text-xs text-slate-500 uppercase tracking-wide">CAGR {cagrData.periode}</p>
+                    <p className="text-xs text-slate-700 uppercase tracking-wide">CAGR {cagrData.periode}</p>
                     <p className={`text-lg font-semibold tabular-nums ${
-                      cagrData.total === null ? "text-slate-400" : cagrData.total >= 0 ? "text-green-700" : "text-red-700"
+                      cagrData.total === null ? "text-slate-600" : cagrData.total >= 0 ? "text-green-700" : "text-red-700"
                     }`}>
                       {cagrData.total === null
                         ? "N/A"
@@ -514,8 +514,8 @@ export default function LivestockFlowPage() {
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={trendWithProjection} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
-                      <XAxis dataKey="tahun" tick={{ fill: "#475569", fontSize: 11 }} />
-                      <YAxis tick={{ fill: "#475569", fontSize: 11 }} tickFormatter={(v) => formatNum(v)} />
+                      <XAxis dataKey="tahun" tick={{ fill: "#1e293b", fontSize: 11 }} />
+                      <YAxis tick={{ fill: "#1e293b", fontSize: 11 }} tickFormatter={(v) => formatNum(v)} />
                       <Tooltip
                         contentStyle={{
                           backgroundColor: "#ffffff",
@@ -564,7 +564,7 @@ export default function LivestockFlowPage() {
                 {projection && (
                   <dl className="mt-4 grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-slate-200 border border-slate-200 rounded-md overflow-hidden bg-white">
                     <div className="p-4">
-                      <dt className="text-xs font-medium text-slate-500 uppercase tracking-wide">
+                      <dt className="text-xs font-medium text-slate-700 uppercase tracking-wide">
                         Prediksi {projection.nextYear} ({unit})
                       </dt>
                       <dd className="text-xl font-semibold text-slate-900 mt-1 tabular-nums">
@@ -572,12 +572,12 @@ export default function LivestockFlowPage() {
                       </dd>
                     </div>
                     <div className="p-4">
-                      <dt className="text-xs font-medium text-slate-500 uppercase tracking-wide">
+                      <dt className="text-xs font-medium text-slate-700 uppercase tracking-wide">
                         Perubahan vs {projection.lastTahun}
                       </dt>
                       <dd className={`text-xl font-semibold mt-1 tabular-nums ${
                         projection.deltaPct === null
-                          ? "text-slate-400"
+                          ? "text-slate-600"
                           : projection.deltaPct >= 0
                           ? "text-green-700"
                           : "text-red-700"
@@ -588,7 +588,7 @@ export default function LivestockFlowPage() {
                       </dd>
                     </div>
                     <div className="p-4">
-                      <dt className="text-xs font-medium text-slate-500 uppercase tracking-wide">
+                      <dt className="text-xs font-medium text-slate-700 uppercase tracking-wide">
                         Keandalan Model (R²)
                       </dt>
                       <dd className={`text-xl font-semibold mt-1 tabular-nums ${
@@ -600,7 +600,7 @@ export default function LivestockFlowPage() {
                   </dl>
                 )}
                 {projection && (
-                  <p className="text-xs text-slate-400 mt-2">
+                  <p className="text-xs text-slate-600 mt-2">
                     * Proyeksi menggunakan model regresi linier (kuadrat terkecil) atas tren historis;
                     garis putus-putus merah pada grafik menunjukkan estimasi {projection.nextYear}.
                   </p>
@@ -615,14 +615,14 @@ export default function LivestockFlowPage() {
                   <h2 className="text-base font-semibold text-slate-900">
                     Laju Pertumbuhan Tahunan (CAGR) per Jenis Ternak
                   </h2>
-                  <p className="text-xs text-slate-500 mt-0.5">
+                  <p className="text-xs text-slate-700 mt-0.5">
                     Periode {cagrData.periode} · {cagrData.years} tahun
                   </p>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="bg-slate-50 text-slate-600">
+                      <tr className="bg-slate-50 text-slate-800">
                         <th className="px-5 py-2.5 text-left text-xs font-semibold uppercase tracking-wide border-b border-slate-200">
                           Jenis Ternak
                         </th>
@@ -638,27 +638,27 @@ export default function LivestockFlowPage() {
                       <tr className="bg-blue-50/40 font-semibold">
                         <td className="px-5 py-2.5 text-slate-900">Total Gabungan</td>
                         <td className={`px-5 py-2.5 text-right tabular-nums ${
-                          cagrData.total === null ? "text-slate-400" : cagrData.total >= 0 ? "text-green-700" : "text-red-700"
+                          cagrData.total === null ? "text-slate-600" : cagrData.total >= 0 ? "text-green-700" : "text-red-700"
                         }`}>
                           {cagrData.total === null
                             ? "N/A"
                             : `${cagrData.total >= 0 ? "+" : "−"}${formatPct(Math.abs(cagrData.total))}%`}
                         </td>
-                        <td className="px-5 py-2.5 text-slate-600">
+                        <td className="px-5 py-2.5 text-slate-800">
                           {cagrData.total === null ? "—" : cagrData.total >= 0 ? "Meningkat" : "Menurun"}
                         </td>
                       </tr>
                       {cagrData.items.map((item) => (
                         <tr key={item.name} className="hover:bg-slate-50">
-                          <td className="px-5 py-2.5 text-slate-700">{item.name}</td>
+                          <td className="px-5 py-2.5 text-slate-900">{item.name}</td>
                           <td className={`px-5 py-2.5 text-right tabular-nums ${
-                            item.cagr === null ? "text-slate-400" : item.cagr >= 0 ? "text-green-700" : "text-red-700"
+                            item.cagr === null ? "text-slate-600" : item.cagr >= 0 ? "text-green-700" : "text-red-700"
                           }`}>
                             {item.cagr === null
                               ? "N/A"
                               : `${item.cagr >= 0 ? "+" : "−"}${formatPct(Math.abs(item.cagr))}%`}
                           </td>
-                          <td className="px-5 py-2.5 text-slate-600">
+                          <td className="px-5 py-2.5 text-slate-800">
                             {item.cagr === null ? "—" : item.cagr >= 0 ? "Meningkat" : "Menurun"}
                           </td>
                         </tr>
@@ -675,7 +675,7 @@ export default function LivestockFlowPage() {
                 <h2 className="text-base font-semibold text-slate-900">
                   Peringkat Kecamatan
                 </h2>
-                <p className="text-xs text-slate-500 mt-0.5">
+                <p className="text-xs text-slate-700 mt-0.5">
                   Kumulatif {CATEGORY_META[category].label} ({unit}) ·{" "}
                   {yearsList.length > 0 && `${yearsList[yearsList.length - 1]}–${yearsList[0]}`}
                   {" · "}
@@ -685,7 +685,7 @@ export default function LivestockFlowPage() {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="bg-slate-50 text-slate-600">
+                    <tr className="bg-slate-50 text-slate-800">
                       <th className="px-5 py-2.5 text-left text-xs font-semibold uppercase tracking-wide border-b border-slate-200 w-20">
                         Peringkat
                       </th>
@@ -705,13 +705,13 @@ export default function LivestockFlowPage() {
                       >
                         <td className="px-5 py-2.5 tabular-nums">
                           <span className={`inline-flex items-center justify-center w-6 h-6 rounded-sm text-xs font-semibold ${
-                            idx < 3 ? "bg-blue-800 text-white" : "bg-slate-100 text-slate-600"
+                            idx < 3 ? "bg-blue-800 text-white" : "bg-slate-100 text-slate-800"
                           }`}>
                             {idx + 1}
                           </span>
                         </td>
-                        <td className="px-5 py-2.5 text-slate-800 font-medium">{item.name}</td>
-                        <td className="px-5 py-2.5 text-right text-slate-700 tabular-nums">
+                        <td className="px-5 py-2.5 text-slate-900 font-medium">{item.name}</td>
+                        <td className="px-5 py-2.5 text-right text-slate-900 tabular-nums">
                           {formatNum(item.value)}
                         </td>
                       </tr>
@@ -727,14 +727,14 @@ export default function LivestockFlowPage() {
                 <h2 className="text-base font-semibold text-slate-900">
                   Tabel Rincian Data per Kecamatan
                 </h2>
-                <p className="text-xs text-slate-500 mt-0.5">
+                <p className="text-xs text-slate-700 mt-0.5">
                   {CATEGORY_META[category].label} · Satuan {unit} · Tahun {selectedYear}
                 </p>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="bg-slate-50 text-slate-600">
+                    <tr className="bg-slate-50 text-slate-800">
                       <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wide border-b border-slate-200 w-12">
                         No
                       </th>
@@ -757,10 +757,10 @@ export default function LivestockFlowPage() {
                   <tbody className="divide-y divide-slate-100">
                     {chartData.map((row, idx) => (
                       <tr key={row.name} className="hover:bg-slate-50">
-                        <td className="px-4 py-2.5 text-slate-400 tabular-nums">{idx + 1}</td>
-                        <td className="px-4 py-2.5 text-slate-800 font-medium">{row.name}</td>
+                        <td className="px-4 py-2.5 text-slate-600 tabular-nums">{idx + 1}</td>
+                        <td className="px-4 py-2.5 text-slate-900 font-medium">{row.name}</td>
                         {jenisList.map((j) => (
-                          <td key={j} className="px-4 py-2.5 text-right text-slate-600 tabular-nums">
+                          <td key={j} className="px-4 py-2.5 text-right text-slate-800 tabular-nums">
                             {formatNum(row[j] || 0)}
                           </td>
                         ))}
@@ -792,7 +792,7 @@ export default function LivestockFlowPage() {
             </section>
 
             {/* ===== Catatan Sumber ===== */}
-            <p className="text-xs text-slate-400 text-center pb-2">
+            <p className="text-xs text-slate-600 text-center pb-2">
               Sumber: Dinas Pertanian dan Ketahanan Pangan Kabupaten Banjarnegara,
               melalui Portal Open Data Banjarnegara (opendata.banjarnegarakab.go.id).
             </p>
