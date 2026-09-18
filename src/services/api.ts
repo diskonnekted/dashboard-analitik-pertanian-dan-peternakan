@@ -1293,7 +1293,13 @@ export const fetchDagingUnggas = (): Promise<TernakFlow[]> =>
 
 // ---- Perikanan ----
 
-const cleanInt = (val: any) => parseInt(val?.toString().replace(/[^\d]/g, "") || "0");
+const cleanInt = (val: any): number => {
+  const raw = val?.toString().trim() || "0";
+  const isNeg = raw.startsWith("(") && raw.endsWith(")");
+  const digits = raw.replace(/[^\d]/g, "");
+  const parsed = parseInt(digits, 10);
+  return isNaN(parsed) ? 0 : (isNeg ? -parsed : parsed);
+};
 
 export interface PerikananBudidaya {
   kecamatan: string;
