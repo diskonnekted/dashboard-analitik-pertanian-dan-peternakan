@@ -267,19 +267,19 @@ export default function LivestockFlowPage() {
 
   return (
     <DefaultLayout>
-      <section className="flex flex-col gap-8 py-2">
+      <section className="flex flex-col gap-8 py-4">
         {/* Hero */}
-        <section className="relative text-left py-6 md:py-8 border-b border-slate-200 bg-white">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-400 rounded-b" />
-          <div className="flex items-start gap-4 mb-2">
-            <div className="p-3 rounded-xl bg-amber-500 border-2 border-amber-600 mt-0.5 shadow-lg shadow-amber-500/30">
-              <Beef className="text-white" size={28} />
+        <section className="relative text-left py-8 border-b-4 border-amber-600 bg-white shadow-sm">
+          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-400 rounded-b" />
+          <div className="flex items-start gap-5 mb-3">
+            <div className="p-4 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 border-4 border-amber-400 mt-1 shadow-xl shadow-amber-500/30">
+              <Beef className="text-white" size={32} />
             </div>
             <div>
-              <h2 className="text-2xl sm:text-3xl leading-tight font-black tracking-tight text-slate-900">
+              <h2 className="text-3xl sm:text-4xl leading-tight font-black tracking-tight text-slate-900">
                 Ternak & Daging
               </h2>
-              <p className="text-sm text-slate-500 mt-1 font-medium">
+              <p className="text-base text-slate-600 mt-1.5 font-medium">
                 Pemasukan, pengeluaran, luar RPH, dan produksi daging unggas per kecamatan
               </p>
             </div>
@@ -287,26 +287,26 @@ export default function LivestockFlowPage() {
         </section>
 
         {/* Filter Panel */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-          <div className="bg-amber-500 p-5 rounded-2xl shadow-lg shadow-amber-500/20 text-white flex flex-col gap-3">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          <div className="bg-gradient-to-br from-amber-500 to-orange-500 p-6 rounded-3xl shadow-xl shadow-amber-600/20 text-white flex flex-col gap-4 border-2 border-amber-400">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-mono font-black uppercase tracking-wider opacity-80">Jenis Data</label>
-              <Beef size={14} />
+              <label className="text-xs font-mono font-black uppercase tracking-widest opacity-90">Jenis Data</label>
+              <Beef size={16} />
             </div>
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-3">
               {(Object.keys(CATEGORY_META) as Category[]).map((c) => {
                 const CIcon = CATEGORY_META[c].icon;
                 return (
                   <button
                     key={c}
                     onClick={() => setCategory(c)}
-                    className={`py-2 px-3 rounded-xl font-mono font-black text-xs uppercase flex items-center justify-start gap-2 transition-all ${
+                    className={`py-2.5 px-4 rounded-xl font-mono font-black text-xs uppercase flex items-center justify-start gap-3 transition-all ${
                       category === c
-                        ? "bg-white text-amber-700 shadow-md"
-                        : "bg-white/10 hover:bg-white/20 text-white"
+                        ? "bg-white text-amber-700 shadow-lg shadow-amber-500/40 transform scale-105"
+                        : "bg-white/15 hover:bg-white/25 text-white"
                     }`}
                   >
-                    <CIcon size={12} />
+                    <CIcon size={14} />
                     {CATEGORY_META[c].label}
                   </button>
                 );
@@ -314,29 +314,29 @@ export default function LivestockFlowPage() {
             </div>
           </div>
 
-          <div className="bg-orange-500 p-5 rounded-2xl shadow-lg shadow-orange-500/20 text-white flex flex-col gap-3">
+          <div className="bg-gradient-to-br from-orange-500 to-red-500 p-6 rounded-3xl shadow-xl shadow-orange-600/20 text-white flex flex-col gap-4 border-2 border-orange-400">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-mono font-black uppercase tracking-wider opacity-80">Satuan</label>
-              <Beef size={14} />
+              <label className="text-xs font-mono font-black uppercase tracking-widest opacity-90">Satuan</label>
+              <Beef size={16} />
             </div>
-            <div className="py-2 px-3 rounded-xl font-mono font-black text-sm uppercase flex items-center gap-2 bg-white/15">
-              <Beef size={12} />
+            <div className="py-2.5 px-4 rounded-xl font-mono font-black text-sm uppercase flex items-center gap-3 bg-white/15">
+              <Beef size={14} />
               {unit}
             </div>
-            <span className="text-xs font-mono text-amber-100 uppercase text-center">{CATEGORY_META[category].sub}</span>
+            <span className="text-xs font-mono text-orange-100 uppercase text-center">{CATEGORY_META[category].sub}</span>
           </div>
 
-          <div className="bg-sky-500 p-5 rounded-2xl shadow-lg shadow-sky-500/20 text-white flex flex-col gap-3">
+          <div className="bg-gradient-to-br from-sky-500 to-blue-500 p-6 rounded-3xl shadow-xl shadow-sky-600/20 text-white flex flex-col gap-4 border-2 border-sky-400">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-mono font-black uppercase tracking-wider opacity-80">Tahun Data</label>
-              <Calendar size={14} />
+              <label className="text-xs font-mono font-black uppercase tracking-widest opacity-90">Tahun Data</label>
+              <Calendar size={16} />
             </div>
             <div className="relative">
-              <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-sky-200 pointer-events-none" />
+              <Calendar className="absolute left-4 top-3 h-5 w-5 text-sky-200 pointer-events-none" />
               <select
                 value={selectedYear}
                 onChange={(e) => setSelectedYear(e.target.value)}
-                className="w-full pl-9 pr-4 py-2.5 font-mono text-sm font-black bg-white text-sky-700 focus:outline-none appearance-none cursor-pointer rounded-xl shadow-sm hover:shadow-md transition-shadow"
+                className="w-full pl-10 pr-5 py-3 font-mono text-sm font-black bg-white text-sky-700 focus:outline-none appearance-none cursor-pointer rounded-xl shadow-lg shadow-sky-500/30 hover:shadow-xl transition-all"
               >
                 {yearsList.map((yr) => (
                   <option key={yr} value={yr}>{yr}</option>
@@ -345,17 +345,17 @@ export default function LivestockFlowPage() {
             </div>
           </div>
 
-          <div className="bg-violet-500 p-5 rounded-2xl shadow-lg shadow-violet-500/20 text-white flex flex-col gap-3">
+          <div className="bg-gradient-to-br from-violet-500 to-purple-500 p-6 rounded-3xl shadow-xl shadow-violet-600/20 text-white flex flex-col gap-4 border-2 border-violet-400">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-mono font-black uppercase tracking-wider opacity-80">Kecamatan</label>
-              <MapPin size={14} />
+              <label className="text-xs font-mono font-black uppercase tracking-widest opacity-90">Kecamatan</label>
+              <MapPin size={16} />
             </div>
             <div className="relative">
-              <Filter className="absolute left-3 top-2.5 h-4 w-4 text-violet-200 pointer-events-none" />
+              <Filter className="absolute left-4 top-3 h-5 w-5 text-violet-200 pointer-events-none" />
               <select
                 value={selectedKecamatan}
                 onChange={(e) => setSelectedKecamatan(e.target.value)}
-                className="w-full pl-9 pr-4 py-2.5 font-mono text-sm font-black bg-white text-violet-700 focus:outline-none appearance-none cursor-pointer rounded-xl shadow-sm hover:shadow-md transition-shadow"
+                className="w-full pl-10 pr-5 py-3 font-mono text-sm font-black bg-white text-violet-700 focus:outline-none appearance-none cursor-pointer rounded-xl shadow-lg shadow-violet-500/30 hover:shadow-xl transition-all"
               >
                 {uniqueKecamatan.map((kec) => (
                   <option key={kec} value={kec}>{kec}</option>
@@ -366,48 +366,48 @@ export default function LivestockFlowPage() {
         </div>
 
         {loading ? (
-          <div className="flex flex-col items-center justify-center h-[320px] gap-4">
-            <div className="w-10 h-10 border-4 border-amber-200 border-t-amber-600 rounded-full animate-spin" />
-            <p className="text-slate-400 font-mono text-xs uppercase tracking-widest">Memuat data ternak…</p>
+          <div className="flex flex-col items-center justify-center h-[400px] gap-6">
+            <div className="w-14 h-14 border-6 border-amber-200 border-t-amber-600 rounded-full animate-spin" />
+            <p className="text-slate-400 font-mono text-sm uppercase tracking-widest">Memuat data ternak…</p>
           </div>
         ) : (
           <>
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-gradient-to-br from-amber-500 to-orange-500 p-6 text-white shadow-lg shadow-amber-500/30 rounded-2xl flex flex-col justify-between relative overflow-hidden">
-            <div className="absolute top-0 right-0 -mr-8 -mt-8 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
+          <div className="bg-gradient-to-br from-amber-500 via-orange-400 to-orange-500 p-8 text-white shadow-2xl shadow-amber-500/40 rounded-3xl flex flex-col justify-between relative overflow-hidden border-4 border-amber-300">
+            <div className="absolute top-0 right-0 -mr-10 -mt-10 w-40 h-40 bg-white/20 rounded-full blur-3xl" />
             <div>
-              <h5 className="text-xs font-mono font-black uppercase tracking-widest text-amber-100 mb-2">Total {CATEGORY_META[category].label}</h5>
-              <h3 className="text-4xl font-serif font-black leading-none">{formatNum(stats.total)}</h3>
+              <h5 className="text-xs font-mono font-black uppercase tracking-widest text-amber-100 mb-3">Total {CATEGORY_META[category].label}</h5>
+              <h3 className="text-5xl font-serif font-black leading-none drop-shadow-md">{formatNum(stats.total)}</h3>
             </div>
-            <div className="mt-6 flex items-center gap-2">
-              <span className="px-3 py-1 rounded-full bg-amber-500/40 backdrop-blur-sm border border-amber-400/50 text-xs font-mono font-bold uppercase">
+            <div className="mt-8 flex items-center gap-3">
+              <span className="px-4 py-2 rounded-full bg-amber-500/50 backdrop-blur-md border-2 border-amber-300/50 text-xs font-mono font-bold uppercase shadow-lg">
                 {CATEGORY_META[category].label}
               </span>
-              <span className="text-xs font-mono text-amber-100">{selectedYear}</span>
+              <span className="text-sm font-mono text-amber-100 font-bold">{selectedYear}</span>
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-rose-500 to-pink-500 p-6 text-white shadow-lg shadow-rose-500/30 rounded-2xl flex flex-col justify-between relative overflow-hidden">
-            <div className="absolute top-0 right-0 -mr-8 -mt-8 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
+          <div className="bg-gradient-to-br from-rose-500 via-pink-400 to-pink-500 p-8 text-white shadow-2xl shadow-rose-500/40 rounded-3xl flex flex-col justify-between relative overflow-hidden border-4 border-rose-300">
+            <div className="absolute top-0 right-0 -mr-10 -mt-10 w-40 h-40 bg-white/20 rounded-full blur-3xl" />
             <div>
-              <h5 className="text-xs font-mono font-black uppercase tracking-widest text-rose-100 mb-2">Kecamatan Tertinggi</h5>
-              <h3 className="text-2xl font-serif font-black leading-tight break-words">{stats.topDistrict}</h3>
+              <h5 className="text-xs font-mono font-black uppercase tracking-widest text-rose-100 mb-3">Kecamatan Tertinggi</h5>
+              <h3 className="text-3xl font-serif font-black leading-tight break-words drop-shadow-md">{stats.topDistrict}</h3>
             </div>
-            <p className="mt-6 text-xs font-mono text-rose-100 font-bold uppercase">
+            <p className="mt-8 text-sm font-mono text-rose-100 font-bold uppercase">
               {formatNum(stats.topVal)} {unit}
             </p>
           </div>
 
-          <div className="bg-white border-2 border-purple-500 p-6 shadow-xl shadow-purple-500/20 rounded-2xl flex flex-col justify-between">
-            <h5 className="text-xs font-mono font-black uppercase tracking-widest text-purple-700 mb-4">Komposisi</h5>
-            <div className="flex flex-col gap-3">
+          <div className="bg-white border-4 border-purple-400 p-8 shadow-2xl shadow-purple-500/20 rounded-3xl flex flex-col justify-between">
+            <h5 className="text-xs font-mono font-black uppercase tracking-widest text-purple-700 mb-6">Komposisi</h5>
+            <div className="flex flex-col gap-4">
               {stats.breakdown.map((item, idx) => {
                 const pct = stats.total > 0 ? (item.value / stats.total) * 100 : 0;
                 return (
-                  <div key={item.name} className="flex items-center justify-between gap-3">
-                    <span className="text-xs font-mono font-black uppercase text-slate-600 min-w-[80px]">{item.name}</span>
-                    <div className="flex-1 bg-slate-100 h-2 rounded-full overflow-hidden relative">
+                  <div key={item.name} className="flex items-center justify-between gap-4">
+                    <span className="text-xs font-mono font-black uppercase text-slate-600 min-w-[90px]">{item.name}</span>
+                    <div className="flex-1 bg-slate-100 h-3 rounded-full overflow-hidden relative shadow-inner">
                       <div className="absolute inset-y-0 left-0" style={{ width: `${pct}%`, backgroundColor: COLORS[idx % COLORS.length] }} />
                     </div>
                     <span className="text-xs font-mono font-black text-slate-800 w-16 text-right">{pct.toFixed(1)}%</span>
@@ -419,28 +419,28 @@ export default function LivestockFlowPage() {
         </div>
 
             {/* Distribution Chart */}
-            <div className="bg-white border-2 border-amber-200 p-6 shadow-xl shadow-amber-100 rounded-2xl">
-              <div className="flex flex-col mb-6 border-b-2 border-amber-100 pb-3 text-left">
-                <div className="flex items-center gap-3 mb-1">
-                  <div className="p-2 rounded-lg bg-amber-500 text-white shadow-lg shadow-amber-500/30">
-                    <FileSpreadsheet size={20} />
+            <div className="bg-white border-4 border-amber-200 p-8 shadow-2xl shadow-amber-100 rounded-3xl">
+              <div className="flex flex-col mb-8 border-b-4 border-amber-100 pb-4 text-left">
+                <div className="flex items-center gap-4 mb-2">
+                  <div className="p-3 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-xl shadow-amber-500/30">
+                    <FileSpreadsheet size={24} />
                   </div>
-                  <h4 className="text-xl font-mono font-black uppercase text-slate-800">
+                  <h4 className="text-2xl font-mono font-black uppercase text-slate-800">
                     Sebaran {CATEGORY_META[category].label} per Kecamatan
                   </h4>
                 </div>
-                <p className="text-xs font-mono text-amber-500 uppercase">Kontribusi masing-masing kecamatan • {selectedYear}</p>
+                <p className="text-sm font-mono text-amber-600 uppercase font-bold">Kontribusi masing-masing kecamatan • {selectedYear}</p>
               </div>
-              <div className="h-[440px] w-full">
+              <div className="h-[480px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 90 }}>
+                  <BarChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 90 }}>
                     <CartesianGrid strokeDasharray="4 4" stroke="#fde68a" vertical={false} />
-                    <XAxis dataKey="name" tick={{ fill: "#78350f", fontSize: 10, fontFamily: "monospace", fontWeight: "black" }} interval={0} angle={-45} textAnchor="end" height={70} />
-                    <YAxis width={70} tick={{ fill: "#78350f", fontSize: 10, fontFamily: "monospace", fontWeight: "black" }} tickFormatter={(v) => formatNum(v)} />
-                    <Tooltip contentStyle={{ backgroundColor: "#fffbeb", border: "2px solid #fde68a", borderRadius: 12, fontFamily: "monospace", fontSize: 12, fontWeight: "black", boxShadow: "0 6px 16px rgba(245,158,11,0.15)" }} formatter={(value: any) => [formatNum(Number(value)), ""]} />
-                    <Legend verticalAlign="top" height={36} wrapperStyle={{ fontFamily: "monospace", fontSize: 10, fontWeight: "black" }} />
+                    <XAxis dataKey="name" tick={{ fill: "#78350f", fontSize: 11, fontFamily: "monospace", fontWeight: "black" }} interval={0} angle={-45} textAnchor="end" height={80} />
+                    <YAxis width={70} tick={{ fill: "#78350f", fontSize: 11, fontFamily: "monospace", fontWeight: "black" }} tickFormatter={(v) => formatNum(v)} />
+                    <Tooltip contentStyle={{ backgroundColor: "#fffbeb", border: "2px solid #fde68a", borderRadius: 16, fontFamily: "monospace", fontSize: 12, fontWeight: "black", boxShadow: "0 10px 24px rgba(245,158,11,0.2)" }} formatter={(value: any) => [formatNum(Number(value)), ""]} />
+                    <Legend verticalAlign="top" height={40} wrapperStyle={{ fontFamily: "monospace", fontSize: 11, fontWeight: "black" }} />
                     {jenisList.map((j, idx) => (
-                      <Bar key={j} dataKey={j} stackId="a" fill={COLORS[idx % COLORS.length]} stroke="#b45309" strokeWidth={0.5} radius={[0, 0, 0, 0]} />
+                      <Bar key={j} dataKey={j} stackId="a" fill={COLORS[idx % COLORS.length]} stroke="#b45309" strokeWidth={1} radius={[4, 4, 0, 0]} />
                     ))}
                   </BarChart>
                 </ResponsiveContainer>
@@ -448,26 +448,28 @@ export default function LivestockFlowPage() {
             </div>
 
             {/* Trend */}
-            <div className="bg-white border-2 border-amber-200 p-6 shadow-xl shadow-amber-100 rounded-2xl">
-              <div className="flex flex-col mb-6 border-b-2 border-amber-100 pb-3">
+            <div className="bg-white border-4 border-amber-200 p-8 shadow-2xl shadow-amber-100 rounded-3xl">
+              <div className="flex flex-col mb-8 border-b-4 border-amber-100 pb-4">
                 <div className="flex items-center justify-between gap-4 flex-wrap">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-amber-500 text-white shadow-lg shadow-amber-500/30">
-                      <TrendingUp size={20} />
+                  <div className="flex items-center gap-4">
+                    <div className="p-3 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-xl shadow-amber-500/30">
+                      <TrendingUp size={24} />
                     </div>
-                    <h4 className="text-xl font-mono font-black uppercase text-slate-800">
-                      Tren {CATEGORY_META[category].label}
-                    </h4>
+                    <div>
+                      <h4 className="text-2xl font-mono font-black uppercase text-slate-800">
+                        Tren {CATEGORY_META[category].label}
+                      </h4>
+                      <p className="text-xs font-mono text-slate-500 uppercase font-bold">{selectedKecamatan !== "Semua" ? ` · ${selectedKecamatan}` : " · Seluruh Banjarnegara"}</p>
+                    </div>
                   </div>
                   {cagrData && (
-                    <span className="px-3 py-1.5 rounded-full bg-amber-600 text-white font-mono font-black text-xs uppercase shadow-lg shadow-amber-600/40">
+                    <span className="px-4 py-2 rounded-full bg-amber-600 text-white font-mono font-black text-sm uppercase shadow-xl shadow-amber-600/40 border-2 border-amber-400">
                       CAGR: {cagrData.total === null ? "N/A" : `${cagrData.total >= 0 ? "+" : ""}${formatPct(cagrData.total)}%`}
                     </span>
                   )}
                 </div>
-                <p className="text-xs font-mono text-slate-500 uppercase">{selectedKecamatan !== "Semua" ? ` · ${selectedKecamatan}` : " · Seluruh Banjarnegara"}</p>
               </div>
-              <div className="h-[340px] w-full">
+              <div className="h-[360px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={trendWithProjection} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="4 4" stroke="#fde68a" vertical={false} />
@@ -487,38 +489,38 @@ export default function LivestockFlowPage() {
 
             {/* Regression Projections */}
             {projection && (
-              <div className="bg-white border-2 border-orange-200 p-6 shadow-xl shadow-orange-100 rounded-2xl">
-                <div className="flex items-center gap-3 mb-6 border-b-2 border-orange-100 pb-2">
-                  <div className="p-2 rounded-lg bg-orange-500 text-white shadow-lg shadow-orange-500/30">
-                    <TrendingUp size={18} />
+              <div className="bg-white border-4 border-orange-200 p-8 shadow-2xl shadow-orange-100 rounded-3xl">
+                <div className="flex items-center gap-4 mb-6 border-b-4 border-orange-100 pb-4">
+                  <div className="p-3 rounded-2xl bg-gradient-to-br from-orange-500 to-red-500 text-white shadow-xl shadow-orange-500/30">
+                    <TrendingUp size={22} />
                   </div>
                   <div>
-                    <h4 className="text-lg font-mono font-black uppercase text-slate-800">Proyeksi Garis Tren</h4>
-                    <p className="text-xs font-mono text-orange-500 uppercase">Ternak • {projection.nextYear}</p>
+                    <h4 className="text-xl font-mono font-black uppercase text-slate-800">Proyeksi Garis Tren</h4>
+                    <p className="text-xs font-mono text-orange-600 uppercase font-bold">Ternak • {projection.nextYear}</p>
                   </div>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
-                  <div className="border-2 border-orange-500 bg-gradient-to-br from-orange-50 to-yellow-50 p-4 shadow-lg flex flex-col justify-between rounded-xl">
-                    <span className="text-[10px] font-mono font-black uppercase text-orange-700">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-left">
+                  <div className="border-4 border-orange-500 bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 p-6 shadow-lg flex flex-col justify-between rounded-2xl">
+                    <span className="text-xs font-mono font-black uppercase text-orange-700 tracking-wider">
                       Prediksi {projection.nextYear} ({unit})
                     </span>
-                    <span className="text-2xl font-serif font-black text-slate-800 mt-2">
+                    <span className="text-3xl font-serif font-black text-slate-800 mt-3">
                       {formatNum(projection.predicted)}
                     </span>
                   </div>
-                  <div className="border-2 border-slate-200 bg-white p-4 shadow-lg flex flex-col justify-between rounded-xl">
-                    <span className="text-[10px] font-mono font-black uppercase text-slate-500">
+                  <div className="border-4 border-slate-200 bg-white p-6 shadow-lg flex flex-col justify-between rounded-2xl">
+                    <span className="text-xs font-mono font-black uppercase text-slate-500">
                       Perubahan vs {projection.lastTahun}
                     </span>
-                    <span className={`text-2xl font-serif font-black mt-2 ${projection.deltaPct === null ? "text-slate-400" : projection.deltaPct >= 0 ? "text-emerald-600" : "text-red-600"}`}>
+                    <span className={`text-3xl font-serif font-black mt-3 ${projection.deltaPct === null ? "text-slate-400" : projection.deltaPct >= 0 ? "text-emerald-600" : "text-red-600"}`}>
                       {projection.deltaPct === null ? "N/A" : `${projection.deltaPct >= 0 ? "▲" : "▼"} ${formatPct(Math.abs(projection.deltaPct))}%`}
                     </span>
                   </div>
-                  <div className="border-2 border-slate-200 bg-white p-4 shadow-lg flex flex-col justify-between rounded-xl">
-                    <span className="text-[10px] font-mono font-black uppercase text-slate-500">
+                  <div className="border-4 border-slate-200 bg-white p-6 shadow-lg flex flex-col justify-between rounded-2xl">
+                    <span className="text-xs font-mono font-black uppercase text-slate-500">
                       Keandalan Model (R²)
                     </span>
-                    <span className={`text-2xl font-serif font-black mt-2 ${projection.r2 >= 0.7 ? "text-emerald-600" : projection.r2 >= 0.4 ? "text-amber-600" : "text-red-600"}`}>
+                    <span className={`text-3xl font-serif font-black mt-3 ${projection.r2 >= 0.7 ? "text-emerald-600" : projection.r2 >= 0.4 ? "text-amber-600" : "text-red-600"}`}>
                       {formatPct(projection.r2 * 100)}%
                     </span>
                   </div>
@@ -528,27 +530,27 @@ export default function LivestockFlowPage() {
 
             {/* CAGR Breakdown */}
             {cagrData && (
-              <div className="bg-white border-2 border-purple-200 p-6 shadow-xl shadow-purple-100 rounded-2xl">
-                <div className="flex items-center gap-3 mb-6 border-b-2 border-purple-100 pb-3">
-                  <div className="p-2 rounded-lg bg-purple-500 text-white shadow-lg shadow-purple-500/30">
-                    <FileSpreadsheet size={18} />
+              <div className="bg-white border-4 border-purple-200 p-8 shadow-2xl shadow-purple-100 rounded-3xl">
+                <div className="flex items-center gap-4 mb-6 border-b-4 border-purple-100 pb-4">
+                  <div className="p-3 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 text-white shadow-xl shadow-purple-500/30">
+                    <FileSpreadsheet size={22} />
                   </div>
                   <div>
-                    <h4 className="text-lg font-mono font-black uppercase text-slate-800">CAGR Per Jenis</h4>
-                    <p className="text-xs font-mono text-purple-500 uppercase">{cagrData.periode}</p>
+                    <h4 className="text-xl font-mono font-black uppercase text-slate-800">CAGR Per Jenis</h4>
+                    <p className="text-xs font-mono text-purple-600 uppercase font-bold">{cagrData.periode}</p>
                   </div>
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                  <div className="border-2 border-slate-900 bg-slate-900 text-white p-4 flex flex-col justify-between rounded-xl shadow-lg">
-                    <span className="text-[10px] font-mono font-black uppercase text-slate-400">Total Gabungan</span>
-                    <span className="text-3xl font-serif font-black mt-2">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
+                  <div className="border-4 border-slate-900 bg-slate-900 text-white p-6 flex flex-col justify-between rounded-2xl shadow-xl">
+                    <span className="text-xs font-mono font-black uppercase text-slate-400 tracking-wider">Total Gabungan</span>
+                    <span className="text-4xl font-serif font-black mt-3">
                       {cagrData.total === null ? "N/A" : `${cagrData.total >= 0 ? "+" : ""}${formatPct(cagrData.total)}%`}
                     </span>
                   </div>
                   {cagrData.items.map((item) => (
-                    <div key={item.name} className="border-2 border-slate-200 bg-white p-4 flex flex-col justify-between shadow-lg rounded-xl">
-                      <span className="text-[10px] font-mono font-black uppercase text-slate-500 leading-tight">{item.name}</span>
-                      <span className={`text-2xl font-serif font-black mt-2 ${item.cagr === null ? "text-slate-400" : item.cagr >= 0 ? "text-emerald-600" : "text-red-600"}`}>
+                    <div key={item.name} className="border-4 border-slate-200 bg-white p-6 flex flex-col justify-between shadow-xl rounded-2xl">
+                      <span className="text-xs font-mono font-black uppercase text-slate-600 leading-tight">{item.name}</span>
+                      <span className={`text-3xl font-serif font-black mt-3 ${item.cagr === null ? "text-slate-400" : item.cagr >= 0 ? "text-emerald-600" : "text-red-600"}`}>
                         {item.cagr === null ? "N/A" : <>{item.cagr >= 0 ? "▲" : "▼"} {formatPct(Math.abs(item.cagr))}%</>}
                       </span>
                     </div>
@@ -558,31 +560,38 @@ export default function LivestockFlowPage() {
             )}
 
             {/* Ranking Kecamatan */}
-            <div className="bg-white border border-slate-200 p-6 shadow-sm rounded-2xl">
-              <div className="mb-4 text-left border-b border-slate-100 pb-2 flex flex-wrap items-center justify-between gap-2">
-                <h4 className="text-md font-mono font-bold uppercase flex items-center gap-2 tracking-wide text-slate-800">
-                  <FileSpreadsheet className="text-amber-600" size={18} />
-                  Ranking Kecamatan (Kumulatif {yearsList[yearsList.length - 1]}–{yearsList[0]})
-                </h4>
-                <span className="text-[10px] font-mono font-bold text-slate-400 uppercase">
+            <div className="bg-white border-4 border-amber-200 p-8 shadow-2xl shadow-amber-100 rounded-3xl">
+              <div className="flex items-center justify-between mb-6 border-b-4 border-amber-100 pb-4">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-xl shadow-amber-500/30">
+                    <FileSpreadsheet size={22} />
+                  </div>
+                  <div>
+                    <h4 className="text-xl font-mono font-black uppercase text-slate-800">Ranking Kecamatan</h4>
+                    <p className="text-xs font-mono text-amber-600 uppercase font-bold">
+                      Kumulatif {yearsList[yearsList.length - 1]}–{yearsList[0]}
+                    </p>
+                  </div>
+                </div>
+                <span className="text-xs font-mono font-bold text-amber-600 uppercase">
                   Total {unit} seluruh tahun
                 </span>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 text-left">
                 {kecamatanRanking.slice(0, 10).map((item, idx) => {
                   const medal = idx === 0 ? "🥇" : idx === 1 ? "🥈" : idx === 2 ? "🥉" : null;
-                  const colors = idx === 0 ? "border-orange-500 bg-gradient-to-br from-orange-100 to-yellow-100" : "border-slate-200 bg-white";
-                  const iconBg = idx < 3 ? "bg-orange-500" : "bg-slate-100";
+                  const colors = idx === 0 ? "border-amber-500 bg-amber-50/50" : "border-slate-200 bg-white";
+                  const iconBg = idx < 3 ? "bg-amber-500" : "bg-slate-100";
                   return (
-                    <div key={item.name} className={`border-2 p-4 flex flex-col gap-2 shadow-lg rounded-xl transition-all hover:shadow-xl ${colors}`}>
+                    <div key={item.name} className={`border-4 p-5 flex flex-col gap-2 shadow-lg rounded-2xl transition-all hover:shadow-xl ${colors}`}>
                       <div className="flex items-center justify-between gap-2">
-                        <span className={`inline-flex items-center justify-center w-6 h-6 text-[10px] font-black font-mono ${iconBg} ${idx < 3 ? "text-white" : "text-slate-500"}`}>
+                        <span className={`inline-flex items-center justify-center w-7 h-7 rounded-lg text-xs font-black font-mono ${iconBg} ${idx < 3 ? "text-white" : "text-slate-500"}`}>
                           {medal || (idx + 1)}
                         </span>
                         <span className="text-xs font-mono font-black uppercase text-slate-700 truncate">{item.name}</span>
                       </div>
-                      <span className="text-2xl font-serif font-black text-slate-800 leading-tight">{formatNum(item.value)}</span>
-                      <span className="text-[9px] font-mono text-slate-400 uppercase">{unit}</span>
+                      <span className="text-3xl font-serif font-black text-slate-800 leading-tight">{formatNum(item.value)}</span>
+                      <span className="text-[10px] font-mono text-slate-400 uppercase font-bold">{unit}</span>
                     </div>
                   );
                 })}
@@ -590,41 +599,41 @@ export default function LivestockFlowPage() {
             </div>
 
             {/* Data Table */}
-            <div className="bg-white border-2 border-slate-200 p-6 shadow-xl shadow-slate-200/50 rounded-2xl">
-              <div className="flex items-center justify-between mb-6 border-b-2 border-slate-100 pb-3">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-slate-800 text-white shadow-lg shadow-slate-800/30">
-                    <FileSpreadsheet size={18} />
+            <div className="bg-white border-4 border-slate-200 p-8 shadow-2xl shadow-slate-200/50 rounded-3xl">
+              <div className="flex items-center justify-between mb-6 border-b-4 border-slate-100 pb-4">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 rounded-2xl bg-slate-900 text-white shadow-xl shadow-slate-900/30">
+                    <FileSpreadsheet size={22} />
                   </div>
                   <div>
-                    <h4 className="text-lg font-mono font-black uppercase text-slate-800">Tabel Rincian Data</h4>
-                    <p className="text-xs font-mono text-slate-500 uppercase">
+                    <h4 className="text-xl font-mono font-black uppercase text-slate-800">Tabel Rincian Data</h4>
+                    <p className="text-xs font-mono text-slate-500 uppercase font-bold">
                       Perkecamatan • {selectedYear} • Satuan: {unit}
                     </p>
                   </div>
                 </div>
               </div>
-              <div className="overflow-x-auto rounded-xl border border-slate-200">
+              <div className="overflow-x-auto rounded-2xl border-2 border-slate-200 shadow-sm">
                 <table className="w-full text-left font-mono text-sm border-collapse">
                   <thead>
-                    <tr className="bg-slate-800 text-white">
-                      <th className="p-4 border-r border-slate-600 font-black uppercase text-[10px] whitespace-nowrap w-12">#</th>
-                      <th className="p-4 border-r border-slate-600 font-black uppercase text-[10px]">Kecamatan</th>
+                    <tr className="bg-slate-900 text-white">
+                      <th className="p-4 border-r border-slate-700 font-black uppercase text-xs whitespace-nowrap w-12">#</th>
+                      <th className="p-4 border-r border-slate-700 font-black uppercase text-xs">Kecamatan</th>
                       {jenisList.map((j) => (
-                        <th key={j} className="p-4 border-r border-slate-600 font-black uppercase text-[10px] text-right whitespace-nowrap">{j}</th>
+                        <th key={j} className="p-4 border-r border-slate-700 font-black uppercase text-xs text-right whitespace-nowrap">{j}</th>
                       ))}
-                      <th className="p-4 font-black uppercase text-[10px] text-right bg-slate-700">Total</th>
+                      <th className="p-4 font-black uppercase text-xs text-right bg-slate-800">Total</th>
                     </tr>
                   </thead>
                   <tbody>
                     {chartData.map((row, idx) => (
-                      <tr key={row.name} className={`border-b border-slate-200 hover:bg-amber-50/50 transition-colors ${idx % 2 === 1 ? "bg-slate-50/50" : "bg-white"}`}>
+                      <tr key={row.name} className={`border-b border-slate-200 hover:bg-amber-50/60 transition-colors ${idx % 2 === 1 ? "bg-slate-50/60" : "bg-white"}`}>
                         <td className="p-4 border-r border-slate-100 text-xs font-black text-slate-400">{idx + 1}</td>
                         <td className="p-4 border-r border-slate-100 text-xs font-black uppercase text-slate-700">{row.name}</td>
                         {jenisList.map((j) => (
-                          <td key={j} className="p-4 border-r border-slate-100 text-xs text-right text-slate-600">{formatNum(row[j] || 0)}</td>
+                          <td key={j} className="p-4 border-r border-slate-100 text-xs text-right text-slate-600 font-medium">{formatNum(row[j] || 0)}</td>
                         ))}
-                        <td className="p-4 text-xs font-black text-right bg-slate-800 text-white rounded-br-xl">{formatNum(row.total)}</td>
+                        <td className="p-4 text-xs font-black text-right bg-slate-900 text-white">{formatNum(row.total)}</td>
                       </tr>
                     ))}
                   </tbody>
