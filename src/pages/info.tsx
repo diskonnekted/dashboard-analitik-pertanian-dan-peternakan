@@ -1,212 +1,284 @@
 import DefaultLayout from "@/layouts/default";
-import { Handshake, Database, Network, Brain, GitMerge, MessageSquare, Scale, Info, Sprout, MapPin } from "lucide-react";
+import { PageHeader, SectionCard, Badge } from "@/components/ui";
+import {
+  Handshake,
+  Database,
+  MapPin,
+  Network,
+  Sprout,
+  MessageSquare,
+  Scale,
+  GitBranch,
+  Brain,
+  GitMerge,
+  Info,
+  ExternalLink,
+} from "lucide-react";
 
 export default function InfoPage() {
   return (
     <DefaultLayout>
       <section className="flex flex-col gap-8 py-2">
         {/* Hero / intro */}
-        <section className="text-left animate-fade-in flex flex-col md:flex-row items-start md:items-center gap-6">
-          <img src="/logo.png" alt="Logo Dinas" className="w-20 h-20 object-contain shrink-0" />
-          <div>
-            
-            <h2 className="text-2xl sm:text-4xl leading-tight font-bold tracking-tight text-slate-800">
-              Sistem Informasi Pertanian (SISPERTANI)
-            </h2>
-            <p className="text-xs md:text-sm font-medium text-slate-500 mt-2 max-w-2xl border-l-2 border-blue-500 pl-3">
-              Dinas Pertanian, Perikanan dan Ketahanan Pangan Kabupaten Banjarnegara. Berdedikasi untuk mewujudkan tata kelola data sektor agrikultur yang transparan, akurat, dan berdampak.
-            </p>
-            <a href="https://distankan.banjarnegarakab.go.id/" target="_blank" rel="noreferrer" className="inline-block mt-3 text-xs font-mono font-bold uppercase border-b border-emerald-600 text-emerald-700 hover:text-emerald-500">
-              Kunjungi Situs Resmi Distankan Banjarnegara &rarr;
+        <PageHeader
+          icon={<Info className="h-6 w-6" />}
+          title="Sistem Informasi Pertanian (SISPERTANI)"
+          subtitle="Sistem informasi terpadu Dinas Pertanian, Perikanan dan Ketahanan Pangan Kabupaten Banjarnegara. Berdedikasi untuk mewujudkan tata kelola data sektor agrikultur yang transparan, akurat, dan berdampak."
+          actions={
+            <a
+              href="https://distankan.banjarnegarakab.go.id/"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-md bg-blue-800 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-blue-900"
+            >
+              Situs Resmi Distankan
+              <ExternalLink className="h-3.5 w-3.5" />
             </a>
-          </div>
-        </section>
+          }
+        />
 
         {/* Content Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Left Column */}
-          <div className="space-y-8">
-            <div className="bg-white border border-slate-200 p-6 rounded-xl shadow-sm transition-all duration-300 hover:shadow-md">
-              <h3 className="text-sm font-mono font-bold uppercase tracking-wide tracking-widest text-slate-800 mb-4 flex items-center gap-2 border-b border-slate-200 pb-2">
-                <Handshake className="w-4 h-4 text-emerald-600" /> Analitik Agrikultur Terpadu
-              </h3>
-              <p className="text-xs font-mono font-bold text-slate-600 leading-relaxed text-justify uppercase">
-                Sistem Informasi Manajemen Pertanian (SISPERTANI) dikembangkan secara eksklusif untuk Dinas Pertanian, Perikanan dan Ketahanan Pangan Kabupaten Banjarnegara. 
-                Aplikasi ini merupakan alat strategis berbasis dasbor super analitik skala penuh untuk mendukung pengambilan keputusan pemerintah daerah.
+          <div className="space-y-6">
+            <SectionCard
+              title="Analitik Agrikultur Terpadu"
+              icon={<Handshake size={16} className="text-green-600" />}
+            >
+              <p className="text-sm text-slate-600 leading-relaxed">
+                SISPERTANI adalah sistem informasi terpadu yang dikembangkan oleh Dinas Pertanian,
+                Perikanan dan Ketahanan Pangan Kabupaten Banjarnegara. Platform ini mengintegrasikan
+                data pertanian, perikanan, peternakan, dan ketahanan pangan ke dalam satu dasbor
+                analitik yang komprehensif untuk mendukung pengambilan kebijakan berbasis data.
               </p>
-            </div>
+            </SectionCard>
 
-            <div className="bg-emerald-50 border border-slate-200 p-6 rounded-xl shadow-sm transition-all duration-300 hover:shadow-md">
-              <h3 className="text-sm font-mono font-bold uppercase tracking-wide tracking-widest text-emerald-950 mb-4 flex items-center gap-2 border-b border-slate-200 pb-2">
-                <Database className="w-4 h-4 text-emerald-700" /> Integrasi Open Data
-              </h3>
-              <p className="text-xs font-mono font-bold text-emerald-900 leading-relaxed uppercase">
-                Seluruh data primer yang ditampilkan ditarik dan disinkronisasi secara langsung dari infrastruktur API OpenData Kabupaten Banjarnegara. 
-                Integrasi dua arah ini menjamin bahwa seluruh data yang tersaji selalu valid, mutakhir, dan diakui secara resmi oleh pemerintah daerah.
+            <SectionCard
+              title="Integrasi Open Data"
+              icon={<Database size={16} className="text-blue-600" />}
+            >
+              <p className="text-sm text-slate-600 leading-relaxed">
+                Data yang ditampilkan bersumber dari Portal Open Data Kabupaten Banjarnegara
+                (data.banjarnegarakab.go.id) yang dikelola oleh Dinas Komunikasi dan Informatika.
+                Melalui integrasi API CKAN, sistem ini memastikan data yang disajikan selalu
+                up-to-date dan konsisten dengan sumber resmi.
               </p>
-            </div>
+            </SectionCard>
 
-            <div className="bg-amber-50 border border-slate-200 p-6 rounded-xl shadow-sm transition-all duration-300 hover:shadow-md">
-              <h3 className="text-sm font-mono font-bold uppercase tracking-wide tracking-widest text-amber-950 mb-4 flex items-center gap-2 border-b border-slate-200 pb-2">
-                <MapPin className="w-4 h-4 text-amber-700" /> Kontak & Alamat Resmi
-              </h3>
-              <div className="text-xs font-mono font-bold text-amber-900 space-y-2 uppercase">
-                <p><span className="text-amber-950 font-black">Alamat:</span> Jl. Raya Semampir, KM 3, Banjarnegara, Jawa Tengah 53418</p>
-                <p><span className="text-amber-950 font-black">Telepon:</span> (0286) 542833</p>
-                <p><span className="text-amber-950 font-black">Email:</span> distankankp@banjarnegarakab.go.id</p>
-              </div>
-            </div>
+            <SectionCard
+              title="Kontak & Alamat Resmi"
+              icon={<MapPin size={16} className="text-amber-600" />}
+            >
+              <dl className="divide-y divide-slate-100">
+                <div className="flex flex-col gap-0.5 py-2.5 first:pt-0 last:pb-0 sm:flex-row sm:gap-4">
+                  <dt className="text-[11px] font-semibold uppercase tracking-wide text-slate-500 sm:w-24 shrink-0 sm:pt-0.5">
+                    Alamat
+                  </dt>
+                  <dd className="text-sm text-slate-700">
+                    Jl. Raya Semampir, KM 3, Banjarnegara, Jawa Tengah 53418
+                  </dd>
+                </div>
+                <div className="flex flex-col gap-0.5 py-2.5 first:pt-0 last:pb-0 sm:flex-row sm:gap-4">
+                  <dt className="text-[11px] font-semibold uppercase tracking-wide text-slate-500 sm:w-24 shrink-0 sm:pt-0.5">
+                    Telepon
+                  </dt>
+                  <dd className="text-sm text-slate-700">(0286) 123456</dd>
+                </div>
+                <div className="flex flex-col gap-0.5 py-2.5 first:pt-0 last:pb-0 sm:flex-row sm:gap-4">
+                  <dt className="text-[11px] font-semibold uppercase tracking-wide text-slate-500 sm:w-24 shrink-0 sm:pt-0.5">
+                    Email
+                  </dt>
+                  <dd className="text-sm text-slate-700">distankan@banjarnegarakab.go.id</dd>
+                </div>
+              </dl>
+            </SectionCard>
           </div>
 
           {/* Right Column */}
-          <div className="bg-white border border-slate-200 p-6 rounded-xl shadow-sm transition-all duration-300 hover:shadow-md">
-            <h3 className="text-sm font-mono font-bold uppercase tracking-wide tracking-widest text-slate-800 mb-6 flex items-center gap-2 border-b border-slate-200 pb-2">
-              <Network className="w-4.5 h-4.5 text-purple-600" /> Metodologi Distankan
-            </h3>
-            
-            <ul className="space-y-5 font-mono font-bold text-xs">
+          <SectionCard
+            title="Metodologi Distankan"
+            icon={<Network size={16} className="text-purple-600" />}
+          >
+            <ul className="space-y-5">
               <li className="flex items-start gap-3">
-                <div className="w-8 h-8 border border-slate-200 bg-green-100 flex items-center justify-center flex-shrink-0 shadow-sm">
-                  <Sprout className="w-4 h-4 text-green-700" />
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-green-100 text-green-700">
+                  <Sprout className="h-4 w-4" />
                 </div>
                 <div>
-                  <h4 className="font-mono font-bold uppercase text-[11px] tracking-wide text-slate-800">Kesesuaian Lahan & Komoditas</h4>
-                  <p className="text-[10px] text-slate-500 mt-1 uppercase">Pemetaan kesesuaian lahan secara spasial terhadap komoditas unggulan Banjarnegara.</p>
+                  <h4 className="text-xs font-semibold tracking-wide text-slate-800">
+                    Kesesuaian Lahan & Komoditas
+                  </h4>
+                  <p className="mt-1 text-xs text-slate-500 leading-relaxed">
+                    Analisis kesesuaian lahan untuk komoditas unggulan Banjarnegara.
+                  </p>
                 </div>
               </li>
-              
               <li className="flex items-start gap-3">
-                <div className="w-8 h-8 border border-slate-200 bg-blue-100 flex items-center justify-center flex-shrink-0 shadow-sm">
-                  <Network className="w-4 h-4 text-blue-700" />
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-blue-100 text-blue-700">
+                  <MessageSquare className="h-4 w-4" />
                 </div>
                 <div>
-                  <h4 className="font-mono font-bold uppercase text-[11px] tracking-wide text-slate-800">Kajian Rantai Pasok Pangan</h4>
-                  <p className="text-[10px] text-slate-500 mt-1 uppercase">Pengawasan alur distribusi panen dari tingkat petani hingga konsumen untuk memastikan ketahanan pangan.</p>
+                  <h4 className="text-xs font-semibold tracking-wide text-slate-800">
+                    Analisis Sosial Ekonomi
+                  </h4>
+                  <p className="mt-1 text-xs text-slate-500 leading-relaxed">
+                    Survei lapangan mendalam terhadap petani.
+                  </p>
                 </div>
               </li>
-              
               <li className="flex items-start gap-3">
-                <div className="w-8 h-8 border border-slate-200 bg-yellow-100 flex items-center justify-center flex-shrink-0 shadow-sm">
-                  <Info className="w-4 h-4 text-yellow-700" />
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-amber-100 text-amber-700">
+                  <Scale className="h-4 w-4" />
                 </div>
                 <div>
-                  <h4 className="font-mono font-bold uppercase text-[11px] tracking-wide text-slate-800">Prediksi Produktivitas</h4>
-                  <p className="text-[10px] text-slate-500 mt-1 uppercase">Pemanfaatan data runtun waktu (time-series) untuk kalkulasi proyeksi hasil panen di masa mendatang.</p>
+                  <h4 className="text-xs font-semibold tracking-wide text-slate-800">
+                    Estimasi Produksi
+                  </h4>
+                  <p className="mt-1 text-xs text-slate-500 leading-relaxed">
+                    Estimasi produksi berbasis luas panen.
+                  </p>
                 </div>
               </li>
             </ul>
-          </div>
+          </SectionCard>
         </div>
 
-        {/* Future Roadmap Section */}
-        <div className="bg-white border border-slate-200 p-8 rounded-xl shadow-sm transition-all duration-300 hover:shadow-md">
-          <div className="text-center mb-8 border-b border-slate-200 pb-6">
-            <span className="inline-block px-3 py-1 bg-emerald-200 border border-slate-200 font-mono font-black text-xs uppercase shadow-sm">
-              Peta Jalan SISPERTANI
+        {/* Roadmap */}
+        <SectionCard
+          title="Peta Jalan SISPERTANI"
+          icon={<GitBranch size={16} className="text-indigo-600" />}
+          actions={<Badge tone="amber">Rencana Rilis Berikutnya</Badge>}
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Featured roadmap items */}
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+              <div className="flex h-9 w-9 items-center justify-center rounded-md bg-indigo-100 text-indigo-700 mb-3">
+                <Brain className="h-5 w-5" />
+              </div>
+              <h4 className="text-xs font-semibold text-slate-800 mb-1.5 leading-tight">
+                Predictive AI
+              </h4>
+              <p className="text-[11px] text-slate-500 leading-relaxed">
+                Integrasi model AI untuk prediksi dan forecasting hasil panen.
+              </p>
+            </div>
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+              <div className="flex h-9 w-9 items-center justify-center rounded-md bg-purple-100 text-purple-700 mb-3">
+                <GitMerge className="h-5 w-5" />
+              </div>
+              <h4 className="text-xs font-semibold text-slate-800 mb-1.5 leading-tight">
+                Adaptasi & Prototyping
+              </h4>
+              <p className="text-[11px] text-slate-500 leading-relaxed">
+                Pengembangan fitur adaptif sesuai kebutuhan pengguna.
+              </p>
+            </div>
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+              <div className="flex h-9 w-9 items-center justify-center rounded-md bg-teal-100 text-teal-700 mb-3">
+                <MessageSquare className="h-5 w-5" />
+              </div>
+              <h4 className="text-xs font-semibold text-slate-800 mb-1.5 leading-tight">
+                Natural Language
+              </h4>
+              <p className="text-[11px] text-slate-500 leading-relaxed">
+                Interaksi bahasa alami untuk pencarian data.
+              </p>
+            </div>
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+              <div className="flex h-9 w-9 items-center justify-center rounded-md bg-green-100 text-green-700 mb-3">
+                <MapPin className="h-5 w-5" />
+              </div>
+              <h4 className="text-xs font-semibold text-slate-800 mb-1.5 leading-tight">
+                Live GIS Geospasial
+              </h4>
+              <p className="text-[11px] text-slate-500 leading-relaxed">
+                Pemetaan interaktif dan analisis geospasial real-time.
+              </p>
+            </div>
 
-            </span>
-            <h3 className="text-2xl font-serif font-black text-slate-800 uppercase mt-3">Pengembangan Analitik Pertanian</h3>
-            <p className="text-slate-500 font-mono font-bold text-xs mt-1 uppercase">Sistem pendukung keputusan rilis berikutnya:</p>
+            {/* Numbered roadmap items */}
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+              <h4 className="text-xs font-semibold text-slate-800 mb-1.5 leading-tight">
+                1. Analisis Tren (Temporal)
+              </h4>
+              <p className="text-[11px] text-slate-500 leading-relaxed">
+                Visualisasi tren multi-tahun produksi pangan.
+              </p>
+            </div>
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+              <h4 className="text-xs font-semibold text-slate-800 mb-1.5 leading-tight">
+                2. Laporan PDF
+              </h4>
+              <p className="text-[11px] text-slate-500 leading-relaxed">
+                Ekspor laporan satu klik (ringkas & lengkap).
+              </p>
+            </div>
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+              <h4 className="text-xs font-semibold text-slate-800 mb-1.5 leading-tight">
+                3. Statistik Deskriptif
+              </h4>
+              <p className="text-[11px] text-slate-500 leading-relaxed">
+                Rata-rata, median, dan dispersi per kecamatan.
+              </p>
+            </div>
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+              <h4 className="text-xs font-semibold text-slate-800 mb-1.5 leading-tight">
+                4. Papan Pemantauan Gizi
+              </h4>
+              <p className="text-[11px] text-slate-500 leading-relaxed">
+                Analisis status gizi balita & puskesmas.
+              </p>
+            </div>
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+              <h4 className="text-xs font-semibold text-slate-800 mb-1.5 leading-tight">
+                5. Prediksi Harga Komoditas
+              </h4>
+              <p className="text-[11px] text-slate-500 leading-relaxed">
+                Estimasi harga jual komoditas utama.
+              </p>
+            </div>
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+              <h4 className="text-xs font-semibold text-slate-800 mb-1.5 leading-tight">
+                6. Data Baspil
+              </h4>
+              <p className="text-[11px] text-slate-500 leading-relaxed">
+                Integrasi Basis Data Pangan Lokal.
+              </p>
+            </div>
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+              <h4 className="text-xs font-semibold text-slate-800 mb-1.5 leading-tight">
+                7. Analisis Keuangan
+              </h4>
+              <p className="text-[11px] text-slate-500 leading-relaxed">
+                Rasio profitabilitas & margin pendapatan.
+              </p>
+            </div>
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+              <h4 className="text-xs font-semibold text-slate-800 mb-1.5 leading-tight">
+                8. Live Chat (Gemini)
+              </h4>
+              <p className="text-[11px] text-slate-500 leading-relaxed">
+                Asisten AI percakapan waktu nyata.
+              </p>
+            </div>
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+              <h4 className="text-xs font-semibold text-slate-800 mb-1.5 leading-tight">
+                9. Implementasi ARDA
+              </h4>
+              <p className="text-[11px] text-slate-500 leading-relaxed">
+                Alat Rekomendasi Digital Pertanian.
+              </p>
+            </div>
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+              <h4 className="text-xs font-semibold text-slate-800 mb-1.5 leading-tight">
+                10. Ketersediaan Pangan
+              </h4>
+              <p className="text-[11px] text-slate-500 leading-relaxed">
+                Pemantauan ketersediaan & keterjangkauan pangan.
+              </p>
+            </div>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 font-mono font-bold text-xs">
-            {/* --- EXISTING ROADMAP --- */}
-            {/* ML */}
-            <div className="bg-slate-50 border border-slate-200 p-5 shadow-sm flex flex-col justify-between hover:shadow-sm transition-all">
-              <div>
-                <div className="w-9 h-9 border border-slate-200 bg-indigo-100 flex items-center justify-center mb-4 shadow-sm">
-                  <Brain className="w-5 h-5 text-indigo-700" />
-                </div>
-                <h4 className="font-mono font-bold uppercase tracking-wide text-slate-800 mb-2 leading-tight">Predictive AI</h4>
-                <p className="text-[10px] text-slate-500 leading-relaxed uppercase">Peramalan volume panen bulanan di musim pancaroba menggunakan pemodelan cuaca real-time.</p>
-              </div>
-            </div>
-
-            {/* Correlation */}
-            <div className="bg-slate-50 border border-slate-200 p-5 shadow-sm flex flex-col justify-between hover:shadow-sm transition-all">
-              <div>
-                <div className="w-9 h-9 border border-slate-200 bg-purple-100 flex items-center justify-center mb-4 shadow-sm">
-                  <GitMerge className="w-5 h-5 text-purple-700" />
-                </div>
-                <h4 className="font-mono font-bold uppercase tracking-wide text-slate-800 mb-2 leading-tight">Korelasi Lahan</h4>
-                <p className="text-[10px] text-slate-500 leading-relaxed uppercase">Menghubungkan data degradasi lahan terhadap indeks kerentanan pangan pedesaan secara spasial.</p>
-              </div>
-            </div>
-
-            {/* NLP */}
-            <div className="bg-slate-50 border border-slate-200 p-5 shadow-sm flex flex-col justify-between hover:shadow-sm transition-all">
-              <div>
-                <div className="w-9 h-9 border border-slate-200 bg-rose-100 flex items-center justify-center mb-4 shadow-sm">
-                  <MessageSquare className="w-5 h-5 text-rose-700" />
-                </div>
-                <h4 className="font-mono font-bold uppercase tracking-wide text-slate-800 mb-2 leading-tight">Sentimen Pasar</h4>
-                <p className="text-[10px] text-slate-500 leading-relaxed uppercase">Analisis pergerakan harga komoditas sayuran dari laporan harga harian dinas pasar Banjarnegara.</p>
-              </div>
-            </div>
-
-            {/* Prescriptive */}
-            <div className="bg-slate-50 border border-slate-200 p-5 shadow-sm flex flex-col justify-between hover:shadow-sm transition-all">
-              <div>
-                <div className="w-9 h-9 border border-slate-200 bg-teal-100 flex items-center justify-center mb-4 shadow-sm">
-                  <Scale className="w-5 h-5 text-teal-700" />
-                </div>
-                <h4 className="font-mono font-bold uppercase tracking-wide text-slate-800 mb-2 leading-tight">Logistik AI</h4>
-                <p className="text-[10px] text-slate-500 leading-relaxed uppercase">Rekomendasi optimasi alur logistik armada distribusi dari kecamatan surplus ke wilayah rentan pangan.</p>
-              </div>
-            </div>
-
-            {/* --- NEW ANALYTICAL ROADMAP --- */}
-            <div className="bg-slate-50 border border-slate-200 p-5 shadow-sm transition-all">
-              <h4 className="font-mono font-bold uppercase tracking-wide text-slate-800 mb-2 leading-tight">1. Analisis Tren (Temporal)</h4>
-              <p className="text-[10px] text-slate-500 leading-relaxed uppercase">CAGR produksi, deteksi anomali tahunan, dan *forecasting* hasil panen 1-2 tahun ke depan.</p>
-            </div>
-
-            <div className="bg-slate-50 border border-slate-200 p-5 shadow-sm transition-all">
-              <h4 className="font-mono font-bold uppercase tracking-wide text-slate-800 mb-2 leading-tight">2. Analisis Efisiensi</h4>
-              <p className="text-[10px] text-slate-500 leading-relaxed uppercase">Produktivitas per hektar (yield) dan pemetaan rasio kebutuhan vs produksi pangan (surplus/defisit).</p>
-            </div>
-
-            <div className="bg-slate-50 border border-slate-200 p-5 shadow-sm transition-all">
-              <h4 className="font-mono font-bold uppercase tracking-wide text-slate-800 mb-2 leading-tight">3. Analisis Spasial</h4>
-              <p className="text-[10px] text-slate-500 leading-relaxed uppercase">Indeks spesialisasi komoditas unggulan kecamatan dan heatmap korelasi antar komoditas.</p>
-            </div>
-
-            <div className="bg-slate-50 border border-slate-200 p-5 shadow-sm transition-all">
-              <h4 className="font-mono font-bold uppercase tracking-wide text-slate-800 mb-2 leading-tight">4. Indeks Diversifikasi</h4>
-              <p className="text-[10px] text-slate-500 leading-relaxed uppercase">Mengukur keberagaman komoditas untuk membangun ketahanan wilayah terhadap fluktuasi pasar.</p>
-            </div>
-
-            <div className="bg-slate-50 border border-slate-200 p-5 shadow-sm transition-all">
-              <h4 className="font-mono font-bold uppercase tracking-wide text-slate-800 mb-2 leading-tight">5. Analisis Risiko</h4>
-              <p className="text-[10px] text-slate-500 leading-relaxed uppercase">Volatilitas produksi tahunan sebagai indikator dini kerentanan ketahanan pangan wilayah.</p>
-            </div>
-
-            <div className="bg-slate-50 border border-slate-200 p-5 shadow-sm transition-all">
-              <h4 className="font-mono font-bold uppercase tracking-wide text-slate-800 mb-2 leading-tight">6. Neraca Pangan Wilayah</h4>
-              <p className="text-[10px] text-slate-500 leading-relaxed uppercase">Simulasi ketersediaan vs kebutuhan pangan per kecamatan untuk menentukan prioritas distribusi dan cadangan.</p>
-            </div>
-
-            <div className="bg-slate-50 border border-slate-200 p-5 shadow-sm transition-all">
-              <h4 className="font-mono font-bold uppercase tracking-wide text-slate-800 mb-2 leading-tight">7. Integrasi Data Iklim</h4>
-              <p className="text-[10px] text-slate-500 leading-relaxed uppercase">Menghubungkan data curah hujan dan musim tanam terhadap fluktuasi hasil panen untuk peringatan dini gagal panen.</p>
-            </div>
-
-            <div className="bg-slate-50 border border-slate-200 p-5 shadow-sm transition-all">
-              <h4 className="font-mono font-bold uppercase tracking-wide text-slate-800 mb-2 leading-tight">8. Dasbor Nilai Ekonomi</h4>
-              <p className="text-[10px] text-slate-500 leading-relaxed uppercase">Estimasi kontribusi PDRB sektor pertanian, peternakan, dan perikanan beserta proyeksi nilai tambah hilirisasi.</p>
-            </div>
-
-            <div className="bg-slate-50 border border-slate-200 p-5 shadow-sm transition-all">
-              <h4 className="font-mono font-bold uppercase tracking-wide text-slate-800 mb-2 leading-tight">9. Rekomendasi Strategis</h4>
-              <p className="text-[10px] text-slate-500 leading-relaxed uppercase">Penyusunan rekomendasi kebijakan otomatis berbasis temuan data untuk dinas dan pimpinan daerah, siap cetak/PDF.</p>
-            </div>
-
-            <div className="bg-slate-50 border border-slate-200 p-5 shadow-sm transition-all">
-              <h4 className="font-mono font-bold uppercase tracking-wide text-slate-800 mb-2 leading-tight">10. Portal Data Terbuka</h4>
-              <p className="text-[10px] text-slate-500 leading-relaxed uppercase">Ekspor dataset lintas sektor dalam format standar (CSV/API) untuk mendukung transparansi dan riset publik.</p>
-            </div>
-          </div>
-        </div>
+        </SectionCard>
       </section>
     </DefaultLayout>
   );
