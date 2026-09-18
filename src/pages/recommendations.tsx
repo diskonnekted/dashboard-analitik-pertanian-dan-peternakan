@@ -55,9 +55,9 @@ interface Sektor {
 }
 
 const PRIORITY_STYLE: Record<string, string> = {
-  Tinggi: "bg-red-100 text-red-700 border-red-700",
-  Sedang: "bg-amber-100 text-amber-700 border-amber-700",
-  "Jangka Panjang": "bg-sky-100 text-sky-700 border-sky-700",
+  Tinggi: "bg-red-50 text-red-700 border-red-200",
+  Sedang: "bg-amber-50 text-amber-700 border-amber-200",
+  "Jangka Panjang": "bg-sky-50 text-sky-700 border-sky-200",
 };
 
 export default function RecommendationsPage() {
@@ -495,9 +495,11 @@ ${catalogSection}`;
   if (loading) {
     return (
       <DefaultLayout>
-        <div className="flex flex-col items-center justify-center h-[500px] font-mono text-sm uppercase">
-          <AlertCircle className="w-8 h-8 text-emerald-600 animate-spin mb-4" />
-          Menganalisis data riil sektor pertanian Banjarnegara...
+        <div className="max-w-5xl mx-auto">
+          <div className="flex flex-col items-center justify-center h-64 gap-3 bg-white border border-slate-200 rounded-lg">
+            <div className="w-8 h-8 border-2 border-slate-200 border-t-blue-800 rounded-full animate-spin" />
+            <p className="text-sm text-slate-700">Menganalisis data sektor pertanian Banjarnegara…</p>
+          </div>
         </div>
       </DefaultLayout>
     );
@@ -505,78 +507,79 @@ ${catalogSection}`;
 
   return (
     <DefaultLayout>
-      <section className="flex flex-col gap-8 py-2 max-w-5xl mx-auto">
+      <section className="flex flex-col gap-6 py-2 max-w-5xl mx-auto">
         {/* Toolbar (tidak ikut tercetak) */}
-        <div className="no-print flex items-center justify-between bg-white border border-slate-200 p-4 shadow-sm transition-all duration-300 hover:shadow-md">
-          <p className="text-xs font-mono font-bold uppercase text-slate-600">
-            Dokumen ini dapat dicetak atau disimpan sebagai PDF
+        <div className="no-print flex items-center justify-between bg-white border border-slate-200 rounded-lg p-4">
+          <p className="text-xs text-slate-700">
+            Dokumen ini dapat dicetak atau disimpan sebagai PDF.
           </p>
           <button
             onClick={() => window.print()}
-            className="inline-flex items-center gap-2 py-2 px-4 border border-slate-200 bg-emerald-200 font-mono font-bold text-xs uppercase shadow-sm hover:bg-emerald-300 transition-all"
+            className="inline-flex items-center gap-2 py-2 px-4 rounded-md bg-blue-800 text-white text-xs font-medium hover:bg-blue-900 transition-colors"
           >
-            <Printer size={16} />
+            <Printer size={15} />
             Cetak / Simpan PDF
           </button>
         </div>
 
         {/* Kop Dokumen */}
-        <div className="print-block bg-white border border-slate-200 p-8 shadow-sm text-center transition-all duration-300 hover:shadow-md">
-          <p className="text-xs font-mono font-bold uppercase tracking-widest text-slate-500">
+        <div className="print-block bg-white border border-slate-200 rounded-lg p-8 text-center">
+          <p className="text-xs font-semibold uppercase tracking-widest text-blue-800">
             Pemerintah Kabupaten Banjarnegara
           </p>
-          <h1 className="text-2xl sm:text-4xl leading-tight font-bold tracking-tight text-slate-800">
+          <h1 className="text-2xl sm:text-3xl leading-tight font-semibold tracking-tight text-slate-900 mt-3">
             Rekomendasi Strategis Pembangunan
           </h1>
-          <h2 className="text-lg md:text-xl font-serif font-bold text-emerald-700 mt-1">
+          <h2 className="text-base md:text-lg font-semibold text-blue-800 mt-1">
             Sektor Pertanian, Peternakan &amp; Perikanan
           </h2>
-          <p className="text-xs font-mono font-bold text-slate-600 mt-4 uppercase">
+          <div className="w-24 h-0.5 bg-blue-800 mx-auto mt-4" />
+          <p className="text-xs text-slate-700 mt-4">
             Ditujukan kepada Dinas Terkait &amp; Bupati Banjarnegara
           </p>
-          <p className="text-[10px] font-mono text-slate-500 mt-1 uppercase">
+          <p className="text-xs text-slate-600 mt-1">
             Berdasarkan Analisis Data Terbuka · Dicetak {tanggalCetak}
           </p>
         </div>
 
         {/* Capaian Pembangunan Sektor */}
-        <div className="print-block grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-          <div className="bg-emerald-100 border border-slate-200 p-5 shadow-sm text-left transition-all duration-300 hover:shadow-md">
-            <span className="text-[9px] font-mono font-black uppercase text-emerald-800 tracking-wider block mb-1">Capaian Pertanian</span>
-            <h3 className="text-xl font-serif font-black text-slate-800 leading-tight">
+        <div className="print-block grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="bg-white border border-slate-200 border-l-4 border-l-blue-800 rounded-lg p-5 text-left">
+            <span className="text-xs font-semibold uppercase tracking-wide text-slate-700 block">Capaian Pertanian</span>
+            <h3 className="text-xl font-semibold text-slate-900 leading-tight mt-2 tabular-nums">
               {new Intl.NumberFormat("id-ID").format(Math.round(stats.totalPadiProd))} Ton
             </h3>
-            <p className="text-[10px] font-mono font-bold text-slate-600 mt-2 uppercase leading-normal">
+            <p className="text-xs text-slate-700 mt-2 leading-normal">
               Produksi padi dari luas panen {new Intl.NumberFormat("id-ID").format(Math.round(stats.totalPadiLuas))} Ha, dipimpin oleh Kecamatan {stats.topPadiKec}.
             </p>
           </div>
 
-          <div className="bg-orange-100 border border-slate-200 p-5 shadow-sm text-left transition-all duration-300 hover:shadow-md">
-            <span className="text-[9px] font-mono font-black uppercase text-orange-800 tracking-wider block mb-1">Capaian Peternakan</span>
-            <h3 className="text-xl font-serif font-black text-slate-800 leading-tight">
+          <div className="bg-white border border-slate-200 border-l-4 border-l-amber-600 rounded-lg p-5 text-left">
+            <span className="text-xs font-semibold uppercase tracking-wide text-slate-700 block">Capaian Peternakan</span>
+            <h3 className="text-xl font-semibold text-slate-900 leading-tight mt-2 tabular-nums">
               {new Intl.NumberFormat("id-ID").format(Math.round(stats.totalTernakPop))} Ekor
             </h3>
-            <p className="text-[10px] font-mono font-bold text-slate-600 mt-2 uppercase leading-normal">
+            <p className="text-xs text-slate-700 mt-2 leading-normal">
               Total populasi sapi &amp; kambing aktif, dengan kepadatan tertinggi di Kecamatan {stats.topTernakKec}.
             </p>
           </div>
 
-          <div className="bg-sky-100 border border-slate-200 p-5 shadow-sm text-left transition-all duration-300 hover:shadow-md">
-            <span className="text-[9px] font-mono font-black uppercase text-sky-800 tracking-wider block mb-1">Capaian Perikanan</span>
-            <h3 className="text-xl font-serif font-black text-slate-800 leading-tight">
+          <div className="bg-white border border-slate-200 border-l-4 border-l-teal-700 rounded-lg p-5 text-left">
+            <span className="text-xs font-semibold uppercase tracking-wide text-slate-700 block">Capaian Perikanan</span>
+            <h3 className="text-xl font-semibold text-slate-900 leading-tight mt-2 tabular-nums">
               {new Intl.NumberFormat("id-ID").format(Math.round(stats.totalIkanProd))} Ton/Unit
             </h3>
-            <p className="text-[10px] font-mono font-bold text-slate-600 mt-2 uppercase leading-normal">
+            <p className="text-xs text-slate-700 mt-2 leading-normal">
               Hasil perikanan budidaya kolam pembesaran dengan sentra utama di Kecamatan {stats.topIkanKec}.
             </p>
           </div>
 
-          <div className="bg-purple-100 border border-slate-200 p-5 shadow-sm text-left transition-all duration-300 hover:shadow-md">
-            <span className="text-[9px] font-mono font-black uppercase text-purple-800 tracking-wider block mb-1">Total Lahan Sawah</span>
-            <h3 className="text-xl font-serif font-black text-slate-800 leading-tight">
+          <div className="bg-white border border-slate-200 border-l-4 border-l-purple-700 rounded-lg p-5 text-left">
+            <span className="text-xs font-semibold uppercase tracking-wide text-slate-700 block">Total Lahan Sawah</span>
+            <h3 className="text-xl font-semibold text-slate-900 leading-tight mt-2 tabular-nums">
               {new Intl.NumberFormat("id-ID").format(Math.round(stats.totalSawah))} Ha
             </h3>
-            <p className="text-[10px] font-mono font-bold text-slate-600 mt-2 uppercase leading-normal">
+            <p className="text-xs text-slate-700 mt-2 leading-normal">
               Lahan sawah produktif basah beririgasi yang terpetakan untuk ketahanan pangan.
             </p>
           </div>
