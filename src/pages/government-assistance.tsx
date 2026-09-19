@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import DefaultLayout from "@/layouts/default";
 import {
   BarChart,
@@ -20,73 +20,58 @@ import {
   FileSpreadsheet,
   HelpCircle,
 } from "lucide-react";
+import {
+  fetchBantuanPemerintah,
+  formatRupiahShort,
+  formatTanggal,
+  type BantuanData,
+} from "@/services/bantuan";
 
-// Mock data alokasi dana bantuan pemerintah (APBD vs APBN) dalam Miliar Rp
-const allocationData = [
-  { tahun: "2020", APBD: 2.1, APBN: 4.5, total: 6.6 },
-  { tahun: "2021", APBD: 2.8, APBN: 5.2, total: 8.0 },
-  { tahun: "2022", APBD: 3.5, APBN: 6.8, total: 10.3 },
-  { tahun: "2023", APBD: 4.2, APBN: 7.5, total: 11.7 },
-  { tahun: "2024", APBD: 4.8, APBN: 8.7, total: 13.5 },
-];
-
-// Mock data korelasi besaran bantuan (Miliar Rp) terhadap pertumbuhan produksi (%)
-const correlationData = [
-  { sektor: "Tanaman Pangan", bantuan: 5.2, kenaikanProduksi: 14.2 },
-  { sektor: "Hortikultura", bantuan: 2.8, kenaikanProduksi: 10.5 },
-  { sektor: "Peternakan", bantuan: 3.1, kenaikanProduksi: 8.7 },
-  { sektor: "Perikanan Budidaya", bantuan: 1.8, kenaikanProduksi: 6.4 },
-  { sektor: "Perkebunan", bantuan: 0.6, kenaikanProduksi: 2.1 },
-];
-
-// Mock daftar program bantuan
-const programList = [
-  {
-    nama: "Bantuan Alat Mesin Pertanian (Combine Harvester & Traktor)",
-    sumber: "APBN 2024",
-    nilai: "Rp 3,2 Miliar",
-    sektor: "Tanaman Pangan",
-    penerima: "54 Kelompok Tani",
-    dampak: "Tinggi (+15% efisiensi waktu panen)",
-  },
-  {
-    nama: "Penyaluran Pupuk Organik Cair & NPK Non-Subsidi",
-    sumber: "APBD 2024",
-    nilai: "Rp 1,8 Miliar",
-    sektor: "Hortikultura",
-    penerima: "42 Kelompok Tani",
-    dampak: "Sedang (+8% volume panen)",
-  },
-  {
-    nama: "Revitalisasi Sarana Prasana Kolam Budidaya Nila",
-    sumber: "APBD 2023",
-    nilai: "Rp 980 Juta",
-    sektor: "Perikanan",
-    penerima: "18 Pembudidaya",
-    dampak: "Tinggi (+12% produksi ikan)",
-  },
-  {
-    nama: "Pengadaan Inseminasi Buatan & Vaksin Penyakit Mulut Kuku",
-    sumber: "APBN 2023",
-    nilai: "Rp 1,5 Miliar",
-    sektor: "Peternakan",
-    penerima: "85 Kelompok Ternak",
-    dampak: "Tinggi (0% penularan PMK baru)",
-  },
-  {
-    nama: "Bantuan Bibit Kopi Arabika Batur Unggul",
-    sumber: "APBD 2023",
-    nilai: "Rp 450 Juta",
-    sektor: "Perkebunan",
-    penerima: "12 Kelompok Tani",
-    dampak: "Sedang (+5% luas area tanam)",
-  },
-];
+// Semua data halaman ini bersumber dari Sanity Content Lake (input manual
+// admin Distan via Studio) — lihat src/services/bantuan.ts.
 
 export default function GovernmentAssistancePage() {
-  const totalBantuan = useMemo(() => {
-    return allocationData.reduce((acc, curr) => acc + curr.total, 0);
+  // null = sedang memuat; setelah itu selalu ada nilai (bisa kosong).
+  const [bantuan, setBantuan] = useState<BantuanData | null>(null);
+
+  useEffect(() => {
+    let alive = true;
+    fetchBantuanPemerintah().then((d) => {
+      if (alive) setBantuan(d);
+    });
+    return () => {
+      alive = false;
+    };
   }, []);
+
+  const program = bantuan?.program ?? [];
+  const alokasi = bantuan?.alokasi ?? [];
+  const korelasi = bantuan?.korelasi ?? [];
+  const adaData =
+    program.length > 0 || alokasi.length > 0 || korelasi.length > 0;
+
+  const totalBantuan = useMemo(
+    () => program.reduce((acc, p) => acc + (p.nilaiRupiah || 0), 0),
+    [program],
+  );
+  const totalApbn = useMemo(
+    () =>
+      program
+        .filter((p) => p.sumber === "APBN")
+        .reduce((acc, p) => acc + (p.nilaiRupiah || 0), 0),
+    [program],
+  );
+  const totalPenerima = useMemo(
+    () => program.reduce((acc, p) => acc + (p.penerimaJumlah || 0), 0),
+    [program],
+  );
+  const rataDampak = useMemo(() => {
+    if (korelasi.length === 0) return null;
+    return (
+      korelasi.reduce((acc, k) => acc + (k.kenaikanProduksiPct || 0), 0) /
+      korelasi.length
+    );
+  }, [korelasi]);
 
   return (
     <DefaultLayout>
@@ -110,35 +95,55 @@ export default function GovernmentAssistancePage() {
           </div>
         </section>
 
-        {/* Disclaimer Banner - Mengingatkan ini adalah Data Demo */}
-        <div className="bg-yellow-50 border border-yellow-400 p-4 flex items-start gap-3 shadow-sm">
-          <AlertTriangle className="text-yellow-600 shrink-0 mt-0.5" size={20} />
-          <div className="text-left font-mono text-xs text-yellow-800">
-            <span className="font-black uppercase block mb-1">PEMBERITAHUAN (DEMO MODE)</span>
-            Saat ini basis data riil alokasi anggaran bantuan pemerintah per kelompok tani belum tersedia/diintegrasikan secara spasial dari Dinas Pertanian Banjarnegara. Grafik dan angka di bawah disajikan menggunakan data simulasi/dummy untuk kebutuhan demonstrasi prototipe SISPERTANI.
+        {/* Banner status data */}
+        {bantuan === null ? (
+          <div className="bg-slate-50 border border-slate-200 p-4 flex items-start gap-3 shadow-sm">
+            <Coins className="text-slate-400 shrink-0 mt-0.5" size={20} />
+            <div className="text-left font-mono text-xs text-slate-500">
+              <span className="font-black uppercase block mb-1">MEMUAT DATA</span>
+              Mengambil data bantuan pemerintah terbaru…
+            </div>
           </div>
-        </div>
+        ) : !adaData ? (
+          <div className="bg-sky-50 border border-sky-400 p-4 flex items-start gap-3 shadow-sm">
+            <AlertTriangle className="text-sky-600 shrink-0 mt-0.5" size={20} />
+            <div className="text-left font-mono text-xs text-sky-800">
+              <span className="font-black uppercase block mb-1">BELUM ADA DATA</span>
+              Data alokasi bantuan pemerintah belum diinput. Grafik dan tabel di bawah akan terisi otomatis setelah admin Dinas Pertanian mengisi data melalui dasbor admin SISPERTANI.
+            </div>
+          </div>
+        ) : (
+          <div className="bg-emerald-50 border border-emerald-400 p-4 flex items-start gap-3 shadow-sm">
+            <Coins className="text-emerald-600 shrink-0 mt-0.5" size={20} />
+            <div className="text-left font-mono text-xs text-emerald-800">
+              <span className="font-black uppercase block mb-1">DATA BANTUAN PEMERINTAH</span>
+              Data diperbarui per {bantuan.updatedAt ? formatTanggal(bantuan.updatedAt) : "-"} — diinput manual oleh admin Dinas Pertanian Banjarnegara.
+            </div>
+          </div>
+        )}
 
         {/* Stats Row */}
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           <div className="bg-emerald-50 border border-slate-200 p-5 shadow-sm text-left">
             <span className="text-[10px] font-mono font-bold uppercase text-emerald-800 tracking-wider block mb-1">Akumulasi Bantuan</span>
-            <h3 className="text-2xl font-serif font-black text-slate-800 leading-tight">Rp {totalBantuan.toFixed(1).replace(".", ",")} M</h3>
-            <p className="text-[10px] font-mono text-slate-500 mt-2 uppercase">Total Alokasi APBD & APBN (2020-2024)</p>
+            <h3 className="text-2xl font-serif font-black text-slate-800 leading-tight">{formatRupiahShort(totalBantuan)}</h3>
+            <p className="text-[10px] font-mono text-slate-500 mt-2 uppercase">Total Nilai {program.length} Program Bantuan</p>
           </div>
           <div className="bg-blue-50 border border-slate-200 p-5 shadow-sm text-left">
             <span className="text-[10px] font-mono font-bold uppercase text-blue-800 tracking-wider block mb-1">Sumber Dana APBN</span>
-            <h3 className="text-2xl font-serif font-black text-slate-800 leading-tight">Rp 34,6 M</h3>
+            <h3 className="text-2xl font-serif font-black text-slate-800 leading-tight">{formatRupiahShort(totalApbn)}</h3>
             <p className="text-[10px] font-mono text-slate-500 mt-2 uppercase">Kontribusi Subsidi & Alat Mesin Pusat</p>
           </div>
           <div className="bg-purple-50 border border-slate-200 p-5 shadow-sm text-left">
-            <span className="text-[10px] font-mono font-bold uppercase text-purple-800 tracking-wider block mb-1">Kelompok Penerima</span>
-            <h3 className="text-2xl font-serif font-black text-slate-800 leading-tight">211 Poktan</h3>
-            <p className="text-[10px] font-mono text-slate-500 mt-2 uppercase">Tersebar di 20 Kecamatan</p>
+            <span className="text-[10px] font-mono font-bold uppercase text-purple-800 tracking-wider block mb-1">Penerima Bantuan</span>
+            <h3 className="text-2xl font-serif font-black text-slate-800 leading-tight">{totalPenerima.toLocaleString("id-ID")}</h3>
+            <p className="text-[10px] font-mono text-slate-500 mt-2 uppercase">Akumulasi Kelompok & Petani Penerima</p>
           </div>
           <div className="bg-amber-50 border border-slate-200 p-5 shadow-sm text-left">
             <span className="text-[10px] font-mono font-bold uppercase text-amber-800 tracking-wider block mb-1">Rata-rata Dampak</span>
-            <h3 className="text-2xl font-serif font-black text-slate-800 leading-tight">+8.3% / Th</h3>
+            <h3 className="text-2xl font-serif font-black text-slate-800 leading-tight">
+              {rataDampak === null ? "—" : `+${rataDampak.toFixed(1).replace(".", ",")}%`}
+            </h3>
             <p className="text-[10px] font-mono text-slate-500 mt-2 uppercase">Laju Peningkatan Produksi Sektoral</p>
           </div>
         </div>
@@ -151,9 +156,14 @@ export default function GovernmentAssistancePage() {
               <Coins size={18} className="text-emerald-700" />
               Trend Perkembangan Alokasi Bantuan (Miliar Rp)
             </h3>
+            {alokasi.length === 0 ? (
+              <div className="w-full h-80 flex items-center justify-center font-mono text-xs uppercase text-slate-400 border border-dashed border-slate-200">
+                Belum ada data alokasi tahunan
+              </div>
+            ) : (
             <div className="w-full h-80">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={allocationData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <BarChart data={alokasi.map((a) => ({ tahun: String(a.tahun), APBD: a.apbdMiliar, APBN: a.apbnMiliar }))} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#e5e5e5" />
                   <XAxis dataKey="tahun" stroke="#64748b" tick={{ fontSize: 10, fontFamily: 'monospace' }} />
                   <YAxis stroke="#64748b" tick={{ fontSize: 10, fontFamily: 'monospace' }} />
@@ -164,6 +174,7 @@ export default function GovernmentAssistancePage() {
                 </BarChart>
               </ResponsiveContainer>
             </div>
+            )}
           </div>
 
           {/* Korelasi Dampak Bantuan */}
@@ -172,9 +183,14 @@ export default function GovernmentAssistancePage() {
               <TrendingUp size={18} className="text-blue-700" />
               Efektivitas Bantuan terhadap Laju Produksi (%)
             </h3>
+            {korelasi.length === 0 ? (
+              <div className="w-full h-80 flex items-center justify-center font-mono text-xs uppercase text-slate-400 border border-dashed border-slate-200">
+                Belum ada data korelasi sektor
+              </div>
+            ) : (
             <div className="w-full h-80">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={correlationData} margin={{ top: 10, right: 20, left: -20, bottom: 0 }}>
+                <LineChart data={korelasi.map((k) => ({ sektor: k.sektor, bantuan: k.bantuanMiliar, kenaikanProduksi: k.kenaikanProduksiPct }))} margin={{ top: 10, right: 20, left: -20, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#e5e5e5" />
                   <XAxis dataKey="sektor" stroke="#64748b" tick={{ fontSize: 9, fontFamily: 'monospace' }} />
                   <YAxis stroke="#64748b" tick={{ fontSize: 10, fontFamily: 'monospace' }} />
@@ -185,6 +201,7 @@ export default function GovernmentAssistancePage() {
                 </LineChart>
               </ResponsiveContainer>
             </div>
+            )}
           </div>
         </div>
 
@@ -202,31 +219,41 @@ export default function GovernmentAssistancePage() {
                   <th className="p-3 uppercase">Sumber Dana</th>
                   <th className="p-3 uppercase text-right">Nilai Anggaran</th>
                   <th className="p-3 uppercase">Sektor Target</th>
+                  <th className="p-3 uppercase">Penerima</th>
                   <th className="p-3 uppercase text-center">Indikator Dampak</th>
                 </tr>
               </thead>
               <tbody>
-                {programList.map((p, idx) => (
-                  <tr key={idx} className="border-b border-slate-200 hover:bg-slate-50">
-                    <td className="p-3 font-bold text-slate-800">{p.nama}</td>
-                    <td className="p-3">
-                      <span className={`px-2 py-0.5 border text-[10px] font-bold ${
-                        p.sumber.includes("APBN") ? "bg-blue-50 text-blue-700 border-blue-200" : "bg-emerald-50 text-emerald-700 border-emerald-200"
-                      }`}>
-                        {p.sumber}
-                      </span>
-                    </td>
-                    <td className="p-3 text-right font-black text-slate-800">{p.nilai}</td>
-                    <td className="p-3 uppercase font-medium">{p.sektor}</td>
-                    <td className="p-3 text-center">
-                      <span className={`inline-flex items-center gap-0.5 px-2 py-0.5 border text-[10px] font-black uppercase ${
-                        p.dampak.includes("Tinggi") ? "bg-green-100 text-green-700 border-green-300" : "bg-yellow-100 text-yellow-700 border-yellow-300"
-                      }`}>
-                        <ArrowUpRight size={10} /> {p.dampak}
-                      </span>
+                {program.length === 0 ? (
+                  <tr className="border-b border-slate-200">
+                    <td colSpan={6} className="p-8 text-center font-mono text-xs uppercase text-slate-400">
+                      Belum ada program bantuan yang diinput
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  program.map((p, idx) => (
+                    <tr key={p._id || `prog-${idx}`} className="border-b border-slate-200 hover:bg-slate-50">
+                      <td className="p-3 font-bold text-slate-800">{p.nama || "-"}</td>
+                      <td className="p-3">
+                        <span className={`px-2 py-0.5 border text-[10px] font-bold ${
+                          p.sumber === "APBN" ? "bg-blue-50 text-blue-700 border-blue-200" : "bg-emerald-50 text-emerald-700 border-emerald-200"
+                        }`}>
+                          {p.sumber} {p.tahunAnggaran || ""}
+                        </span>
+                      </td>
+                      <td className="p-3 text-right font-black text-slate-800">{formatRupiahShort(p.nilaiRupiah)}</td>
+                      <td className="p-3 uppercase font-medium">{p.sektor || "-"}</td>
+                      <td className="p-3">{p.penerimaJumlah > 0 ? `${p.penerimaJumlah.toLocaleString("id-ID")} ${p.penerimaJenis}` : "-"}</td>
+                      <td className="p-3 text-center">
+                        <span className={`inline-flex items-center gap-0.5 px-2 py-0.5 border text-[10px] font-black uppercase ${
+                          p.dampakLevel === "Tinggi" ? "bg-green-100 text-green-700 border-green-300" : "bg-yellow-100 text-yellow-700 border-yellow-300"
+                        }`} title={p.dampakCatatan || undefined}>
+                          <ArrowUpRight size={10} /> {p.dampakLevel}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
@@ -242,7 +269,7 @@ export default function GovernmentAssistancePage() {
             <li className="flex items-start gap-2">
               <span className="text-emerald-700 font-bold">▸</span>
               <span>
-                <strong>Efisiensi Mekanisasi:</strong> Berdasarkan data simulasi korelasi, sektor tanaman pangan (Padi) mencatat ROI tertinggi terhadap bantuan mekanisasi (Alsintan) karena langsung menekan waktu kehilangan panen (*losses*).
+                <strong>Efisiensi Mekanisasi:</strong> Berdasarkan data korelasi bantuan terhadap laju produksi, sektor dengan dampak tertinggi terhadap bantuan mekanisasi (Alsintan) umumnya adalah yang paling menekan waktu kehilangan panen (*losses*).
               </span>
             </li>
             <li className="flex items-start gap-2">

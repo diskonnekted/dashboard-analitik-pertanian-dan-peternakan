@@ -10,6 +10,7 @@ const PriceVolatilityPage = lazy(() => import("@/pages/price-volatility"));
 const FoodSecurityPage = lazy(() => import("@/pages/food-security"));
 const SupplyChainPage = lazy(() => import("@/pages/supply-chain"));
 const InfoPage = lazy(() => import("@/pages/info"));
+const AdminPage = lazy(() => import("@/pages/admin"));
 const LivestockPage = lazy(() => import("@/pages/livestock"));
 const FisheriesPage = lazy(() => import("@/pages/fisheries"));
 const EconomicValuePage = lazy(() => import("@/pages/economic-value"));
@@ -54,6 +55,8 @@ function App() {
           <Route element={<RenstraPage />} path="/renstra" />
           <Route element={<ManualPage />} path="/manual" />
           <Route element={<InfoPage />} path="/info" />
+          {/* Area internal — TIDAK ada di menu publik, akses langsung via URL */}
+          <Route element={<AdminPage />} path="/admin" />
           {/* Routes for modules in development */}
           <Route element={<ComingSoonPage />} path="/early-warning" />
           <Route element={<ComingSoonPage />} path="/master-petani" />

@@ -1,0 +1,21 @@
+{
+  "name": "sispertani-studio",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Sanity Studio — dasbor admin input data bantuan pemerintah SISPERTANI (Kab. Banjarnegara)",
+  "scripts": {
+    "dev": "sanity dev",
+    "build": "sanity build",
+    "deploy": "sanity deploy"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "sanity": "^3.62.0",
+    "styled-components": "^6.1.15"
+  },
+  "devDependencies": {
+    "@sanity/vision": "^3.62.0",
+    "typescript": "^5.5.4"
+  }
+}
