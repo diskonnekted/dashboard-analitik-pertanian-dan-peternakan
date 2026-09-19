@@ -5,6 +5,10 @@ export type NavGroup = { title: string; items: NavItem[] };
 
 export const siteConfig = {
   name: "SISPERTANI",
+  // Versi aplikasi — SATU sumber kebenaran (dipakai footer layout & harus sinkron
+  // dgn package.json dan Manual Pengguna; manual terbit pertama menyebut "Versi 1.0").
+  version: "1.0.0",
+  releaseDate: "19 September 2026",
   description: "Sistem Informasi Pertanian Kabupaten Banjarnegara.",
   navGroups: [
     {

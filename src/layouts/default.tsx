@@ -268,7 +268,7 @@ export default function DefaultLayout({
           {/* Footer */}
           <footer className="no-print bg-white border-t border-slate-200 px-6 py-4 flex items-center justify-between text-xs font-medium text-slate-500 shrink-0">
             <p>&copy; {new Date().getFullYear()} Dinas Pertanian, Perikanan dan Ketahanan Pangan Kab. Banjarnegara - SISPERTANI</p>
-            <p className="hidden sm:block">V1.2.0 • Status: OK</p>
+            <p className="hidden sm:block">V{siteConfig.version} • Rilis: {siteConfig.releaseDate} • Status: OK</p>
           </footer>
         </div>
       </div>
