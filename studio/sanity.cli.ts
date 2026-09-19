@@ -9,4 +9,7 @@ export default defineCliConfig({
   // (harus unik global; ganti bila sudah dipakai pihak lain)
   studioHost: 'sispertani',
   autoUpdates: true,
+  deployment: {
+    appId: 'etswmmkz096h0rqimmiihqpt',
+  },
 })
