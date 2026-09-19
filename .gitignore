@@ -49,3 +49,6 @@ scripts/*.mjs
 scripts/hasil-*.txt
 scripts/kda-*.txt
 scripts/kda-*.clean
+docs/*.docx
+docs/screenshots/
+docs/tmp/
