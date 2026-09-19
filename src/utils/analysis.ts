@@ -236,11 +236,18 @@ export function estimateEconomicValue(input: {
   sapiEkor: number;
   kambingEkor: number;
   ikanTon: number;
+  /** Nilai produksi perikanan aktual (ribu rupiah, Distankan KP). Bila diisi, dipakai
+   *  menggantikan estimasi harga referensi × tonase (harga acuan nila terlalu tinggi
+   *  untuk komoditas campuran yang didominasi lele). */
+  ikanNilaiRibu?: number;
 }): EconomicValuation {
   const gabah = input.padiTon * 1000 * REFERENCE_PRICES.gabahKering;
   const sapi = input.sapiEkor * REFERENCE_PRICES.sapi;
   const kambing = input.kambingEkor * REFERENCE_PRICES.kambing;
-  const ikan = input.ikanTon * 1000 * REFERENCE_PRICES.ikanNila;
+  const ikan =
+    input.ikanNilaiRibu !== undefined
+      ? input.ikanNilaiRibu * 1000
+      : input.ikanTon * 1000 * REFERENCE_PRICES.ikanNila;
   return {
     gabah,
     sapi,

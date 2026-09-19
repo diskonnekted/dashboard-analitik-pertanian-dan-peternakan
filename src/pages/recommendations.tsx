@@ -15,12 +15,15 @@ import {
   fetchTernakBesar,
   fetchTernakKecil,
   fetchPerikananBudidaya,
+  fetchNilaiProduksiBudidaya,
+  fetchNilaiProduksiTangkap,
   fetchLahanBanjarnegara,
   fetchOpenDataCatalog,
   type PadiProduction,
   type TernakBesar,
   type TernakKecil,
   type PerikananBudidaya,
+  type NilaiProduksiRow,
   type LahanDesa,
   type CkanCatalog,
 } from "@/services/api";
@@ -66,6 +69,8 @@ export default function RecommendationsPage() {
   const [ternakBesar, setTernakBesar] = useState<TernakBesar[]>([]);
   const [ternakKecil, setTernakKecil] = useState<TernakKecil[]>([]);
   const [ikanData, setIkanData] = useState<PerikananBudidaya[]>([]);
+  const [nilaiBudidaya, setNilaiBudidaya] = useState<NilaiProduksiRow[]>([]);
+  const [nilaiTangkap, setNilaiTangkap] = useState<NilaiProduksiRow[]>([]);
   const [lahanData, setLahanData] = useState<LahanDesa[]>([]);
   const [openDataCatalog, setOpenDataCatalog] = useState<CkanCatalog | null>(null);
   const [loading, setLoading] = useState(true);
@@ -73,11 +78,13 @@ export default function RecommendationsPage() {
   useEffect(() => {
     const loadAll = async () => {
       try {
-        const [padi, tb, tk, ikan, lahan, catalog] = await Promise.all([
+        const [padi, tb, tk, ikan, nb, nt, lahan, catalog] = await Promise.all([
           fetchPadiProduction(),
           fetchTernakBesar(),
           fetchTernakKecil(),
           fetchPerikananBudidaya(),
+          fetchNilaiProduksiBudidaya(),
+          fetchNilaiProduksiTangkap(),
           fetchLahanBanjarnegara(),
           fetchOpenDataCatalog(),
         ]);
@@ -85,6 +92,8 @@ export default function RecommendationsPage() {
         setTernakBesar(tb);
         setTernakKecil(tk);
         setIkanData(ikan);
+        setNilaiBudidaya(nb);
+        setNilaiTangkap(nt);
         setLahanData(lahan);
         setOpenDataCatalog(catalog);
       } catch (err) {
@@ -119,16 +128,19 @@ export default function RecommendationsPage() {
       }
     });
 
-    // 2. Peternakan
-    const totalSapi = ternakBesar.reduce((acc, curr) => acc + curr.sapi, 0);
-    const totalKambing = ternakKecil.reduce((acc, curr) => acc + curr.kambing, 0);
+    // 2. Peternakan — gunakan total 2024 (bukan akumulasi semua tahun)
+    // Filter tahun 2024 karena data terbaru yang tersedia
+    const ternakBesar2024 = ternakBesar.filter((d) => d.tahun === "2024");
+    const ternakKecil2024 = ternakKecil.filter((d) => d.tahun === "2024");
+    const totalSapi = ternakBesar2024.reduce((acc, curr) => acc + curr.sapi, 0);
+    const totalKambing = ternakKecil2024.reduce((acc, curr) => acc + curr.kambing, 0);
     const totalTernakPop = totalSapi + totalKambing;
 
     const kecTernakMap: Record<string, number> = {};
-    ternakBesar.forEach((item) => {
+    ternakBesar2024.forEach((item) => {
       kecTernakMap[item.kecamatan] = (kecTernakMap[item.kecamatan] || 0) + item.sapi;
     });
-    ternakKecil.forEach((item) => {
+    ternakKecil2024.forEach((item) => {
       kecTernakMap[item.kecamatan] = (kecTernakMap[item.kecamatan] || 0) + item.kambing;
     });
     let topTernakKec = "N/A";
@@ -140,16 +152,38 @@ export default function RecommendationsPage() {
       }
     });
 
-    // 3. Perikanan
-    const totalIkanProd = ikanData.reduce((acc, curr) => acc + curr.kolamPembesaran, 0);
+    // 3. Perikanan — gunakan tahun 2024 (data terkoreksi)
+    // Hitung total produksi 2024 dari ikanData (kolam pembesaran, KJA, minapadi)
+    let totalIkanProd2024 = 0;
     let topIkanKec = "N/A";
     let maxIkanProd = 0;
+    const kecIkanMap: Record<string, number> = {};
     ikanData.forEach((item) => {
-      if (item.kolamPembesaran > maxIkanProd) {
-        maxIkanProd = item.kolamPembesaran;
+      if (item.tahun !== "2024") return;
+      const prod = item.kolamPembesaran + item.karambaApung + item.minaPenyelang + item.minaTumpangsari;
+      kecIkanMap[item.kecamatan] = (kecIkanMap[item.kecamatan] || 0) + prod;
+      totalIkanProd2024 += prod;
+      if (prod > maxIkanProd) {
+        maxIkanProd = prod;
         topIkanKec = item.kecamatan;
       }
     });
+    const totalIkanProd = totalIkanProd2024;
+
+    // Total nilai produksi 2024 (terkoreksi) dari Distankan KP
+    const nilaiBudidaya2024 = nilaiBudidaya.reduce((acc, curr) => {
+      if (curr.tahun === "2024") {
+        return acc + curr.jenis.reduce((a, j) => a + j.nilai, 0);
+      }
+      return acc;
+    }, 0);
+    const nilaiTangkap2024 = nilaiTangkap.reduce((acc, curr) => {
+      if (curr.tahun === "2024") {
+        return acc + curr.jenis.reduce((a, j) => a + j.nilai, 0);
+      }
+      return acc;
+    }, 0);
+    const totalNilaiProduksi2024 = nilaiBudidaya2024 + nilaiTangkap2024; // ribu rupiah
 
     // 4. Lahan
     const totalSawah = lahanData.reduce((acc, curr) => acc + curr.lahanSawah, 0);
@@ -160,7 +194,7 @@ export default function RecommendationsPage() {
       Object.values(kecTernakMap),
     );
     const ikanSeries: SectorStats = describe(
-      ikanData.map((d) => d.kolamPembesaran),
+      ikanData.filter((d) => d.tahun === "2024").map((d) => d.kolamPembesaran),
     );
 
     const padiConcentration: ConcentrationMetrics = computeConcentration(
@@ -176,11 +210,14 @@ export default function RecommendationsPage() {
     const padiProductivity = computeProductivity(totalPadiProd, totalPadiLuas);
 
     // Estimasi nilai ekonomi
+    // ikanTon = produksi ikan 2024 (kg → ton untuk fungsi); ikanNilaiRibu = nilai produksi aktual terkoreksi
+    // Fungsi estimateEconomicValue akan memakai ikanNilaiRibu langsung jika tersedia
     const econ = estimateEconomicValue({
       padiTon: totalPadiProd,
       sapiEkor: totalSapi,
       kambingEkor: totalKambing,
       ikanTon: totalIkanProd,
+      ikanNilaiRibu: totalNilaiProduksi2024,
     });
 
     return {
@@ -194,6 +231,7 @@ export default function RecommendationsPage() {
       totalIkanProd,
       topIkanKec,
       maxIkanProd,
+      totalNilaiProduksi2024,
       totalSawah,
       // Statistik ilmiah
       padiSeries,
@@ -205,7 +243,7 @@ export default function RecommendationsPage() {
       padiProductivity,
       econ,
     };
-  }, [padiData, ternakBesar, ternakKecil, ikanData, lahanData]);
+  }, [padiData, ternakBesar, ternakKecil, ikanData, nilaiBudidaya, nilaiTangkap, lahanData]);
 
   /* Proyeksi Tren Padi (jika ada data time-series ≥ 2 tahun) */
   const padiTrend: TrendProjection | null = useMemo(() => {
@@ -652,60 +690,54 @@ ${catalogSection}`;
               </ul>
             </div>
 
-            {/* Perikanan */}
+            {/* Perikanan — data 2024, terkoreksi */}
             <div className="border border-sky-200 bg-sky-50/50 p-4 rounded">
               <p className="text-[10px] font-mono font-black uppercase text-sky-800 tracking-wider mb-2">
-                Perikanan
+                Perikanan (2024)
               </p>
               <ul className="text-[11px] font-sans text-slate-700 space-y-1.5 leading-snug">
-                <li><span className="font-bold">Mean:</span> {new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 }).format(stats.ikanSeries.mean)} Ton</li>
-                <li><span className="font-bold">Std Dev:</span> {new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 }).format(stats.ikanSeries.stdDev)}</li>
-                <li><span className="font-bold">CV:</span> {formatPct(stats.ikanSeries.cv)}</li>
-                <li>
-                  <span className="font-bold">HHI:</span> {stats.ikanConcentration.hhi}{" "}
-                  <span className="text-slate-500">({stats.ikanConcentration.interpretation})</span>
-                </li>
-                <li>
-                  <span className="font-bold">Top 1 Share:</span> {formatPct(stats.ikanConcentration.top1Share)}
-                </li>
-                <li>
-                  <span className="font-bold">Top 3 Share:</span> {formatPct(stats.ikanConcentration.top3Share)}
+                <li><span className="font-bold">Produksi 2024:</span> {new Intl.NumberFormat("id-ID").format(stats.totalIkanProd)} Ton</li>
+                <li><span className="font-bold">Top Kecamatan:</span> {stats.topIkanKec} ({new Intl.NumberFormat("id-ID").format(stats.maxIkanProd)} Ton)</li>
+                <li><span className="font-bold">Total Nilai Produksi 2024:</span> Rp {new Intl.NumberFormat("id-ID").format(stats.totalNilaiProduksi2024)} jt</li>
+                <li><span className="font-bold">Harga Implisit:</span> Rp {new Intl.NumberFormat("id-ID").format(Math.round((stats.totalNilaiProduksi2024 * 1000) / stats.totalIkanProd) / 1000)}/kg</li>
+                <li className="text-[10px] text-slate-500 italic mt-2">
+                  Nilai produksi dari Distankan KP (2024), terkoreksi 6 sel anomali
                 </li>
               </ul>
             </div>
           </div>
 
-          {/* Estimasi Nilai Ekonomi */}
-          <div className="mt-5 border-t border-slate-200 pt-4">
-            <p className="text-[10px] font-mono font-black uppercase text-slate-600 tracking-wider mb-3">
-              Estimasi Nilai Ekonomi (harga acuan pasar Banjarnegara 2024-2025)
-            </p>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-              <div className="text-center border border-slate-200 p-3 rounded bg-slate-50">
-                <p className="text-[9px] font-mono uppercase text-slate-500">Gabah Kering</p>
-                <p className="text-sm font-serif font-bold text-slate-800 mt-1">{formatRupiah(stats.econ.gabah)}</p>
+              {/* Estimasi Nilai Ekonomi */}
+              <div className="col-span-2 mt-5 border-t border-slate-200 pt-4">
+                <p className="text-[10px] font-mono font-black uppercase text-slate-600 tracking-wider mb-3">
+                  Estimasi Nilai Ekonomi (harga acuan pasar Banjarnegara 2024-2025)
+                </p>
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                  <div className="text-center border border-slate-200 p-3 rounded bg-slate-50">
+                    <p className="text-[9px] font-mono uppercase text-slate-500">Gabah Kering</p>
+                    <p className="text-sm font-serif font-bold text-slate-800 mt-1">{formatRupiah(stats.econ.gabah)}</p>
+                  </div>
+                  <div className="text-center border border-slate-200 p-3 rounded bg-slate-50">
+                    <p className="text-[9px] font-mono uppercase text-slate-500">Ternak Sapi</p>
+                    <p className="text-sm font-serif font-bold text-slate-800 mt-1">{formatRupiah(stats.econ.sapi)}</p>
+                  </div>
+                  <div className="text-center border border-slate-200 p-3 rounded bg-slate-50">
+                    <p className="text-[9px] font-mono uppercase text-slate-500">Kambing</p>
+                    <p className="text-sm font-serif font-bold text-slate-800 mt-1">{formatRupiah(stats.econ.kambing)}</p>
+                  </div>
+                  <div className="text-center border border-slate-200 p-3 rounded bg-slate-50">
+                    <p className="text-[9px] font-mono uppercase text-slate-500">Nilai Produksi Ikan 2024</p>
+                    <p className="text-sm font-serif font-bold text-slate-800 mt-1">{formatRupiah(stats.econ.ikan)}</p>
+                  </div>
+                  <div className="text-center border-2 border-emerald-600 p-3 rounded bg-emerald-100">
+                    <p className="text-[9px] font-mono uppercase text-emerald-800">Total Estimasi</p>
+                    <p className="text-sm font-serif font-bold text-emerald-900 mt-1">{formatRupiah(stats.econ.totalEst)}</p>
+                  </div>
+                </div>
+                <p className="text-[9px] font-mono text-slate-500 mt-2 italic leading-relaxed">
+                  * Asumsi: Gabah Kering Panen Rp 6.000/kg, Sapi Rp 18 jt/ekor, Kambing Rp 3 jt/ekor. Nilai ikan = produksi aktual 2024 (Distankan KP) terkoreksi: Rp {new Intl.NumberFormat("id-ID").format(stats.totalNilaiProduksi2024)} ribu (Rp {(stats.totalNilaiProduksi2024 * 1000 / 1e6).toFixed(1)} jt). Nilai indikatif untuk analisis kebijakan, bukan nilai transaksi riil.
+                </p>
               </div>
-              <div className="text-center border border-slate-200 p-3 rounded bg-slate-50">
-                <p className="text-[9px] font-mono uppercase text-slate-500">Ternak Sapi</p>
-                <p className="text-sm font-serif font-bold text-slate-800 mt-1">{formatRupiah(stats.econ.sapi)}</p>
-              </div>
-              <div className="text-center border border-slate-200 p-3 rounded bg-slate-50">
-                <p className="text-[9px] font-mono uppercase text-slate-500">Kambing</p>
-                <p className="text-sm font-serif font-bold text-slate-800 mt-1">{formatRupiah(stats.econ.kambing)}</p>
-              </div>
-              <div className="text-center border border-slate-200 p-3 rounded bg-slate-50">
-                <p className="text-[9px] font-mono uppercase text-slate-500">Ikan Budidaya</p>
-                <p className="text-sm font-serif font-bold text-slate-800 mt-1">{formatRupiah(stats.econ.ikan)}</p>
-              </div>
-              <div className="text-center border-2 border-emerald-600 p-3 rounded bg-emerald-100">
-                <p className="text-[9px] font-mono uppercase text-emerald-800">Total Estimasi</p>
-                <p className="text-sm font-serif font-bold text-emerald-900 mt-1">{formatRupiah(stats.econ.totalEst)}</p>
-              </div>
-            </div>
-            <p className="text-[9px] font-mono text-slate-500 mt-2 italic">
-              * Asumsi: Gabah Kering Panen Rp 6.000/kg, Sapi Rp 18 jt/ekor, Kambing Rp 3 jt/ekor, Ikan Nila Rp 35.000/kg. Nilai indikatif untuk analisis kebijakan, bukan nilai transaksi riil.
-            </p>
-          </div>
         </div>
 
         {/* Ringkasan Eksekutif */}

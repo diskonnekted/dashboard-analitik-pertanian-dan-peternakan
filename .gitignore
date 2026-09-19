@@ -42,3 +42,10 @@ __pycache__/
 .env
 .env.local
 .env.*.local
+
+# Scripts debugging / audit (not shipped to repo)
+scripts/*.cjs
+scripts/*.mjs
+scripts/hasil-*.txt
+scripts/kda-*.txt
+scripts/kda-*.clean

@@ -513,6 +513,15 @@ export default function EconomicValuePage() {
           </>
         )}
       </section>
+
+      {/* Catatan koreksi data sumber */}
+      <p className="text-[10px] font-mono text-slate-400 leading-relaxed">
+        Catatan: 6 sel nilai produksi pada data sumber (Distankan KP) telah dikoreksi — 4 sel
+        tahun 2022 budidaya tertulis dalam rupiah (seharusnya ribu rupiah) dan 2 sel tahun 2021
+        tangkap kehilangan digit belakang. Harga implisit hasil koreksi (Rp 20.000–24.000/kg
+        budidaya; Rp 17.000–22.000/kg tangkap) konsisten dengan asumsi harga resmi BPS KDA 2025
+        (Pembesaran Rp 22.145/kg, KJA Rp 23.820/kg, Minapadi Rp 22.000/kg).
+      </p>
     </DefaultLayout>
   );
 }

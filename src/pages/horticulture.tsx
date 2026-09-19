@@ -706,14 +706,17 @@ export default function HorticulturePage() {
               title="Produksi Buah & Sayuran Tahunan Kabupaten"
               icon={<FileSpreadsheet size={16} className="text-emerald-600" />}
               actions={
-                <div className="text-right">
-                  <p className="text-[11px] font-semibold uppercase text-slate-500">Total Produksi 2025</p>
-                  <p className="text-xl font-bold tabular-nums text-slate-800">{formatNum(annualRanking.total)} Ton</p>
-                </div>
+                <>
+                  <Badge tone="amber">Agregat kabupaten · tidak mengikuti filter</Badge>
+                  <div className="text-right">
+                    <p className="text-[11px] font-semibold uppercase text-slate-500">Total Produksi 2025</p>
+                    <p className="text-xl font-bold tabular-nums text-slate-800">{formatNum(annualRanking.total)} Ton</p>
+                  </div>
+                </>
               }
             >
               <p className="text-xs text-slate-500 mb-4">
-                Data BPS 2025, satuan dikonversi dari kuintal ke ton
+                Data BPS 2025, dikonversi dari kuintal ke ton. Hanya tersedia agregat tingkat kabupaten (belum ada rilis per kecamatan dari Distankan KP/BPS), sehingga panel ini tidak berubah saat filter kecamatan atau tahun diganti.
               </p>
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2 h-[320px]">
