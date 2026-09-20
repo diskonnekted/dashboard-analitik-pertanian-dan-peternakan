@@ -22,23 +22,23 @@ import {
 } from "@/services/bantuan";
 
 /**
- * URL Sanity Studio — Sanity v3 tidak lagi meng-host Studio di subdomain
- * `<projectId>.sanity.studio` maupun di subdomain legacy hasil
- * `sanity deploy`. Semua subdomain `*.sanity.studio` di-redirect ke
- * pola URL Dashboard resmi:
+ * URL Sanity Studio — pola URL Dashboard Sanity v3 adalah
  *
- *     https://www.sanity.io/@<userOrOrgId>/studio/<appId>/<distribution>/<dataset>
+ *     https://www.sanity.io/@<userOrOrgId>/studio/<appId>/<distribution>/<tool>
+ *
+ * Nilai <tool> yang valid: `structure` (default — Navigator + dokumen
+ * list dengan dataset `datasispertani` yang diset dari sanity.config.ts),
+ * `vision` (GROQ playground), `presentations`, `media-library`, dll.
+ * Bukan `<dataset>` — itulah alasan URL lama "…/default/datasispertani"
+ * memunculkan "Tool not found: datasispertani".
  *
  * Alias SISPERTANI:
  *   - user/org : oHoFhQZhG
  *   - appId    : etswmmkz096h0rqimmiihqpt (lihat studio/sanity.cli.ts)
- *   - dataset  : datasispertani
- *
- * URL ini juga yang membuat Dashboard / Content Agent berfungsi penuh,
- * karena origin yang di-load adalah origin Dashboard resmi Sanity.
+ *   - distribution: default (hanya ada satu)
  */
 const STUDIO_URL =
-  "https://www.sanity.io/@oHoFhQZhG/studio/etswmmkz096h0rqimmiihqpt/default/datasispertani";
+  "https://www.sanity.io/@oHoFhQZhG/studio/etswmmkz096h0rqimmiihqpt/default/structure";
 
 export default function AdminPage() {
   // Halaman internal: jangan diindeks mesin pencari
