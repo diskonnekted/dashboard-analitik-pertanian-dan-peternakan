@@ -22,14 +22,23 @@ import {
 } from "@/services/bantuan";
 
 /**
- * URL Sanity Studio — hostname resmi didasarkan pada projectId Sanity
- * ("spukl1fj"), bukan alias custom "sispertani" (yang me-load Dashboard
- * universal dan memicu banner "Studio is not fully compatible with Dashboard").
+ * URL Sanity Studio — Sanity v3 tidak lagi meng-host Studio di subdomain
+ * `<projectId>.sanity.studio` maupun di subdomain legacy hasil
+ * `sanity deploy`. Semua subdomain `*.sanity.studio` di-redirect ke
+ * pola URL Dashboard resmi:
  *
- * Catatan: ganti <dataset> jika dataset Anda bukan "datasispertani".
+ *     https://www.sanity.io/@<userOrOrgId>/studio/<appId>/<distribution>/<dataset>
+ *
+ * Alias SISPERTANI:
+ *   - user/org : oHoFhQZhG
+ *   - appId    : etswmmkz096h0rqimmiihqpt (lihat studio/sanity.cli.ts)
+ *   - dataset  : datasispertani
+ *
+ * URL ini juga yang membuat Dashboard / Content Agent berfungsi penuh,
+ * karena origin yang di-load adalah origin Dashboard resmi Sanity.
  */
 const STUDIO_URL =
-  "https://spukl1fj.sanity.studio/datasispertani";
+  "https://www.sanity.io/@oHoFhQZhG/studio/etswmmkz096h0rqimmiihqpt/default/datasispertani";
 
 export default function AdminPage() {
   // Halaman internal: jangan diindeks mesin pencari
