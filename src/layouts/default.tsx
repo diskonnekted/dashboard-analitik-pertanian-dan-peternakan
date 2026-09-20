@@ -37,6 +37,7 @@ import {
   Activity,
   Settings,
   UserCog,
+  Lock,
 } from "lucide-react";
 import { siteConfig } from "@/config/site";
 
@@ -238,14 +239,15 @@ export default function DefaultLayout({
             </div>
             
             <div className="flex items-center gap-4">
-              {/* Login Button */}
-              <button
-                disabled
-                className="hidden sm:inline-flex items-center px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-400 cursor-not-allowed opacity-80"
-                title="Login belum tersedia untuk pengunjung"
+              {/* Login Button → pintu masuk dasbor admin internal */}
+              <Link
+                to="/admin"
+                className="hidden sm:inline-flex items-center px-3 py-1.5 bg-emerald-50 border border-emerald-200 rounded-lg text-xs font-semibold text-emerald-700 hover:bg-emerald-100 hover:border-emerald-300 transition-all"
+                title="Buka Dasbor Admin — terhubung ke Sanity Studio"
               >
+                <Lock className="w-3 h-3 mr-1" />
                 Login
-              </button>
+              </Link>
               
               {/* Guest Avatar */}
               <div className="flex items-center gap-3">
