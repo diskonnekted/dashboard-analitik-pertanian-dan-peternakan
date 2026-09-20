@@ -22,10 +22,14 @@ import {
 } from "@/services/bantuan";
 
 /**
- * URL Sanity Studio — sesuaikan bila hostname deploy berbeda
- * (default rekomendasi: "sispertani" saat `npx sanity deploy`).
+ * URL Sanity Studio — hostname resmi didasarkan pada projectId Sanity
+ * ("spukl1fj"), bukan alias custom "sispertani" (yang me-load Dashboard
+ * universal dan memicu banner "Studio is not fully compatible with Dashboard").
+ *
+ * Catatan: ganti <dataset> jika dataset Anda bukan "datasispertani".
  */
-const STUDIO_URL = "https://sispertani.sanity.studio";
+const STUDIO_URL =
+  "https://spukl1fj.sanity.studio/datasispertani";
 
 export default function AdminPage() {
   // Halaman internal: jangan diindeks mesin pencari
