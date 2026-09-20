@@ -2,7 +2,6 @@ import { useEffect, useState, useMemo } from "react";
 import { MapContainer, TileLayer, GeoJSON, LayersControl, useMap, LayerGroup } from "react-leaflet";
 import L from "leaflet";
 import ReactDOMServer from "react-dom/server";
-import { Link } from "react-router-dom";
 import { Search, Plus, Minus, Lock, AlertTriangle, RotateCw, ArrowUpRight } from "lucide-react";
 import { LoadingSpinner } from "@/components/ui";
 
@@ -12,19 +11,24 @@ import { buildDesaPath } from "@/services/desa";
 
 /**
  * Link inline di header popup — arahkan ke halaman detail desa.
- * Dipakai sebagai <Link href="..."/> biasa via react-router-dom (SPA, tidak reload).
+ *
+ * CATATAN: Popup ini di-render oleh Leaflet via ReactDOMServer.renderToString
+ * (bukan portal React modern), jadi tidak punya akses ke <Router> Context.
+ * Untuk menghindari error "Cannot destructure basename of useContext(...) null",
+ * pakai <a href> biasa, bukan <Link> dari react-router-dom. SPA fallback di
+ * nginx (index.html untuk semua route) membuat full-reload tetap mulus.
  */
 const DetailDesaLink = ({ desaName, kecName }: { desaName: string; kecName: string }) => {
   const path = buildDesaPath(kecName, desaName);
   return (
-    <Link
-      to={path}
+    <a
+      href={path}
       className="mt-1 inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wide text-white bg-white/15 hover:bg-white/25 border border-white/20 rounded px-1.5 py-0.5 transition-colors"
       onClick={(e) => e.stopPropagation()}
     >
       Detail Desa
       <ArrowUpRight className="w-3 h-3" />
-    </Link>
+    </a>
   );
 };
 
