@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { MapContainer, TileLayer, GeoJSON, LayersControl, useMap, LayerGroup } from "react-leaflet";
 import L from "leaflet";
 import ReactDOMServer from "react-dom/server";
@@ -180,6 +180,41 @@ const auxiliaryGeoJsonLayers: AuxiliaryGeoJsonLayer[] = [
     lineWeight: 1.5,
   },
 ];
+
+// Target hasil pencarian desa untuk fly-to + highlight
+type DesaSearchTarget = {
+  name: string;          // nama desa apa adanya dari GeoJSON
+  kec: string;           // kecamatan (pembeda desa kembar antar-kecamatan)
+  bounds: L.LatLngBounds;
+  token: number;         // berubah tiap pemilihan â†’ memicu ulang efek flyTo
+};
+
+/**
+ * SearchFlyTo â€” saat user memilih desa dari dropdown pencarian, peta
+ * "terbang" (flyToBounds) ke polygon desa tsb lalu membuka popup-nya.
+ * Timeout (bukan moveend) dipakai agar popup tetap terbuka walau kamera
+ * tidak berpindah (mis. memilih desa yang sama dua kali).
+ */
+const SearchFlyTo = ({ target, geoJsonRef }: { target: DesaSearchTarget | null; geoJsonRef: { current: L.GeoJSON | null } }) => {
+  const map = useMap();
+  useEffect(() => {
+    if (!target) return;
+    map.flyToBounds(target.bounds, { padding: [60, 60], maxZoom: 15, duration: 1.1 });
+    const t = setTimeout(() => {
+      const gj = geoJsonRef.current;
+      if (!gj) return;
+      gj.eachLayer((lyr: any) => {
+        const f = lyr?.feature;
+        if (!f) return;
+        const nm = f.properties?.Nama_Desa_ || f.properties?.Name || "";
+        const kc = f.properties?.Kecamatan || "";
+        if (nm === target.name && kc === target.kec && lyr.openPopup) lyr.openPopup();
+      });
+    }, 1200);
+    return () => clearTimeout(t);
+  }, [target, map, geoJsonRef]);
+  return null;
+};
 
 const MapBounds = ({ data }: { data: any }) => {
   const map = useMap();
@@ -474,6 +509,50 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
   // States for interactive features
   const [activeMetric, setActiveMetric] = useState<"lahanSawah" | "lahanBukanSawah" | "jumlah">("lahanSawah");
   const [searchQuery, setSearchQuery] = useState("");
+  const [showSearchDropdown, setShowSearchDropdown] = useState(false);
+  const [searchTarget, setSearchTarget] = useState<DesaSearchTarget | null>(null);
+  const desaGeoJsonRef = useRef<L.GeoJSON | null>(null);
+
+  // Indeks pencarian desa dari GeoJSON (nama + kecamatan + referensi feature)
+  const desaSearchIndex = useMemo(() => {
+    if (!desaGeoData?.features) return [] as { name: string; kec: string; feature: any }[];
+    const list: { name: string; kec: string; feature: any }[] = [];
+    for (const f of desaGeoData.features) {
+      const name = f.properties?.Nama_Desa_ || f.properties?.Name;
+      if (!name) continue;
+      list.push({ name: String(name), kec: String(f.properties?.Kecamatan || ""), feature: f });
+    }
+    list.sort((a, b) => a.name.localeCompare(b.name, "id"));
+    return list;
+  }, [desaGeoData]);
+
+  // Hasil dropdown â€” maks 8; cocok-awalan didahulukan, lalu substring.
+  // "DESA "/"KELURAHAN " diabaikan saat pencocokan awalan.
+  const searchResults = useMemo(() => {
+    const q = searchQuery.trim().toUpperCase();
+    if (q.length < 2) return [] as typeof desaSearchIndex;
+    const starts: typeof desaSearchIndex = [];
+    const contains: typeof desaSearchIndex = [];
+    for (const item of desaSearchIndex) {
+      const nm = item.name.toUpperCase();
+      if (nm.startsWith(q) || nm.replace(/^(DESA|KELURAHAN)\s+/, "").startsWith(q)) starts.push(item);
+      else if (nm.includes(q)) contains.push(item);
+    }
+    return [...starts, ...contains].slice(0, 8);
+  }, [desaSearchIndex, searchQuery]);
+
+  // Pilih desa â†’ set filter + target fly-to
+  const handleSelectDesa = (item: { name: string; kec: string; feature: any }) => {
+    try {
+      const bounds = L.geoJSON(item.feature).getBounds();
+      if (!bounds.isValid()) return;
+      setSearchQuery(item.name);
+      setShowSearchDropdown(false);
+      setSearchTarget({ name: item.name, kec: item.kec, bounds, token: Date.now() });
+    } catch (err) {
+      console.error("Gagal menghitung batas desa:", err);
+    }
+  };
   const [activeLegendCategory, setActiveLegendCategory] = useState<number | null>(null);
   const [zoomLocked, setZoomLocked] = useState(true); // true = terkunci (Ctrl dibutuhkan)
 
@@ -612,6 +691,7 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
     let fillOpacity = 0.4;
     let weight = 1.5;
     let opacity = 1;
+    let borderColor = "#1f2937";
 
     // Smart Filter: Search matching
     const matchesSearch = searchQuery === "" || desaName.includes(searchQuery.toUpperCase());
@@ -659,11 +739,20 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
       }
     }
 
+    // Desa terpilih dari pencarian: highlight biru tegas
+    if (searchTarget && desaName === searchTarget.name.toUpperCase() && (feature.properties?.Kecamatan || "") === searchTarget.kec) {
+      fillColor = "#2563eb";
+      fillOpacity = 0.65;
+      weight = 3;
+      opacity = 1;
+      borderColor = "#1d4ed8";
+    }
+
     return {
       fillColor,
       weight,
       opacity,
-      color: "#1f2937",
+      color: borderColor,
       dashArray: "",
       fillOpacity,
     };
@@ -835,19 +924,58 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
         </div>
       </div>
 
-      {/* --- TOP RIGHT: Search Bar --- */}
+      {/* --- TOP RIGHT: Search Bar + dropdown hasil desa --- */}
       <div className="absolute top-3 right-3 z-[1000] flex">
-        <div className="bg-white border border-slate-200 shadow-sm flex items-center p-1 w-[190px] transition-all focus-within:w-[230px] rounded-lg">
-          <Search className="text-neutral-400 mx-2" size={16} />
-          <input 
-            type="text" 
-            placeholder="CARI DESA..." 
-            className="w-full font-mono text-[11px] font-bold uppercase focus:outline-none bg-transparent"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          {searchQuery && (
-            <button onClick={() => setSearchQuery("")} className="px-2 font-black text-red-500 hover:bg-red-50">X</button>
+        <div className="relative">
+          {showSearchDropdown && searchQuery.trim().length >= 2 && (
+            <div className="fixed inset-0 z-0" onClick={() => setShowSearchDropdown(false)} />
+          )}
+          <div className="relative z-10 bg-white border border-slate-200 shadow-sm flex items-center p-1 w-[190px] transition-all focus-within:w-[230px] rounded-lg">
+            <Search className="text-neutral-400 mx-2" size={16} />
+            <input
+              type="text"
+              placeholder="CARI DESA..."
+              className="w-full font-mono text-[11px] font-bold uppercase focus:outline-none bg-transparent"
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setShowSearchDropdown(true);
+                if (!e.target.value) setSearchTarget(null);
+              }}
+              onFocus={() => setShowSearchDropdown(true)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && searchResults.length > 0) handleSelectDesa(searchResults[0]);
+                if (e.key === "Escape") setShowSearchDropdown(false);
+              }}
+            />
+            {searchQuery && (
+              <button
+                onClick={() => { setSearchQuery(""); setSearchTarget(null); setShowSearchDropdown(false); }}
+                className="px-2 font-black text-red-500 hover:bg-red-50"
+              >X</button>
+            )}
+          </div>
+
+          {showSearchDropdown && searchResults.length > 0 && (
+            <div className="absolute right-0 z-10 mt-1 w-[230px] bg-white border border-slate-200 shadow-lg rounded-lg overflow-hidden">
+              {searchResults.map((item, idx) => (
+                <button
+                  key={`${item.kec}-${item.name}-${idx}`}
+                  onClick={() => handleSelectDesa(item)}
+                  className="w-full text-left px-3 py-2 hover:bg-emerald-50 active:bg-emerald-100 border-b border-slate-100 last:border-b-0 transition-colors"
+                >
+                  <span className="block font-mono text-[11px] font-bold uppercase text-slate-800 leading-tight">{item.name}</span>
+                  {item.kec && (
+                    <span className="block font-mono text-[9px] uppercase text-emerald-700 leading-tight">Kec. {item.kec}</span>
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
+          {showSearchDropdown && searchQuery.trim().length >= 2 && searchResults.length === 0 && desaGeoData && (
+            <div className="absolute right-0 z-10 mt-1 w-[230px] bg-white border border-slate-200 shadow-lg rounded-lg px-3 py-2">
+              <span className="font-mono text-[10px] uppercase text-neutral-500">Desa tidak ditemukan</span>
+            </div>
           )}
         </div>
       </div>
@@ -902,6 +1030,7 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
         <MapContainer center={[-7.3941, 109.6965]} style={{ height: "100%", width: "100%" }} zoom={11} minZoom={5} maxZoom={18} zoomControl={false}>
           <MapBounds data={kecGeoData} />
           <ZoomBridge onLockChange={setZoomLocked} />
+          <SearchFlyTo target={searchTarget} geoJsonRef={desaGeoJsonRef} />
           
           <LayersControl position="bottomleft">
             {/* Base layers: Esri ArcGIS Online — gratis, tanpa API key, tidak terblokir */}
@@ -949,8 +1078,9 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
             {desaGeoData && (
               <LayersControl.Overlay checked name="🗺️ Area & Choropleth">
                 <GeoJSON
-                  key={`desa-${desaGeoData.features.length}-${data?.length || 0}-${taniData.length || 0}-${st2023Data.length || 0}-${activeMetric}-${searchQuery}-${activeLegendCategory}`}
+                  key={`desa-${desaGeoData.features.length}-${data?.length || 0}-${taniData.length || 0}-${st2023Data.length || 0}-${activeMetric}-${searchQuery}-${activeLegendCategory}-${searchTarget?.token || 0}`}
                   data={desaGeoData}
+                  ref={desaGeoJsonRef as any}
                   style={getDesaStyle}
                   onEachFeature={(feature, layer) => {
                     const desaName = feature.properties?.Nama_Desa_ || feature.properties?.Name || "Tidak diketahui";
