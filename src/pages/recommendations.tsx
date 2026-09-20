@@ -895,6 +895,39 @@ ${catalogSection}`;
         </p>
       </section>
 
+      {/* Catatan Perbandingan Data BPS vs CKAN */}
+      <section className="print-block mt-8 bg-amber-50 border border-amber-200 p-6 shadow-sm">
+        <h3 className="text-sm font-mono font-black uppercase text-amber-800 tracking-wide mb-3">
+          Catatan Perbandingan Data: BPS (Sensus) vs CKAN (Distankan KP)
+        </h3>
+        <p className="text-xs text-slate-700 leading-relaxed mb-3">
+          Angka estimasi nilai ekonomi padi di halaman ini menggunakan <strong>snapshot CKAN 2025</strong> sebagai sumber utama (di-cache untuk keandalan). Sebagai pembanding, berikut perbedaan dengan data resmi BPS (Kabupaten Banjarnegara Dalam Angka 2026, Tabel 5.1.1 - Padi Sawah &amp; Ladang):
+        </p>
+        <div className="overflow-x-auto">
+          <table className="w-full text-[11px] font-mono border-collapse">
+            <thead>
+              <tr className="bg-amber-100 text-amber-900">
+                <th className="border border-amber-300 px-2 py-1 text-left">Tahun</th>
+                <th className="border border-amber-300 px-2 py-1 text-right">BPS Padi Sawah (Ton)</th>
+                <th className="border border-amber-300 px-2 py-1 text-right">CKAN Datastore (Ton)</th>
+                <th className="border border-amber-300 px-2 py-1 text-right">Selisih</th>
+                <th className="border border-amber-300 px-2 py-1 text-left">Keterangan</th>
+              </tr>
+            </thead>
+            <tbody className="text-slate-700">
+              <tr><td className="border border-amber-200 px-2 py-1">2021</td><td className="border border-amber-200 px-2 py-1 text-right">166.803</td><td className="border border-amber-200 px-2 py-1 text-right">144.313</td><td className="border border-amber-200 px-2 py-1 text-right text-red-700">-13,5%</td><td className="border border-amber-200 px-2 py-1">CKAN estimasi awal</td></tr>
+              <tr><td className="border border-amber-200 px-2 py-1">2022</td><td className="border border-amber-200 px-2 py-1 text-right">170.805</td><td className="border border-amber-200 px-2 py-1 text-right">156.107</td><td className="border border-amber-200 px-2 py-1 text-right text-red-700">-8,6%</td><td className="border border-amber-200 px-2 py-1">CKAN estimasi awal</td></tr>
+              <tr><td className="border border-amber-200 px-2 py-1">2023</td><td className="border border-amber-200 px-2 py-1 text-right">146.840</td><td className="border border-amber-200 px-2 py-1 text-right">126.255</td><td className="border border-amber-200 px-2 py-1 text-right text-red-700">-14,0%</td><td className="border border-amber-200 px-2 py-1">Tahun rendah (El Nino)</td></tr>
+              <tr className="bg-emerald-50"><td className="border border-amber-200 px-2 py-1 font-bold">2024</td><td className="border border-amber-200 px-2 py-1 text-right font-bold">176.077</td><td className="border border-amber-200 px-2 py-1 text-right font-bold">176.200</td><td className="border border-amber-200 px-2 py-1 text-right font-bold text-emerald-700">+0,1%</td><td className="border border-amber-200 px-2 py-1">Cocok (CKAN akurat)</td></tr>
+              <tr className="bg-emerald-50"><td className="border border-amber-200 px-2 py-1 font-bold">2025</td><td className="border border-amber-200 px-2 py-1 text-right font-bold">178.257</td><td className="border border-amber-200 px-2 py-1 text-right font-bold">178.610</td><td className="border border-amber-200 px-2 py-1 text-right font-bold text-emerald-700">+0,2%</td><td className="border border-amber-200 px-2 py-1">Cocok (snapshot 2025)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p className="text-[10px] text-slate-600 leading-relaxed mt-3">
+          <strong>Temuan kunci:</strong> CKAN untuk 2024 &amp; 2025 selisih &lt;0,5% dari BPS resmi - siap dipakai untuk estimasi nilai ekonomi. CKAN 2021-2023 adalah data estimasi awal yang lebih rendah (8-14%) - perlu dipakai hati-hati untuk analisis tren. Produktivitas padi sawah Banjarnegara konsisten 67-69 Kw/Ha (6,7-6,9 Ton/Ha), di atas rata-rata nasional 5,15 Ton/Ha dan mendekati rata-rata Jawa Tengah 5,69 Ton/Ha. Sumber harga referensi gabah kering panen Rp 6.000/kg (asumsi konservatif tingkat petani, kisaran Bapanas GKP Jawa Tengah).
+        </p>
+      </section>
+
       {/* ChatBot Si Pertani */}
       <ChatBot dataContext={chatBotContext} />
     </DefaultLayout>
