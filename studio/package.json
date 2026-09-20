@@ -9,13 +9,13 @@
     "deploy": "sanity deploy"
   },
   "dependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "sanity": "^4.22.0",
+    "react": "^19.2.2",
+    "react-dom": "^19.2.2",
+    "sanity": "^5.1.0",
     "styled-components": "^6.1.15"
   },
   "devDependencies": {
-    "@sanity/vision": "^4.22.0",
+    "@sanity/vision": "^5.1.0",
     "typescript": "^5.5.4"
   }
 }
