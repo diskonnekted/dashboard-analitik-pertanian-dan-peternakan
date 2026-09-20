@@ -8,8 +8,9 @@ export default defineCliConfig({
   // Hostname studio hasil deploy — https://sispertani.sanity.studio
   // (harus unik global; ganti bila sudah dipakai pihak lain)
   studioHost: 'sispertani',
-  autoUpdates: true,
+  // Di v5 autoUpdates pindah ke namespace `deployment` bersama appId.
   deployment: {
     appId: 'etswmmkz096h0rqimmiihqpt',
+    autoUpdates: true,
   },
 })
