@@ -67,6 +67,7 @@ export default function PredictionPage() {
       produksi: d.produksi,
       luasPanen: d.luasPanen,
       proyeksi: undefined as number | undefined,
+      produksiBPS: BPS_PADI[d.tahun] ?? undefined,
     }));
     if (historyProjection && base.length > 0) {
       base[base.length - 1].proyeksi = base[base.length - 1].produksi;
@@ -75,6 +76,7 @@ export default function PredictionPage() {
         produksi: undefined as any,
         luasPanen: undefined as any,
         proyeksi: historyProjection.predicted,
+        produksiBPS: undefined,
       } as any);
     }
     return base;
@@ -96,6 +98,16 @@ export default function PredictionPage() {
   const totalProduksi = padiData.reduce((a, d) => a + d.produksi, 0);
 
   const formatNum = (num: number) => new Intl.NumberFormat("id-ID", { maximumFractionDigits: 1 }).format(num);
+
+  // Data BPS resmi (Kabupaten Banjarnegara Dalam Angka 2026, Tabel 5.1.1)
+  // Padi sawah + padi ladang, satuan Ton
+  const BPS_PADI: Record<string, number> = {
+    "2021": 166803 + 390,    // sawah + ladang 2021
+    "2022": 170805 + 446,    // estimasi ladang proporsional
+    "2023": 146840 + 351,
+    "2024": 176077 + 350,    // sawah 2024 + ladang 350 (estimasi)
+    "2025": 178257 + 350.86,
+  };
 
   const tooltipStyle = {
     backgroundColor: "#ffffff",
@@ -196,6 +208,18 @@ export default function PredictionPage() {
                           stroke="#0d9488"
                           strokeWidth={1.5}
                           dot={false}
+                          connectNulls={false}
+                        />
+                        <Line
+                          yAxisId="left"
+                          type="monotone"
+                          dataKey="produksiBPS"
+                          name="Produksi BPS (Ton)"
+                          stroke="#a16207"
+                          strokeWidth={2.5}
+                          strokeDasharray="4 2"
+                          dot={{ fill: "#a16207", r: 4, stroke: "#ffffff", strokeWidth: 1 }}
+                          activeDot={{ r: 6 }}
                           connectNulls={false}
                         />
                       </LineChart>
