@@ -61,6 +61,16 @@ export default function PredictionPage() {
     };
   }, [padiHistory]);
 
+  // Data BPS resmi (Kabupaten Banjarnegara Dalam Angka 2026, Tabel 5.1.1)
+  // Padi sawah + padi ladang, satuan Ton
+  const BPS_PADI: Record<string, number> = {
+    "2021": 167193,
+    "2022": 171251,
+    "2023": 147191,
+    "2024": 176427,
+    "2025": 178608,
+  };
+
   const historyChartData = useMemo(() => {
     const base = padiHistory.map((d) => ({
       tahun: d.tahun,
@@ -98,16 +108,6 @@ export default function PredictionPage() {
   const totalProduksi = padiData.reduce((a, d) => a + d.produksi, 0);
 
   const formatNum = (num: number) => new Intl.NumberFormat("id-ID", { maximumFractionDigits: 1 }).format(num);
-
-  // Data BPS resmi (Kabupaten Banjarnegara Dalam Angka 2026, Tabel 5.1.1)
-  // Padi sawah + padi ladang, satuan Ton
-  const BPS_PADI: Record<string, number> = {
-    "2021": 166803 + 390,    // sawah + ladang 2021
-    "2022": 170805 + 446,    // estimasi ladang proporsional
-    "2023": 146840 + 351,
-    "2024": 176077 + 350,    // sawah 2024 + ladang 350 (estimasi)
-    "2025": 178257 + 350.86,
-  };
 
   const tooltipStyle = {
     backgroundColor: "#ffffff",
