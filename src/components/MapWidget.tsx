@@ -10,7 +10,9 @@ import { LahanDesa, KelompokTaniRow, fetchKelompokTani, fetchSt2023DesaExtra, St
 import { buildDesaPath } from "@/services/desa";
 
 /**
- * Link inline di header popup — arahkan ke halaman detail desa.
+ * Link CTA ke halaman detail desa. Ditempatkan sebagai baris lebar-penuh
+ * di bagian bawah popup — bukan inline di header — supaya kelihatan jelas
+ * sebagai tombol, bukan label.
  *
  * CATATAN: Popup ini di-render oleh Leaflet via ReactDOMServer.renderToString
  * (bukan portal React modern), jadi tidak punya akses ke <Router> Context.
@@ -23,11 +25,14 @@ const DetailDesaLink = ({ desaName, kecName }: { desaName: string; kecName: stri
   return (
     <a
       href={path}
-      className="mt-1 inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wide text-white bg-white/15 hover:bg-white/25 border border-white/20 rounded px-1.5 py-0.5 transition-colors"
+      className="mt-3 flex items-center justify-between gap-2 rounded-lg border border-emerald-200 bg-white text-emerald-700 hover:bg-emerald-50 hover:border-emerald-300 active:bg-emerald-100 px-3 py-2 text-xs font-semibold transition-colors"
       onClick={(e) => e.stopPropagation()}
     >
-      Detail Desa
-      <ArrowUpRight className="w-3 h-3" />
+      <span className="inline-flex items-center gap-1.5">
+        <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500" />
+        Lihat Detail Lengkap
+      </span>
+      <ArrowUpRight className="w-3.5 h-3.5" />
     </a>
   );
 };
@@ -186,8 +191,12 @@ const MapBounds = ({ data }: { data: any }) => {
         const layer = L.geoJSON(data);
         const bounds = layer.getBounds();
         if (!bounds.isValid()) return;
-        // Paskan peta ke bounds Banjarnegara; margin kecil biar "hampir menyentuh frame"
-        map.fitBounds(bounds, { padding: [12, 12] });
+        // Paskan peta ke bounds Banjarnegara dengan padding minimal
+        // (8 px). Lalu zoom in 2 step dari hasil fit supaya polygon
+        // lebih proporsional dengan frame.
+        map.fitBounds(bounds, { padding: [8, 8] });
+        const z = map.getZoom();
+        map.setZoom(Math.min(z + 2, 18));
         map.setMaxZoom(18);
       } catch (err) {
         console.error("Gagal mendapatkan bounds peta", err);
@@ -336,7 +345,6 @@ const PopupContent = ({ desaName, kecName, data, taniData, st2023 }: { desaName:
           <div className="min-w-0">
             <h3 className="text-[16px] font-black leading-tight uppercase drop-shadow-sm">{desaName}</h3>
             <p className="text-emerald-200/90 text-[10px] font-bold uppercase tracking-[0.18em]">{kecName}</p>
-            <DetailDesaLink desaName={desaName} kecName={kecName} />
           </div>
           {sentraBadge && (
             <span className="shrink-0 bg-amber-300 text-amber-900 text-[9px] font-black uppercase rounded-full px-2 py-1 shadow-sm">
@@ -447,6 +455,9 @@ const PopupContent = ({ desaName, kecName, data, taniData, st2023 }: { desaName:
           )}
         </div>
       </div>
+
+      {/* Footer CTA — link ke halaman detail desa */}
+      <DetailDesaLink desaName={desaName} kecName={kecName} />
     </div>
   );
 };
@@ -596,11 +607,11 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
     const desaData = getDesaData(feature);
     const desaName = (feature.properties?.Nama_Desa_ || feature.properties?.Name || "").toUpperCase();
     
-    // Default style
+    // Default style — polygon sudah besar, garis cukup proporsional saja
     let fillColor = "#cccccc";
-    let fillOpacity = 0.2;
-    let weight = 0.5;
-    let opacity = 0.8;
+    let fillOpacity = 0.4;
+    let weight = 1.5;
+    let opacity = 1;
 
     // Smart Filter: Search matching
     const matchesSearch = searchQuery === "" || desaName.includes(searchQuery.toUpperCase());
@@ -630,19 +641,21 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
       const matchesLegend = activeLegendCategory === null || activeLegendCategory === category;
 
       if (matchesSearch && matchesLegend) {
-        fillOpacity = 0.5;
-        weight = 1;
+        fillOpacity = 0.7;
+        weight = 2;
+        opacity = 1;
       } else {
-        // Mute if not matching search or legend
-        fillOpacity = 0.1;
-        opacity = 0.2;
+        // Mute if not matching search or legend — tetap
+        // terlihat dengan outline yang lebih tipis
+        fillOpacity = 0.2;
+        opacity = 0.5;
         fillColor = "#a1a1aa";
       }
     } else {
       // No Data behavior
       if (!matchesSearch) {
-        fillOpacity = 0.05;
-        opacity = 0.1;
+        fillOpacity = 0.1;
+        opacity = 0.3;
       }
     }
 
@@ -650,7 +663,7 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
       fillColor,
       weight,
       opacity,
-      color: "#27272a",
+      color: "#1f2937",
       dashArray: "",
       fillOpacity,
     };
@@ -658,9 +671,10 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
 
   const kecStyle = {
     fill: false,
-    color: "#be123c",
-    weight: 0.8,
-    opacity: 0.6,
+    color: "#9f1239",
+    weight: 1.5,
+    opacity: 0.85,
+    dashArray: "6 4",
   };
 
   const getAuxiliaryStyle = (layer: AuxiliaryGeoJsonLayer, feature?: any) => {

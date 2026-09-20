@@ -2,13 +2,14 @@ import { useEffect, useState, useMemo } from "react";
 import DefaultLayout from "@/layouts/default";
 import { LoadingSpinner } from "@/components/ui";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { fetchJagungUbiKayu, fetchKacangKedelai, fetchUbiKacangHijau, FoodCropRow } from "@/services/api";
+import { fetchJagungUbiKayu, fetchKacangKedelai, fetchUbiKacangHijau, fetchPadiSawahLadang, FoodCropRow } from "@/services/api";
 import { Wheat, Calendar, MapPin, FileSpreadsheet } from "lucide-react";
 
-type Category = "jagung-ubi" | "kacang-kedelai" | "ubi-kacanghijau";
+type Category = "padi" | "jagung-ubi" | "kacang-kedelai" | "ubi-kacanghijau";
 type Metric = "luas" | "produksi" | "rata";
 
 const CATEGORY_META: Record<Category, { label: string; sub: string }> = {
+  "padi": { label: "Padi Sawah & Padi Ladang", sub: "Luas panen, produksi, dan rata-rata produksi padi" },
   "jagung-ubi": { label: "Jagung & Ubi Kayu", sub: "Luas panen, produksi, dan rata-rata produksi palawija" },
   "kacang-kedelai": { label: "Kacang Tanah & Kedelai", sub: "Luas panen, produksi, dan rata-rata produksi kacang-kacangan" },
   "ubi-kacanghijau": { label: "Ubi Jalar & Kacang Hijau", sub: "Luas panen, produksi, dan rata-rata produksi palawija" },
@@ -36,11 +37,12 @@ const METRIC_SHORT: Record<Metric, string> = {
 const COLORS = ["#1d4ed8", "#0d9488", "#b45309", "#be185d", "#6d28d9", "#4d7c0f"];
 
 export default function FoodCropsPage() {
+  const [padi, setPadi] = useState<FoodCropRow[]>([]);
   const [jagungUbi, setJagungUbi] = useState<FoodCropRow[]>([]);
   const [kacangKedelai, setKacangKedelai] = useState<FoodCropRow[]>([]);
   const [ubiKacangHijau, setUbiKacangHijau] = useState<FoodCropRow[]>([]);
 
-  const [category, setCategory] = useState<Category>("jagung-ubi");
+  const [category, setCategory] = useState<Category>("padi");
   const [metric, setMetric] = useState<Metric>("produksi");
   const [selectedYear, setSelectedYear] = useState<string>("");
   const [selectedKecamatan, setSelectedKecamatan] = useState<string>("Semua");
@@ -49,16 +51,18 @@ export default function FoodCropsPage() {
   useEffect(() => {
     const load = async () => {
       try {
-        const [ju, kk, ukh] = await Promise.all([
+        const [pd, ju, kk, ukh] = await Promise.all([
+          fetchPadiSawahLadang(),
           fetchJagungUbiKayu(),
           fetchKacangKedelai(),
           fetchUbiKacangHijau(),
         ]);
+        setPadi(pd);
         setJagungUbi(ju);
         setKacangKedelai(kk);
         setUbiKacangHijau(ukh);
       } catch (err) {
-        console.error("Gagal memuat data palawija:", err);
+        console.error("Gagal memuat data tanaman pangan:", err);
       } finally {
         setLoading(false);
       }
@@ -67,10 +71,11 @@ export default function FoodCropsPage() {
   }, []);
 
   const activeData = useMemo(() => {
+    if (category === "padi") return padi;
     if (category === "jagung-ubi") return jagungUbi;
     if (category === "kacang-kedelai") return kacangKedelai;
     return ubiKacangHijau;
-  }, [category, jagungUbi, kacangKedelai, ubiKacangHijau]);
+  }, [category, padi, jagungUbi, kacangKedelai, ubiKacangHijau]);
 
   // Daftar komoditas unik dari dataset aktif (2 komoditas)
   const komoditasList = useMemo(() => {
@@ -112,75 +117,121 @@ export default function FoodCropsPage() {
     return it.rataRata;
   };
 
-  const stats = useMemo(() => {
-    let total = 0;
-    let maxVal = -1;
-    let topDistrict = "-";
-    const breakdown = komoditasList.map((k) => ({ name: k, value: 0, luas: 0, produksi: 0 }));
+  // Agregasi nilai metrik atas kumpulan baris. Khusus metrik "rata" dihitung
+  // sebagai rata-rata tertimbang (Σ produksi kuintal ÷ Σ luas panen) karena
+  // produktivitas (Ku/Ha) tidak boleh dijumlahkan antar kecamatan/komoditas.
+  const agg = (rows: FoodCropRow[], komoditas?: string): number => {
+    let luas = 0;
+    let prod = 0;
+    let sum = 0;
+    rows.forEach((d) =>
+      d.items.forEach((it) => {
+        if (komoditas && it.komoditas !== komoditas) return;
+        luas += it.luasPanen;
+        prod += it.produksi;
+        sum += metric === "luas" ? it.luasPanen : metric === "produksi" ? it.produksi : it.rataRata;
+      })
+    );
+    if (metric === "rata") return luas > 0 ? (prod * 10) / luas : 0;
+    return sum;
+  };
 
-    filteredData.forEach((d) => {
-      let rowSum = 0;
-      komoditasList.forEach((k, idx) => {
+  const stats = useMemo(() => {
+    let topDistrict = "-";
+    let topVal = 0;
+    const breakdown = komoditasList.map((k) => {
+      let luas = 0;
+      let produksi = 0;
+      filteredData.forEach((d) => {
         const it = d.items.find((i) => i.komoditas === k);
-        const luas = it?.luasPanen || 0;
-        const prod = it?.produksi || 0;
-        const val = getVal(d, k);
-        breakdown[idx].luas += luas;
-        breakdown[idx].produksi += prod;
-        breakdown[idx].value += val;
-        rowSum += val;
-        total += val;
+        luas += it?.luasPanen || 0;
+        produksi += it?.produksi || 0;
       });
-      if (rowSum > maxVal) {
-        maxVal = rowSum;
-        topDistrict = d.kecamatan;
+      return { name: k, value: agg(filteredData, k), luas, produksi };
+    });
+
+    // Kecamatan dengan nilai metrik tertinggi (rata-rata tertimbang bila metrik "rata")
+    const byKec = new Map<string, FoodCropRow[]>();
+    filteredData.forEach((d) => {
+      byKec.set(d.kecamatan, [...(byKec.get(d.kecamatan) || []), d]);
+    });
+    byKec.forEach((rows, kec) => {
+      const v = agg(rows);
+      if (v > topVal) {
+        topVal = v;
+        topDistrict = kec;
       }
     });
 
-    return { total, topDistrict, topVal: maxVal, breakdown };
+    return { total: agg(filteredData), topDistrict, topVal, breakdown };
   }, [filteredData, komoditasList, metric]);
 
-  // Data grafik per kecamatan
+  // Data grafik per kecamatan (kolom "total" memakai agregasi tertimbang utk "rata")
   const chartData = useMemo(() => {
     return filteredData
       .map((d) => {
         const obj: any = { name: d.kecamatan };
-        let sum = 0;
         komoditasList.forEach((k) => {
-          const v = getVal(d, k);
-          obj[k] = v;
-          sum += v;
+          obj[k] = getVal(d, k);
         });
-        obj.total = sum;
+        obj.total = agg([d]);
         return obj;
       })
       .sort((a, b) => b.total - a.total);
   }, [filteredData, komoditasList, metric]);
 
-  // Tren historis per tahun
+  // Tren historis per tahun — metrik "rata" memakai rata-rata tertimbang
   const trendData = useMemo(() => {
     const base = selectedKecamatan === "Semua"
       ? activeData
       : activeData.filter((d) => d.kecamatan === selectedKecamatan);
 
-    const byYear = new Map<string, any>();
+    const acc = new Map<
+      string,
+      { luas: number; prod: number; luasK: Record<string, number>; prodK: Record<string, number> }
+    >();
     base.forEach((d) => {
       const yr = d.tahun;
       if (!yr) return;
-      if (!byYear.has(yr)) {
-        const obj: any = { tahun: yr, total: 0 };
-        komoditasList.forEach((k) => (obj[k] = 0));
-        byYear.set(yr, obj);
+      let e = acc.get(yr);
+      if (!e) {
+        const luasK: Record<string, number> = {};
+        const prodK: Record<string, number> = {};
+        komoditasList.forEach((k) => {
+          luasK[k] = 0;
+          prodK[k] = 0;
+        });
+        e = { luas: 0, prod: 0, luasK, prodK };
+        acc.set(yr, e);
       }
-      const entry = byYear.get(yr);
-      komoditasList.forEach((k) => {
-        const v = getVal(d, k);
-        entry[k] += v;
-        entry.total += v;
+      d.items.forEach((it) => {
+        e.luas += it.luasPanen;
+        e.prod += it.produksi;
+        if (e.luasK[it.komoditas] !== undefined) {
+          e.luasK[it.komoditas] += it.luasPanen;
+          e.prodK[it.komoditas] += it.produksi;
+        }
       });
     });
 
-    return Array.from(byYear.values()).sort((a, b) => a.tahun.localeCompare(b.tahun));
+    const weighted = (prod: number, luas: number) => (luas > 0 ? (prod * 10) / luas : 0);
+
+    return Array.from(acc.entries())
+      .map(([yr, e]) => {
+        const obj: any = { tahun: yr };
+        komoditasList.forEach((k) => {
+          obj[k] =
+            metric === "luas"
+              ? e.luasK[k]
+              : metric === "produksi"
+                ? e.prodK[k]
+                : weighted(e.prodK[k], e.luasK[k]);
+        });
+        obj.total =
+          metric === "luas" ? e.luas : metric === "produksi" ? e.prod : weighted(e.prod, e.luas);
+        return obj;
+      })
+      .sort((a, b) => a.tahun.localeCompare(b.tahun));
   }, [activeData, selectedKecamatan, komoditasList, metric]);
 
   // CAGR Laju Pertumbuhan Tahunan per komoditas
@@ -264,23 +315,39 @@ export default function FoodCropsPage() {
     return base;
   }, [trendData, projection]);
 
-  // Ranking kecamatan kumulatif seluruh tahun
+  // Ranking kecamatan kumulatif seluruh tahun — "rata" memakai rata-rata tertimbang
   const kecamatanRanking = useMemo(() => {
     const base = selectedKecamatan === "Semua"
       ? activeData
       : activeData.filter((d) => d.kecamatan === selectedKecamatan);
 
-    const map = new Map<string, number>();
+    const acc = new Map<string, { luas: number; prod: number }>();
     base.forEach((d) => {
-      let sum = 0;
-      komoditasList.forEach((k) => (sum += getVal(d, k)));
-      map.set(d.kecamatan, (map.get(d.kecamatan) || 0) + sum);
+      let e = acc.get(d.kecamatan);
+      if (!e) {
+        e = { luas: 0, prod: 0 };
+        acc.set(d.kecamatan, e);
+      }
+      d.items.forEach((it) => {
+        e.luas += it.luasPanen;
+        e.prod += it.produksi;
+      });
     });
 
-    return Array.from(map.entries())
-      .map(([name, value]) => ({ name, value }))
+    return Array.from(acc.entries())
+      .map(([name, e]) => ({
+        name,
+        value:
+          metric === "luas"
+            ? e.luas
+            : metric === "produksi"
+              ? e.prod
+              : e.luas > 0
+                ? (e.prod * 10) / e.luas
+                : 0,
+      }))
       .sort((a, b) => b.value - a.value);
-  }, [activeData, selectedKecamatan, komoditasList, metric]);
+  }, [activeData, selectedKecamatan, metric]);
 
   const formatNum = (num: number) =>
     new Intl.NumberFormat("id-ID", {
@@ -304,12 +371,12 @@ export default function FoodCropsPage() {
             Bidang Tanaman Pangan
           </p>
           <h1 className="text-2xl font-semibold text-slate-900 mt-1.5">
-            Produksi Palawija
+            Produksi Tanaman Pangan
           </h1>
           <p className="text-sm text-slate-700 mt-1 max-w-3xl">
-            Data luas panen, produksi, dan rata-rata produksi komoditas palawija
-            (Jagung, Ubi Kayu, Kacang Tanah, Kedelai, Ubi Jalar, Kacang Hijau)
-            per kecamatan Kabupaten Banjarnegara.
+            Data luas panen, produksi, dan rata-rata produksi tanaman pangan — Padi
+            Sawah, Padi Ladang, serta palawija (Jagung, Ubi Kayu, Kacang Tanah,
+            Kedelai, Ubi Jalar, Kacang Hijau) per kecamatan Kabupaten Banjarnegara.
           </p>
         </header>
 
@@ -332,7 +399,13 @@ export default function FoodCropsPage() {
                         : "text-slate-800 hover:bg-slate-50"
                     }`}
                   >
-                    {c === "jagung-ubi" ? "Jagung·Ubi Kayu" : c === "kacang-kedelai" ? "Kacang·Kedelai" : "Ubi Jalar·K.Hijau"}
+                    {c === "padi"
+                      ? "Padi Sawah·Ladang"
+                      : c === "jagung-ubi"
+                        ? "Jagung·Ubi Kayu"
+                        : c === "kacang-kedelai"
+                          ? "Kacang·Kedelai"
+                          : "Ubi Jalar·K.Hijau"}
                   </button>
                 ))}
               </div>
@@ -409,7 +482,7 @@ export default function FoodCropsPage() {
         </section>
 
         {loading ? (
-          <LoadingSpinner label="Memuat data palawija…" />
+          <LoadingSpinner label="Memuat data tanaman pangan…" />
         ) : (
           <>
             {/* ===== Kartu Ringkasan ===== */}
@@ -418,7 +491,7 @@ export default function FoodCropsPage() {
                 <div className="flex items-center gap-2.5 text-blue-800">
                   <Wheat size={16} />
                   <p className="text-xs font-semibold uppercase tracking-wide text-slate-700">
-                    Total {METRIC_SHORT[metric]}
+                    {metric === "rata" ? "Rata-rata Produksi Tertimbang" : `Total ${METRIC_SHORT[metric]}`}
                   </p>
                 </div>
                 <p className="text-3xl font-semibold text-slate-900 mt-2 tabular-nums">
@@ -427,6 +500,7 @@ export default function FoodCropsPage() {
                 <p className="text-xs text-slate-700 mt-1.5">
                   {unit} · {CATEGORY_META[category].label} · {selectedYear}
                   {selectedKecamatan !== "Semua" ? ` · ${selectedKecamatan}` : " · Seluruh kecamatan"}
+                  {metric === "rata" ? " · Σ produksi ÷ Σ luas panen" : ""}
                 </p>
               </div>
 
@@ -454,9 +528,20 @@ export default function FoodCropsPage() {
                 </div>
                 <div className="mt-3 flex flex-col gap-2.5">
                   {stats.breakdown.map((item, idx) => {
-                    const pct = stats.total > 0 ? (item.value / stats.total) * 100 : 0;
+                    // Untuk metrik "rata", komposisi dihitung dari tonase produksi
+                    // (bukan jumlah produktivitas yang tidak bermakna bila dijumlahkan)
+                    const refTotal =
+                      metric === "rata"
+                        ? stats.breakdown.reduce((s, b) => s + b.produksi, 0)
+                        : stats.total;
+                    const refVal = metric === "rata" ? item.produksi : item.value;
+                    const pct = refTotal > 0 ? (refVal / refTotal) * 100 : 0;
                     return (
-                      <div key={item.name} className="flex items-center gap-2 text-xs">
+                      <div
+                        key={item.name}
+                        className="flex items-center gap-2 text-xs"
+                        title={`${item.name}: ${formatNum(item.value)} ${unit}`}
+                      >
                         <span className="w-24 shrink-0 text-slate-800 truncate">{item.name}</span>
                         <div className="flex-1 h-2 bg-slate-100 rounded-sm overflow-hidden">
                           <div
@@ -510,11 +595,16 @@ export default function FoodCropsPage() {
                           fontSize: 12,
                           boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
                         }}
-                        formatter={(value: any) => [formatNum(Number(value)), ""]}
+                        formatter={(value: any, name: any) => [formatNum(Number(value)), String(name ?? "")]}
                       />
                       <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: 12 }} />
                       {komoditasList.map((k, idx) => (
-                        <Bar key={k} dataKey={k} stackId="a" fill={COLORS[idx % COLORS.length]} />
+                        <Bar
+                          key={k}
+                          dataKey={k}
+                          stackId={metric === "rata" ? undefined : "a"}
+                          fill={COLORS[idx % COLORS.length]}
+                        />
                       ))}
                     </BarChart>
                   </ResponsiveContainer>
@@ -563,7 +653,7 @@ export default function FoodCropsPage() {
                           fontSize: 12,
                           boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
                         }}
-                        formatter={(value: any) => [formatNum(Number(value)), ""]}
+                        formatter={(value: any, name: any) => [formatNum(Number(value)), String(name ?? "")]}
                       />
                       <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: 12 }} />
                       <Line
@@ -811,17 +901,16 @@ export default function FoodCropsPage() {
                     {chartData.length > 0 && (
                       <tr className="border-t-2 border-slate-300 bg-slate-50 font-semibold">
                         <td className="px-4 py-3" />
-                        <td className="px-4 py-3 text-slate-900">Kabupaten Banjarnegara</td>
-                        {komoditasList.map((k) => {
-                          const sum = chartData.reduce((a, r) => a + (r[k] || 0), 0);
-                          return (
-                            <td key={k} className="px-4 py-3 text-right text-slate-900 tabular-nums">
-                              {formatNum(sum)}
-                            </td>
-                          );
-                        })}
+                        <td className="px-4 py-3 text-slate-900">
+                          {selectedKecamatan === "Semua" ? "Kabupaten Banjarnegara" : `Kecamatan ${selectedKecamatan}`}
+                        </td>
+                        {komoditasList.map((k) => (
+                          <td key={k} className="px-4 py-3 text-right text-slate-900 tabular-nums">
+                            {formatNum(agg(filteredData, k))}
+                          </td>
+                        ))}
                         <td className="px-4 py-3 text-right text-slate-900 tabular-nums">
-                          {formatNum(chartData.reduce((a, r) => a + r.total, 0))}
+                          {formatNum(agg(filteredData))}
                         </td>
                       </tr>
                     )}

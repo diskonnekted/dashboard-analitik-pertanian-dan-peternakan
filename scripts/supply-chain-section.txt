@@ -1,0 +1,61 @@
+          <section className="mb-12">
+            <h3 className="text-xl font-bold text-slate-800 mb-4">
+              Daftar Nama Pasar per Jenis
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+              <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                <h4 className="font-bold text-slate-800 mb-2 flex items-center gap-2">
+                  <Store size={16} className="text-blue-500" /> Pasar Umum / Tradisional
+                </h4>
+                <ul className="text-sm text-slate-600 space-y-1.5 list-disc pl-4">
+                  <li>Pasar Kota (Banjarnegara)</li>
+                  <li>Pasar Manis (Banjarnegara)</li>
+                  <li>Pasar Wage Aribaya</li>
+                  <li>Pasar Mandiraja</li>
+                  <li>Pasar Kalibening</li>
+                  <li>Pasar Karangkobar</li>
+                  <li className="text-slate-400 italic">…dan 25 pasar tradisional lainnya</li>
+                </ul>
+              </div>
+              <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                <h4 className="font-bold text-slate-800 mb-2 flex items-center gap-2">
+                  <Scale size={16} className="text-emerald-500" /> Pasar Hewan
+                </h4>
+                <ul className="text-sm text-slate-600 space-y-1.5 list-disc pl-4">
+                  <li>Pasar Hewan Petambakan (Madukara)</li>
+                  <li className="text-slate-400 italic">BPS 2025 mencatat 3 unit; 1 terpetakan</li>
+                </ul>
+              </div>
+              <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                <h4 className="font-bold text-slate-800 mb-2 flex items-center gap-2">
+                  <ShoppingBasket size={16} className="text-amber-500" /> Pasar Buah
+                </h4>
+                <ul className="text-sm text-slate-600 space-y-1.5 list-disc pl-4">
+                  <li>Pasar Salak (Parakancanggah, Banjarnegara)</li>
+                </ul>
+              </div>
+              <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                <h4 className="font-bold text-slate-800 mb-2 flex items-center gap-2">
+                  <Anchor size={16} className="text-cyan-500" /> Pasar Ikan
+                </h4>
+                <ul className="text-sm text-slate-600 space-y-1.5 list-disc pl-4">
+                  <li>Pasar Ikan Purwonegoro (Purwanegara)*</li>
+                  <li>Pasar Ikan Segar (Krandegan, Banjarnegara)*</li>
+                  <li className="text-slate-400 italic">*terpetakan komunitas; BPS 2025: 0 unit resmi</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg">
+              <div className="flex items-start">
+                <AlertCircle className="text-yellow-600 mt-0.5 mr-3 shrink-0" size={20} />
+                <p className="text-sm text-yellow-800">
+                  <strong>Catatan:</strong> Jumlah pasar bersumber resmi dari BPS/Open Data Banjarnegara
+                  (2025: 21 umum, 3 hewan, 1 buah, 0 ikan). Nama &amp; koordinat pasar di atas bersumber dari
+                  dataset komunitas <code>public/data/pasar-banjarnegara.geojson</code> (36 titik terpetakan,
+                  gaya OSM) sehingga cakupannya bisa berbeda dengan catatan resmi — peta interaktif belum
+                  tersedia di halaman ini.
+                </p>
+              </div>
+            </div>
+          </section>

@@ -43,7 +43,7 @@ export const siteConfig = {
           href: "/prediction",
         },
         {
-          label: "Tanaman Pangan (Palawija)",
+          label: "Tanaman Pangan (Padi & Palawija)",
           href: "/food-crops",
         },
       ],

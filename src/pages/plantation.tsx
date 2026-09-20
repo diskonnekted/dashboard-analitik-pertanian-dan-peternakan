@@ -130,7 +130,7 @@ export default function PlantationPage() {
   const stats = useMemo(() => {
     let totalLuas = 0;
     let totalProduksi = 0;
-    let maxVal = -1;
+    let maxVal = 0;
     let topDistrict = "-";
 
     const cropBreakdown = cropKeys.map((c) => ({
@@ -197,6 +197,9 @@ export default function PlantationPage() {
       const obj: any = { name: d.kecamatan };
       let sum = 0;
       
+      let sumLuas = 0;
+      let sumProd = 0;
+
       cropKeys.forEach((crop) => {
         let val = 0;
         if (metric === "luas") {
@@ -210,14 +213,18 @@ export default function PlantationPage() {
         }
         obj[crop.label] = val;
         sum += val;
+        sumLuas += d.luas[crop.key] || 0;
+        sumProd += d.produksi[crop.key] || 0;
       });
 
-      obj.total = sum;
+      // Produktivitas tidak boleh dijumlah antar komoditas:
+      // total kecamatan = rata-rata tertimbang (Σ produksi ÷ Σ luas areal).
+      obj.total = metric === "produktivitas" ? (sumLuas > 0 ? sumProd / sumLuas : 0) : sum;
       return obj;
     }).sort((a, b) => b.total - a.total);
   }, [filteredData, metric, cropKeys]);
 
-  // Tren Historis (2018 - 2024)
+  // Tren Historis (2017 - 2024)
   const trendData = useMemo(() => {
     const base = selectedKecamatan === "Semua"
       ? mergedData
@@ -252,6 +259,8 @@ export default function PlantationPage() {
       });
     });
 
+    // Pass 2: konversi ke nilai metrik. Produktivitas = rata-rata TERTIMBANG
+    // (Σ produksi ÷ Σ luas) — bukan jumlah rasio per komoditas.
     return Array.from(byYear.values()).map((entry) => {
       if (metric === "luas") {
         entry.total = entry.totalLuas;
@@ -259,18 +268,16 @@ export default function PlantationPage() {
         entry.total = entry.totalProduksi;
       } else {
         entry.total = entry.totalLuas > 0 ? entry.totalProduksi / entry.totalLuas : 0;
-        // Produktivitas tiap komoditas secara total
         cropKeys.forEach((crop) => {
-          // Cari luas & produksi untuk tahun ini
-          let cropLuas = 0;
-          let cropProd = 0;
-          base.filter(b => b.tahun === entry.tahun).forEach(b => {
-            cropLuas += b.luas[crop.key] || 0;
-            cropProd += b.produksi[crop.key] || 0;
-          });
+          const cropLuas = entry[`__luas_${crop.key}`] || 0;
+          const cropProd = entry[`__prod_${crop.key}`] || 0;
           entry[crop.label] = cropLuas > 0 ? cropProd / cropLuas : 0;
         });
       }
+      cropKeys.forEach((c) => {
+        delete entry[`__luas_${c.key}`];
+        delete entry[`__prod_${c.key}`];
+      });
       return entry;
     }).sort((a, b) => a.tahun.localeCompare(b.tahun));
   }, [mergedData, selectedKecamatan, metric, cropKeys]);
@@ -514,10 +521,14 @@ export default function PlantationPage() {
               {/* Stat 1: Metric Value */}
               <KpiCard
                 icon={metric === "luas" ? <TreePine size={20} /> : metric === "produksi" ? <Sprout size={20} /> : <Activity size={20} />}
-                label={`Total ${metricLabel}`}
-                value={formatNum(stats.total)}
+                label={metric === "produktivitas" ? "Rata-rata Produksi Tertimbang" : `Total ${metricLabel}`}
+                value={`${formatNum(stats.total)}${metric === "produktivitas" ? " T/Ha" : ""}`}
                 color="bg-amber-300"
-                hint={`Luas Lahan ${formatNum(stats.totalLuas)} Ha · Produksi ${formatNum(stats.totalProduksi)} Ton`}
+                hint={
+                  metric === "produktivitas"
+                    ? `Σ produksi ÷ Σ luas areal (${formatNum(stats.totalProduksi)} Ton ÷ ${formatNum(stats.totalLuas)} Ha)`
+                    : `Luas Lahan ${formatNum(stats.totalLuas)} Ha · Produksi ${formatNum(stats.totalProduksi)} Ton`
+                }
               />
 
               {/* Stat 2: Top Kecamatan */}
@@ -533,14 +544,12 @@ export default function PlantationPage() {
               <SectionCard title="Komposisi Komoditas" bodyClassName="p-5 flex flex-col justify-center">
                 <div className="flex flex-col gap-2.5 max-h-[160px] overflow-y-auto pr-1">
                   {stats.breakdown.map((item, idx) => {
-                    const percentage =
-                      metric === "produktivitas"
-                        ? stats.breakdown[0].value > 0
-                          ? (item.value / stats.breakdown[0].value) * 100
-                          : 0
-                        : stats.total > 0
-                          ? (item.value / stats.total) * 100
-                          : 0;
+                    // Basis persentase: pangsa terhadap total metrik (luas/produksi).
+                    // Untuk produktivitas, basisnya tonase produksi (fisik),
+                    // bukan jumlah nilai intensitas.
+                    const pctBase = metric === "luas" ? stats.totalLuas : stats.totalProduksi;
+                    const pctVal = metric === "luas" ? item.luas : item.produksi;
+                    const percentage = pctBase > 0 ? (pctVal / pctBase) * 100 : 0;
 
                     return (
                       <div key={item.name} className="flex flex-col gap-0.5">
@@ -548,7 +557,7 @@ export default function PlantationPage() {
                           <span className="truncate max-w-[120px]">{item.name}</span>
                           <span>
                             {formatNum(item.value)} {metric === "luas" ? "Ha" : metric === "produksi" ? "Ton" : "T/Ha"}{" "}
-                            {metric !== "produktivitas" && `(${percentage.toFixed(1)}%)`}
+                            {`(${percentage.toFixed(1)}%${metric === "produktivitas" ? " prod" : ""})`}
                           </span>
                         </div>
                         <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
@@ -617,10 +626,10 @@ export default function PlantationPage() {
                         fontSize: "12px",
                         boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)",
                       }}
-                      formatter={(value: any) => [formatNum(Number(value)), ""]}
+                      formatter={(value: any, name: any) => [formatNum(Number(value)), String(name ?? "")]}
                     />
                     <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: "10px" }} />
-                    <Line type="monotone" dataKey="total" name={`Total ${metric === "luas" ? "Ha" : metric === "produksi" ? "Ton" : "Rata-Rata"}`} stroke="#64748b" strokeWidth={3} dot={{ fill: "#475569", r: 4 }} activeDot={{ r: 6 }} connectNulls={false} />
+                    <Line type="monotone" dataKey="total" name={metric === "luas" ? "Total (Ha)" : metric === "produksi" ? "Total (Ton)" : "Rata-rata Tertimbang (T/Ha)"} stroke="#64748b" strokeWidth={3} dot={{ fill: "#475569", r: 4 }} activeDot={{ r: 6 }} connectNulls={false} />
                     {metric !== "produktivitas" && (
                       <Line type="monotone" dataKey="proyeksi" name="Proyeksi" stroke="#ef4444" strokeWidth={2} strokeDasharray="6 4" dot={{ fill: "#ef4444", r: 4 }} connectNulls={true} />
                     )}
@@ -798,6 +807,8 @@ export default function PlantationPage() {
             >
               <p className="text-xs text-slate-500 mb-4">
                 Kontribusi masing-masing kecamatan terhadap {metricLabel} perkebunan
+                {metric === "produktivitas" &&
+                  " — batang ditampilkan berdampingan karena nilai intensitas tidak dijumlah antar komoditas"}
               </p>
 
               <div className="h-[420px] w-full">
@@ -828,6 +839,7 @@ export default function PlantationPage() {
                         fontSize: "12px",
                         boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)",
                       }}
+                      formatter={(value: any, name: any) => [formatNum(Number(value)), String(name ?? "")]}
                     />
                     <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: "10px" }} />
                     {cropKeys.map((crop, idx) => {
@@ -846,7 +858,7 @@ export default function PlantationPage() {
                         <Bar
                           key={crop.key}
                           dataKey={crop.label}
-                          stackId="a"
+                          stackId={metric === "produktivitas" ? undefined : "a"}
                           fill={colors[idx % colors.length]}
                           stroke="#64748b"
                           strokeWidth={1}
@@ -862,6 +874,8 @@ export default function PlantationPage() {
             <SectionCard title={`Tabel Rincian Data Perkecamatan (${selectedYear})`}>
               <p className="text-xs text-slate-500 mb-3">
                 Nilai yang ditampilkan adalah {metricLabel}
+                {metric === "produktivitas" &&
+                  " (Ton/Ha = Σ produksi ÷ Σ luas areal per komoditas; produksi Kopi Arabica belum tersedia)"}
               </p>
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-sm border-collapse">
@@ -895,6 +909,29 @@ export default function PlantationPage() {
                       </tr>
                     ))}
                   </tbody>
+                  {chartData.length > 0 && (
+                    <tfoot>
+                      <tr className="border-t-2 border-slate-300 bg-slate-100 font-semibold">
+                        <td className="px-3 py-2.5 text-[11px] uppercase tracking-wide text-slate-600" colSpan={2}>
+                          {metric === "produktivitas" ? "Rata-rata tertimbang" : "Jumlah"} ·{" "}
+                          {selectedKecamatan === "Semua" ? "Seluruh Kabupaten" : selectedKecamatan}
+                        </td>
+                        {cropKeys.map((c) => {
+                          const l = filteredData.reduce((a, d) => a + (d.luas[c.key] || 0), 0);
+                          const p = filteredData.reduce((a, d) => a + (d.produksi[c.key] || 0), 0);
+                          const v = metric === "luas" ? l : metric === "produksi" ? p : l > 0 ? p / l : 0;
+                          return (
+                            <td key={c.key} className="px-3 py-2.5 text-xs text-right tabular-nums">
+                              {formatNum(v)}
+                            </td>
+                          );
+                        })}
+                        <td className="px-3 py-2.5 text-xs font-bold text-right bg-amber-50 tabular-nums">
+                          {formatNum(stats.total)}
+                        </td>
+                      </tr>
+                    </tfoot>
+                  )}
                 </table>
               </div>
             </SectionCard>

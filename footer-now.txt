@@ -1,4 +1,4 @@
-import { Database, ExternalLink } from "lucide-react";
+﻿import { Database, ExternalLink } from "lucide-react";
 
 export function DesaFooter() {
   return (
@@ -41,3 +41,4 @@ export function DesaFooter() {
     </section>
   );
 }
+

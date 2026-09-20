@@ -1,0 +1,115 @@
+// Data lumbung & gudang pangan.
+// Prioritas (sesuai perbaikan.md): 1) CSV lokal hasil normalisasi dari 7 xlsx asli BPS di _tmp
+// (2018-2024, terverifikasi 140/140 baris vs blok JUMLAH resmi: 63 unit / 95.826 ton pada 2024),
+// diambil baris tahun terbaru per kecamatan. 2) Snapshot CKAN 2025. 3) CKAN online.
+// Catatan: snapshot CKAN 2025 korup sebagian (Bawang tertulis 12 unit, xlsx asli: 3;
+// total kolom = 72 != Jumlah resmi 63) -> hanya dijadikan fallback.
+export const fetchLumbungPangan = async (): Promise<LumbungPangan[]> =>
+  withCache("cache_lumbung_pangan_v3", async () => {
+  try {
+    let response;
+    let isLocal = true;
+    try {
+      // Lapis 1: CSV lokal (header: Kecamatan, Lumbung Jumlah, Lumbung Kapasitas, Luas (M2), Lumbung Kapasitas/Bulan, Tahun)
+      response = await fetchWithTimeout(
+        "/14. Distankan KP/Banyaknya Lumbung dan Gudang Pangan/Banyaknya Lumbung dan Gudang Pangan CSV.csv",
+      );
+      if (!response.ok) throw new Error("CSV lokal tidak tersedia");
+    } catch (e) {
+      // Lapis 2: snapshot CKAN lokal (format identik dgn CKAN -> isLocal false)
+      try {
+        console.warn("CSV lokal lumbung gagal, mencoba snapshot CKAN...");
+        response = await fetchWithTimeout("/data/snapshots/lumbung-pangan-2025.csv");
+        if (!response.ok) throw new Error("Snapshot tidak ditemukan");
+        isLocal = false;
+      } catch (e2) {
+        // Lapis 3: CKAN online (terakhir)
+        console.warn("Snapshot lumbung gagal, mencoba CKAN online...");
+        response = await fetchWithTimeout(
+          "/dataset/bd6ca920-4cd8-49a2-8e5d-291f01e1a11e/resource/1e578131-0fc4-4db4-95a4-a3af66aa7bec/download/banyaknya-lumbung-dan-gudang-pangan-kab-banjarnegara-menurut-kecamatan-2025.csv",
+        );
+        const contentType = response.headers.get("content-type") || "";
+        if (!response.ok || contentType.includes("html")) throw new Error("CKAN online gagal");
+        isLocal = false;
+      }
+    }
+
+    if (!response.ok) throw new Error("Gagal mengambil data lumbung pangan");
+    const csvText = await response.text();
+
+    return new Promise<LumbungPangan[]>((resolve) => {
+      Papa.parse(csvText, {
+        header: isLocal,
+        skipEmptyLines: true,
+        transformHeader: (h) => h.trim(),
+        complete: (results) => {
+          const parsedData: LumbungPangan[] = [];
+
+          if (isLocal) {
+            // Kelompokkan per kecamatan, ambil baris tahun terbaru (mis. 2024)
+            const list = results.data as any[];
+            const mapData = new Map<string, { tahun: number; data: LumbungPangan }>();
+            let maxTahun = 0;
+
+            list.forEach((row: any) => {
+              const rawKec = row["Kecamatan"] || "";
+              // Normalisasi typo BPS
+              let normalizedKec = rawKec;
+              if (normalizedKec === "Purwonegoro") normalizedKec = "Purwanegara";
+              if (normalizedKec === "Purworejo Klampok") normalizedKec = "Purwareja Klampok";
+              const kecName = normalizeKecamatanName(normalizedKec);
+              if (!kecName || kecName.toLowerCase().includes("jumlah") || kecName.toLowerCase().includes("total")) return;
+
+              const tahunKey = Object.keys(row).find((k) => k.trim().toLowerCase() === "tahun") || "Tahun";
+              const tahun = parseInt(row[tahunKey]) || 0;
+              if (tahun < 2000 || tahun > 2100) return; // lewati baris tanpa tahun valid
+
+              // CSV lokal menyimpan angka polos bergaya JS ("11.3", "95.826") -> cleanFloat aman
+              const entry: LumbungPangan = {
+                kecamatan: kecName,
+                lumbungUnit: cleanFloat(row["Lumbung Jumlah"]),
+                lumbungKapasitas: cleanFloat(row["Lumbung Kapasitas"]),
+                gudangLuas: cleanFloat(row["Luas (M2)"]),
+                gudangKapasitas: cleanFloat(row["Lumbung Kapasitas/Bulan"]),
+              };
+
+              const existing = mapData.get(kecName);
+              if (!existing || tahun > existing.tahun) {
+                mapData.set(kecName, { tahun, data: entry });
+                if (tahun > maxTahun) maxTahun = tahun;
+              }
+            });
+
+            console.log(`Lumbung pangan dari CSV lokal (${mapData.size} kecamatan, tahun terbaru ${maxTahun})`);
+            resolve(Array.from(mapData.values()).map((v) => v.data));
+          } else {
+            // Snapshot/CKAN: 4 baris pertama adalah header bertingkat.
+            // Kolom: [no, Kecamatan, Lumbung Unit, Lumbung Kapasitas, Gudang Luas, Gudang Kapasitas]
+            const rows = results.data as string[][];
+            for (let i = 4; i < rows.length; i++) {
+              const row = rows[i];
+              if (!row[1] || row[1].replace(/\s/g, "").toLowerCase().includes("jumlah")) continue;
+
+              const kecName = normalizeKecamatanName(row[1]);
+              if (!kecName) continue;
+
+              parsedData.push({
+                kecamatan: kecName,
+                lumbungUnit: cleanFloat(row[2]),
+                lumbungKapasitas: cleanFloat(row[3]),
+                gudangLuas: cleanFloat(row[4]),
+                gudangKapasitas: cleanFloat(row[5]),
+              });
+            }
+            resolve(parsedData);
+          }
+        },
+        error: () => resolve([]),
+      });
+    });
+  } catch (error) {
+    console.error("Error fetchLumbungPangan:", error);
+
+    return [];
+  }
+  });

@@ -1,5 +1,6 @@
 import { Sprout, Home } from "lucide-react";
 import type { LahanDesa } from "../../services/api";
+import { EmptyBlock } from "./EmptyBlock";
 
 interface Props {
   data: LahanDesa[];
@@ -35,32 +36,45 @@ export function DesaLahan({ data }: Props) {
     n.toLocaleString("id-ID", { maximumFractionDigits: 2 });
 
   return (
-    <section className="bg-white border border-slate-200 rounded-xl p-5">
-      <header className="mb-3">
-        <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-          <Sprout className="w-4 h-4 text-emerald-600" />
-          Penggunaan Lahan
-        </h2>
-        <p className="text-xs text-slate-500">Luas lahan sawah & bukan sawah (Ha) per tahun.</p>
-      </header>
+    <section className="bg-white border border-slate-200 rounded-xl p-4">
+      <SectionHeader
+        icon={<Sprout className="w-4 h-4 text-emerald-600" />}
+        title="Penggunaan Lahan"
+        subtitle="Luas lahan sawah & bukan sawah (Ha) per tahun."
+      />
 
-      <div className="space-y-4">
+      <div className="space-y-3">
         {totals.map((t) => (
           <div key={t.tahun}>
             <div className="flex items-center justify-between mb-1.5">
-              <span className="text-sm font-semibold text-slate-700">Tahun {t.tahun}</span>
-              <span className="text-xs text-slate-500">Total {unit(t.total)} Ha</span>
+              <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-700">
+                <span
+                  aria-hidden
+                  className="
+                    inline-block h-3 w-3 rounded-full
+                    bg-gradient-to-br from-emerald-400 to-emerald-600
+                  "
+                />
+                Tahun {t.tahun}
+              </span>
+              <span className="text-xs text-slate-500 tabular-nums">
+                Total {unit(t.total)} Ha
+              </span>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <Tile
                 icon={<Sprout className="w-4 h-4 text-emerald-600" />}
                 label="Lahan Sawah"
                 value={`${unit(t.sawah)} Ha`}
+                ratio={t.total ? t.sawah / t.total : 0}
+                accent="emerald"
               />
               <Tile
                 icon={<Home className="w-4 h-4 text-amber-600" />}
                 label="Lahan Bukan Sawah"
                 value={`${unit(t.bukanSawah)} Ha`}
+                ratio={t.total ? t.bukanSawah / t.total : 0}
+                accent="amber"
               />
             </div>
           </div>
@@ -70,29 +84,74 @@ export function DesaLahan({ data }: Props) {
   );
 }
 
-function Tile({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
+function SectionHeader({
+  icon,
+  title,
+  subtitle,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  subtitle: string;
+}) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5">
-      <div className="flex items-center gap-1.5 text-slate-500 text-[10px] uppercase tracking-wide mb-0.5">
+    <header className="mb-2.5 flex items-start gap-2.5">
+      <span
+        aria-hidden
+        className="
+          mt-1 inline-block h-5 w-1 rounded-full
+          bg-gradient-to-b from-emerald-500 to-emerald-700
+        "
+      />
+      <div className="flex-1">
+        <h2 className="flex items-center gap-2 text-base font-bold text-slate-800 leading-tight">
+          {icon}
+          {title}
+        </h2>
+        <p className="mt-0.5 text-xs text-slate-500">{subtitle}</p>
+      </div>
+    </header>
+  );
+}
+
+function Tile({
+  icon,
+  label,
+  value,
+  ratio,
+  accent,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  ratio: number;
+  accent: "emerald" | "amber";
+}) {
+  const barColor =
+    accent === "emerald"
+      ? "from-emerald-400 to-emerald-600"
+      : "from-amber-400 to-amber-600";
+
+  return (
+    <div
+      className="
+        relative overflow-hidden
+        rounded-lg border border-slate-200
+        bg-gradient-to-br from-white to-slate-50
+        px-3 py-2
+      "
+    >
+      <div className="flex items-center gap-1.5 text-slate-500 text-[10px] uppercase tracking-wider mb-0.5">
         {icon}
         {label}
       </div>
-      <div className="text-base font-bold text-slate-800">{value}</div>
+      <div className="text-base font-bold text-slate-800 tabular-nums">{value}</div>
+      {/* mini progress bar sebagai visual cue rasio */}
+      <div className="mt-1 h-0.5 w-full rounded-full bg-slate-100 overflow-hidden">
+        <div
+          className={`h-full bg-gradient-to-r ${barColor}`}
+          style={{ width: `${Math.min(100, Math.max(0, ratio * 100)).toFixed(1)}%` }}
+        />
+      </div>
     </div>
   );
 }
-
-function EmptyBlock({ label, message }: { label: string; message: string }) {
-  return (
-    <section className="bg-white border border-slate-200 rounded-xl p-5">
-      <header className="mb-2">
-        <h2 className="text-lg font-bold text-slate-800">{label}</h2>
-      </header>
-      <div className="rounded-lg border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center text-sm text-slate-500">
-        {message}
-      </div>
-    </section>
-  );
-}
-
-export { EmptyBlock };

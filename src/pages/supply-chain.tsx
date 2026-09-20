@@ -305,7 +305,7 @@ export default function SupplyChainPage() {
                   Daftar Simpul Pasar & Lokasi Fungsional
                 </h4>
                 <p className="text-xs font-mono font-bold text-slate-500 uppercase mt-1">
-                  Belum ditemukan dataset koordinat/alamat pasar resmi di folder public; daftar ini disusun dari rute logistik yang sudah ada di aplikasi.
+                  Daftar disusun dari rute logistik internal aplikasi. Tersedia 36 titik koordinat pasar (data/pasar-banjarnegara.geojson, sumber komunitas/OSM) untuk pengembangan peta ke depan.
                 </p>
               </div>
               <div className="overflow-x-auto">

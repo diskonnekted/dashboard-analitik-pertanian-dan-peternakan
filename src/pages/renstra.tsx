@@ -37,7 +37,7 @@ export default function RenstraPage() {
       kategori: "Pertanian & Tanaman Pangan",
       indikator: "Produksi Padi Tahunan",
       target2022: 162069,
-      actual2022: 170806,
+      actual2022: 171560,
       satuan: "Ton",
       keterangan: "Produksi gabungan padi sawah dan ladang di seluruh kecamatan Kabupaten Banjarnegara.",
     },
@@ -45,7 +45,7 @@ export default function RenstraPage() {
       kategori: "Peternakan",
       indikator: "Populasi Sapi (Potong & Perah)",
       target2022: 32269,
-      actual2022: 30270,
+      actual2022: 28001,
       satuan: "Ekor",
       keterangan: "Populasi sapi potong dan perah untuk mendukung ketahanan protein daerah.",
     },
@@ -53,7 +53,7 @@ export default function RenstraPage() {
       kategori: "Peternakan",
       indikator: "Populasi Kambing & Domba",
       target2022: 263925,
-      actual2022: 303490,
+      actual2022: 281218,
       satuan: "Ekor",
       keterangan: "Didorong pertumbuhan kambing Jawa/PE dan budidaya ras unggul Domba Batur.",
     },
@@ -61,7 +61,7 @@ export default function RenstraPage() {
       kategori: "Perikanan",
       indikator: "Produksi Perikanan Budidaya",
       target2022: 41901,
-      actual2022: 24364,
+      actual2022: 40920,
       satuan: "Ton",
       keterangan: "Produksi gabungan perikanan kolam pembesaran, karamba, dan mina padi.",
     },
@@ -95,13 +95,24 @@ export default function RenstraPage() {
           <p className="text-xs font-mono font-bold uppercase text-slate-600">
             Halaman Evaluasi Capaian Rencana Strategis (Renstra) 2019-2022
           </p>
-          <button
-            onClick={() => window.print()}
-            className="inline-flex items-center gap-2 py-2 px-4 border border-slate-200 bg-emerald-200 font-mono font-bold text-xs uppercase shadow-sm hover:bg-emerald-300 transition-all"
-          >
-            <Printer size={16} />
-            Cetak Laporan
-          </button>
+          <div className="flex items-center gap-2">
+            <a
+              href="/renstra.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 py-2 px-4 border border-slate-200 bg-white font-mono font-bold text-xs uppercase shadow-sm hover:bg-slate-50 transition-all text-slate-700"
+            >
+              <FileText size={16} />
+              Lihat Dokumen Sumber
+            </a>
+            <button
+              onClick={() => window.print()}
+              className="inline-flex items-center gap-2 py-2 px-4 border border-slate-200 bg-emerald-200 font-mono font-bold text-xs uppercase shadow-sm hover:bg-emerald-300 transition-all"
+            >
+              <Printer size={16} />
+              Cetak Laporan
+            </button>
+          </div>
         </div>
 
         {/* Kop / Banner */}
@@ -253,13 +264,23 @@ export default function RenstraPage() {
             <li className="flex items-start gap-2">
               <ArrowRight size={14} className="text-emerald-600 mt-0.5 shrink-0" />
               <span>
-                Populasi Sapi menunjukkan kemajuan yang sangat positif mendekati target akhir dengan tingkat ketercapaian 93.8%.
+                Populasi Sapi menunjukkan kemajuan positif mendekati target akhir dengan tingkat ketercapaian 86.8%.
               </span>
             </li>
             <li className="flex items-start gap-2">
               <ArrowRight size={14} className="text-emerald-600 mt-0.5 shrink-0" />
               <span>
-                Sektor perikanan budidaya kolam air tawar memerlukan intervensi pembibitan mandiri pada periode Renstra berikutnya untuk menaikkan volume produksi.
+                Sektor perikanan budidaya (kolam pembesaran, karamba, minapadi) mencapai 97.7% dari target; perlu dorongan akhir pada periode Renstra berikutnya untuk memenuhi volume produksi secara penuh.
+              </span>
+            </li>
+            <li className="flex items-start gap-2">
+              <FileText size={14} className="text-slate-400 mt-0.5 shrink-0" />
+              <span className="text-slate-500">
+                Sumber: target merujuk Tabel 4.1 dokumen{" "}
+                <a href="/renstra.pdf" target="_blank" rel="noopener noreferrer" className="text-emerald-700 font-semibold underline">
+                  Renstra Dintankan &amp; KP 2019–2022
+                </a>
+                ; realisasi 2022 dihitung dari dataset BPS–Distankan KP terverifikasi (Luas Panen &amp; Produksi Padi Sawah+Ladang; Jumlah Ternak Besar; Jumlah Ternak Kecil; Produksi &amp; Nilai Perikanan Budidaya).
               </span>
             </li>
           </ul>

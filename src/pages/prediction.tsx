@@ -107,6 +107,15 @@ export default function PredictionPage() {
   const totalLuas = padiData.reduce((a, d) => a + d.luasPanen, 0);
   const totalProduksi = padiData.reduce((a, d) => a + d.produksi, 0);
 
+  // Tahun data terbaru & rentang historis (menyesuaikan sumber CSV lokal)
+  const dataTahun = padiData.length
+    ? String(Math.max(...padiData.map((d) => parseInt(d.tahun) || 0)))
+    : "—";
+  const historyRange =
+    padiHistory.length > 1
+      ? `${padiHistory[0].tahun}–${padiHistory[padiHistory.length - 1].tahun}`
+      : "—";
+
   const formatNum = (num: number) => new Intl.NumberFormat("id-ID", { maximumFractionDigits: 1 }).format(num);
 
   const tooltipStyle = {
@@ -130,7 +139,7 @@ export default function PredictionPage() {
           </h1>
           <p className="text-sm text-slate-700 mt-1 max-w-3xl">
             Analisis produktivitas padi Kabupaten Banjarnegara per kecamatan dilengkapi tren
-            historis (2018–2025), proyeksi linier tahun berikutnya, dan simulator ekspansi lahan.
+            historis ({historyRange}), proyeksi linier tahun berikutnya, dan simulator ekspansi lahan.
           </p>
         </header>
 
@@ -146,7 +155,7 @@ export default function PredictionPage() {
                     Tren &amp; Prediksi Produksi Padi Kabupaten
                   </h2>
                   <p className="text-xs text-slate-700 mt-0.5">
-                    Produksi (sumbu kiri) dan luas panen (sumbu kanan) · 2018–
+                    Produksi (sumbu kiri) dan luas panen (sumbu kanan) · {historyRange}–
                     {historyProjection ? historyProjection.nextYear : "—"}
                   </p>
                 </div>
@@ -284,7 +293,7 @@ export default function PredictionPage() {
                     Profil Luas Panen vs Produksi Padi per Kecamatan
                   </h2>
                   <p className="text-xs text-slate-700 mt-0.5">
-                    Luas panen (Ha, sumbu kiri) dibandingkan produksi (Ton, sumbu kanan) · data 2025
+                    Luas panen (Ha, sumbu kiri) dibandingkan produksi (Ton, sumbu kanan) · data {dataTahun}
                   </p>
                 </div>
                 <div className="p-5">
@@ -417,7 +426,7 @@ export default function PredictionPage() {
                   Peringkat Produktivitas Padi per Kecamatan
                 </h2>
                 <p className="text-xs text-slate-700 mt-0.5">
-                  Diurutkan dari laju hasil per hektar tertinggi · data 2025
+                  Diurutkan dari laju hasil per hektar tertinggi · data {dataTahun}
                 </p>
               </div>
               <div className="overflow-x-auto">

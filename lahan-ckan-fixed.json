@@ -1,0 +1,5078 @@
+[
+  {
+    "kecamatan": "Banjarnegara",
+    "desa": "KUTABANJARNEGARA",
+    "lahanSawah": 3.5,
+    "lahanBukanSawah": 45.8,
+    "jumlah": 49.3,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Banjarnegara",
+    "desa": "KRANDEGAN",
+    "lahanSawah": 61,
+    "lahanBukanSawah": 80.8,
+    "jumlah": 141.8,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Banjarnegara",
+    "desa": "PARAKANCANGGAH",
+    "lahanSawah": 153.625,
+    "lahanBukanSawah": 762.29,
+    "jumlah": 915.915,
+    "tahun": 2023
+  },
+  {
+    "desa": "SEMARANG",
+    "kecamatan": "Banjarnegara",
+    "lahanSawah": 60.7,
+    "lahanBukanSawah": 70.8,
+    "jumlah": 131.5,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 578250,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "SOKANANDI",
+    "kecamatan": "Banjarnegara",
+    "lahanSawah": 98.285,
+    "lahanBukanSawah": 117.45,
+    "jumlah": 215.735,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 98402.45,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "WANGON",
+    "kecamatan": "Banjarnegara",
+    "lahanSawah": 34.203,
+    "lahanBukanSawah": 0,
+    "jumlah": 34.203,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 34203,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "SEMAMPIR",
+    "kecamatan": "Banjarnegara",
+    "lahanSawah": 72.082,
+    "lahanBukanSawah": 32.412,
+    "jumlah": 104.494,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 104494,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "ARGASOKA",
+    "kecamatan": "Banjarnegara",
+    "lahanSawah": 87.225,
+    "lahanBukanSawah": 72.664,
+    "jumlah": 159.889,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 159889,
+      "tahun": 2023
+    }
+  },
+  {
+    "kecamatan": "Banjarnegara",
+    "desa": "KARANGTENGAH",
+    "lahanSawah": 1.119,
+    "lahanBukanSawah": 314.052,
+    "jumlah": 315.17100000000005,
+    "tahun": 2023
+  },
+  {
+    "desa": "AMPELSARI",
+    "kecamatan": "Banjarnegara",
+    "lahanSawah": 60,
+    "lahanBukanSawah": 181,
+    "jumlah": 241,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 241000,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "SOKAYASA",
+    "kecamatan": "Banjarnegara",
+    "lahanSawah": 65,
+    "lahanBukanSawah": 117.005,
+    "jumlah": 182.005,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 182005,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "TLAGAWERA",
+    "kecamatan": "Banjarnegara",
+    "lahanSawah": 110.235,
+    "lahanBukanSawah": 20.327,
+    "jumlah": 130.562,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 130562,
+      "tahun": 2023
+    }
+  },
+  {
+    "kecamatan": "Banjarnegara",
+    "desa": "CENDANA",
+    "lahanSawah": 15,
+    "lahanBukanSawah": 170,
+    "jumlah": 185,
+    "tahun": 2023
+  },
+  {
+    "desa": "KUTABANJARNEGARA",
+    "kecamatan": "Banjarnegara",
+    "lahanSawah": 3.5,
+    "lahanBukanSawah": 45.8,
+    "jumlah": 49.3,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 49300,
+      "tahun": 2024
+    }
+  },
+  {
+    "desa": "KRANDEGAN",
+    "kecamatan": "Banjarnegara",
+    "lahanSawah": 60.546,
+    "lahanBukanSawah": 80.8,
+    "jumlah": 141.346,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 141346,
+      "tahun": 2024
+    }
+  },
+  {
+    "desa": "PARAKANCANGGAH",
+    "kecamatan": "Banjarnegara",
+    "lahanSawah": 153.625,
+    "lahanBukanSawah": 580.2,
+    "jumlah": 733.825,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 915915,
+      "tahun": 2024
+    }
+  },
+  {
+    "desa": "SEMARANG",
+    "kecamatan": "Banjarnegara",
+    "lahanSawah": 60.7,
+    "lahanBukanSawah": 70.8,
+    "jumlah": 131.5,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 578250,
+      "tahun": 2024
+    }
+  },
+  {
+    "kecamatan": "Banjarnegara",
+    "desa": "SOKANANDI",
+    "lahanSawah": 98,
+    "lahanBukanSawah": 117,
+    "jumlah": 215,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Banjarnegara",
+    "desa": "WANGON",
+    "lahanSawah": 34,
+    "lahanBukanSawah": 0,
+    "jumlah": 34,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Banjarnegara",
+    "desa": "SEMAMPIR",
+    "lahanSawah": 72.082,
+    "lahanBukanSawah": 32.412,
+    "jumlah": 104.494,
+    "tahun": 2024
+  },
+  {
+    "desa": "ARGASOKA",
+    "kecamatan": "Banjarnegara",
+    "lahanSawah": 87.225,
+    "lahanBukanSawah": 72.664,
+    "jumlah": 159.889,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 159889,
+      "tahun": 2024
+    }
+  },
+  {
+    "desa": "KARANGTENGAH",
+    "kecamatan": "Banjarnegara",
+    "lahanSawah": 1119.994,
+    "lahanBukanSawah": 314.052,
+    "jumlah": 1434.046,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 314053.119,
+      "tahun": 2024
+    }
+  },
+  {
+    "desa": "AMPELSARI",
+    "kecamatan": "Banjarnegara",
+    "lahanSawah": 60,
+    "lahanBukanSawah": 181,
+    "jumlah": 241,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 241000,
+      "tahun": 2024
+    }
+  },
+  {
+    "desa": "SOKAYASA",
+    "kecamatan": "Banjarnegara",
+    "lahanSawah": 65,
+    "lahanBukanSawah": 117.005,
+    "jumlah": 182.005,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 182005,
+      "tahun": 2024
+    }
+  },
+  {
+    "desa": "TLAGAWERA",
+    "kecamatan": "Banjarnegara",
+    "lahanSawah": 110.235,
+    "lahanBukanSawah": 20.327,
+    "jumlah": 130.562,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 130562,
+      "tahun": 2024
+    }
+  },
+  {
+    "kecamatan": "Banjarnegara",
+    "desa": "CENDANA",
+    "lahanSawah": 15000,
+    "lahanBukanSawah": 170,
+    "jumlah": 15170,
+    "tahun": 2024
+  },
+  {
+    "desa": "KUTABANJARNEGARA",
+    "kecamatan": "Banjarnegara",
+    "lahanSawah": 3.5,
+    "lahanBukanSawah": 45.8,
+    "jumlah": 49.3,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 49300,
+      "tahun": 2025
+    }
+  },
+  {
+    "desa": "KRANDEGAN",
+    "kecamatan": "Banjarnegara",
+    "lahanSawah": 60.546,
+    "lahanBukanSawah": 80.8,
+    "jumlah": 141.346,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 141346,
+      "tahun": 2025
+    }
+  },
+  {
+    "desa": "PARAKANCANGGAH",
+    "kecamatan": "Banjarnegara",
+    "lahanSawah": 153.625,
+    "lahanBukanSawah": 580.2,
+    "jumlah": 733.825,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 733825,
+      "tahun": 2025
+    }
+  },
+  {
+    "kecamatan": "Banjarnegara",
+    "desa": "SEMARANG",
+    "lahanSawah": 60.7,
+    "lahanBukanSawah": 70.8,
+    "jumlah": 131.5,
+    "tahun": 2025
+  },
+  {
+    "desa": "SOKANANDI",
+    "kecamatan": "Banjarnegara",
+    "lahanSawah": 98.285,
+    "lahanBukanSawah": 117.45,
+    "jumlah": 215.735,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 98402.45,
+      "tahun": 2025
+    }
+  },
+  {
+    "desa": "WANGON",
+    "kecamatan": "Banjarnegara",
+    "lahanSawah": 34.203,
+    "lahanBukanSawah": 0,
+    "jumlah": 34.203,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 34203,
+      "tahun": 2025
+    }
+  },
+  {
+    "desa": "SEMAMPIR",
+    "kecamatan": "Banjarnegara",
+    "lahanSawah": 72.082,
+    "lahanBukanSawah": 32.412,
+    "jumlah": 104.494,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 104494,
+      "tahun": 2025
+    }
+  },
+  {
+    "desa": "ARGASOKA",
+    "kecamatan": "Banjarnegara",
+    "lahanSawah": 87.225,
+    "lahanBukanSawah": 72.664,
+    "jumlah": 159.889,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 159889,
+      "tahun": 2025
+    }
+  },
+  {
+    "kecamatan": "Banjarnegara",
+    "desa": "KARANGTENGAH",
+    "lahanSawah": 1.119,
+    "lahanBukanSawah": 314.052,
+    "jumlah": 315.17100000000005,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Banjarnegara",
+    "desa": "AMPELSARI",
+    "lahanSawah": 60,
+    "lahanBukanSawah": 181,
+    "jumlah": 241,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Banjarnegara",
+    "desa": "SOKAYASA",
+    "lahanSawah": 65,
+    "lahanBukanSawah": 117.005,
+    "jumlah": 182.005,
+    "tahun": 2025
+  },
+  {
+    "desa": "TLAGAWERA",
+    "kecamatan": "Banjarnegara",
+    "lahanSawah": 110.235,
+    "lahanBukanSawah": 20.327,
+    "jumlah": 130.562,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 130562,
+      "tahun": 2025
+    }
+  },
+  {
+    "desa": "CENDANA",
+    "kecamatan": "Banjarnegara",
+    "lahanSawah": 15,
+    "lahanBukanSawah": 170,
+    "jumlah": 185,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 185000,
+      "tahun": 2025
+    }
+  },
+  {
+    "kecamatan": "Batur",
+    "desa": "BATUR",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 1212.14,
+    "jumlah": 1212.14,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Batur",
+    "desa": "SUMBEREJO",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 792.93,
+    "jumlah": 792.93,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Batur",
+    "desa": "PESURENAN",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 154.42,
+    "jumlah": 154.42,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Batur",
+    "desa": "BAKAL",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 484.85,
+    "jumlah": 484.85,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Batur",
+    "desa": "PEKASIRAN",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 719.22,
+    "jumlah": 719.22,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Batur",
+    "desa": "KEPAKISAN",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 526.88,
+    "jumlah": 526.88,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Batur",
+    "desa": "KARANTENGAH",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 488.81,
+    "jumlah": 488.81,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Batur",
+    "desa": "DIENG KULON",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 337.86,
+    "jumlah": 337.86,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Batur",
+    "desa": "BATUR",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 1212.14,
+    "jumlah": 1212.14,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Batur",
+    "desa": "SUMBEREJO",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 448.83,
+    "jumlah": 448.83,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Batur",
+    "desa": "PESURENAN",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 110,
+    "jumlah": 110,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Batur",
+    "desa": "BAKAL",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 339,
+    "jumlah": 339,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Batur",
+    "desa": "PEKASIRAN",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 614.71,
+    "jumlah": 614.71,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Batur",
+    "desa": "KEPAKISAN",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 526.88,
+    "jumlah": 526.88,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Batur",
+    "desa": "KARANTENGAH",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 45834,
+    "jumlah": 45834,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Batur",
+    "desa": "DIENG KULON",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 337.86,
+    "jumlah": 337.86,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Batur",
+    "desa": "BATUR",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 1212.14,
+    "jumlah": 1212.14,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Batur",
+    "desa": "SUMBEREJO",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 448.83,
+    "jumlah": 448.83,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Batur",
+    "desa": "PESURENAN",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 110,
+    "jumlah": 110,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Batur",
+    "desa": "BAKAL",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 339,
+    "jumlah": 339,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Batur",
+    "desa": "PEKASIRAN",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 613.71,
+    "jumlah": 613.71,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Batur",
+    "desa": "KEPAKISAN",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 526.88,
+    "jumlah": 526.88,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Batur",
+    "desa": "KARANTENGAH",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 458.34,
+    "jumlah": 458.34,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Batur",
+    "desa": "DIENG KULON",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 337.86,
+    "jumlah": 337.86,
+    "tahun": 2025
+  },
+  {
+    "desa": "WANADRI",
+    "kecamatan": "Bawang",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 446,
+    "jumlah": 446,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 446000,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "KEBONDALEM",
+    "kecamatan": "Bawang",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 911,
+    "jumlah": 911,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 911000,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "MAJALENGKA",
+    "kecamatan": "Bawang",
+    "lahanSawah": 40,
+    "lahanBukanSawah": 242.784,
+    "jumlah": 282.784,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 242824,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "WIRAMASTRA",
+    "kecamatan": "Bawang",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 170,
+    "jumlah": 170,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 170000,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "KUTAYASA",
+    "kecamatan": "Bawang",
+    "lahanSawah": 65.86,
+    "lahanBukanSawah": 160.319,
+    "jumlah": 226.179,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 226179,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "WINONG",
+    "kecamatan": "Bawang",
+    "lahanSawah": 88.4,
+    "lahanBukanSawah": 173.786,
+    "jumlah": 262.186,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 262186,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "DEPOK",
+    "kecamatan": "Bawang",
+    "lahanSawah": 33.406,
+    "lahanBukanSawah": 158.596,
+    "jumlah": 192.002,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 192002,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "WATUURIP",
+    "kecamatan": "Bawang",
+    "lahanSawah": 28,
+    "lahanBukanSawah": 178.18,
+    "jumlah": 206.18,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 206180,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "MASARAN",
+    "kecamatan": "Bawang",
+    "lahanSawah": 82.089,
+    "lahanBukanSawah": 239.166,
+    "jumlah": 321.255,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 321255,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "SERANG",
+    "kecamatan": "Bawang",
+    "lahanSawah": 26.26,
+    "lahanBukanSawah": 60.65,
+    "jumlah": 86.91,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 86910,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "MANTRIANOM",
+    "kecamatan": "Bawang",
+    "lahanSawah": 79.336,
+    "lahanBukanSawah": 157.224,
+    "jumlah": 236.56,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 236560,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "BINORONG",
+    "kecamatan": "Bawang",
+    "lahanSawah": 87,
+    "lahanBukanSawah": 21,
+    "jumlah": 108,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 108000,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "JOHO",
+    "kecamatan": "Bawang",
+    "lahanSawah": 58,
+    "lahanBukanSawah": 8,
+    "jumlah": 66,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 66000,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "BAWANG",
+    "kecamatan": "Bawang",
+    "lahanSawah": 58.856,
+    "lahanBukanSawah": 228.733,
+    "jumlah": 287.589,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 243632,
+      "tahun": 2023
+    }
+  },
+  {
+    "kecamatan": "Bawang",
+    "desa": "BANDINGAN",
+    "lahanSawah": 15640,
+    "lahanBukanSawah": 2238,
+    "jumlah": 17878,
+    "tahun": 2023
+  },
+  {
+    "desa": "BLAMBANGAN",
+    "kecamatan": "Bawang",
+    "lahanSawah": 217.172,
+    "lahanBukanSawah": 113.701,
+    "jumlah": 330.873,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 330873,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "GEMURUH",
+    "kecamatan": "Bawang",
+    "lahanSawah": 165.743,
+    "lahanBukanSawah": 70,
+    "jumlah": 235.743,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 235743,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "PUCANG",
+    "kecamatan": "Bawang",
+    "lahanSawah": 147.242,
+    "lahanBukanSawah": 27.172,
+    "jumlah": 174.414,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 174414,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "WANADRI",
+    "kecamatan": "Bawang",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 446,
+    "jumlah": 446,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 446000,
+      "tahun": 2024
+    }
+  },
+  {
+    "desa": "KEBONDALEM",
+    "kecamatan": "Bawang",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 911,
+    "jumlah": 911,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 911000,
+      "tahun": 2024
+    }
+  },
+  {
+    "desa": "MAJALENGKA",
+    "kecamatan": "Bawang",
+    "lahanSawah": 40,
+    "lahanBukanSawah": 242.784,
+    "jumlah": 282.784,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 242824,
+      "tahun": 2024
+    }
+  },
+  {
+    "desa": "WIRAMASTRA",
+    "kecamatan": "Bawang",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 170,
+    "jumlah": 170,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 170000,
+      "tahun": 2024
+    }
+  },
+  {
+    "desa": "KUTAYASA",
+    "kecamatan": "Bawang",
+    "lahanSawah": 65.86,
+    "lahanBukanSawah": 160.319,
+    "jumlah": 226.179,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 226179,
+      "tahun": 2024
+    }
+  },
+  {
+    "desa": "WINONG",
+    "kecamatan": "Bawang",
+    "lahanSawah": 88.4,
+    "lahanBukanSawah": 173.786,
+    "jumlah": 262.186,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 262186,
+      "tahun": 2024
+    }
+  },
+  {
+    "desa": "DEPOK",
+    "kecamatan": "Bawang",
+    "lahanSawah": 33.406,
+    "lahanBukanSawah": 158.596,
+    "jumlah": 192.002,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 192002,
+      "tahun": 2024
+    }
+  },
+  {
+    "desa": "WATUURIP",
+    "kecamatan": "Bawang",
+    "lahanSawah": 28,
+    "lahanBukanSawah": 178.18,
+    "jumlah": 206.18,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 206180,
+      "tahun": 2024
+    }
+  },
+  {
+    "desa": "MASARAN",
+    "kecamatan": "Bawang",
+    "lahanSawah": 82.089,
+    "lahanBukanSawah": 239.166,
+    "jumlah": 321.255,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 321255,
+      "tahun": 2024
+    }
+  },
+  {
+    "desa": "SERANG",
+    "kecamatan": "Bawang",
+    "lahanSawah": 26.26,
+    "lahanBukanSawah": 60.65,
+    "jumlah": 86.91,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 86910,
+      "tahun": 2024
+    }
+  },
+  {
+    "desa": "MANTRIANOM",
+    "kecamatan": "Bawang",
+    "lahanSawah": 79.336,
+    "lahanBukanSawah": 157.224,
+    "jumlah": 236.56,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 236560,
+      "tahun": 2024
+    }
+  },
+  {
+    "desa": "BINORONG",
+    "kecamatan": "Bawang",
+    "lahanSawah": 87,
+    "lahanBukanSawah": 21,
+    "jumlah": 108,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 108000,
+      "tahun": 2024
+    }
+  },
+  {
+    "desa": "JOHO",
+    "kecamatan": "Bawang",
+    "lahanSawah": 58,
+    "lahanBukanSawah": 8,
+    "jumlah": 66,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 66000,
+      "tahun": 2024
+    }
+  },
+  {
+    "desa": "BAWANG",
+    "kecamatan": "Bawang",
+    "lahanSawah": 58.856,
+    "lahanBukanSawah": 228.733,
+    "jumlah": 287.589,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 287589,
+      "tahun": 2024
+    }
+  },
+  {
+    "desa": "BANDINGAN",
+    "kecamatan": "Bawang",
+    "lahanSawah": 156.4,
+    "lahanBukanSawah": 192.2,
+    "jumlah": 348.6,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 348600,
+      "tahun": 2024
+    }
+  },
+  {
+    "desa": "BLAMBANGAN",
+    "kecamatan": "Bawang",
+    "lahanSawah": 217.172,
+    "lahanBukanSawah": 113.701,
+    "jumlah": 330.873,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 330873,
+      "tahun": 2024
+    }
+  },
+  {
+    "desa": "GEMURUH",
+    "kecamatan": "Bawang",
+    "lahanSawah": 165.743,
+    "lahanBukanSawah": 70,
+    "jumlah": 235.743,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 235743,
+      "tahun": 2024
+    }
+  },
+  {
+    "desa": "PUCANG",
+    "kecamatan": "Bawang",
+    "lahanSawah": 147.242,
+    "lahanBukanSawah": 27.172,
+    "jumlah": 174.414,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 174414,
+      "tahun": 2024
+    }
+  },
+  {
+    "desa": "WANADRI",
+    "kecamatan": "Bawang",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 446,
+    "jumlah": 446,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 446000,
+      "tahun": 2025
+    }
+  },
+  {
+    "desa": "KEBONDALEM",
+    "kecamatan": "Bawang",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 911,
+    "jumlah": 911,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 911000,
+      "tahun": 2025
+    }
+  },
+  {
+    "desa": "MAJALENGKA",
+    "kecamatan": "Bawang",
+    "lahanSawah": 40,
+    "lahanBukanSawah": 242.784,
+    "jumlah": 282.784,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 242824,
+      "tahun": 2025
+    }
+  },
+  {
+    "desa": "WIRAMASTRA",
+    "kecamatan": "Bawang",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 170,
+    "jumlah": 170,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 170000,
+      "tahun": 2025
+    }
+  },
+  {
+    "desa": "KUTAYASA",
+    "kecamatan": "Bawang",
+    "lahanSawah": 65.86,
+    "lahanBukanSawah": 160.319,
+    "jumlah": 226.179,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 226179,
+      "tahun": 2025
+    }
+  },
+  {
+    "desa": "WINONG",
+    "kecamatan": "Bawang",
+    "lahanSawah": 88.4,
+    "lahanBukanSawah": 173.786,
+    "jumlah": 262.186,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 262186,
+      "tahun": 2025
+    }
+  },
+  {
+    "desa": "DEPOK",
+    "kecamatan": "Bawang",
+    "lahanSawah": 33.406,
+    "lahanBukanSawah": 158.596,
+    "jumlah": 192.002,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 192002,
+      "tahun": 2025
+    }
+  },
+  {
+    "desa": "WATUURIP",
+    "kecamatan": "Bawang",
+    "lahanSawah": 28,
+    "lahanBukanSawah": 178.18,
+    "jumlah": 206.18,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 206180,
+      "tahun": 2025
+    }
+  },
+  {
+    "desa": "MASARAN",
+    "kecamatan": "Bawang",
+    "lahanSawah": 82.089,
+    "lahanBukanSawah": 239.166,
+    "jumlah": 321.255,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 321255,
+      "tahun": 2025
+    }
+  },
+  {
+    "desa": "SERANG",
+    "kecamatan": "Bawang",
+    "lahanSawah": 26.26,
+    "lahanBukanSawah": 60.65,
+    "jumlah": 86.91,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 86910,
+      "tahun": 2025
+    }
+  },
+  {
+    "desa": "MANTRIANOM",
+    "kecamatan": "Bawang",
+    "lahanSawah": 79.336,
+    "lahanBukanSawah": 157.224,
+    "jumlah": 236.56,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 236560,
+      "tahun": 2025
+    }
+  },
+  {
+    "desa": "BINORONG",
+    "kecamatan": "Bawang",
+    "lahanSawah": 87,
+    "lahanBukanSawah": 21,
+    "jumlah": 108,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 108000,
+      "tahun": 2025
+    }
+  },
+  {
+    "desa": "JOHO",
+    "kecamatan": "Bawang",
+    "lahanSawah": 58,
+    "lahanBukanSawah": 8,
+    "jumlah": 66,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 66000,
+      "tahun": 2025
+    }
+  },
+  {
+    "desa": "BAWANG",
+    "kecamatan": "Bawang",
+    "lahanSawah": 58.856,
+    "lahanBukanSawah": 228.733,
+    "jumlah": 287.589,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 287589,
+      "tahun": 2025
+    }
+  },
+  {
+    "desa": "BANDINGAN",
+    "kecamatan": "Bawang",
+    "lahanSawah": 156.4,
+    "lahanBukanSawah": 192.2,
+    "jumlah": 348.6,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 348600,
+      "tahun": 2025
+    }
+  },
+  {
+    "desa": "BLAMBANGAN",
+    "kecamatan": "Bawang",
+    "lahanSawah": 217.172,
+    "lahanBukanSawah": 113.701,
+    "jumlah": 330.873,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 330873,
+      "tahun": 2025
+    }
+  },
+  {
+    "desa": "GEMURUH",
+    "kecamatan": "Bawang",
+    "lahanSawah": 165.743,
+    "lahanBukanSawah": 70,
+    "jumlah": 235.743,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 235743,
+      "tahun": 2025
+    }
+  },
+  {
+    "desa": "PUCANG",
+    "kecamatan": "Bawang",
+    "lahanSawah": 147.242,
+    "lahanBukanSawah": 27.172,
+    "jumlah": 174.414,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 174414,
+      "tahun": 2025
+    }
+  },
+  {
+    "kecamatan": "Mandiraja",
+    "desa": "MANDIRAJA WETAN",
+    "lahanSawah": 58,
+    "lahanBukanSawah": 8,
+    "jumlah": 66,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Mandiraja",
+    "desa": "MANDIRAJA KULON",
+    "lahanSawah": 78,
+    "lahanBukanSawah": 3,
+    "jumlah": 81,
+    "tahun": 2023
+  },
+  {
+    "desa": "BANJENGAN",
+    "kecamatan": "Mandiraja",
+    "lahanSawah": 67,
+    "lahanBukanSawah": 40.4,
+    "jumlah": 107.4,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 107418,
+      "tahun": 2023
+    }
+  },
+  {
+    "kecamatan": "Mandiraja",
+    "desa": "KEBAKALAN",
+    "lahanSawah": 45.45,
+    "lahanBukanSawah": 40.94,
+    "jumlah": 86.39,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Mandiraja",
+    "desa": "PANGGISARI",
+    "lahanSawah": 62.69,
+    "lahanBukanSawah": 196.31,
+    "jumlah": 259,
+    "tahun": 2023
+  },
+  {
+    "desa": "KERTAYASA",
+    "kecamatan": "Mandiraja",
+    "lahanSawah": 185.681,
+    "lahanBukanSawah": 158.059,
+    "jumlah": 343.74,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 343740,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "CANDIWULAN",
+    "kecamatan": "Mandiraja",
+    "lahanSawah": 59.157,
+    "lahanBukanSawah": 52.797,
+    "jumlah": 111.954,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 111954,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "SIMBANG",
+    "kecamatan": "Mandiraja",
+    "lahanSawah": 90.025,
+    "lahanBukanSawah": 3,
+    "jumlah": 93.025,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 134525,
+      "tahun": 2023
+    }
+  },
+  {
+    "kecamatan": "Mandiraja",
+    "desa": "BLIMBING",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 0,
+    "jumlah": 0,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Mandiraja",
+    "desa": "PURWASABA",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 0,
+    "jumlah": 0,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Mandiraja",
+    "desa": "GLEMPANG",
+    "lahanSawah": 118.2,
+    "lahanBukanSawah": 451.71,
+    "jumlah": 569.91,
+    "tahun": 2023
+  },
+  {
+    "desa": "KEBANARAN",
+    "kecamatan": "Mandiraja",
+    "lahanSawah": 126,
+    "lahanBukanSawah": 395.687,
+    "jumlah": 521.687,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 395813,
+      "tahun": 2023
+    }
+  },
+  {
+    "kecamatan": "Mandiraja",
+    "desa": "SALAMERTA",
+    "lahanSawah": 75,
+    "lahanBukanSawah": 395.64,
+    "jumlah": 470.64,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Mandiraja",
+    "desa": "SOMAWANGI",
+    "lahanSawah": 3652,
+    "lahanBukanSawah": 1800,
+    "jumlah": 5452,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Mandiraja",
+    "desa": "JALATUNDA",
+    "lahanSawah": 142.66,
+    "lahanBukanSawah": 742,
+    "jumlah": 884.66,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Mandiraja",
+    "desa": "KALIWUNGU",
+    "lahanSawah": 76.14,
+    "lahanBukanSawah": 453.58,
+    "jumlah": 529.72,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Mandiraja",
+    "desa": "MANDIRAJA WETAN",
+    "lahanSawah": 58,
+    "lahanBukanSawah": 8,
+    "jumlah": 66,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Mandiraja",
+    "desa": "MANDIRAJA KULON",
+    "lahanSawah": 78,
+    "lahanBukanSawah": 3,
+    "jumlah": 81,
+    "tahun": 2024
+  },
+  {
+    "desa": "BANJENGAN",
+    "kecamatan": "Mandiraja",
+    "lahanSawah": 67,
+    "lahanBukanSawah": 40.4,
+    "jumlah": 107.4,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 107418,
+      "tahun": 2024
+    }
+  },
+  {
+    "kecamatan": "Mandiraja",
+    "desa": "KEBAKALAN",
+    "lahanSawah": 45.45,
+    "lahanBukanSawah": 40.94,
+    "jumlah": 86.39,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Mandiraja",
+    "desa": "PANGGISARI",
+    "lahanSawah": 62.69,
+    "lahanBukanSawah": 196.31,
+    "jumlah": 259,
+    "tahun": 2024
+  },
+  {
+    "desa": "KERTAYASA",
+    "kecamatan": "Mandiraja",
+    "lahanSawah": 185.681,
+    "lahanBukanSawah": 158.059,
+    "jumlah": 343.74,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 343740,
+      "tahun": 2024
+    }
+  },
+  {
+    "desa": "CANDIWULAN",
+    "kecamatan": "Mandiraja",
+    "lahanSawah": 59.157,
+    "lahanBukanSawah": 52.797,
+    "jumlah": 111.954,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 111954,
+      "tahun": 2024
+    }
+  },
+  {
+    "desa": "SIMBANG",
+    "kecamatan": "Mandiraja",
+    "lahanSawah": 90.025,
+    "lahanBukanSawah": 3,
+    "jumlah": 93.025,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 134525,
+      "tahun": 2024
+    }
+  },
+  {
+    "kecamatan": "Mandiraja",
+    "desa": "BLIMBING",
+    "lahanSawah": 63,
+    "lahanBukanSawah": 34.56,
+    "jumlah": 97.56,
+    "tahun": 2024
+  },
+  {
+    "desa": "PURWASABA",
+    "kecamatan": "Mandiraja",
+    "lahanSawah": 118.8,
+    "lahanBukanSawah": 113.36,
+    "jumlah": 232.16,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 163473.8,
+      "tahun": 2024
+    }
+  },
+  {
+    "kecamatan": "Mandiraja",
+    "desa": "GLEMPANG",
+    "lahanSawah": 118.2,
+    "lahanBukanSawah": 451.71,
+    "jumlah": 569.91,
+    "tahun": 2024
+  },
+  {
+    "desa": "KEBANARAN",
+    "kecamatan": "Mandiraja",
+    "lahanSawah": 126,
+    "lahanBukanSawah": 395.687,
+    "jumlah": 521.687,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 395813,
+      "tahun": 2024
+    }
+  },
+  {
+    "kecamatan": "Mandiraja",
+    "desa": "SALAMERTA",
+    "lahanSawah": 75,
+    "lahanBukanSawah": 395.64,
+    "jumlah": 470.64,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Mandiraja",
+    "desa": "SOMAWANGI",
+    "lahanSawah": 3652,
+    "lahanBukanSawah": 1800,
+    "jumlah": 5452,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Mandiraja",
+    "desa": "JALATUNDA",
+    "lahanSawah": 142.66,
+    "lahanBukanSawah": 742,
+    "jumlah": 884.66,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Mandiraja",
+    "desa": "KALIWUNGU",
+    "lahanSawah": 76.14,
+    "lahanBukanSawah": 453.58,
+    "jumlah": 529.72,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Mandiraja",
+    "desa": "MANDIRAJA WETAN",
+    "lahanSawah": 58,
+    "lahanBukanSawah": 8,
+    "jumlah": 66,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Mandiraja",
+    "desa": "MANDIRAJA KULON",
+    "lahanSawah": 80,
+    "lahanBukanSawah": 3,
+    "jumlah": 83,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Mandiraja",
+    "desa": "BANJENGAN",
+    "lahanSawah": 67,
+    "lahanBukanSawah": 40.4,
+    "jumlah": 107.4,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Mandiraja",
+    "desa": "KEBAKALAN",
+    "lahanSawah": 45.45,
+    "lahanBukanSawah": 0,
+    "jumlah": 45.45,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Mandiraja",
+    "desa": "PANGGISARI",
+    "lahanSawah": 150,
+    "lahanBukanSawah": 109,
+    "jumlah": 259,
+    "tahun": 2025
+  },
+  {
+    "desa": "KERTAYASA",
+    "kecamatan": "Mandiraja",
+    "lahanSawah": 185.681,
+    "lahanBukanSawah": 158.059,
+    "jumlah": 343.74,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 343740,
+      "tahun": 2025
+    }
+  },
+  {
+    "desa": "CANDIWULAN",
+    "kecamatan": "Mandiraja",
+    "lahanSawah": 59.157,
+    "lahanBukanSawah": 52.797,
+    "jumlah": 111.954,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 111954,
+      "tahun": 2025
+    }
+  },
+  {
+    "desa": "SIMBANG",
+    "kecamatan": "Mandiraja",
+    "lahanSawah": 90.025,
+    "lahanBukanSawah": 3,
+    "jumlah": 93.025,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 93025,
+      "tahun": 2025
+    }
+  },
+  {
+    "desa": "BLIMBING",
+    "kecamatan": "Mandiraja",
+    "lahanSawah": 63.373,
+    "lahanBukanSawah": 34.1,
+    "jumlah": 97.473,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 63407.1,
+      "tahun": 2025
+    }
+  },
+  {
+    "kecamatan": "Mandiraja",
+    "desa": "PURWASABA",
+    "lahanSawah": 118.8,
+    "lahanBukanSawah": 113.36,
+    "jumlah": 232.16,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Mandiraja",
+    "desa": "GLEMPANG",
+    "lahanSawah": 118.2,
+    "lahanBukanSawah": 451.7,
+    "jumlah": 569.9,
+    "tahun": 2025
+  },
+  {
+    "desa": "KEBANARAN",
+    "kecamatan": "Mandiraja",
+    "lahanSawah": 126,
+    "lahanBukanSawah": 395.687,
+    "jumlah": 521.687,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 395813,
+      "tahun": 2025
+    }
+  },
+  {
+    "kecamatan": "Mandiraja",
+    "desa": "SALAMERTA",
+    "lahanSawah": 75,
+    "lahanBukanSawah": 395.64,
+    "jumlah": 470.64,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Mandiraja",
+    "desa": "SOMAWANGI",
+    "lahanSawah": 3652,
+    "lahanBukanSawah": 1800,
+    "jumlah": 5452,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Mandiraja",
+    "desa": "JALATUNDA",
+    "lahanSawah": 142.66,
+    "lahanBukanSawah": 742,
+    "jumlah": 884.66,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Mandiraja",
+    "desa": "KALIWUNGU",
+    "lahanSawah": 76.14,
+    "lahanBukanSawah": 453.58,
+    "jumlah": 529.72,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Pagedongan",
+    "desa": "PAGEDONGAN",
+    "lahanSawah": 45,
+    "lahanBukanSawah": 1102.27,
+    "jumlah": 1147.27,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Pagedongan",
+    "desa": "GUNUNGJATI",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 501.82,
+    "jumlah": 501.82,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Pagedongan",
+    "desa": "TWELAGIRI",
+    "lahanSawah": 7,
+    "lahanBukanSawah": 431.77,
+    "jumlah": 438.77,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Pagedongan",
+    "desa": "KEBUTUHDUWUR",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 1463.54,
+    "jumlah": 1463.54,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Pagedongan",
+    "desa": "KEBUTUHJURANG",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 367.22,
+    "jumlah": 367.22,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Pagedongan",
+    "desa": "PESANGKALAN",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 1323.65,
+    "jumlah": 1323.65,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Pagedongan",
+    "desa": "DUREN",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 513.19,
+    "jumlah": 513.19,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Pagedongan",
+    "desa": "LEBAKWANGI",
+    "lahanSawah": 15,
+    "lahanBukanSawah": 717.75,
+    "jumlah": 732.75,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Pagedongan",
+    "desa": "GENTANSARI",
+    "lahanSawah": 108,
+    "lahanBukanSawah": 726.78,
+    "jumlah": 834.78,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Pagedongan",
+    "desa": "PAGEDONGAN",
+    "lahanSawah": 45,
+    "lahanBukanSawah": 1102.27,
+    "jumlah": 1147.27,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Pagedongan",
+    "desa": "GUNUNGJATI",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 501.82,
+    "jumlah": 501.82,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Pagedongan",
+    "desa": "TWELAGIRI",
+    "lahanSawah": 7,
+    "lahanBukanSawah": 431.77,
+    "jumlah": 438.77,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Pagedongan",
+    "desa": "KEBUTUHDUWUR",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 1463.54,
+    "jumlah": 1463.54,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Pagedongan",
+    "desa": "KEBUTUHJURANG",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 367.22,
+    "jumlah": 367.22,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Pagedongan",
+    "desa": "PESANGKALAN",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 1323.65,
+    "jumlah": 1323.65,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Pagedongan",
+    "desa": "DUREN",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 513.19,
+    "jumlah": 513.19,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Pagedongan",
+    "desa": "LEBAKWANGI",
+    "lahanSawah": 15,
+    "lahanBukanSawah": 717.75,
+    "jumlah": 732.75,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Pagedongan",
+    "desa": "GENTANSARI",
+    "lahanSawah": 108,
+    "lahanBukanSawah": 726.78,
+    "jumlah": 834.78,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Pagedongan",
+    "desa": "PAGEDONGAN",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 1102.27,
+    "jumlah": 1102.27,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Pagedongan",
+    "desa": "GUNUNGJATI",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 501.82,
+    "jumlah": 501.82,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Pagedongan",
+    "desa": "TWELAGIRI",
+    "lahanSawah": 5.35,
+    "lahanBukanSawah": 431.77,
+    "jumlah": 437.12,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Pagedongan",
+    "desa": "KEBUTUHDUWUR",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 1463.54,
+    "jumlah": 1463.54,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Pagedongan",
+    "desa": "KEBUTUHJURANG",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 367.22,
+    "jumlah": 367.22,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Pagedongan",
+    "desa": "PESANGKALAN",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 1323.65,
+    "jumlah": 1323.65,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Pagedongan",
+    "desa": "DUREN",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 513.19,
+    "jumlah": 513.19,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Pagedongan",
+    "desa": "LEBAKWANGI",
+    "lahanSawah": 11,
+    "lahanBukanSawah": 717.75,
+    "jumlah": 728.75,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Pagedongan",
+    "desa": "GENTANSARI",
+    "lahanSawah": 88,
+    "lahanBukanSawah": 726.78,
+    "jumlah": 814.78,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "KALILUNJAR",
+    "lahanSawah": 47,
+    "lahanBukanSawah": 114,
+    "jumlah": 161,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "KARANGSARI",
+    "lahanSawah": 49,
+    "lahanBukanSawah": 168,
+    "jumlah": 217,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "SARWODADI",
+    "lahanSawah": 40,
+    "lahanBukanSawah": 520,
+    "jumlah": 560,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "GROGOL",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 460.81,
+    "jumlah": 460.81,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "GIRITIRTA",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 227,
+    "jumlah": 227,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "BITING",
+    "lahanSawah": 38,
+    "lahanBukanSawah": 86,
+    "jumlah": 124,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "TLAHAB",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 130,
+    "jumlah": 130,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "DARMAYASA",
+    "lahanSawah": 84,
+    "lahanBukanSawah": 420,
+    "jumlah": 504,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "PEJAWARAN",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 476,
+    "jumlah": 476,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "PENUSUPAN",
+    "lahanSawah": 161,
+    "lahanBukanSawah": 135,
+    "jumlah": 296,
+    "tahun": 2023
+  },
+  {
+    "desa": "RATAMBA",
+    "kecamatan": "Pejawaran",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 56,
+    "jumlah": 56,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 56321,
+      "tahun": 2023
+    }
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "SIDENGOK",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 367,
+    "jumlah": 367,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "PEGUNDUNGAN",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 345.03,
+    "jumlah": 345.03,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "BEJI",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 233.5,
+    "jumlah": 233.5,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "SEMANGKUNG",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 215,
+    "jumlah": 215,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "CONDONGCAMPUR",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 325.25,
+    "jumlah": 325.25,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "GEMBOL",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 179,
+    "jumlah": 179,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "KALILUNJAR",
+    "lahanSawah": 47,
+    "lahanBukanSawah": 114,
+    "jumlah": 161,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "KARANGSARI",
+    "lahanSawah": 49,
+    "lahanBukanSawah": 168,
+    "jumlah": 217,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "SARWODADI",
+    "lahanSawah": 40,
+    "lahanBukanSawah": 520,
+    "jumlah": 560,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "GROGOL",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 460.81,
+    "jumlah": 460.81,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "GIRITIRTA",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 227,
+    "jumlah": 227,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "BITING",
+    "lahanSawah": 38,
+    "lahanBukanSawah": 86,
+    "jumlah": 124,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "TLAHAB",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 130,
+    "jumlah": 130,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "DARMAYASA",
+    "lahanSawah": 84,
+    "lahanBukanSawah": 420,
+    "jumlah": 504,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "PEJAWARAN",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 476,
+    "jumlah": 476,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "PENUSUPAN",
+    "lahanSawah": 161,
+    "lahanBukanSawah": 135,
+    "jumlah": 296,
+    "tahun": 2024
+  },
+  {
+    "desa": "RATAMBA",
+    "kecamatan": "Pejawaran",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 56,
+    "jumlah": 56,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 56321,
+      "tahun": 2024
+    }
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "SIDENGOK",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 367,
+    "jumlah": 367,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "PEGUNDUNGAN",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 345.03,
+    "jumlah": 345.03,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "BEJI",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 233.5,
+    "jumlah": 233.5,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "SEMANGKUNG",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 215,
+    "jumlah": 215,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "CONDONGCAMPUR",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 325.25,
+    "jumlah": 325.25,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "GEMBOL",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 179,
+    "jumlah": 179,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "KALILUNJAR",
+    "lahanSawah": 43,
+    "lahanBukanSawah": 118,
+    "jumlah": 161,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "KARANGSARI",
+    "lahanSawah": 49,
+    "lahanBukanSawah": 168,
+    "jumlah": 217,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "SARWODADI",
+    "lahanSawah": 40,
+    "lahanBukanSawah": 520,
+    "jumlah": 560,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "GROGOL",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 461,
+    "jumlah": 461,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "GIRITIRTA",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 227,
+    "jumlah": 227,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "BITING",
+    "lahanSawah": 38,
+    "lahanBukanSawah": 86,
+    "jumlah": 124,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "TLAHAB",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 130,
+    "jumlah": 130,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "DARMAYASA",
+    "lahanSawah": 84,
+    "lahanBukanSawah": 420,
+    "jumlah": 504,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "PEJAWARAN",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 476,
+    "jumlah": 476,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "PENUSUPAN",
+    "lahanSawah": 161,
+    "lahanBukanSawah": 135,
+    "jumlah": 296,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "RATAMBA",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 56,
+    "jumlah": 56,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "SIDENGOK",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 367,
+    "jumlah": 367,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "PEGUNDUNGAN",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 345,
+    "jumlah": 345,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "BEJI",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 233.5,
+    "jumlah": 233.5,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "SEMANGKUNG",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 215,
+    "jumlah": 215,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "CONDONGCAMPUR",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 325,
+    "jumlah": 325,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Pejawaran",
+    "desa": "GEMBOL",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 179,
+    "jumlah": 179,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "BADAKARYA",
+    "lahanSawah": 72,
+    "lahanBukanSawah": 300.54,
+    "jumlah": 372.54,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "BONDOLHARJO",
+    "lahanSawah": 3000,
+    "lahanBukanSawah": 0,
+    "jumlah": 3000,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "DANAKERTA",
+    "lahanSawah": 111.13,
+    "lahanBukanSawah": 503.75,
+    "jumlah": 614.88,
+    "tahun": 2023
+  },
+  {
+    "desa": "JEMBANGAN",
+    "kecamatan": "Punggelan",
+    "lahanSawah": 237,
+    "lahanBukanSawah": 6.87,
+    "jumlah": 243.87,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 201885,
+      "tahun": 2023
+    }
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "KARANGSARI",
+    "lahanSawah": 2500,
+    "lahanBukanSawah": 0,
+    "jumlah": 2500,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "KECEPIT",
+    "lahanSawah": 4000,
+    "lahanBukanSawah": 272,
+    "jumlah": 4272,
+    "tahun": 2023
+  },
+  {
+    "desa": "KLAPA",
+    "kecamatan": "Punggelan",
+    "lahanSawah": 88.039,
+    "lahanBukanSawah": 408.86,
+    "jumlah": 496.899,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 563830,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "MLAYA",
+    "kecamatan": "Punggelan",
+    "lahanSawah": 87,
+    "lahanBukanSawah": 507.64,
+    "jumlah": 594.64,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 87881.64,
+      "tahun": 2023
+    }
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "PETUGURAN",
+    "lahanSawah": 24,
+    "lahanBukanSawah": 460,
+    "jumlah": 484,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "PURWASANA",
+    "lahanSawah": 4500,
+    "lahanBukanSawah": 6700,
+    "jumlah": 11200,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "PUNGGELAN",
+    "lahanSawah": 3000,
+    "lahanBukanSawah": 6700,
+    "jumlah": 9700,
+    "tahun": 2023
+  },
+  {
+    "desa": "SAMBONG",
+    "kecamatan": "Punggelan",
+    "lahanSawah": 23.83,
+    "lahanBukanSawah": 544.56,
+    "jumlah": 568.39,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 1218100,
+      "tahun": 2023
+    }
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "SAWANGAN",
+    "lahanSawah": 8.5,
+    "lahanBukanSawah": 166.62,
+    "jumlah": 175.12,
+    "tahun": 2023
+  },
+  {
+    "desa": "SIDARATA",
+    "kecamatan": "Punggelan",
+    "lahanSawah": 51,
+    "lahanBukanSawah": 279.7,
+    "jumlah": 330.7,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 97550.25,
+      "tahun": 2023
+    }
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "TANJUNGTIRTA",
+    "lahanSawah": 119.39,
+    "lahanBukanSawah": 150.46,
+    "jumlah": 269.85,
+    "tahun": 2023
+  },
+  {
+    "desa": "TLAGA",
+    "kecamatan": "Punggelan",
+    "lahanSawah": 184,
+    "lahanBukanSawah": 536.775,
+    "jumlah": 720.775,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 721085,
+      "tahun": 2023
+    }
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "TRIBUANA",
+    "lahanSawah": 59.98,
+    "lahanBukanSawah": 245.59,
+    "jumlah": 305.57,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "BADAKARYA",
+    "lahanSawah": 79,
+    "lahanBukanSawah": 332.11,
+    "jumlah": 411.11,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "BONDOLHARJO",
+    "lahanSawah": 38,
+    "lahanBukanSawah": 180.78,
+    "jumlah": 218.78,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "DANAKERTA",
+    "lahanSawah": 111.13,
+    "lahanBukanSawah": 503.75,
+    "jumlah": 614.88,
+    "tahun": 2024
+  },
+  {
+    "desa": "JEMBANGAN",
+    "kecamatan": "Punggelan",
+    "lahanSawah": 237,
+    "lahanBukanSawah": 6.87,
+    "jumlah": 243.87,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 201885,
+      "tahun": 2024
+    }
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "KARANGSARI",
+    "lahanSawah": 20,
+    "lahanBukanSawah": 561.85,
+    "jumlah": 581.85,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "KECEPIT",
+    "lahanSawah": 4,
+    "lahanBukanSawah": 439,
+    "jumlah": 443,
+    "tahun": 2024
+  },
+  {
+    "desa": "KLAPA",
+    "kecamatan": "Punggelan",
+    "lahanSawah": 88.039,
+    "lahanBukanSawah": 408.86,
+    "jumlah": 496.899,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 88447.86,
+      "tahun": 2024
+    }
+  },
+  {
+    "desa": "MLAYA",
+    "kecamatan": "Punggelan",
+    "lahanSawah": 87,
+    "lahanBukanSawah": 507.64,
+    "jumlah": 594.64,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 87881.64,
+      "tahun": 2024
+    }
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "PETUGURAN",
+    "lahanSawah": 24,
+    "lahanBukanSawah": 512.6,
+    "jumlah": 536.6,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "PURWASANA",
+    "lahanSawah": 89.76,
+    "lahanBukanSawah": 403.48,
+    "jumlah": 493.24,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "PUNGGELAN",
+    "lahanSawah": 119.4,
+    "lahanBukanSawah": 469.56,
+    "jumlah": 588.96,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "SAMBONG",
+    "lahanSawah": 23.83,
+    "lahanBukanSawah": 544.78,
+    "jumlah": 568.61,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "SAWANGAN",
+    "lahanSawah": 8.5,
+    "lahanBukanSawah": 166.62,
+    "jumlah": 175.12,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "SIDARATA",
+    "lahanSawah": 51,
+    "lahanBukanSawah": 279.7,
+    "jumlah": 330.7,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "TANJUNGTIRTA",
+    "lahanSawah": 119.39,
+    "lahanBukanSawah": 150.46,
+    "jumlah": 269.85,
+    "tahun": 2024
+  },
+  {
+    "desa": "TLAGA",
+    "kecamatan": "Punggelan",
+    "lahanSawah": 184,
+    "lahanBukanSawah": 536.775,
+    "jumlah": 720.775,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 536959.31,
+      "tahun": 2024
+    }
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "TRIBUANA",
+    "lahanSawah": 59.98,
+    "lahanBukanSawah": 245.59,
+    "jumlah": 305.57,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "BADAKARYA",
+    "lahanSawah": 79,
+    "lahanBukanSawah": 332.11,
+    "jumlah": 411.11,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "BONDOLHARJO",
+    "lahanSawah": 38,
+    "lahanBukanSawah": 180.78,
+    "jumlah": 218.78,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "DANAKERTA",
+    "lahanSawah": 111.13,
+    "lahanBukanSawah": 503.75,
+    "jumlah": 614.88,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "JEMBANGAN",
+    "lahanSawah": 237,
+    "lahanBukanSawah": 6870,
+    "jumlah": 7107,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "KARANGSARI",
+    "lahanSawah": 25,
+    "lahanBukanSawah": 561.85,
+    "jumlah": 586.85,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "KECEPIT",
+    "lahanSawah": 4,
+    "lahanBukanSawah": 439,
+    "jumlah": 443,
+    "tahun": 2025
+  },
+  {
+    "desa": "KLAPA",
+    "kecamatan": "Punggelan",
+    "lahanSawah": 88.039,
+    "lahanBukanSawah": 408.86,
+    "jumlah": 496.899,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 88447.86,
+      "tahun": 2025
+    }
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "MLAYA",
+    "lahanSawah": 87,
+    "lahanBukanSawah": 507.64,
+    "jumlah": 594.64,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "PETUGURAN",
+    "lahanSawah": 24,
+    "lahanBukanSawah": 512.6,
+    "jumlah": 536.6,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "PURWASANA",
+    "lahanSawah": 89.76,
+    "lahanBukanSawah": 403.48,
+    "jumlah": 493.24,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "PUNGGELAN",
+    "lahanSawah": 119.4,
+    "lahanBukanSawah": 469.56,
+    "jumlah": 588.96,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "SAMBONG",
+    "lahanSawah": 23.83,
+    "lahanBukanSawah": 544.56,
+    "jumlah": 568.39,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "SAWANGAN",
+    "lahanSawah": 8.5,
+    "lahanBukanSawah": 166.62,
+    "jumlah": 175.12,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "SIDARATA",
+    "lahanSawah": 51,
+    "lahanBukanSawah": 279.7,
+    "jumlah": 330.7,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "TANJUNGTIRTA",
+    "lahanSawah": 119.39,
+    "lahanBukanSawah": 150.46,
+    "jumlah": 269.85,
+    "tahun": 2025
+  },
+  {
+    "desa": "TLAGA",
+    "kecamatan": "Punggelan",
+    "lahanSawah": 184,
+    "lahanBukanSawah": 536.775,
+    "jumlah": 720.775,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 536959,
+      "tahun": 2025
+    }
+  },
+  {
+    "kecamatan": "Punggelan",
+    "desa": "TRIBUANA",
+    "lahanSawah": 59.98,
+    "lahanBukanSawah": 245.59,
+    "jumlah": 305.57,
+    "tahun": 2025
+  },
+  {
+    "desa": "KALITENGAH",
+    "kecamatan": "Purwanegara",
+    "lahanSawah": 8,
+    "lahanBukanSawah": 574.919,
+    "jumlah": 582.919,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 574927,
+      "tahun": 2023
+    }
+  },
+  {
+    "kecamatan": "Purwanegara",
+    "desa": "PETIR",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 130,
+    "jumlah": 130,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Purwanegara",
+    "desa": "KALIAJIR",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 487.27,
+    "jumlah": 487.27,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Purwanegara",
+    "desa": "KARANGANYAR",
+    "lahanSawah": 3,
+    "lahanBukanSawah": 698.64,
+    "jumlah": 701.64,
+    "tahun": 2023
+  },
+  {
+    "desa": "MERDEN",
+    "kecamatan": "Purwanegara",
+    "lahanSawah": 250,
+    "lahanBukanSawah": 568.215,
+    "jumlah": 818.215,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 568465,
+      "tahun": 2023
+    }
+  },
+  {
+    "kecamatan": "Purwanegara",
+    "desa": "MERTASARI",
+    "lahanSawah": 148.51,
+    "lahanBukanSawah": 220.55,
+    "jumlah": 369.06,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Purwanegara",
+    "desa": "PARAKAN",
+    "lahanSawah": 48.9,
+    "lahanBukanSawah": 468,
+    "jumlah": 516.9,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Purwanegara",
+    "desa": "PUCUNGBEDUG",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 579.56,
+    "jumlah": 579.56,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Purwanegara",
+    "desa": "KUTAWULUH",
+    "lahanSawah": 141,
+    "lahanBukanSawah": 0,
+    "jumlah": 141,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Purwanegara",
+    "desa": "GUMIWANG",
+    "lahanSawah": 112,
+    "lahanBukanSawah": 284.05,
+    "jumlah": 396.05,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Purwanegara",
+    "desa": "KALIPELUS",
+    "lahanSawah": 97.85,
+    "lahanBukanSawah": 20.16,
+    "jumlah": 118.00999999999999,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Purwanegara",
+    "desa": "PURWONEGORO",
+    "lahanSawah": 131.65,
+    "lahanBukanSawah": 215.18,
+    "jumlah": 346.83000000000004,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Purwanegara",
+    "desa": "DANARAJA",
+    "lahanSawah": 120.6,
+    "lahanBukanSawah": 0,
+    "jumlah": 120.6,
+    "tahun": 2023
+  },
+  {
+    "desa": "KALITENGAH",
+    "kecamatan": "Purwanegara",
+    "lahanSawah": 8,
+    "lahanBukanSawah": 574.919,
+    "jumlah": 582.919,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 574927,
+      "tahun": 2024
+    }
+  },
+  {
+    "kecamatan": "Purwanegara",
+    "desa": "PETIR",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 130,
+    "jumlah": 130,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Purwanegara",
+    "desa": "KALIAJIR",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 487.27,
+    "jumlah": 487.27,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Purwanegara",
+    "desa": "KARANGANYAR",
+    "lahanSawah": 3,
+    "lahanBukanSawah": 698.64,
+    "jumlah": 701.64,
+    "tahun": 2024
+  },
+  {
+    "desa": "MERDEN",
+    "kecamatan": "Purwanegara",
+    "lahanSawah": 250,
+    "lahanBukanSawah": 568.215,
+    "jumlah": 818.215,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 568465,
+      "tahun": 2024
+    }
+  },
+  {
+    "kecamatan": "Purwanegara",
+    "desa": "MERTASARI",
+    "lahanSawah": 150,
+    "lahanBukanSawah": 0,
+    "jumlah": 150,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Purwanegara",
+    "desa": "PARAKAN",
+    "lahanSawah": 48.9,
+    "lahanBukanSawah": 468,
+    "jumlah": 516.9,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Purwanegara",
+    "desa": "PUCUNGBEDUG",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 579.56,
+    "jumlah": 579.56,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Purwanegara",
+    "desa": "KUTAWULUH",
+    "lahanSawah": 141,
+    "lahanBukanSawah": 0,
+    "jumlah": 141,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Purwanegara",
+    "desa": "GUMIWANG",
+    "lahanSawah": 112,
+    "lahanBukanSawah": 284.05,
+    "jumlah": 396.05,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Purwanegara",
+    "desa": "KALIPELUS",
+    "lahanSawah": 97.85,
+    "lahanBukanSawah": 20.16,
+    "jumlah": 118.00999999999999,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Purwanegara",
+    "desa": "PURWONEGORO",
+    "lahanSawah": 131.65,
+    "lahanBukanSawah": 215.18,
+    "jumlah": 346.83000000000004,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Purwanegara",
+    "desa": "DANARAJA",
+    "lahanSawah": 120.6,
+    "lahanBukanSawah": 0,
+    "jumlah": 120.6,
+    "tahun": 2024
+  },
+  {
+    "desa": "KALITENGAH",
+    "kecamatan": "Purwanegara",
+    "lahanSawah": 8,
+    "lahanBukanSawah": 574.919,
+    "jumlah": 582.919,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 574927,
+      "tahun": 2025
+    }
+  },
+  {
+    "kecamatan": "Purwanegara",
+    "desa": "PETIR",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 130,
+    "jumlah": 130,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Purwanegara",
+    "desa": "KALIAJIR",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 487.27,
+    "jumlah": 487.27,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Purwanegara",
+    "desa": "KARANGANYAR",
+    "lahanSawah": 3,
+    "lahanBukanSawah": 698.64,
+    "jumlah": 701.64,
+    "tahun": 2025
+  },
+  {
+    "desa": "MERDEN",
+    "kecamatan": "Purwanegara",
+    "lahanSawah": 250,
+    "lahanBukanSawah": 568.215,
+    "jumlah": 818.215,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 568465,
+      "tahun": 2025
+    }
+  },
+  {
+    "kecamatan": "Purwanegara",
+    "desa": "MERTASARI",
+    "lahanSawah": 150,
+    "lahanBukanSawah": 0,
+    "jumlah": 150,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Purwanegara",
+    "desa": "PARAKAN",
+    "lahanSawah": 140,
+    "lahanBukanSawah": 225,
+    "jumlah": 365,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Purwanegara",
+    "desa": "PUCUNGBEDUG",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 579.56,
+    "jumlah": 579.56,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Purwanegara",
+    "desa": "KUTAWULUH",
+    "lahanSawah": 141,
+    "lahanBukanSawah": 0,
+    "jumlah": 141,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Purwanegara",
+    "desa": "GUMIWANG",
+    "lahanSawah": 112,
+    "lahanBukanSawah": 284.05,
+    "jumlah": 396.05,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Purwanegara",
+    "desa": "KALIPELUS",
+    "lahanSawah": 97.85,
+    "lahanBukanSawah": 20.16,
+    "jumlah": 118.00999999999999,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Purwanegara",
+    "desa": "PURWONEGORO",
+    "lahanSawah": 131.65,
+    "lahanBukanSawah": 215.18,
+    "jumlah": 346.83000000000004,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Purwanegara",
+    "desa": "DANARAJA",
+    "lahanSawah": 120.6,
+    "lahanBukanSawah": 0,
+    "jumlah": 120.6,
+    "tahun": 2025
+  },
+  {
+    "desa": "RAKIT",
+    "kecamatan": "Rakit",
+    "lahanSawah": 76.473,
+    "lahanBukanSawah": 125.874,
+    "jumlah": 202.347,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 202347,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "PINGIT",
+    "kecamatan": "Rakit",
+    "lahanSawah": 66.75,
+    "lahanBukanSawah": 342.25,
+    "jumlah": 409,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 423179,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "SITUWANGI",
+    "kecamatan": "Rakit",
+    "lahanSawah": 21.733,
+    "lahanBukanSawah": 211.677,
+    "jumlah": 233.41,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 233410,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "BANDINGAN",
+    "kecamatan": "Rakit",
+    "lahanSawah": 32.809,
+    "lahanBukanSawah": 409.485,
+    "jumlah": 442.294,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 442294,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "GELANG",
+    "kecamatan": "Rakit",
+    "lahanSawah": 46.417,
+    "lahanBukanSawah": 141.383,
+    "jumlah": 187.8,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 187800,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "ADIPASIR",
+    "kecamatan": "Rakit",
+    "lahanSawah": 77.264,
+    "lahanBukanSawah": 245.441,
+    "jumlah": 322.705,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 322705,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "KINCANG",
+    "kecamatan": "Rakit",
+    "lahanSawah": 52.555,
+    "lahanBukanSawah": 52.555,
+    "jumlah": 105.11,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 105110,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "TANJUNGANOM",
+    "kecamatan": "Rakit",
+    "lahanSawah": 99.281,
+    "lahanBukanSawah": 138.536,
+    "jumlah": 237.817,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 237817,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "LUWUNG",
+    "kecamatan": "Rakit",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 29,
+    "jumlah": 29,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 190221,
+      "tahun": 2023
+    }
+  },
+  {
+    "kecamatan": "Rakit",
+    "desa": "LENGKONG",
+    "lahanSawah": 140.62,
+    "lahanBukanSawah": 262.69,
+    "jumlah": 403.31,
+    "tahun": 2023
+  },
+  {
+    "desa": "BADAMITA",
+    "kecamatan": "Rakit",
+    "lahanSawah": 51.225,
+    "lahanBukanSawah": 309.075,
+    "jumlah": 360.3,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 360300,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "RAKIT",
+    "kecamatan": "Rakit",
+    "lahanSawah": 76.473,
+    "lahanBukanSawah": 125.874,
+    "jumlah": 202.347,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 202347,
+      "tahun": 2024
+    }
+  },
+  {
+    "kecamatan": "Rakit",
+    "desa": "PINGIT",
+    "lahanSawah": 66.75,
+    "lahanBukanSawah": 343.25,
+    "jumlah": 410,
+    "tahun": 2024
+  },
+  {
+    "desa": "SITUWANGI",
+    "kecamatan": "Rakit",
+    "lahanSawah": 21.733,
+    "lahanBukanSawah": 211.677,
+    "jumlah": 233.41,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 233410,
+      "tahun": 2024
+    }
+  },
+  {
+    "desa": "BANDINGAN",
+    "kecamatan": "Rakit",
+    "lahanSawah": 32.809,
+    "lahanBukanSawah": 409.485,
+    "jumlah": 442.294,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 442294,
+      "tahun": 2024
+    }
+  },
+  {
+    "desa": "GELANG",
+    "kecamatan": "Rakit",
+    "lahanSawah": 46.417,
+    "lahanBukanSawah": 141.383,
+    "jumlah": 187.8,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 187800,
+      "tahun": 2024
+    }
+  },
+  {
+    "desa": "ADIPASIR",
+    "kecamatan": "Rakit",
+    "lahanSawah": 77.264,
+    "lahanBukanSawah": 245.441,
+    "jumlah": 322.705,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 322705,
+      "tahun": 2024
+    }
+  },
+  {
+    "desa": "KINCANG",
+    "kecamatan": "Rakit",
+    "lahanSawah": 52.555,
+    "lahanBukanSawah": 52.555,
+    "jumlah": 105.11,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 105110,
+      "tahun": 2024
+    }
+  },
+  {
+    "desa": "TANJUNGANOM",
+    "kecamatan": "Rakit",
+    "lahanSawah": 99.281,
+    "lahanBukanSawah": 138.536,
+    "jumlah": 237.817,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 237817,
+      "tahun": 2024
+    }
+  },
+  {
+    "kecamatan": "Rakit",
+    "desa": "LUWUNG",
+    "lahanSawah": 41.71,
+    "lahanBukanSawah": 118,
+    "jumlah": 159.71,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Rakit",
+    "desa": "LENGKONG",
+    "lahanSawah": 140.62,
+    "lahanBukanSawah": 262.69,
+    "jumlah": 403.31,
+    "tahun": 2024
+  },
+  {
+    "desa": "BADAMITA",
+    "kecamatan": "Rakit",
+    "lahanSawah": 51.225,
+    "lahanBukanSawah": 309.075,
+    "jumlah": 360.3,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 360300,
+      "tahun": 2024
+    }
+  },
+  {
+    "desa": "RAKIT",
+    "kecamatan": "Rakit",
+    "lahanSawah": 76.473,
+    "lahanBukanSawah": 125.874,
+    "jumlah": 202.347,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 202347,
+      "tahun": 2025
+    }
+  },
+  {
+    "kecamatan": "Rakit",
+    "desa": "PINGIT",
+    "lahanSawah": 66.75,
+    "lahanBukanSawah": 342.25,
+    "jumlah": 409,
+    "tahun": 2025
+  },
+  {
+    "desa": "SITUWANGI",
+    "kecamatan": "Rakit",
+    "lahanSawah": 21.733,
+    "lahanBukanSawah": 211.677,
+    "jumlah": 233.41,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 233410,
+      "tahun": 2025
+    }
+  },
+  {
+    "desa": "BANDINGAN",
+    "kecamatan": "Rakit",
+    "lahanSawah": 32.809,
+    "lahanBukanSawah": 409.485,
+    "jumlah": 442.294,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 442294,
+      "tahun": 2025
+    }
+  },
+  {
+    "desa": "GELANG",
+    "kecamatan": "Rakit",
+    "lahanSawah": 46.417,
+    "lahanBukanSawah": 141.383,
+    "jumlah": 187.8,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 187800,
+      "tahun": 2025
+    }
+  },
+  {
+    "desa": "ADIPASIR",
+    "kecamatan": "Rakit",
+    "lahanSawah": 77.264,
+    "lahanBukanSawah": 245.441,
+    "jumlah": 322.705,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 322705,
+      "tahun": 2025
+    }
+  },
+  {
+    "desa": "KINCANG",
+    "kecamatan": "Rakit",
+    "lahanSawah": 52.555,
+    "lahanBukanSawah": 52.555,
+    "jumlah": 105.11,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 105110,
+      "tahun": 2025
+    }
+  },
+  {
+    "desa": "TANJUNGANOM",
+    "kecamatan": "Rakit",
+    "lahanSawah": 99.281,
+    "lahanBukanSawah": 138.536,
+    "jumlah": 237.817,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 237817,
+      "tahun": 2025
+    }
+  },
+  {
+    "kecamatan": "Rakit",
+    "desa": "LUWUNG",
+    "lahanSawah": 41,
+    "lahanBukanSawah": 29,
+    "jumlah": 70,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Rakit",
+    "desa": "LENGKONG",
+    "lahanSawah": 140.62,
+    "lahanBukanSawah": 262.69,
+    "jumlah": 403.31,
+    "tahun": 2025
+  },
+  {
+    "desa": "BADAMITA",
+    "kecamatan": "Rakit",
+    "lahanSawah": 51.225,
+    "lahanBukanSawah": 309.075,
+    "jumlah": 360.3,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 360300,
+      "tahun": 2025
+    }
+  },
+  {
+    "kecamatan": "Sigaluh",
+    "desa": "KALIBENDA",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 0,
+    "jumlah": 0,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Sigaluh",
+    "desa": "SINGAMERTA",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 0,
+    "jumlah": 0,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Sigaluh",
+    "desa": "SIGALUH",
+    "lahanSawah": 65,
+    "lahanBukanSawah": 81,
+    "jumlah": 146,
+    "tahun": 2023
+  },
+  {
+    "desa": "WANACIPTA",
+    "kecamatan": "Sigaluh",
+    "lahanSawah": 45,
+    "lahanBukanSawah": 110,
+    "jumlah": 155,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 17210,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "KARANGMANGU",
+    "kecamatan": "Sigaluh",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 0,
+    "jumlah": 0,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 8604.13,
+      "tahun": 2023
+    }
+  },
+  {
+    "kecamatan": "Sigaluh",
+    "desa": "KEMIRI",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 0,
+    "jumlah": 0,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Sigaluh",
+    "desa": "GEMBONGAN",
+    "lahanSawah": 19,
+    "lahanBukanSawah": 93,
+    "jumlah": 112,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Sigaluh",
+    "desa": "PRIGI",
+    "lahanSawah": 83,
+    "lahanBukanSawah": 274,
+    "jumlah": 357,
+    "tahun": 2023
+  },
+  {
+    "desa": "BANDINGAN",
+    "kecamatan": "Sigaluh",
+    "lahanSawah": 18.982,
+    "lahanBukanSawah": 89.043,
+    "jumlah": 108.025,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 1080250,
+      "tahun": 2023
+    }
+  },
+  {
+    "kecamatan": "Sigaluh",
+    "desa": "SAWAL",
+    "lahanSawah": 5.3,
+    "lahanBukanSawah": 200,
+    "jumlah": 205.3,
+    "tahun": 2023
+  },
+  {
+    "desa": "PRINGAMBA",
+    "kecamatan": "Sigaluh",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 2,
+    "jumlah": 2,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 114490,
+      "tahun": 2023
+    }
+  },
+  {
+    "kecamatan": "Sigaluh",
+    "desa": "BOJANEGARA",
+    "lahanSawah": 59.5,
+    "lahanBukanSawah": 78,
+    "jumlah": 137.5,
+    "tahun": 2023
+  },
+  {
+    "desa": "RANDEGAN",
+    "kecamatan": "Sigaluh",
+    "lahanSawah": 4.5,
+    "lahanBukanSawah": 105.326,
+    "jumlah": 109.826,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 91800,
+      "tahun": 2023
+    }
+  },
+  {
+    "kecamatan": "Sigaluh",
+    "desa": "TUNGGORO",
+    "lahanSawah": 9,
+    "lahanBukanSawah": 13,
+    "jumlah": 22,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Sigaluh",
+    "desa": "PANAWAREN",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 0,
+    "jumlah": 0,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Sigaluh",
+    "desa": "KALIBENDA",
+    "lahanSawah": 23.78,
+    "lahanBukanSawah": 115.42,
+    "jumlah": 139.2,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Sigaluh",
+    "desa": "SINGAMERTA",
+    "lahanSawah": 150,
+    "lahanBukanSawah": 0,
+    "jumlah": 150,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Sigaluh",
+    "desa": "SIGALUH",
+    "lahanSawah": 65,
+    "lahanBukanSawah": 81,
+    "jumlah": 146,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Sigaluh",
+    "desa": "WANACIPTA",
+    "lahanSawah": 45,
+    "lahanBukanSawah": 110,
+    "jumlah": 155,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Sigaluh",
+    "desa": "KARANGMANGU",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 0,
+    "jumlah": 0,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Sigaluh",
+    "desa": "KEMIRI",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 0,
+    "jumlah": 0,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Sigaluh",
+    "desa": "GEMBONGAN",
+    "lahanSawah": 18,
+    "lahanBukanSawah": 93,
+    "jumlah": 111,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Sigaluh",
+    "desa": "PRIGI",
+    "lahanSawah": 50,
+    "lahanBukanSawah": 241,
+    "jumlah": 291,
+    "tahun": 2024
+  },
+  {
+    "desa": "BANDINGAN",
+    "kecamatan": "Sigaluh",
+    "lahanSawah": 18.982,
+    "lahanBukanSawah": 89.043,
+    "jumlah": 108.025,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 1080250,
+      "tahun": 2024
+    }
+  },
+  {
+    "kecamatan": "Sigaluh",
+    "desa": "SAWAL",
+    "lahanSawah": 5.3,
+    "lahanBukanSawah": 271.32,
+    "jumlah": 276.62,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Sigaluh",
+    "desa": "PRINGAMBA",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 0,
+    "jumlah": 0,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Sigaluh",
+    "desa": "BOJANEGARA",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 0,
+    "jumlah": 0,
+    "tahun": 2024
+  },
+  {
+    "desa": "RANDEGAN",
+    "kecamatan": "Sigaluh",
+    "lahanSawah": 4.5,
+    "lahanBukanSawah": 105.326,
+    "jumlah": 109.826,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 105330.5,
+      "tahun": 2024
+    }
+  },
+  {
+    "kecamatan": "Sigaluh",
+    "desa": "TUNGGORO",
+    "lahanSawah": 9,
+    "lahanBukanSawah": 13,
+    "jumlah": 22,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Sigaluh",
+    "desa": "PANAWAREN",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 0,
+    "jumlah": 0,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Sigaluh",
+    "desa": "KALIBENDA",
+    "lahanSawah": 23.78,
+    "lahanBukanSawah": 115.42,
+    "jumlah": 139.2,
+    "tahun": 2025
+  },
+  {
+    "desa": "SINGAMERTA",
+    "kecamatan": "Sigaluh",
+    "lahanSawah": 2.5,
+    "lahanBukanSawah": 135.132,
+    "jumlah": 137.632,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 135134.5,
+      "tahun": 2025
+    }
+  },
+  {
+    "kecamatan": "Sigaluh",
+    "desa": "SIGALUH",
+    "lahanSawah": 60,
+    "lahanBukanSawah": 81,
+    "jumlah": 141,
+    "tahun": 2025
+  },
+  {
+    "desa": "WANACIPTA",
+    "kecamatan": "Sigaluh",
+    "lahanSawah": 45,
+    "lahanBukanSawah": 110,
+    "jumlah": 155,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 155000,
+      "tahun": 2025
+    }
+  },
+  {
+    "kecamatan": "Sigaluh",
+    "desa": "KARANGMANGU",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 0,
+    "jumlah": 0,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Sigaluh",
+    "desa": "KEMIRI",
+    "lahanSawah": 5,
+    "lahanBukanSawah": 95,
+    "jumlah": 100,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Sigaluh",
+    "desa": "GEMBONGAN",
+    "lahanSawah": 18,
+    "lahanBukanSawah": 93,
+    "jumlah": 111,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Sigaluh",
+    "desa": "PRIGI",
+    "lahanSawah": 50,
+    "lahanBukanSawah": 241,
+    "jumlah": 291,
+    "tahun": 2025
+  },
+  {
+    "desa": "BANDINGAN",
+    "kecamatan": "Sigaluh",
+    "lahanSawah": 18.982,
+    "lahanBukanSawah": 89.043,
+    "jumlah": 108.025,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 1080250,
+      "tahun": 2025
+    }
+  },
+  {
+    "kecamatan": "Sigaluh",
+    "desa": "SAWAL",
+    "lahanSawah": 5.3,
+    "lahanBukanSawah": 271.32,
+    "jumlah": 276.62,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Sigaluh",
+    "desa": "PRINGAMBA",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 2,
+    "jumlah": 2,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Sigaluh",
+    "desa": "BOJANEGARA",
+    "lahanSawah": 44.09,
+    "lahanBukanSawah": 175.97,
+    "jumlah": 220.06,
+    "tahun": 2025
+  },
+  {
+    "desa": "RANDEGAN",
+    "kecamatan": "Sigaluh",
+    "lahanSawah": 4.5,
+    "lahanBukanSawah": 105.326,
+    "jumlah": 109.826,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 105330.5,
+      "tahun": 2025
+    }
+  },
+  {
+    "kecamatan": "Sigaluh",
+    "desa": "TUNGGORO",
+    "lahanSawah": 9,
+    "lahanBukanSawah": 13,
+    "jumlah": 22,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Sigaluh",
+    "desa": "PANAWAREN",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 0,
+    "jumlah": 0,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "BERTA",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 0,
+    "jumlah": 0,
+    "tahun": 2022
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "DERIK",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 0,
+    "jumlah": 0,
+    "tahun": 2022
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "GUMELEM WETAN",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 0,
+    "jumlah": 0,
+    "tahun": 2022
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "GUMELEM KULON",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 0,
+    "jumlah": 0,
+    "tahun": 2022
+  },
+  {
+    "desa": "PENARUSAN WETAN",
+    "kecamatan": "Susukan",
+    "lahanSawah": 77.54,
+    "lahanBukanSawah": 86.24,
+    "jumlah": 163.78,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 77621.24,
+      "tahun": 2022
+    }
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "PENARUSAN KULON",
+    "lahanSawah": 53.41,
+    "lahanBukanSawah": 90.04,
+    "jumlah": 143.45,
+    "tahun": 2022
+  },
+  {
+    "desa": "BRENGKOK",
+    "kecamatan": "Susukan",
+    "lahanSawah": 70.76,
+    "lahanBukanSawah": 78.33,
+    "jumlah": 149.09,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 78399.76,
+      "tahun": 2022
+    }
+  },
+  {
+    "desa": "PEKIKIRAN",
+    "kecamatan": "Susukan",
+    "lahanSawah": 48.1,
+    "lahanBukanSawah": 194.411,
+    "jumlah": 242.511,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 194459.1,
+      "tahun": 2022
+    }
+  },
+  {
+    "desa": "PIASA WETAN",
+    "kecamatan": "Susukan",
+    "lahanSawah": 44,
+    "lahanBukanSawah": 56.7,
+    "jumlah": 100.7,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 57009,
+      "tahun": 2022
+    }
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "KARANGSALAM",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 0,
+    "jumlah": 0,
+    "tahun": 2022
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "KEMRANGGON",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 0,
+    "jumlah": 0,
+    "tahun": 2022
+  },
+  {
+    "desa": "SUSUKAN",
+    "kecamatan": "Susukan",
+    "lahanSawah": 171.769,
+    "lahanBukanSawah": 108.781,
+    "jumlah": 280.55,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 280550,
+      "tahun": 2022
+    }
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "DERMASARI",
+    "lahanSawah": 87.25,
+    "lahanBukanSawah": 94.15,
+    "jumlah": 181.4,
+    "tahun": 2022
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "KEDAWUNG",
+    "lahanSawah": 93,
+    "lahanBukanSawah": 146.98,
+    "jumlah": 239.98,
+    "tahun": 2022
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "KARANGJATI",
+    "lahanSawah": 29,
+    "lahanBukanSawah": 186.7,
+    "jumlah": 215.7,
+    "tahun": 2022
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "BERTA",
+    "lahanSawah": 67.26,
+    "lahanBukanSawah": 33.43,
+    "jumlah": 100.69,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "DERIK",
+    "lahanSawah": 64,
+    "lahanBukanSawah": 62.3,
+    "jumlah": 126.3,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "GUMELEM WETAN",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 0,
+    "jumlah": 0,
+    "tahun": 2023
+  },
+  {
+    "desa": "GUMELEM KULON",
+    "kecamatan": "Susukan",
+    "lahanSawah": 11.775,
+    "lahanBukanSawah": 20.014,
+    "jumlah": 31.789,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 31789,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "PENARUSAN WETAN",
+    "kecamatan": "Susukan",
+    "lahanSawah": 77.54,
+    "lahanBukanSawah": 86.24,
+    "jumlah": 163.78,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 77621.24,
+      "tahun": 2023
+    }
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "PENARUSAN KULON",
+    "lahanSawah": 53.41,
+    "lahanBukanSawah": 90.04,
+    "jumlah": 143.45,
+    "tahun": 2023
+  },
+  {
+    "desa": "BRENGKOK",
+    "kecamatan": "Susukan",
+    "lahanSawah": 70.76,
+    "lahanBukanSawah": 78.33,
+    "jumlah": 149.09,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 78399.76,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "PEKIKIRAN",
+    "kecamatan": "Susukan",
+    "lahanSawah": 48.1,
+    "lahanBukanSawah": 194.411,
+    "jumlah": 242.511,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 194459.1,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "PIASA WETAN",
+    "kecamatan": "Susukan",
+    "lahanSawah": 44,
+    "lahanBukanSawah": 56.7,
+    "jumlah": 100.7,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 57009,
+      "tahun": 2023
+    }
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "KARANGSALAM",
+    "lahanSawah": 97,
+    "lahanBukanSawah": 112,
+    "jumlah": 209,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "KEMRANGGON",
+    "lahanSawah": 102,
+    "lahanBukanSawah": 108,
+    "jumlah": 210,
+    "tahun": 2023
+  },
+  {
+    "desa": "SUSUKAN",
+    "kecamatan": "Susukan",
+    "lahanSawah": 171.769,
+    "lahanBukanSawah": 108.781,
+    "jumlah": 280.55,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 280550,
+      "tahun": 2023
+    }
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "DERMASARI",
+    "lahanSawah": 87.25,
+    "lahanBukanSawah": 94.15,
+    "jumlah": 181.4,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "KEDAWUNG",
+    "lahanSawah": 93,
+    "lahanBukanSawah": 146.98,
+    "jumlah": 239.98,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "KARANGJATI",
+    "lahanSawah": 29,
+    "lahanBukanSawah": 186.7,
+    "jumlah": 215.7,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "BERTA",
+    "lahanSawah": 67.26,
+    "lahanBukanSawah": 33.43,
+    "jumlah": 100.69,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "DERIK",
+    "lahanSawah": 64,
+    "lahanBukanSawah": 62.3,
+    "jumlah": 126.3,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "GUMELEM WETAN",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 0,
+    "jumlah": 0,
+    "tahun": 2024
+  },
+  {
+    "desa": "GUMELEM KULON",
+    "kecamatan": "Susukan",
+    "lahanSawah": 11.775,
+    "lahanBukanSawah": 20.014,
+    "jumlah": 31.789,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 31789,
+      "tahun": 2024
+    }
+  },
+  {
+    "desa": "PENARUSAN WETAN",
+    "kecamatan": "Susukan",
+    "lahanSawah": 77.54,
+    "lahanBukanSawah": 86.24,
+    "jumlah": 163.78,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 77621.24,
+      "tahun": 2024
+    }
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "PENARUSAN KULON",
+    "lahanSawah": 53.41,
+    "lahanBukanSawah": 90.04,
+    "jumlah": 143.45,
+    "tahun": 2024
+  },
+  {
+    "desa": "BRENGKOK",
+    "kecamatan": "Susukan",
+    "lahanSawah": 70.76,
+    "lahanBukanSawah": 78.33,
+    "jumlah": 149.09,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 78399.76,
+      "tahun": 2024
+    }
+  },
+  {
+    "desa": "PEKIKIRAN",
+    "kecamatan": "Susukan",
+    "lahanSawah": 48.1,
+    "lahanBukanSawah": 194.411,
+    "jumlah": 242.511,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 194459.1,
+      "tahun": 2024
+    }
+  },
+  {
+    "desa": "PIASA WETAN",
+    "kecamatan": "Susukan",
+    "lahanSawah": 44,
+    "lahanBukanSawah": 56.7,
+    "jumlah": 100.7,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 57009,
+      "tahun": 2024
+    }
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "KARANGSALAM",
+    "lahanSawah": 97,
+    "lahanBukanSawah": 112,
+    "jumlah": 209,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "KEMRANGGON",
+    "lahanSawah": 102,
+    "lahanBukanSawah": 108,
+    "jumlah": 210,
+    "tahun": 2024
+  },
+  {
+    "desa": "SUSUKAN",
+    "kecamatan": "Susukan",
+    "lahanSawah": 171.769,
+    "lahanBukanSawah": 108.781,
+    "jumlah": 280.55,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 280550,
+      "tahun": 2024
+    }
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "DERMASARI",
+    "lahanSawah": 87.25,
+    "lahanBukanSawah": 94.15,
+    "jumlah": 181.4,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "KEDAWUNG",
+    "lahanSawah": 93,
+    "lahanBukanSawah": 146.98,
+    "jumlah": 239.98,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "KARANGJATI",
+    "lahanSawah": 29,
+    "lahanBukanSawah": 186.7,
+    "jumlah": 215.7,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "BERTA",
+    "lahanSawah": 67.26,
+    "lahanBukanSawah": 33.43,
+    "jumlah": 100.69,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "DERIK",
+    "lahanSawah": 64,
+    "lahanBukanSawah": 62.3,
+    "jumlah": 126.3,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "GUMELEM WETAN",
+    "lahanSawah": 168.5,
+    "lahanBukanSawah": 805.3,
+    "jumlah": 973.8,
+    "tahun": 2025
+  },
+  {
+    "desa": "GUMELEM KULON",
+    "kecamatan": "Susukan",
+    "lahanSawah": 11.775,
+    "lahanBukanSawah": 20.014,
+    "jumlah": 31.789,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 31789,
+      "tahun": 2025
+    }
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "PENARUSAN WETAN",
+    "lahanSawah": 77.54,
+    "lahanBukanSawah": 86.24,
+    "jumlah": 163.78,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "PENARUSAN KULON",
+    "lahanSawah": 53.41,
+    "lahanBukanSawah": 90.04,
+    "jumlah": 143.45,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "BRENGKOK",
+    "lahanSawah": 70.76,
+    "lahanBukanSawah": 78.33,
+    "jumlah": 149.09,
+    "tahun": 2025
+  },
+  {
+    "desa": "PEKIKIRAN",
+    "kecamatan": "Susukan",
+    "lahanSawah": 48.1,
+    "lahanBukanSawah": 194.411,
+    "jumlah": 242.511,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 194459.1,
+      "tahun": 2025
+    }
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "PIASA WETAN",
+    "lahanSawah": 44,
+    "lahanBukanSawah": 56.7,
+    "jumlah": 100.7,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "KARANGSALAM",
+    "lahanSawah": 97,
+    "lahanBukanSawah": 112,
+    "jumlah": 209,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "KEMRANGGON",
+    "lahanSawah": 102.6,
+    "lahanBukanSawah": 107.4,
+    "jumlah": 210,
+    "tahun": 2025
+  },
+  {
+    "desa": "SUSUKAN",
+    "kecamatan": "Susukan",
+    "lahanSawah": 171.769,
+    "lahanBukanSawah": 108.781,
+    "jumlah": 280.55,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 280550,
+      "tahun": 2025
+    }
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "DERMASARI",
+    "lahanSawah": 87.25,
+    "lahanBukanSawah": 94.15,
+    "jumlah": 181.4,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "KEDAWUNG",
+    "lahanSawah": 96,
+    "lahanBukanSawah": 168.8,
+    "jumlah": 264.8,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Susukan",
+    "desa": "KARANGJATI",
+    "lahanSawah": 29,
+    "lahanBukanSawah": 186.7,
+    "jumlah": 215.7,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "KARANGTENGAH",
+    "lahanSawah": 13,
+    "lahanBukanSawah": 285.65,
+    "jumlah": 298.65,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "SUWIDAK",
+    "lahanSawah": 85,
+    "lahanBukanSawah": 270,
+    "jumlah": 355,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "BANTAR",
+    "lahanSawah": 5,
+    "lahanBukanSawah": 290,
+    "jumlah": 295,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "PANDANSARI",
+    "lahanSawah": 101.5,
+    "lahanBukanSawah": 367.5,
+    "jumlah": 469,
+    "tahun": 2023
+  },
+  {
+    "desa": "PAGERGUNUNG",
+    "kecamatan": "Wanayasa",
+    "lahanSawah": 10,
+    "lahanBukanSawah": 170.18,
+    "jumlah": 180.18,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 274680,
+      "tahun": 2023
+    }
+  },
+  {
+    "desa": "DAWUHAN",
+    "kecamatan": "Wanayasa",
+    "lahanSawah": 14,
+    "lahanBukanSawah": 176,
+    "jumlah": 190,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 175375,
+      "tahun": 2023
+    }
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "KUBANG",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 250,
+    "jumlah": 250,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "SUSUKAN",
+    "lahanSawah": 12,
+    "lahanBukanSawah": 248.85,
+    "jumlah": 260.85,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "WANAYASA",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 492.23,
+    "jumlah": 492.23,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "PESANTREN",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 257,
+    "jumlah": 257,
+    "tahun": 2023
+  },
+  {
+    "desa": "BALUN",
+    "kecamatan": "Wanayasa",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 389.16,
+    "jumlah": 389.16,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 40452,
+      "tahun": 2023
+    }
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "TEMPURAN",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 239,
+    "jumlah": 239,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "WANARAJA",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 518.6,
+    "jumlah": 518.6,
+    "tahun": 2023
+  },
+  {
+    "desa": "JATILAWANG",
+    "kecamatan": "Wanayasa",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 456.8,
+    "jumlah": 456.8,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 456819,
+      "tahun": 2023
+    }
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "LEGOKSAYEM",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 45,
+    "jumlah": 45,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "KASIMPAR",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 226.09,
+    "jumlah": 226.09,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "PENANGGUNGAN",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 205,
+    "jumlah": 205,
+    "tahun": 2023
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "KARANGTENGAH",
+    "lahanSawah": 13,
+    "lahanBukanSawah": 285.65,
+    "jumlah": 298.65,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "SUWIDAK",
+    "lahanSawah": 85,
+    "lahanBukanSawah": 270,
+    "jumlah": 355,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "BANTAR",
+    "lahanSawah": 5,
+    "lahanBukanSawah": 290,
+    "jumlah": 295,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "PANDANSARI",
+    "lahanSawah": 101.5,
+    "lahanBukanSawah": 367.5,
+    "jumlah": 469,
+    "tahun": 2024
+  },
+  {
+    "desa": "PAGERGUNUNG",
+    "kecamatan": "Wanayasa",
+    "lahanSawah": 10,
+    "lahanBukanSawah": 170.18,
+    "jumlah": 180.18,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 274680,
+      "tahun": 2024
+    }
+  },
+  {
+    "desa": "DAWUHAN",
+    "kecamatan": "Wanayasa",
+    "lahanSawah": 14,
+    "lahanBukanSawah": 176,
+    "jumlah": 190,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 175375,
+      "tahun": 2024
+    }
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "KUBANG",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 247.4,
+    "jumlah": 247.4,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "SUSUKAN",
+    "lahanSawah": 12,
+    "lahanBukanSawah": 248.85,
+    "jumlah": 260.85,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "WANAYASA",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 492.23,
+    "jumlah": 492.23,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "PESANTREN",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 257,
+    "jumlah": 257,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "BALUN",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 389.16,
+    "jumlah": 389.16,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "TEMPURAN",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 239,
+    "jumlah": 239,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "WANARAJA",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 518.6,
+    "jumlah": 518.6,
+    "tahun": 2024
+  },
+  {
+    "desa": "JATILAWANG",
+    "kecamatan": "Wanayasa",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 456.8,
+    "jumlah": 456.8,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 456819,
+      "tahun": 2024
+    }
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "LEGOKSAYEM",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 45,
+    "jumlah": 45,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "KASIMPAR",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 226.09,
+    "jumlah": 226.09,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "PENANGGUNGAN",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 205,
+    "jumlah": 205,
+    "tahun": 2024
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "KARANGTENGAH",
+    "lahanSawah": 13,
+    "lahanBukanSawah": 285.65,
+    "jumlah": 298.65,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "SUWIDAK",
+    "lahanSawah": 85,
+    "lahanBukanSawah": 270,
+    "jumlah": 355,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "BANTAR",
+    "lahanSawah": 5,
+    "lahanBukanSawah": 290,
+    "jumlah": 295,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "PANDANSARI",
+    "lahanSawah": 101.5,
+    "lahanBukanSawah": 367.5,
+    "jumlah": 469,
+    "tahun": 2025
+  },
+  {
+    "desa": "PAGERGUNUNG",
+    "kecamatan": "Wanayasa",
+    "lahanSawah": 10,
+    "lahanBukanSawah": 170.18,
+    "jumlah": 180.18,
+    "tahun": 2025,
+    "sumber": "fallback",
+    "ckan_reference": {
+      "jumlah": 170190,
+      "tahun": 2025
+    }
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "DAWUHAN",
+    "lahanSawah": 14,
+    "lahanBukanSawah": 176,
+    "jumlah": 190,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "KUBANG",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 247.4,
+    "jumlah": 247.4,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "SUSUKAN",
+    "lahanSawah": 12,
+    "lahanBukanSawah": 240.85,
+    "jumlah": 252.85,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "WANAYASA",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 492.23,
+    "jumlah": 492.23,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "PESANTREN",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 257,
+    "jumlah": 257,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "BALUN",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 389.16,
+    "jumlah": 389.16,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "TEMPURAN",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 239,
+    "jumlah": 239,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "WANARAJA",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 518.6,
+    "jumlah": 518.6,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "JATILAWANG",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 456.8,
+    "jumlah": 456.8,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "LEGOKSAYEM",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 45,
+    "jumlah": 45,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "KASIMPAR",
+    "lahanSawah": 0,
+    "lahanBukanSawah": 215.48,
+    "jumlah": 215.48,
+    "tahun": 2025
+  },
+  {
+    "kecamatan": "Wanayasa",
+    "desa": "PENANGGUNGAN",
+    "lahanSawah": 205,
+    "lahanBukanSawah": 205,
+    "jumlah": 410,
+    "tahun": 2025
+  }
+]

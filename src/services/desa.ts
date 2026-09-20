@@ -93,6 +93,12 @@ export interface DesaDetail extends DesaIndex {
   st2023: St2023DesaExtra | null;
   /** 5 tetangga terdekat, berdasarkan jarak centroid. */
   tetangga: { nama: string; kecamatan: string }[];
+  /** Total penduduk (dari ST2023 jika ada, jika tidak 0). */
+  jumlahPenduduk: number;
+  /** Total keluarga / KK (dari ST2023 jika ada, jika tidak 0). */
+  jumlahKk: number;
+  /** Total RT (dari ST2023 jika ada, jika tidak 0). */
+  jumlahRt: number;
 }
 
 // ------------------------------------------------------------------
@@ -255,29 +261,76 @@ export function invalidateDesaIndexCache(): void {
 // ------------------------------------------------------------------
 // Fetch: detail lengkap per-desa
 // ------------------------------------------------------------------
+export interface DesaDetailResult {
+  /** Detail desa, atau `null` jika desa tidak ditemukan dalam index/geojson. */
+  detail: DesaDetail | null;
+  /**
+   * Status pelaporan kegagalan per-sumber.
+   * `true` menandakan upstream fetch (CKAN, fallback lokal) gagal.
+   */
+  failures: {
+    lahan: boolean;
+    kelompokTani: boolean;
+    st2023: boolean;
+  };
+}
+
 export async function fetchDesaDetail(
   kecSlug: string,
   namaSlug: string,
-): Promise<DesaDetail | null> {
+): Promise<DesaDetailResult> {
   const id = await lookupDesaBySlug(kecSlug, namaSlug);
-  if (!id) return null;
+  if (!id) {
+    return {
+      detail: null,
+      failures: { lahan: false, kelompokTani: false, st2023: false },
+    };
+  }
 
-  const [lahanAll, ktAll, stAll] = await Promise.all([
-    fetchLahanBanjarnegara().catch(() => [] as LahanDesa[]),
-    fetchKelompokTani().catch(() => [] as KelompokTaniRow[]),
-    fetchSt2023DesaExtra().catch(() => [] as St2023DesaExtra[]),
+  // Pakai allSettled agar kegagalan satu sumber tidak menggugurkan fetch
+  // yang lain. Karena fallback lokal dipasang oleh api.ts
+  // (Promise.resolve([]) bila fail), di sini flag dideteksi via status
+  // "rejected" saja. Bila api.ts di masa depan mulai melempar fallback
+  // kosong, perlu strategi deteksi yang lebih baik (lihat TODO).
+  const [lahanS, ktS, stS] = await Promise.allSettled([
+    fetchLahanBanjarnegara(),
+    fetchKelompokTani(),
+    fetchSt2023DesaExtra(),
   ]);
 
-  const namaUpper = id.namaTampil.toUpperCase();
-  const namaLower = id.namaTampil.toLowerCase();
+  const lahanAll =
+    lahanS.status === "fulfilled" ? lahanS.value : ([] as LahanDesa[]);
+  const ktAll =
+    ktS.status === "fulfilled" ? ktS.value : ([] as KelompokTaniRow[]);
+  const stAll =
+    stS.status === "fulfilled" ? stS.value : ([] as St2023DesaExtra[]);
 
-  const filterByDesa = <T extends { desa: string }>(rows: T[]) =>
-    rows.filter(
-      (r) =>
-        r.desa === id.namaTampil ||
-        r.desa === namaUpper ||
-        r.desa.toLowerCase() === namaLower,
-    );
+  // sumber (3 file) punya format nama desa dan kecamatan berbeda:
+  //   - lahan-fallback.json    : desa UPPER, kec Title Case ("BRENGKOK", "Susukan")
+  //   - st2023-desa-fallback   : desa UPPER, kec UPPER ("BRENGKOK", "SUSUKAN")
+  //   - kelompok-tani-fallback : desa UPPER, kec Title Case ("BRENGKOK", "Susukan")
+  // sedangkan id.namaTampil ber-prefix "Desa "/"Kelurahan " dan
+  // id.kecamatanTampil ber-prefix "Kec." (dari GeoJSON "Kec.Susukan").
+  //
+  // Normalisasi: strip prefix + case-fold, agar match robust di semua sumber.
+  const stripPrefix = (s: string) =>
+    s.trim().replace(/^(Desa|Kelurahan)\s+/i, "").toLowerCase();
+  const stripKecPrefix = (s: string) =>
+    s.trim().replace(/^(Kec\.|Kecamatan\s+)\s*/i, "").toLowerCase();
+
+  const wantClean = stripPrefix(id.namaTampil);
+  const wantKec = stripKecPrefix(id.kecamatanTampil);
+
+  const filterByDesa = <T extends { desa: string; kecamatan?: string }>(rows: T[]) =>
+    rows.filter((r) => {
+      const rowDesa = stripPrefix(r.desa);
+      if (rowDesa !== wantClean) return false;
+      // Match kecamatan kalau field tersedia (semua sumber punya)
+      if (r.kecamatan != null) {
+        return r.kecamatan.trim().toLowerCase() === wantKec;
+      }
+      return true;
+    });
 
   const lahan = filterByDesa(lahanAll);
   const kelompokTani = filterByDesa(ktAll);
@@ -287,11 +340,21 @@ export async function fetchDesaDetail(
   const tetangga = id.centroid ? await findNearestNeighbors(id, 5) : [];
 
   return {
-    ...id,
-    lahan,
-    kelompokTani,
-    st2023,
-    tetangga,
+    detail: {
+      ...id,
+      lahan,
+      kelompokTani,
+      st2023,
+      tetangga,
+      jumlahPenduduk: 0,
+      jumlahKk: 0,
+      jumlahRt: 0,
+    },
+    failures: {
+      lahan: lahanS.status === "rejected",
+      kelompokTani: ktS.status === "rejected",
+      st2023: stS.status === "rejected",
+    },
   };
 }
 

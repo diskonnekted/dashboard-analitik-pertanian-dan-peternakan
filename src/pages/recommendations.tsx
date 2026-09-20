@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import {
   fetchPadiProduction,
+  fetchPadiHistory,
   fetchTernakBesar,
   fetchTernakKecil,
   fetchPerikananBudidaya,
@@ -20,6 +21,7 @@ import {
   fetchLahanBanjarnegara,
   fetchOpenDataCatalog,
   type PadiProduction,
+  type PadiHistoryPoint,
   type TernakBesar,
   type TernakKecil,
   type PerikananBudidaya,
@@ -49,6 +51,13 @@ interface Rekomendasi {
   prioritas: "Tinggi" | "Sedang" | "Jangka Panjang";
 }
 
+/** Tahun terbaru yang benar-benar ada di dataset (hindari hardcode "2024") */
+const maxTahun = (rows: { tahun: string }[]): number =>
+  rows.reduce((m, r) => {
+    const y = parseInt(r.tahun, 10);
+    return Number.isNaN(y) ? m : Math.max(m, y);
+  }, 0);
+
 interface Sektor {
   id: string;
   nama: string;
@@ -66,6 +75,7 @@ const PRIORITY_STYLE: Record<string, string> = {
 
 export default function RecommendationsPage() {
   const [padiData, setPadiData] = useState<PadiProduction[]>([]);
+  const [padiHistory, setPadiHistory] = useState<PadiHistoryPoint[]>([]);
   const [ternakBesar, setTernakBesar] = useState<TernakBesar[]>([]);
   const [ternakKecil, setTernakKecil] = useState<TernakKecil[]>([]);
   const [ikanData, setIkanData] = useState<PerikananBudidaya[]>([]);
@@ -78,17 +88,20 @@ export default function RecommendationsPage() {
   useEffect(() => {
     const loadAll = async () => {
       try {
-        const [padi, tb, tk, ikan, nb, nt, lahan, catalog] = await Promise.all([
-          fetchPadiProduction(),
-          fetchTernakBesar(),
-          fetchTernakKecil(),
-          fetchPerikananBudidaya(),
-          fetchNilaiProduksiBudidaya(),
-          fetchNilaiProduksiTangkap(),
-          fetchLahanBanjarnegara(),
-          fetchOpenDataCatalog(),
-        ]);
+        const [padi, padiHist, tb, tk, ikan, nb, nt, lahan, catalog] =
+          await Promise.all([
+            fetchPadiProduction(),
+            fetchPadiHistory(),
+            fetchTernakBesar(),
+            fetchTernakKecil(),
+            fetchPerikananBudidaya(),
+            fetchNilaiProduksiBudidaya(),
+            fetchNilaiProduksiTangkap(),
+            fetchLahanBanjarnegara(),
+            fetchOpenDataCatalog(),
+          ]);
         setPadiData(padi);
+        setPadiHistory(padiHist);
         setTernakBesar(tb);
         setTernakKecil(tk);
         setIkanData(ikan);
@@ -116,32 +129,54 @@ export default function RecommendationsPage() {
   );
 
   const stats = useMemo(() => {
-    // 1. Pertanian (Padi)
-    const totalPadiProd = padiData.reduce((acc, curr) => acc + curr.produksi, 0);
-    const totalPadiLuas = padiData.reduce((acc, curr) => acc + curr.luasPanen, 0);
+    /* Tahun acuan = tahun terbaru yang benar-benar ada di tiap dataset,
+     * supaya tidak ada hardcode "2024" yang basi saat data diperbarui. */
+    const tahunPadi = maxTahun(padiData);
+    const padiLatest = padiData.filter(
+      (d) => parseInt(d.tahun, 10) === tahunPadi,
+    );
+
+    // 1. Pertanian (Padi) — fetcher mengembalikan baris tahun terbaru per kecamatan
+    const totalPadiProd = padiLatest.reduce((acc, curr) => acc + curr.produksi, 0);
+    const totalPadiLuas = padiLatest.reduce((acc, curr) => acc + curr.luasPanen, 0);
     let topPadiKec = "N/A";
     let maxPadiProd = 0;
-    padiData.forEach((item) => {
+    padiLatest.forEach((item) => {
       if (item.produksi > maxPadiProd) {
         maxPadiProd = item.produksi;
         topPadiKec = item.kecamatan;
       }
     });
 
-    // 2. Peternakan — gunakan total 2024 (bukan akumulasi semua tahun)
-    // Filter tahun 2024 karena data terbaru yang tersedia
-    const ternakBesar2024 = ternakBesar.filter((d) => d.tahun === "2024");
-    const ternakKecil2024 = ternakKecil.filter((d) => d.tahun === "2024");
-    const totalSapi = ternakBesar2024.reduce((acc, curr) => acc + curr.sapi, 0);
-    const totalKambing = ternakKecil2024.reduce((acc, curr) => acc + curr.kambing, 0);
+    // 2. Peternakan — filter tahun terbaru (bukan akumulasi semua tahun)
+    const tahunTernak = maxTahun(ternakBesar);
+    const tahunTernakKecil = maxTahun(ternakKecil);
+    const tbLatest = ternakBesar.filter(
+      (d) => parseInt(d.tahun, 10) === tahunTernak,
+    );
+    const tkLatest = ternakKecil.filter(
+      (d) => parseInt(d.tahun, 10) === tahunTernakKecil,
+    );
+    const totalSapi = tbLatest.reduce((acc, curr) => acc + curr.sapi, 0);
+    const totalSapiPerah = tbLatest.reduce((acc, curr) => acc + curr.sapiPerah, 0);
+    const totalKerbau = tbLatest.reduce((acc, curr) => acc + curr.kerbau, 0);
+    const totalKuda = tbLatest.reduce((acc, curr) => acc + curr.kuda, 0);
+    // Kambing & domba digabung — konsisten dengan angka terverifikasi BPS (281.218 ekor, 2024)
+    const totalKambing = tkLatest.reduce(
+      (acc, curr) => acc + curr.kambing + curr.domba,
+      0,
+    );
+    const totalBabi = tkLatest.reduce((acc, curr) => acc + curr.babi, 0);
+    const totalKelinci = tkLatest.reduce((acc, curr) => acc + curr.kelinci, 0);
     const totalTernakPop = totalSapi + totalKambing;
 
     const kecTernakMap: Record<string, number> = {};
-    ternakBesar2024.forEach((item) => {
+    tbLatest.forEach((item) => {
       kecTernakMap[item.kecamatan] = (kecTernakMap[item.kecamatan] || 0) + item.sapi;
     });
-    ternakKecil2024.forEach((item) => {
-      kecTernakMap[item.kecamatan] = (kecTernakMap[item.kecamatan] || 0) + item.kambing;
+    tkLatest.forEach((item) => {
+      kecTernakMap[item.kecamatan] =
+        (kecTernakMap[item.kecamatan] || 0) + item.kambing + item.domba;
     });
     let topTernakKec = "N/A";
     let maxTernakPop = 0;
@@ -152,66 +187,102 @@ export default function RecommendationsPage() {
       }
     });
 
-    // 3. Perikanan — gunakan tahun 2024 (data terkoreksi)
-    // Hitung total produksi 2024 dari ikanData (kolam pembesaran, KJA, minapadi)
-    let totalIkanProd2024 = 0;
+    // 3. Perikanan budidaya — kolom CSV adalah "Produksi (Kg)".
+    //    Simpan kg secara internal, konversi ke ton HANYA untuk tampilan.
+    const tahunIkan = maxTahun(ikanData);
+    const ikanLatest = ikanData.filter(
+      (d) => parseInt(d.tahun, 10) === tahunIkan,
+    );
+    let totalIkanProdKg = 0;
+    let kolamPembesaranKg = 0;
+    let karambaApungKg = 0;
+    let minapadiKg = 0;
     let topIkanKec = "N/A";
-    let maxIkanProd = 0;
-    const kecIkanMap: Record<string, number> = {};
-    ikanData.forEach((item) => {
-      if (item.tahun !== "2024") return;
-      const prod = item.kolamPembesaran + item.karambaApung + item.minaPenyelang + item.minaTumpangsari;
-      kecIkanMap[item.kecamatan] = (kecIkanMap[item.kecamatan] || 0) + prod;
-      totalIkanProd2024 += prod;
-      if (prod > maxIkanProd) {
-        maxIkanProd = prod;
+    let maxIkanProdKg = 0;
+    ikanLatest.forEach((item) => {
+      const prod =
+        item.kolamPembesaran +
+        item.karambaApung +
+        item.minaPenyelang +
+        item.minaTumpangsari;
+      totalIkanProdKg += prod;
+      kolamPembesaranKg += item.kolamPembesaran;
+      karambaApungKg += item.karambaApung;
+      minapadiKg += item.minaPenyelang + item.minaTumpangsari;
+      if (prod > maxIkanProdKg) {
+        maxIkanProdKg = prod;
         topIkanKec = item.kecamatan;
       }
     });
-    const totalIkanProd = totalIkanProd2024;
+    const totalIkanProd = totalIkanProdKg / 1000; // ton
+    const maxIkanProd = maxIkanProdKg / 1000; // ton
+    const kolamTon = kolamPembesaranKg / 1000;
+    const kjaTon = karambaApungKg / 1000;
+    const minapadiTon = minapadiKg / 1000;
 
-    // Total nilai produksi 2024 (terkoreksi) dari Distankan KP
-    const nilaiBudidaya2024 = nilaiBudidaya.reduce((acc, curr) => {
-      if (curr.tahun === "2024") {
-        return acc + curr.jenis.reduce((a, j) => a + j.nilai, 0);
-      }
-      return acc;
-    }, 0);
-    const nilaiTangkap2024 = nilaiTangkap.reduce((acc, curr) => {
-      if (curr.tahun === "2024") {
-        return acc + curr.jenis.reduce((a, j) => a + j.nilai, 0);
-      }
-      return acc;
-    }, 0);
-    const totalNilaiProduksi2024 = nilaiBudidaya2024 + nilaiTangkap2024; // ribu rupiah
+    // Total nilai produksi tahun terbaru (terkoreksi) dari Distankan KP
+    const tahunNilai = maxTahun(nilaiBudidaya);
+    const nilaiBudidayaLatest = nilaiBudidaya.filter(
+      (d) => parseInt(d.tahun, 10) === tahunNilai,
+    );
+    const nilaiTangkapLatest = nilaiTangkap.filter(
+      (d) => parseInt(d.tahun, 10) === tahunNilai,
+    );
+    const totalNilaiProduksi2024 =
+      nilaiBudidayaLatest.reduce(
+        (acc, curr) => acc + curr.jenis.reduce((a, j) => a + j.nilai, 0),
+        0,
+      ) +
+      nilaiTangkapLatest.reduce(
+        (acc, curr) => acc + curr.jenis.reduce((a, j) => a + j.nilai, 0),
+        0,
+      ); // ribu rupiah
+    // Produksi (kg) dari dataset NILAI yang sama → harga implisit konsisten (apel-apel)
+    const totalIkanProdNilaiKg =
+      nilaiBudidayaLatest.reduce(
+        (acc, curr) => acc + curr.jenis.reduce((a, j) => a + j.produksi, 0),
+        0,
+      ) +
+      nilaiTangkapLatest.reduce(
+        (acc, curr) => acc + curr.jenis.reduce((a, j) => a + j.produksi, 0),
+        0,
+      );
+    const hargaPerKg =
+      totalIkanProdNilaiKg > 0
+        ? Math.round((totalNilaiProduksi2024 * 1000) / totalIkanProdNilaiKg)
+        : 0;
 
-    // 4. Lahan
-    const totalSawah = lahanData.reduce((acc, curr) => acc + curr.lahanSawah, 0);
+    // 4. Lahan — JSON multi-tahun (2023 parsial 97 desa; 2025 lengkap 192 desa).
+    //    WAJIB filter tahun terbaru; menjumlah lintas tahun = double count.
+    const tahunLahan = maxTahun(lahanData);
+    const lahanLatest = lahanData.filter(
+      (d) => parseInt(d.tahun, 10) === tahunLahan,
+    );
+    const totalSawah = lahanLatest.reduce((acc, curr) => acc + curr.lahanSawah, 0);
 
     /* ── Analisis Statistik ── */
-    const padiSeries: SectorStats = describe(padiData.map((d) => d.produksi));
+    const padiSeries: SectorStats = describe(padiLatest.map((d) => d.produksi));
     const ternakSeries: SectorStats = describe(
       Object.values(kecTernakMap),
     );
     const ikanSeries: SectorStats = describe(
-      ikanData.filter((d) => d.tahun === "2024").map((d) => d.kolamPembesaran),
+      ikanLatest.map((d) => d.kolamPembesaran),
     );
 
     const padiConcentration: ConcentrationMetrics = computeConcentration(
-      padiData.map((d) => d.produksi),
+      padiLatest.map((d) => d.produksi),
     );
     const ternakConcentration: ConcentrationMetrics = computeConcentration(
       Object.values(kecTernakMap),
     );
     const ikanConcentration: ConcentrationMetrics = computeConcentration(
-      ikanData.map((d) => d.kolamPembesaran),
+      ikanLatest.map((d) => d.kolamPembesaran),
     );
 
     const padiProductivity = computeProductivity(totalPadiProd, totalPadiLuas);
 
-    // Estimasi nilai ekonomi
-    // ikanTon = produksi ikan 2024 (kg → ton untuk fungsi); ikanNilaiRibu = nilai produksi aktual terkoreksi
-    // Fungsi estimateEconomicValue akan memakai ikanNilaiRibu langsung jika tersedia
+    // Estimasi nilai ekonomi — ikanTon dalam TON (kg ÷ 1000);
+    // fungsi memakai ikanNilaiRibu aktual (terkoreksi) bila tersedia
     const econ = estimateEconomicValue({
       padiTon: totalPadiProd,
       sapiEkor: totalSapi,
@@ -221,17 +292,33 @@ export default function RecommendationsPage() {
     });
 
     return {
+      tahunPadi,
+      tahunTernak,
+      tahunIkan,
+      tahunNilai,
+      tahunLahan,
       totalPadiProd,
       totalPadiLuas,
       topPadiKec,
       maxPadiProd,
+      totalSapi,
+      totalSapiPerah,
+      totalKambing,
+      totalKerbau,
+      totalKuda,
+      totalBabi,
+      totalKelinci,
       totalTernakPop,
       topTernakKec,
       maxTernakPop,
       totalIkanProd,
       topIkanKec,
       maxIkanProd,
+      kolamTon,
+      kjaTon,
+      minapadiTon,
       totalNilaiProduksi2024,
+      hargaPerKg,
       totalSawah,
       // Statistik ilmiah
       padiSeries,
@@ -245,23 +332,22 @@ export default function RecommendationsPage() {
     };
   }, [padiData, ternakBesar, ternakKecil, ikanData, nilaiBudidaya, nilaiTangkap, lahanData]);
 
-  /* Proyeksi Tren Padi (jika ada data time-series ≥ 2 tahun) */
+  /* Proyeksi Tren Padi — dibangun dari riwayat tahunan 2018–2025
+   * (fetchPadiHistory: CSV lokal terkoreksi 2018–2024 + snapshot CKAN 2025).
+   * Catatan: padiData hanya memuat tahun terbaru per kecamatan sehingga
+   * tidak bisa dipakai untuk regresi tren. */
   const padiTrend: TrendProjection | null = useMemo(() => {
-    const series: Record<number, number> = {};
-    padiData.forEach((d) => {
-      if (d.tahun) {
-        const y = parseInt(d.tahun);
-        if (Number.isFinite(y)) {
-          series[y] = (series[y] || 0) + d.produksi;
-        }
-      }
-    });
-    const years = Object.keys(series)
-      .map(Number)
-      .sort((a, b) => a - b);
-    if (years.length < 2) return null;
-    return projectTrend(years, years.map((y) => series[y]));
-  }, [padiData]);
+    if (padiHistory.length < 2) return null;
+    const pts = padiHistory
+      .map((p) => ({ y: parseInt(p.tahun, 10), v: p.produksi }))
+      .filter((p) => Number.isFinite(p.y) && Number.isFinite(p.v))
+      .sort((a, b) => a.y - b.y);
+    if (pts.length < 2) return null;
+    return projectTrend(
+      pts.map((p) => p.y),
+      pts.map((p) => p.v),
+    );
+  }, [padiHistory]);
 
   const sektor: Sektor[] = useMemo(() => [
     {
@@ -269,7 +355,7 @@ export default function RecommendationsPage() {
       nama: "Pertanian",
       icon: <Sprout size={20} />,
       warna: "bg-emerald-100",
-      ringkasan: `Produksi padi di Kabupaten Banjarnegara mencapai total ${new Intl.NumberFormat("id-ID").format(Math.round(stats.totalPadiProd))} Ton dari total luas panen ${new Intl.NumberFormat("id-ID").format(Math.round(stats.totalPadiLuas))} Ha. Produksi padi ini sangat terkonsentrasi di wilayah sentra utama yaitu Kecamatan ${stats.topPadiKec} (${new Intl.NumberFormat("id-ID").format(Math.round(stats.maxPadiProd))} Ton), sementara alih fungsi lahan sawah dan ketergantungan pangan menjadi isu kritis.`,
+      ringkasan: `Produksi padi (sawah + ladang) Kabupaten Banjarnegara tahun ${stats.tahunPadi} mencapai total ${new Intl.NumberFormat("id-ID").format(Math.round(stats.totalPadiProd))} Ton dari total luas panen ${new Intl.NumberFormat("id-ID").format(Math.round(stats.totalPadiLuas))} Ha (produktivitas agregat ${stats.padiProductivity !== undefined ? stats.padiProductivity.toFixed(2) : "—"} Ton/Ha). Produksi terkonsentrasi di wilayah sentra utama yaitu Kecamatan ${stats.topPadiKec} (${new Intl.NumberFormat("id-ID").format(Math.round(stats.maxPadiProd))} Ton), sementara alih fungsi lahan sawah dan ketergantungan pangan menjadi isu kritis.`,
       items: [
         {
           judul: "Diversifikasi Tanaman Pangan Selain Padi",
@@ -314,7 +400,7 @@ export default function RecommendationsPage() {
       nama: "Peternakan",
       icon: <Beef size={20} />,
       warna: "bg-orange-100",
-      ringkasan: `Populasi komoditas ternak utama sapi dan kambing tercatat sebanyak ${new Intl.NumberFormat("id-ID").format(Math.round(stats.totalTernakPop))} ekor, dengan populasi terpadat berada di wilayah Kecamatan ${stats.topTernakKec}. Rantai distribusi pasokan daging dan optimalisasi kesehatan hewan diperlukan untuk swasembada protein.`,
+      ringkasan: `Populasi ternak utama tahun ${stats.tahunTernak}: sapi ${new Intl.NumberFormat("id-ID").format(stats.totalSapi)} ekor serta kambing & domba ${new Intl.NumberFormat("id-ID").format(stats.totalKambing)} ekor (total ${new Intl.NumberFormat("id-ID").format(Math.round(stats.totalTernakPop))} ekor), dengan populasi terpadat di Kecamatan ${stats.topTernakKec}. Rantai distribusi pasokan daging dan optimalisasi kesehatan hewan diperlukan untuk swasembada protein.`,
       items: [
         {
           judul: "Penguatan Sentra Ternak Berbasis Kepadatan Populasi",
@@ -357,7 +443,7 @@ export default function RecommendationsPage() {
       nama: "Perikanan",
       icon: <Fish size={20} />,
       warna: "bg-sky-100",
-      ringkasan: `Perikanan budidaya mencatat produksi kolam pembesaran sebesar ${new Intl.NumberFormat("id-ID").format(Math.round(stats.totalIkanProd))} Ton/Unit, didominasi oleh Kecamatan ${stats.topIkanKec}. Pemanfaatan mina padi dan karamba jaring apung masih memerlukan dorongan investasi.`,
+      ringkasan: `Perikanan budidaya tahun ${stats.tahunIkan} mencatat produksi total ${new Intl.NumberFormat("id-ID").format(Math.round(stats.totalIkanProd))} Ton — kolam pembesaran ${new Intl.NumberFormat("id-ID").format(Math.round(stats.kolamTon))} Ton, KJA ${new Intl.NumberFormat("id-ID").format(Math.round(stats.kjaTon))} Ton, mina padi ${new Intl.NumberFormat("id-ID").format(Math.round(stats.minapadiTon))} Ton — didominasi Kecamatan ${stats.topIkanKec}. Pemanfaatan mina padi dan karamba jaring apung masih memerlukan dorongan investasi.`,
       items: [
         {
           judul: "Ekspansi Budidaya Kolam ke Wilayah Potensial",
@@ -372,8 +458,7 @@ export default function RecommendationsPage() {
         },
         {
           judul: "Revitalisasi Mina Padi & Karamba Jaring Apung",
-          masalah:
-            "Volume produksi dari sistem mina padi dan karamba waduk menyusut tajam akibat minimnya peremajaan fasilitas.",
+          masalah: `Kontribusi mina padi dan karamba jaring apung sangat kecil: tahun ${stats.tahunIkan} hanya ${new Intl.NumberFormat("id-ID").format(Math.round(stats.kjaTon))} Ton (KJA) dan ${new Intl.NumberFormat("id-ID").format(Math.round(stats.minapadiTon))} Ton (mina padi) dari total ${new Intl.NumberFormat("id-ID").format(Math.round(stats.totalIkanProd))} Ton produksi budidaya — di bawah 2%. Fasilitas banyak yang menua dan kurang produktif.`,
           aksi: [
             "Sosialisasikan kembali sistem mina padi terpadu (padi + udang/ikan) yang ramah lingkungan.",
             "Berikan bantuan jaring dan sarana karamba ramah lingkungan di area waduk/perairan umum darat.",
@@ -420,20 +505,23 @@ export default function RecommendationsPage() {
       .join("\n");
 
     const ternakTop5 = Object.entries(
-      ternakBesar.reduce((acc, curr) => {
-        acc[curr.kecamatan] = (acc[curr.kecamatan] || 0) + curr.sapi;
-        return acc;
-      }, {} as Record<string, number>),
+      ternakBesar
+        .filter((d) => parseInt(d.tahun, 10) === stats.tahunTernak)
+        .reduce((acc, curr) => {
+          acc[curr.kecamatan] = (acc[curr.kecamatan] || 0) + curr.sapi;
+          return acc;
+        }, {} as Record<string, number>),
     )
       .sort((a, b) => b[1] - a[1])
       .slice(0, 5)
       .map(([kec, pop]) => `  - ${kec}: ${fmt(pop)} ekor`)
       .join("\n");
 
-    const ikanTop5 = [...ikanData]
+    const ikanTop5 = ikanData
+      .filter((d) => parseInt(d.tahun, 10) === stats.tahunIkan)
       .sort((a, b) => b.kolamPembesaran - a.kolamPembesaran)
       .slice(0, 5)
-      .map((d) => `  - ${d.kecamatan}: ${fmt(d.kolamPembesaran)} Ton/Unit`)
+      .map((d) => `  - ${d.kecamatan}: ${fmt(d.kolamPembesaran / 1000)} Ton`)
       .join("\n");
 
     // Katalog dataset OpenData Banjarnegara (ringkasan untuk AI)
@@ -459,7 +547,7 @@ Anda dapat merujuk pada dataset di atas ketika pengguna bertanya tentang data sp
 
     return `DATA RINGKAS SISPERTANI KABUPATEN BANJARNEGARA:
 
-== SEKTOR TANAMAN PANGAN (PADI) ==
+== SEKTOR TANAMAN PANGAN (PADI, tahun ${stats.tahunPadi}, sawah + ladang) ==
 Total Produksi: ${fmt(stats.totalPadiProd)} Ton
 Total Luas Panen: ${fmt(stats.totalPadiLuas)} Ha
 Kecamatan Sentra: ${stats.topPadiKec} (${fmt(stats.maxPadiProd)} Ton)
@@ -473,21 +561,22 @@ Banjarnegara dikenal sebagai sentra bawang merah nasional.
 == SEKTOR PERKEBUNAN ==
 Komoditas: Kopi, Teh, Karet, Kakao, Tebu, Kelapa, Cengkeh, Kapulaga, Panili.
 
-== SEKTOR PETERNAKAN ==
-Total Populasi Sapi & Kambing: ${fmt(stats.totalTernakPop)} ekor
+== SEKTOR PETERNAKAN (tahun ${stats.tahunTernak}) ==
+Populasi Sapi: ${fmt(stats.totalSapi)} ekor; Kambing & Domba: ${fmt(stats.totalKambing)} ekor (total ${fmt(stats.totalTernakPop)} ekor)
 Kecamatan Sentra Peternakan: ${stats.topTernakKec} (${fmt(stats.maxTernakPop)} ekor)
-Top 5 Kecamatan berdasarkan populasi ternak:
+Top 5 Kecamatan berdasarkan populasi sapi:
 ${ternakTop5}
-Komoditas ternak lain: Domba, Kuda, Ayam Buras, Ayam Pedaging, Itik.
+Komoditas ternak lain: Kerbau (${fmt(stats.totalKerbau)} ekor), Kuda (${fmt(stats.totalKuda)} ekor), Ayam Buras, Ayam Pedaging, Itik.
 
-== SEKTOR PERIKANAN ==
-Total Produksi Kolam Pembesaran: ${fmt(stats.totalIkanProd)} Ton/Unit
-Kecamatan Sentra Perikanan: ${stats.topIkanKec} (${fmt(stats.maxIkanProd)} Ton/Unit)
-Top 5 Kecamatan berdasarkan produksi perikanan:
+== SEKTOR PERIKANAN (tahun ${stats.tahunIkan}) ==
+Total Produksi Budidaya: ${fmt(stats.totalIkanProd)} Ton (kolam pembesaran ${fmt(stats.kolamTon)} Ton, KJA ${fmt(stats.kjaTon)} Ton, mina padi ${fmt(stats.minapadiTon)} Ton)
+Nilai Produksi ${stats.tahunNilai} (budidaya + tangkap): ${formatRupiah(stats.totalNilaiProduksi2024 * 1000)}
+Kecamatan Sentra Perikanan: ${stats.topIkanKec} (${fmt(stats.maxIkanProd)} Ton)
+Top 5 Kecamatan berdasarkan produksi kolam pembesaran:
 ${ikanTop5}
 Jenis budidaya: Kolam Pembesaran, Kolam Pembenihan, Karamba Jaring Apung, Mina Padi, Sawah/Tambak.
 
-== LAHAN PERTANIAN ==
+== LAHAN PERTANIAN (data ${stats.tahunLahan}) ==
 Total Lahan Sawah: ${fmt(stats.totalSawah)} Ha
 Lahan sawah beririgasi teknis dan non-teknis tersebar di 20 kecamatan.
 
@@ -506,7 +595,7 @@ Data inflasi pangan multi-region (Banjarnegara, Jateng, Nasional) digunakan untu
 GEOGRAFI: Banjarnegara memiliki topografi bervariasi dari dataran rendah hingga dataran tinggi (Dieng, ~2000 mdpl). Iklim dipengaruhi pola muson dengan dua musim: kemarau (Apr-Okt) dan penghujan (Nov-Mar). Kawasan Dieng produktif untuk hortikultura dataran tinggi (kentang, kubis, wortel).
 
 == ANALISIS STATISTIK ILMIAH ==
-Estimasi nilai ekonomi sektoral (harga acuan: gabah Rp 6.000/kg, sapi Rp 18 jt/ekor, kambing Rp 3 jt/ekor, ikan Rp 35.000/kg):
+Estimasi nilai ekonomi sektoral (harga acuan: gabah Rp 6.000/kg, sapi Rp 18 jt/ekor, kambing Rp 3 jt/ekor; ikan = nilai produksi aktual ${stats.tahunNilai} terkoreksi):
   - Gabah kering total: ${new Intl.NumberFormat("id-ID").format(stats.econ.gabah)} IDR
   - Total sapi: ${new Intl.NumberFormat("id-ID").format(stats.econ.sapi)} IDR
   - Total kambing: ${new Intl.NumberFormat("id-ID").format(stats.econ.kambing)} IDR
@@ -586,7 +675,7 @@ ${catalogSection}`;
               {new Intl.NumberFormat("id-ID").format(Math.round(stats.totalPadiProd))} Ton
             </h3>
             <p className="text-xs text-slate-700 mt-2 leading-normal">
-              Produksi padi dari luas panen {new Intl.NumberFormat("id-ID").format(Math.round(stats.totalPadiLuas))} Ha, dipimpin oleh Kecamatan {stats.topPadiKec}.
+              Produksi padi {stats.tahunPadi} (sawah + ladang) dari luas panen {new Intl.NumberFormat("id-ID").format(Math.round(stats.totalPadiLuas))} Ha, dipimpin oleh Kecamatan {stats.topPadiKec}.
             </p>
           </div>
 
@@ -596,17 +685,17 @@ ${catalogSection}`;
               {new Intl.NumberFormat("id-ID").format(Math.round(stats.totalTernakPop))} Ekor
             </h3>
             <p className="text-xs text-slate-700 mt-2 leading-normal">
-              Total populasi sapi &amp; kambing aktif, dengan kepadatan tertinggi di Kecamatan {stats.topTernakKec}.
+              Populasi sapi, kambing &amp; domba {stats.tahunTernak}, dengan kepadatan tertinggi di Kecamatan {stats.topTernakKec}.
             </p>
           </div>
 
           <div className="bg-white border border-slate-200 border-l-4 border-l-teal-700 rounded-lg p-5 text-left">
             <span className="text-xs font-semibold uppercase tracking-wide text-slate-700 block">Capaian Perikanan</span>
             <h3 className="text-xl font-semibold text-slate-900 leading-tight mt-2 tabular-nums">
-              {new Intl.NumberFormat("id-ID").format(Math.round(stats.totalIkanProd))} Ton/Unit
+              {new Intl.NumberFormat("id-ID").format(Math.round(stats.totalIkanProd))} Ton
             </h3>
             <p className="text-xs text-slate-700 mt-2 leading-normal">
-              Hasil perikanan budidaya kolam pembesaran dengan sentra utama di Kecamatan {stats.topIkanKec}.
+              Produksi perikanan budidaya {stats.tahunIkan} (kolam, KJA, mina padi), sentra utama Kecamatan {stats.topIkanKec}.
             </p>
           </div>
 
@@ -616,7 +705,7 @@ ${catalogSection}`;
               {new Intl.NumberFormat("id-ID").format(Math.round(stats.totalSawah))} Ha
             </h3>
             <p className="text-xs text-slate-700 mt-2 leading-normal">
-              Lahan sawah produktif basah beririgasi yang terpetakan untuk ketahanan pangan.
+              Lahan sawah terverifikasi per desa (data {stats.tahunLahan}) untuk ketahanan pangan.
             </p>
           </div>
         </div>
@@ -693,15 +782,15 @@ ${catalogSection}`;
             {/* Perikanan — data 2024, terkoreksi */}
             <div className="border border-sky-200 bg-sky-50/50 p-4 rounded">
               <p className="text-[10px] font-mono font-black uppercase text-sky-800 tracking-wider mb-2">
-                Perikanan (2024)
+                Perikanan ({stats.tahunIkan})
               </p>
               <ul className="text-[11px] font-sans text-slate-700 space-y-1.5 leading-snug">
-                <li><span className="font-bold">Produksi 2024:</span> {new Intl.NumberFormat("id-ID").format(stats.totalIkanProd)} Ton</li>
-                <li><span className="font-bold">Top Kecamatan:</span> {stats.topIkanKec} ({new Intl.NumberFormat("id-ID").format(stats.maxIkanProd)} Ton)</li>
-                <li><span className="font-bold">Total Nilai Produksi 2024:</span> Rp {new Intl.NumberFormat("id-ID").format(stats.totalNilaiProduksi2024)} jt</li>
-                <li><span className="font-bold">Harga Implisit:</span> Rp {new Intl.NumberFormat("id-ID").format(Math.round((stats.totalNilaiProduksi2024 * 1000) / stats.totalIkanProd) / 1000)}/kg</li>
+                <li><span className="font-bold">Produksi {stats.tahunIkan}:</span> {new Intl.NumberFormat("id-ID").format(Math.round(stats.totalIkanProd))} Ton</li>
+                <li><span className="font-bold">Top Kecamatan:</span> {stats.topIkanKec} ({new Intl.NumberFormat("id-ID").format(Math.round(stats.maxIkanProd))} Ton)</li>
+                <li><span className="font-bold">Total Nilai Produksi {stats.tahunNilai}:</span> {formatRupiah(stats.totalNilaiProduksi2024 * 1000)}</li>
+                <li><span className="font-bold">Harga Implisit:</span> Rp {new Intl.NumberFormat("id-ID").format(stats.hargaPerKg)}/kg</li>
                 <li className="text-[10px] text-slate-500 italic mt-2">
-                  Nilai produksi dari Distankan KP (2024), terkoreksi 6 sel anomali
+                  Nilai produksi dari Distankan KP ({stats.tahunNilai}), terkoreksi 6 sel anomali
                 </li>
               </ul>
             </div>
@@ -726,7 +815,7 @@ ${catalogSection}`;
                     <p className="text-sm font-serif font-bold text-slate-800 mt-1">{formatRupiah(stats.econ.kambing)}</p>
                   </div>
                   <div className="text-center border border-slate-200 p-3 rounded bg-slate-50">
-                    <p className="text-[9px] font-mono uppercase text-slate-500">Nilai Produksi Ikan 2024</p>
+                    <p className="text-[9px] font-mono uppercase text-slate-500">Nilai Produksi Ikan {stats.tahunNilai}</p>
                     <p className="text-sm font-serif font-bold text-slate-800 mt-1">{formatRupiah(stats.econ.ikan)}</p>
                   </div>
                   <div className="text-center border-2 border-emerald-600 p-3 rounded bg-emerald-100">
@@ -735,7 +824,7 @@ ${catalogSection}`;
                   </div>
                 </div>
                 <p className="text-[9px] font-mono text-slate-500 mt-2 italic leading-relaxed">
-                  * Asumsi: Gabah Kering Panen Rp 6.000/kg, Sapi Rp 18 jt/ekor, Kambing Rp 3 jt/ekor. Nilai ikan = produksi aktual 2024 (Distankan KP) terkoreksi: Rp {new Intl.NumberFormat("id-ID").format(stats.totalNilaiProduksi2024)} ribu (Rp {(stats.totalNilaiProduksi2024 * 1000 / 1e6).toFixed(1)} jt). Nilai indikatif untuk analisis kebijakan, bukan nilai transaksi riil.
+                  * Asumsi: Gabah Kering Panen Rp 6.000/kg, Sapi Rp 18 jt/ekor, Kambing Rp 3 jt/ekor. Nilai ikan = nilai produksi aktual {stats.tahunNilai} (Distankan KP, terkoreksi): {formatRupiah(stats.totalNilaiProduksi2024 * 1000)}. Nilai indikatif untuk analisis kebijakan, bukan nilai transaksi riil.
                 </p>
               </div>
         </div>
@@ -749,11 +838,11 @@ ${catalogSection}`;
             </h3>
           </div>
           <p className="text-sm leading-relaxed text-slate-800">
-            Berdasarkan analisis data riil Kabupaten Banjarnegara terbaru, total lahan sawah tercatat sebesar{" "}
-            <span className="font-bold">{new Intl.NumberFormat("id-ID").format(Math.round(stats.totalSawah))} Ha</span> dengan total produksi padi tahunan mencapai{" "}
-            <span className="font-bold">{new Intl.NumberFormat("id-ID").format(Math.round(stats.totalPadiProd))} Ton</span>. Sektor peternakan memiliki populasi ternak utama (sapi &amp; kambing) sebanyak{" "}
-            <span className="font-bold">{new Intl.NumberFormat("id-ID").format(Math.round(stats.totalTernakPop))} ekor</span>, sedangkan perikanan kolam pembesaran mencatat produksi{" "}
-            <span className="font-bold">{new Intl.NumberFormat("id-ID").format(Math.round(stats.totalIkanProd))} Ton/Unit</span>. 
+            Berdasarkan analisis data riil Kabupaten Banjarnegara terbaru, total lahan sawah ({stats.tahunLahan}) tercatat sebesar{" "}
+            <span className="font-bold">{new Intl.NumberFormat("id-ID").format(Math.round(stats.totalSawah))} Ha</span> dengan total produksi padi {stats.tahunPadi} mencapai{" "}
+            <span className="font-bold">{new Intl.NumberFormat("id-ID").format(Math.round(stats.totalPadiProd))} Ton</span>. Sektor peternakan memiliki populasi ternak utama (sapi, kambing &amp; domba, {stats.tahunTernak}) sebanyak{" "}
+            <span className="font-bold">{new Intl.NumberFormat("id-ID").format(Math.round(stats.totalTernakPop))} ekor</span>, sedangkan perikanan budidaya {stats.tahunIkan} mencatat produksi{" "}
+            <span className="font-bold">{new Intl.NumberFormat("id-ID").format(Math.round(stats.totalIkanProd))} Ton</span>. 
             Teridentifikasi isu kritis berupa tingginya konsentrasi produksi di wilayah sentra utama seperti Kecamatan {stats.topPadiKec} (Padi), Kecamatan {stats.topTernakKec} (Ternak), dan Kecamatan {stats.topIkanKec} (Perikanan). 
             Dokumen ini merumuskan rekomendasi teknis per sektor dan langkah kebijakan strategis untuk dinas serta pimpinan daerah.
           </p>
@@ -895,36 +984,72 @@ ${catalogSection}`;
         </p>
       </section>
 
-      {/* Catatan Perbandingan Data BPS vs CKAN */}
+      {/* Tren Produksi Padi — dibangun langsung dari data terkoreksi (bukan hardcode) */}
       <section className="print-block mt-8 bg-amber-50 border border-amber-200 p-6 shadow-sm">
         <h3 className="text-sm font-mono font-black uppercase text-amber-800 tracking-wide mb-3">
-          Catatan Perbandingan Data: BPS (Sensus) vs CKAN (Distankan KP)
+          Tren Produksi Padi (Sawah + Ladang) — Data Terkoreksi
         </h3>
         <p className="text-xs text-slate-700 leading-relaxed mb-3">
-          Angka estimasi nilai ekonomi padi di halaman ini menggunakan <strong>snapshot CKAN 2025</strong> sebagai sumber utama (di-cache untuk keandalan). Sebagai pembanding, berikut perbedaan dengan data resmi BPS (Kabupaten Banjarnegara Dalam Angka 2026, Tabel 5.1.1 - Padi Sawah &amp; Ladang):
+          Seri tahunan berikut dihitung langsung dari dataset yang dipakai halaman ini:
+          tahun 2018–2024 dari CSV Distankan KP hasil koreksi silang terhadap xlsx resmi,
+          tahun 2025 dari snapshot CKAN Distankan KP. Tanpa angka hardcode — tabel di
+          bawah selalu mengikuti data aktual.
         </p>
         <div className="overflow-x-auto">
           <table className="w-full text-[11px] font-mono border-collapse">
             <thead>
               <tr className="bg-amber-100 text-amber-900">
                 <th className="border border-amber-300 px-2 py-1 text-left">Tahun</th>
-                <th className="border border-amber-300 px-2 py-1 text-right">BPS Padi Sawah (Ton)</th>
-                <th className="border border-amber-300 px-2 py-1 text-right">CKAN Datastore (Ton)</th>
-                <th className="border border-amber-300 px-2 py-1 text-right">Selisih</th>
-                <th className="border border-amber-300 px-2 py-1 text-left">Keterangan</th>
+                <th className="border border-amber-300 px-2 py-1 text-right">Luas Panen (Ha)</th>
+                <th className="border border-amber-300 px-2 py-1 text-right">Produksi (Ton)</th>
+                <th className="border border-amber-300 px-2 py-1 text-right">Produktivitas (Ton/Ha)</th>
+                <th className="border border-amber-300 px-2 py-1 text-left">Sumber</th>
               </tr>
             </thead>
             <tbody className="text-slate-700">
-              <tr><td className="border border-amber-200 px-2 py-1">2021</td><td className="border border-amber-200 px-2 py-1 text-right">166.803</td><td className="border border-amber-200 px-2 py-1 text-right">144.313</td><td className="border border-amber-200 px-2 py-1 text-right text-red-700">-13,5%</td><td className="border border-amber-200 px-2 py-1">CKAN estimasi awal</td></tr>
-              <tr><td className="border border-amber-200 px-2 py-1">2022</td><td className="border border-amber-200 px-2 py-1 text-right">170.805</td><td className="border border-amber-200 px-2 py-1 text-right">156.107</td><td className="border border-amber-200 px-2 py-1 text-right text-red-700">-8,6%</td><td className="border border-amber-200 px-2 py-1">CKAN estimasi awal</td></tr>
-              <tr><td className="border border-amber-200 px-2 py-1">2023</td><td className="border border-amber-200 px-2 py-1 text-right">146.840</td><td className="border border-amber-200 px-2 py-1 text-right">126.255</td><td className="border border-amber-200 px-2 py-1 text-right text-red-700">-14,0%</td><td className="border border-amber-200 px-2 py-1">Tahun rendah (El Nino)</td></tr>
-              <tr className="bg-emerald-50"><td className="border border-amber-200 px-2 py-1 font-bold">2024</td><td className="border border-amber-200 px-2 py-1 text-right font-bold">176.077</td><td className="border border-amber-200 px-2 py-1 text-right font-bold">176.200</td><td className="border border-amber-200 px-2 py-1 text-right font-bold text-emerald-700">+0,1%</td><td className="border border-amber-200 px-2 py-1">Cocok (CKAN akurat)</td></tr>
-              <tr className="bg-emerald-50"><td className="border border-amber-200 px-2 py-1 font-bold">2025</td><td className="border border-amber-200 px-2 py-1 text-right font-bold">178.257</td><td className="border border-amber-200 px-2 py-1 text-right font-bold">178.610</td><td className="border border-amber-200 px-2 py-1 text-right font-bold text-emerald-700">+0,2%</td><td className="border border-amber-200 px-2 py-1">Cocok (snapshot 2025)</td></tr>
+              {padiHistory.map((p) => (
+                <tr
+                  key={p.tahun}
+                  className={p.tahun === "2025" ? "bg-emerald-50" : undefined}
+                >
+                  <td className="border border-amber-200 px-2 py-1 font-bold">{p.tahun}</td>
+                  <td className="border border-amber-200 px-2 py-1 text-right">
+                    {new Intl.NumberFormat("id-ID").format(Math.round(p.luasPanen))}
+                  </td>
+                  <td className="border border-amber-200 px-2 py-1 text-right">
+                    {new Intl.NumberFormat("id-ID").format(Math.round(p.produksi))}
+                  </td>
+                  <td className="border border-amber-200 px-2 py-1 text-right">
+                    {p.luasPanen > 0 ? (p.produksi / p.luasPanen).toFixed(2) : "—"}
+                  </td>
+                  <td className="border border-amber-200 px-2 py-1">
+                    {p.tahun === "2025" ? "Snapshot CKAN Distankan KP" : "CSV Distankan KP (terkoreksi)"}
+                  </td>
+                </tr>
+              ))}
+              {padiTrend && padiHistory.length > 0 && (
+                <tr className="bg-sky-50">
+                  <td className="border border-amber-200 px-2 py-1 font-bold">
+                    {parseInt(padiHistory[padiHistory.length - 1].tahun, 10) + 1}
+                  </td>
+                  <td className="border border-amber-200 px-2 py-1 text-right">—</td>
+                  <td className="border border-amber-200 px-2 py-1 text-right font-bold">
+                    ≈ {new Intl.NumberFormat("id-ID").format(Math.round(padiTrend.projectionNext))}
+                  </td>
+                  <td className="border border-amber-200 px-2 py-1 text-right">—</td>
+                  <td className="border border-amber-200 px-2 py-1">
+                    Proyeksi regresi linier (R² = {padiTrend.r2.toFixed(3)}, arah {padiTrend.direction})
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
         <p className="text-[10px] text-slate-600 leading-relaxed mt-3">
-          <strong>Temuan kunci:</strong> CKAN untuk 2024 &amp; 2025 selisih &lt;0,5% dari BPS resmi - siap dipakai untuk estimasi nilai ekonomi. CKAN 2021-2023 adalah data estimasi awal yang lebih rendah (8-14%) - perlu dipakai hati-hati untuk analisis tren. Produktivitas padi sawah Banjarnegara konsisten 67-69 Kw/Ha (6,7-6,9 Ton/Ha), di atas rata-rata nasional 5,15 Ton/Ha dan mendekati rata-rata Jawa Tengah 5,69 Ton/Ha. Sumber harga referensi gabah kering panen Rp 6.000/kg (asumsi konservatif tingkat petani, kisaran Bapanas GKP Jawa Tengah).
+          <strong>Catatan metodologi:</strong> produktivitas dihitung sebagai produksi ÷
+          luas panen pada tahun yang sama. Angka tahun berjalan (2025) adalah snapshot
+          sementara dan dapat direvisi Distankan KP. Harga referensi gabah kering panen
+          untuk estimasi nilai ekonomi: Rp 6.000/kg (asumsi konservatif tingkat petani).
         </p>
       </section>
 

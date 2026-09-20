@@ -52,3 +52,4 @@ scripts/kda-*.clean
 docs/*.docx
 docs/screenshots/
 docs/tmp/
+memory/

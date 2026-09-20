@@ -1,0 +1,181 @@
+{
+  "collisions": [
+    {
+      "norm": "bandingan",
+      "items": [
+        {
+          "display": "Desa Bandingan",
+          "kec": "Kec.Bawang",
+          "oid": 73
+        },
+        {
+          "display": "Desa Bandingan",
+          "kec": "Kec.Rakit",
+          "oid": 186
+        },
+        {
+          "display": "Desa Bandingan",
+          "kec": "Kec.Sigaluh",
+          "oid": 213
+        }
+      ]
+    },
+    {
+      "norm": "beji",
+      "items": [
+        {
+          "display": "Desa Beji",
+          "kec": "Kec.Pandanarum",
+          "oid": 144
+        },
+        {
+          "display": "Desa Beji",
+          "kec": "Kec.Pejawaran",
+          "oid": 145
+        },
+        {
+          "display": "Desa Beji",
+          "kec": "Kec.Banjarmangu",
+          "oid": 264
+        }
+      ]
+    },
+    {
+      "norm": "susukan",
+      "items": [
+        {
+          "display": "Desa Susukan",
+          "kec": "Kec.Susukan",
+          "oid": 8
+        },
+        {
+          "display": "Desa Susukan",
+          "kec": "Kec.Wanayasa",
+          "oid": 132
+        }
+      ]
+    },
+    {
+      "norm": "karanganyar",
+      "items": [
+        {
+          "display": "Desa Karanganyar",
+          "kec": "Kec.Purwanegara",
+          "oid": 30
+        },
+        {
+          "display": "Desa Karanganyar",
+          "kec": "Kec.Madukara",
+          "oid": 247
+        }
+      ]
+    },
+    {
+      "norm": "kutayasa",
+      "items": [
+        {
+          "display": "Desa Kutayasa",
+          "kec": "Kec.Bawang",
+          "oid": 53
+        },
+        {
+          "display": "Desa Kutayasa",
+          "kec": "Kec.Madukara",
+          "oid": 269
+        }
+      ]
+    },
+    {
+      "norm": "karangsari",
+      "items": [
+        {
+          "display": "Desa Karangsari",
+          "kec": "Kec.Punggelan",
+          "oid": 92
+        },
+        {
+          "display": "Desa Karangsari",
+          "kec": "Kec.Pejawaran",
+          "oid": 138
+        }
+      ]
+    },
+    {
+      "norm": "karangtengah",
+      "items": [
+        {
+          "display": "Desa Karangtengah",
+          "kec": "Kec.Wanayasa",
+          "oid": 101
+        },
+        {
+          "display": "Desa Karangtengah",
+          "kec": "Kec.Batur",
+          "oid": 173
+        }
+      ]
+    },
+    {
+      "norm": "dawuhan",
+      "items": [
+        {
+          "display": "Desa Dawuhan",
+          "kec": "Kec.Wanayasa",
+          "oid": 119
+        },
+        {
+          "display": "Desa Dawuhan",
+          "kec": "Kec.Madukara",
+          "oid": 242
+        }
+      ]
+    },
+    {
+      "norm": "kalilunjar",
+      "items": [
+        {
+          "display": "Desa Kalilunjar",
+          "kec": "Kec.Pejawaran",
+          "oid": 126
+        },
+        {
+          "display": "Desa Kalilunjar",
+          "kec": "Kec.Banjarmangu",
+          "oid": 258
+        }
+      ]
+    },
+    {
+      "norm": "pringamba",
+      "items": [
+        {
+          "display": "Desa Pringamba",
+          "kec": "Kec.Pandanarum",
+          "oid": 155
+        },
+        {
+          "display": "Desa Pringamba",
+          "kec": "Kec.Sigaluh",
+          "oid": 212
+        }
+      ]
+    },
+    {
+      "norm": "majatengah",
+      "items": [
+        {
+          "display": "Desa Majatengah",
+          "kec": "Kec.Kalibening",
+          "oid": 159
+        },
+        {
+          "display": "Desa Majatengah",
+          "kec": "Kec.Banjarmangu",
+          "oid": 266
+        }
+      ]
+    }
+  ],
+  "totalFeatures": 278,
+  "uniqueNames": 265
+}

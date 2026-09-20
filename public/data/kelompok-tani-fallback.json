@@ -651,7 +651,7 @@
   {
     "desa": "Balun",
     "kecamatan": "Wanayasa",
-    "kelompokTani": 389,
+    "kelompokTani": 12,
     "anggotaTani": 245,
     "kelompokPerikanan": 1,
     "anggotaPerikanan": 25,
@@ -983,8 +983,8 @@
     "kecamatan": "Purwanegara",
     "kelompokTani": 48,
     "anggotaTani": 468,
-    "kelompokPerikanan": 516,
-    "anggotaPerikanan": 40,
+    "kelompokPerikanan": 5,
+    "anggotaPerikanan": 175,
     "gapoktan": 0,
     "anggotaGapoktan": 0,
     "tahun": "2023"
@@ -3017,8 +3017,8 @@
     "desa": "Bandingan",
     "kecamatan": "Sigaluh",
     "kelompokTani": 5,
-    "anggotaTani": 0,
-    "kelompokPerikanan": 125,
+    "anggotaTani": 125,
+    "kelompokPerikanan": 0,
     "anggotaPerikanan": 0,
     "gapoktan": 1,
     "anggotaGapoktan": 125,
@@ -6562,8 +6562,8 @@
     "anggotaTani": 248,
     "kelompokPerikanan": 0,
     "anggotaPerikanan": 0,
-    "gapoktan": 255,
-    "anggotaGapoktan": 0,
+    "gapoktan": 1,
+    "anggotaGapoktan": 255,
     "tahun": "2025"
   },
   {

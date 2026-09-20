@@ -143,7 +143,7 @@ export default function LivestockFlowPage() {
 
   const stats = useMemo(() => {
     let total = 0;
-    let maxVal = -1;
+    let maxVal = 0;
     let topDistrict = "-";
     const breakdown = jenisList.map((j) => ({ name: j, value: 0 }));
 
@@ -566,7 +566,7 @@ export default function LivestockFlowPage() {
                           fontSize: 12,
                           boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
                         }}
-                        formatter={(value: any) => [formatNum(Number(value)), ""]}
+                        formatter={(value: any, name: any) => [formatNum(Number(value)), String(name ?? "")]}
                       />
                       <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: 12 }} />
                       {jenisList.map((j, idx) => (
@@ -620,13 +620,13 @@ export default function LivestockFlowPage() {
                           fontSize: 12,
                           boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
                         }}
-                        formatter={(value: any) => [formatNum(Number(value)), ""]}
+                        formatter={(value: any, name: any) => [formatNum(Number(value)), String(name ?? "")]}
                       />
                       <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: 12 }} />
                       <Line
                         type="monotone"
                         dataKey="total"
-                        name="Total"
+                        name={`Total (${unit})`}
                         stroke="#1e3a8a"
                         strokeWidth={2.5}
                         dot={{ fill: "#1e3a8a", r: 3 }}
@@ -869,7 +869,9 @@ export default function LivestockFlowPage() {
                     {displayData.length > 0 && (
                       <tr className="border-t-2 border-slate-300 bg-slate-50 font-semibold">
                         <td className="px-4 py-3" />
-                        <td className="px-4 py-3 text-slate-900">Kabupaten Banjarnegara</td>
+                        <td className="px-4 py-3 text-slate-900">
+                          Jumlah · {selectedKecamatan === "Semua" ? "Kabupaten Banjarnegara (seluruh kecamatan)" : `Kecamatan ${selectedKecamatan}`}
+                        </td>
                         {jenisList.map((j) => {
                           const sum = chartData.reduce((a, r) => a + (r[j] || 0), 0);
                           return (

@@ -2,7 +2,14 @@ import { useEffect, useState, useMemo } from "react";
 import DefaultLayout from "@/layouts/default";
 import { LoadingSpinner } from "@/components/ui";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from "recharts";
-import { fetchKelompokTani, KelompokTaniRow, clearLocalStorageByPattern } from "@/services/api";
+import {
+  fetchKelompokTani,
+  fetchKelompokTaniHutanSnapshot,
+  fetchSt2023DesaExtra,
+  St2023DesaExtra,
+  KelompokTaniRow,
+  clearLocalStorageByPattern,
+} from "@/services/api";
 import { Calendar, TrendingUp, Filter, FileSpreadsheet, ShieldAlert } from "lucide-react";
 
 const KECAMATAN_LIST = [
@@ -44,6 +51,8 @@ function linearPredict(points: { x: number; y: number }[], targetX: number): num
 
 export default function FarmersPage() {
   const [rawData, setRawData] = useState<KelompokTaniRow[]>([]);
+  const [kthSnapshot, setKthSnapshot] = useState<KelompokTaniRow[]>([]);
+  const [st2023, setSt2023] = useState<St2023DesaExtra[]>([]);
   const [selectedYear, setSelectedYear] = useState<string | null>(null);
   const [selectedKecamatan, setSelectedKecamatan] = useState<string>("Semua");
   const [loading, setLoading] = useState<boolean>(true);
@@ -54,8 +63,14 @@ export default function FarmersPage() {
     const loadData = async () => {
       setLoadError(null);
       try {
-        const data = await fetchKelompokTani();
+        const [data, kth, st] = await Promise.all([
+          fetchKelompokTani(),
+          fetchKelompokTaniHutanSnapshot(),
+          fetchSt2023DesaExtra(),
+        ]);
         setRawData(data);
+        setKthSnapshot(kth);
+        setSt2023(st);
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
         console.error("Gagal memuat data kelompok tani:", err);
@@ -92,8 +107,14 @@ export default function FarmersPage() {
     setLoadError(null);
     (async () => {
       try {
-        const data = await fetchKelompokTani();
+        const [data, kth, st] = await Promise.all([
+          fetchKelompokTani(),
+          fetchKelompokTaniHutanSnapshot(),
+          fetchSt2023DesaExtra(),
+        ]);
         setRawData(data);
+        setKthSnapshot(kth);
+        setSt2023(st);
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
         console.error("Gagal memuat ulang data kelompok tani:", err);
@@ -110,18 +131,30 @@ export default function FarmersPage() {
     return name || "Unknown";
   };
 
-  // Daftar tahun unik (gabungan fallback tahun hardcode + tahun dari data)
-  const yearsList = useMemo(() => {
-    const knownYears = ["2025", "2024", "2023", "2022"];
-    const fromData = rawData
-      .map((d) => d.tahun)
-      .filter(Boolean)
-      .filter((y) => /^\d{4}$/.test(y));
-    const merged = Array.from(new Set([...knownYears, ...fromData])).sort((a, b) =>
-      b.localeCompare(a),
-    );
-    return merged;
+  // Jumlah baris per tahun — dipakai mendeteksi tahun dengan cakupan parsial
+  // (mis. 2022 hanya 23 baris dari 2 kecamatan) agar tidak mencemari tren/prediksi.
+  const yearRowCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    rawData.forEach((d) => {
+      if (d.tahun && /^\d{4}$/.test(d.tahun)) counts.set(d.tahun, (counts.get(d.tahun) || 0) + 1);
+    });
+    return counts;
   }, [rawData]);
+
+  const partialYears = useMemo(() => {
+    if (yearRowCounts.size === 0) return new Set<string>();
+    const max = Math.max(...yearRowCounts.values());
+    return new Set(
+      Array.from(yearRowCounts.entries())
+        .filter(([, n]) => n < max * 0.6)
+        .map(([y]) => y),
+    );
+  }, [yearRowCounts]);
+
+  // Daftar tahun unik — hanya dari data yang benar-benar tersedia (tanpa hardcode)
+  const yearsList = useMemo(() => {
+    return Array.from(yearRowCounts.keys()).sort((a, b) => b.localeCompare(a));
+  }, [yearRowCounts]);
 
   useEffect(() => {
     if (selectedYear !== null && yearsList.length > 0 && !yearsList.includes(selectedYear)) {
@@ -230,6 +263,47 @@ export default function FarmersPage() {
     return Array.from(kecMap.values()).sort((a, b) => b.totalKelompok - a.totalKelompok);
   }, [filteredData]);
 
+  // KTH SIMLUH (snapshot per 2026, seluruh 20 kecamatan) — tidak terikat tahun data Dinas
+  const kthStats = useMemo(() => {
+    const rows =
+      selectedKecamatan === "Semua"
+        ? kthSnapshot
+        : kthSnapshot.filter((d) => formatKecName(d.kecamatan) === selectedKecamatan);
+    return {
+      kelompok: rows.reduce((s, d) => s + (d.kelompokTaniHutan || 0), 0),
+      desa: rows.filter((d) => (d.kelompokTaniHutan || 0) > 0).length,
+      pemula: rows.reduce((s, d) => s + (d.kthPemula || 0), 0),
+      madya: rows.reduce((s, d) => s + (d.kthMadya || 0), 0),
+      utama: rows.reduce((s, d) => s + (d.kthUtama || 0), 0),
+    };
+  }, [kthSnapshot, selectedKecamatan]);
+
+  // Konteks BPS — Sensus Pertanian 2023 (ST2023): data resmi lengkap 20 kecamatan
+  const st2023Stats = useMemo(() => {
+    const rows =
+      selectedKecamatan === "Semua"
+        ? st2023
+        : st2023.filter((d) => (d.kecamatan || "").toUpperCase() === selectedKecamatan.toUpperCase());
+    return {
+      petani: rows.reduce((s, d) => s + (d.petani || 0), 0),
+      rtAnggotaKelompok: rows.reduce((s, d) => s + (d.rtAnggotaKelompok || 0), 0),
+      rtup: rows.reduce((s, d) => s + (d.rtup || 0), 0),
+      desa: rows.length,
+    };
+  }, [st2023, selectedKecamatan]);
+
+  // Kecamatan dengan baris tersedia namun seluruhnya nol (data Dinas belum terisi — mis. Wanadadi)
+  const isAllZeroKecamatan = useMemo(() => {
+    if (selectedKecamatan === "Semua" || filteredData.length === 0) return false;
+    return filteredData.every(
+      (d) =>
+        (d.kelompokTani || 0) === 0 &&
+        (d.anggotaTani || 0) === 0 &&
+        (d.kelompokPerikanan || 0) === 0 &&
+        (d.gapoktan || 0) === 0,
+    );
+  }, [filteredData, selectedKecamatan]);
+
   // Tren Historis Kelembagaan Tani (data aktual + prediksi 2026)
   const trendData = useMemo(() => {
     const base = selectedKecamatan === "Semua"
@@ -243,6 +317,8 @@ export default function FarmersPage() {
       if (!yr) return;
       // Hanya data aktual sampai 2025
       if (parseInt(yr) > 2025) return;
+      // Lewati tahun parsial (cakupan kecamatan tidak lengkap) agar tren & prediksi tidak bias
+      if (partialYears.has(yr)) return;
 
       if (!byYear.has(yr)) {
         byYear.set(yr, {
@@ -287,7 +363,7 @@ export default function FarmersPage() {
     }
 
     return sorted;
-  }, [rawData, selectedKecamatan]);
+  }, [rawData, selectedKecamatan, partialYears]);
 
   const formatNum = (num: number) => {
     return new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 }).format(num);
@@ -330,7 +406,7 @@ export default function FarmersPage() {
               >
                 {yearsList.map((yr) => (
                   <option key={yr} value={yr}>
-                    {yr}
+                    {partialYears.has(yr) ? `${yr} (parsial)` : yr}
                   </option>
                 ))}
               </select>
@@ -372,7 +448,7 @@ export default function FarmersPage() {
         </div>
 
         {loading ? (
-          <LoadingSpinner label="Mengekstrak data dari CKAN Open Data..." />
+          <LoadingSpinner label="Memuat data kelembagaan Dinas, SIMLUH & ST2023..." />
         ) : loadError && rawData.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-4 h-[300px] bg-rose-50 border border-rose-200 p-8 rounded-xl">
             <ShieldAlert className="h-10 w-10 text-rose-600" />
@@ -449,22 +525,46 @@ export default function FarmersPage() {
                 </div>
               </div>
 
-              {/* Stat 4: Kelompok Tani Hutan */}
+              {/* Stat 4: Kelompok Tani Hutan (SIMLUH snapshot) */}
               <div className="bg-green-50 border border-slate-200 p-5 shadow-sm flex flex-col justify-between transition-all duration-300 hover:shadow-md">
                 <div>
-                  <h5 className="text-[10px] font-mono font-bold text-slate-500 uppercase">Kelompok Tani Hutan</h5>
+                  <h5 className="text-[10px] font-mono font-bold text-slate-500 uppercase">Kelompok Tani Hutan (KTH)</h5>
                   <h3 className="text-2xl font-serif font-black uppercase text-slate-800 mt-1">
-                    {formatNum(stats.kelompokTaniHutan)} <span className="text-xs font-mono font-normal lowercase">unit</span>
+                    {formatNum(kthStats.kelompok)} <span className="text-xs font-mono font-normal lowercase">unit</span>
                   </h3>
                   <p className="text-[11px] font-mono font-bold text-green-700 mt-2">
-                    Data pelengkap dari SIMLUH KTH
+                    {kthStats.desa} desa · kelas: {kthStats.pemula} pemula / {kthStats.madya} madya / {kthStats.utama} utama
                   </p>
                 </div>
                 <div className="mt-4 pt-2 border-t border-slate-200 text-[9px] font-mono text-slate-400 uppercase">
-                  Kelompok tani hutan terdata
+                  Snapshot SIMLUH per 2026 — bukan data tahunan
                 </div>
               </div>
             </div>
+
+            {/* Konteks BPS — Sensus Pertanian 2023 (ST2023) */}
+            {st2023Stats.desa > 0 && (
+              <div className="bg-slate-50 border border-slate-200 p-4 text-left flex flex-wrap items-center gap-x-6 gap-y-2">
+                <span className="text-[10px] font-mono font-bold uppercase text-slate-400">
+                  Konteks BPS · Sensus Pertanian 2023
+                </span>
+                <span className="text-xs font-mono font-bold text-slate-700">
+                  {selectedKecamatan === "Semua" ? "Kabupaten Banjarnegara (20 kec)" : `Kec. ${selectedKecamatan}`}
+                </span>
+                <span className="text-xs font-mono text-slate-600">
+                  <b className="text-slate-800">{formatNum(st2023Stats.petani)}</b> petani (orang)
+                </span>
+                <span className="text-xs font-mono text-slate-600">
+                  <b className="text-slate-800">{formatNum(st2023Stats.rtAnggotaKelompok)}</b> RTUP anggota kelompok tani/peternak/nelayan
+                </span>
+                <span className="text-xs font-mono text-slate-600">
+                  <b className="text-slate-800">{formatNum(st2023Stats.rtup)}</b> RTUP total
+                </span>
+                <span className="text-[10px] font-mono text-slate-400 ml-auto">
+                  {st2023Stats.desa} desa/kelurahan
+                </span>
+              </div>
+            )}
 
             {/* Time-Series Trend */}
             <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
@@ -612,8 +712,16 @@ export default function FarmersPage() {
                     <ShieldAlert size={14} className="flex-shrink-0" />
                     <span>
                       {selectedKecamatan === "Semua"
-                        ? `Data kelompok tani untuk tahun ${selectedYear} belum terunggah di portal Open Data.`
-                        : `Kecamatan ${selectedKecamatan} belum memiliki data kelompok tani terunggah di portal Open Data untuk tahun ${selectedYear}.`}
+                        ? `Data kelembagaan Dinas untuk tahun ${selectedYear} belum tersedia.`
+                        : `Data kelembagaan Dinas belum tersedia untuk Kec. ${selectedKecamatan} — lihat konteks BPS ST2023 di atas.`}
+                    </span>
+                  </div>
+                )}
+                {isAllZeroKecamatan && (
+                  <div className="inline-flex items-center gap-1.5 px-3 py-2 bg-amber-50 border border-amber-200 text-[10px] font-mono font-bold text-amber-800 uppercase max-w-full">
+                    <ShieldAlert size={14} className="flex-shrink-0" />
+                    <span>
+                      Semua nilai Kec. {selectedKecamatan} tercatat nol pada snapshot Dinas (belum terisi) — ST2023 BPS: {formatNum(st2023Stats.petani)} petani.
                     </span>
                   </div>
                 )}
@@ -631,7 +739,7 @@ export default function FarmersPage() {
                       <th className="p-3 border-r border-slate-200 font-bold uppercase text-xs text-right">Anggota Pokkan</th>
                       <th className="p-3 border-r border-slate-200 font-bold uppercase text-xs text-right">Gapoktan</th>
                       <th className="p-3 border-r border-slate-200 font-bold uppercase text-xs text-right">Anggota Gapoktan</th>
-                      <th className="p-3 border-r border-slate-200 font-bold uppercase text-xs text-right">KTH</th>
+                      <th className="p-3 border-r border-slate-200 font-bold uppercase text-xs text-right">KTH (SIMLUH '26)</th>
                       <th className="p-3 font-bold uppercase text-xs">Detail KTH</th>
                     </tr>
                   </thead>
@@ -655,9 +763,44 @@ export default function FarmersPage() {
                       </tr>
                     ))}
                   </tbody>
+                  {filteredData.length > 0 && (
+                    <tfoot>
+                      <tr className="border-t-2 border-slate-300 bg-slate-50 font-bold sticky bottom-0">
+                        <td className="p-3 border-r border-slate-200 text-xs" colSpan={3}>
+                          TOTAL {selectedKecamatan === "Semua" ? "KABUPATEN" : `KEC. ${selectedKecamatan.toUpperCase()}`} ({filteredData.length} desa)
+                        </td>
+                        <td className="p-3 border-r border-slate-200 text-xs text-right">{formatNum(stats.kelompokTani)}</td>
+                        <td className="p-3 border-r border-slate-200 text-xs text-right text-amber-700">{formatNum(stats.anggotaTani)}</td>
+                        <td className="p-3 border-r border-slate-200 text-xs text-right">{formatNum(stats.kelompokPerikanan)}</td>
+                        <td className="p-3 border-r border-slate-200 text-xs text-right text-blue-700">{formatNum(stats.anggotaPerikanan)}</td>
+                        <td className="p-3 border-r border-slate-200 text-xs text-right">{formatNum(stats.gapoktan)}</td>
+                        <td className="p-3 border-r border-slate-200 text-xs text-right text-emerald-700">{formatNum(stats.anggotaGapoktan)}</td>
+                        <td className="p-3 border-r border-slate-200 text-xs text-right text-green-700">{formatNum(stats.kelompokTaniHutan)}</td>
+                        <td className="p-3 text-[10px] text-slate-500">KTH: snapshot SIMLUH</td>
+                      </tr>
+                    </tfoot>
+                  )}
                 </table>
               </div>
             </div>
+
+            {/* Catatan kualitas data */}
+            <p className="text-[10px] font-mono text-slate-400 leading-relaxed">
+              Sumber: snapshot Data Kelembagaan Dinas Pertanian (cakupan 15/20 kecamatan — belum tersedia:
+              Banjarmangu, Kalibening, Madukara, Pagedongan, Purwareja Klampok), KTH SIMLUH (snapshot per
+              2026, ditampilkan seragam lintas tahun — bukan data tahunan), dan BPS Sensus Pertanian 2023
+              (sebagai pembanding resmi; tervalidasi via re-ekstraksi PDF — 0 selisih). Koreksi data 20 Sep
+              2026: Penarusan Wetan (Susukan) 2025 — kolom gapoktan/anggota tertukar (gapoktan 255→1,
+              anggota 0→255); Bandingan (Sigaluh) 2023 — anggotaTani↔kelompokPerikanan bergeser (0/125→125/0);
+              Balun (Wanayasa) 2024 — poktan 389→12 (rasio anggota 245/12 konsisten dengan 2023–2025);
+              Parakan (Purwanegara) 2023 — kelompok perikanan 516→5 &amp; anggota 40→175 (baris kotor; nilai
+              2024–2025 stabil). Dibiarkan sesuai sumber: pola gapoktan Kec. Batur (12–36 tanpa anggota pada
+              2023; 0 dengan anggota pada 2024–25) dan 3 desa dengan anggotaTani melebihi jumlah petani ST2023
+              (Rakit, Salamerta, Wangon). Tahun 2022 hanya mencakup 2 kecamatan (23 baris) sehingga ditandai
+              parsial dan dikecualikan dari tren/prediksi. Kec. Wanadadi tercatat nol pada seluruh snapshot
+              Dinas (ST2023: 4.838 petani). Desa Parakan (Purwanegara) dan Kel. Parakancanggah (Banjarnegara)
+              adalah dua entitas berbeda yang keduanya valid.
+            </p>
           </>
         )}
       </section>

@@ -77,11 +77,15 @@ export default function HorticulturePage() {
       .toUpperCase();
   };
 
-  // Nama Tampilan Kecamatan (Proper Case)
+  // Nama Tampilan Kecamatan (Proper Case per kata — "Purwareja Klampok", bukan "Purwareja klampok")
   const displayKecName = (name: string) => {
     if (!name) return "Unknown";
     const cleaned = name.toString().replace(/^\d+\.\s*/, "").trim();
-    return cleaned.charAt(0).toUpperCase() + cleaned.slice(1).toLowerCase();
+    return cleaned
+      .toLowerCase()
+      .split(/\s+/)
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(" ");
   };
 
   // Ambil daftar tahun unik dari data sayuran
@@ -254,24 +258,45 @@ export default function HorticulturePage() {
     };
   }, [filteredData, activeMetric, cropKeys]);
 
+  // Daftar tahun pada data tahunan (CSV lokal 2018–2024 + data BPS 2025), terbaru dulu
+  const annualYears = useMemo(() => {
+    const s = new Set<string>();
+    annualProductionData.forEach((i) => {
+      if (/^\d{4}$/.test(i.tahun)) s.add(i.tahun);
+    });
+    return Array.from(s).sort((a, b) => b.localeCompare(a));
+  }, [annualProductionData]);
+
+  // Tahun terpilih untuk panel "Produksi Tahunan" (default: terbaru)
+  const [annualYear, setAnnualYear] = useState<string>("");
+  useEffect(() => {
+    if (annualYears.length === 0) return;
+    if (!annualYear || !annualYears.includes(annualYear)) setAnnualYear(annualYears[0]);
+  }, [annualYears, annualYear]);
+
   const annualRanking = useMemo(() => {
+    const year = annualYear || annualYears[0] || "2025";
     const selected = annualProductionData
-      .filter((item) => item.tahun === "2025")
+      .filter((item) => item.tahun === year)
       .sort((a, b) => b.produksiTon - a.produksiTon);
 
     const total = selected.reduce((sum, item) => sum + item.produksiTon, 0);
     return {
+      year,
+      count: selected.length,
       items: selected.slice(0, 10),
       total,
       top: selected[0],
     };
-  }, [annualProductionData]);
+  }, [annualProductionData, annualYear, annualYears]);
 
   // Format data untuk grafik sebaran per kecamatan
   const chartData = useMemo(() => {
     return filteredData.map((d) => {
       const obj: any = { name: displayKecName(d.kecNameRaw) };
       let sum = 0;
+      let sumLuas = 0;
+      let sumProd = 0;
       
       cropKeys.forEach((crop) => {
         let val = 0;
@@ -286,12 +311,45 @@ export default function HorticulturePage() {
         }
         obj[crop.label] = val;
         sum += val;
+        sumLuas += d.luas[crop.key] || 0;
+        sumProd += d.produksi[crop.key] || 0;
       });
 
-      obj.total = sum;
+      // Metrik produktivitas (T/Ha) memakai rata-rata tertimbang Σproduksi ÷ Σluas —
+      // produktivitas tidak boleh dijumlahkan antar komoditas.
+      obj.total = activeMetric === "produktivitas" ? (sumLuas > 0 ? sumProd / sumLuas : 0) : sum;
       return obj;
     }).sort((a, b) => b.total - a.total);
   }, [filteredData, activeMetric, cropKeys]);
+
+  // Footer agregat Tabel Rincian (metrik produktivitas = rata-rata tertimbang)
+  const tableFooter = useMemo(() => {
+    const perCrop = cropKeys.map((crop) => {
+      const sumL = filteredData.reduce((s, d) => s + (d.luas[crop.key] || 0), 0);
+      const sumP = filteredData.reduce((s, d) => s + (d.produksi[crop.key] || 0), 0);
+      return {
+        key: crop.key,
+        val:
+          activeMetric === "luas"
+            ? sumL
+            : activeMetric === "produksi"
+              ? sumP
+              : sumL > 0
+                ? sumP / sumL
+                : 0,
+      };
+    });
+    let L = 0;
+    let P = 0;
+    filteredData.forEach((d) =>
+      cropKeys.forEach((c) => {
+        L += d.luas[c.key] || 0;
+        P += d.produksi[c.key] || 0;
+      })
+    );
+    const total = activeMetric === "luas" ? L : activeMetric === "produksi" ? P : L > 0 ? P / L : 0;
+    return { perCrop, total };
+  }, [filteredData, cropKeys, activeMetric]);
 
   // Tren Historis
   const trendData = useMemo(() => {
@@ -708,15 +766,37 @@ export default function HorticulturePage() {
               actions={
                 <>
                   <Badge tone="amber">Agregat kabupaten · tidak mengikuti filter</Badge>
-                  <div className="text-right">
-                    <p className="text-[11px] font-semibold uppercase text-slate-500">Total Produksi 2025</p>
-                    <p className="text-xl font-bold tabular-nums text-slate-800">{formatNum(annualRanking.total)} Ton</p>
+                  <div className="flex items-center gap-3">
+                    {annualYears.length > 1 && (
+                      <select
+                        value={annualRanking.year}
+                        onChange={(e) => setAnnualYear(e.target.value)}
+                        className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 focus:border-emerald-500 focus:outline-none"
+                        aria-label="Pilih tahun data tahunan"
+                      >
+                        {annualYears.map((y) => (
+                          <option key={y} value={y}>
+                            {y}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                    <div className="text-right">
+                      <p className="text-[11px] font-semibold uppercase text-slate-500">
+                        Total Produksi {annualRanking.year}
+                      </p>
+                      <p className="text-xl font-bold tabular-nums text-slate-800">
+                        {formatNum(annualRanking.total)} Ton
+                      </p>
+                    </div>
                   </div>
                 </>
               }
             >
               <p className="text-xs text-slate-500 mb-4">
-                Data BPS 2025, dikonversi dari kuintal ke ton. Hanya tersedia agregat tingkat kabupaten (belum ada rilis per kecamatan dari Distankan KP/BPS), sehingga panel ini tidak berubah saat filter kecamatan atau tahun diganti.
+                {annualRanking.year === "2025"
+                  ? "Data BPS 2025, dikonversi dari kuintal ke ton. Hanya tersedia agregat tingkat kabupaten, sehingga panel ini tidak berubah saat filter kecamatan atau tahun diganti."
+                  : `Sumber: "Produksi Buah–Buahan dan Sayuran Tahunan Menurut Jenis Tanaman" (Distankan KP/BPS) — ${annualRanking.count} jenis tanaman tahunan ${annualRanking.year}.`}
               </p>
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2 h-[320px]">
@@ -795,7 +875,7 @@ export default function HorticulturePage() {
                         fontSize: "12px",
                         boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)",
                       }}
-                      formatter={(value: any) => [formatNum(Number(value)), ""]}
+                      formatter={(value: any, name: any) => [formatNum(Number(value)), String(name ?? "")]}
                     />
                     <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: "10px" }} />
                     <Line type="monotone" dataKey="total" name={`Total ${category === "buah" ? "Ton" : activeMetric === "luas" ? "Ha" : activeMetric === "produksi" ? "Ton" : "Rata-Rata"}`} stroke="#64748b" strokeWidth={3} dot={{ fill: "#475569", r: 4 }} activeDot={{ r: 6 }} connectNulls={false} />
@@ -1005,6 +1085,11 @@ export default function HorticulturePage() {
                         fontSize: "12px",
                         boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)",
                       }}
+                      formatter={(value: any, name: any) => [
+                        `${formatNum(Number(value || 0))} ${category === "buah" ? "Ton" : activeMetric === "luas" ? "Ha" : activeMetric === "produksi" ? "Ton" : "T/Ha"}`,
+                        String(name ?? ""),
+                      ]}
+                      labelFormatter={(l) => `Kec. ${l}`}
                     />
                     <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: "10px" }} />
                     {cropKeys.map((crop, idx) => {
@@ -1022,7 +1107,7 @@ export default function HorticulturePage() {
                         <Bar
                           key={crop.key}
                           dataKey={crop.label}
-                          stackId="a"
+                          stackId={activeMetric === "produktivitas" ? undefined : "a"}
                           fill={colors[idx % colors.length]}
                           stroke="#64748b"
                           strokeWidth={1}
@@ -1071,9 +1156,48 @@ export default function HorticulturePage() {
                       </tr>
                     ))}
                   </tbody>
+                  {chartData.length > 0 && (
+                    <tfoot>
+                      <tr className="border-t-2 border-slate-300 bg-slate-50 font-semibold">
+                        <td colSpan={2} className="px-3 py-2.5 text-xs text-slate-900">
+                          {selectedKecamatan === "Semua"
+                            ? "Kabupaten Banjarnegara"
+                            : `Kecamatan ${displayKecName(selectedKecamatan)}`}
+                        </td>
+                        {tableFooter.perCrop.map((c) => (
+                          <td key={c.key} className="px-3 py-2.5 text-xs text-right text-slate-900 tabular-nums">
+                            {formatNum(c.val)}
+                          </td>
+                        ))}
+                        <td className="px-3 py-2.5 text-xs font-bold text-right text-slate-900 bg-slate-100 tabular-nums">
+                          {formatNum(tableFooter.total)}
+                        </td>
+                      </tr>
+                    </tfoot>
+                  )}
                 </table>
               </div>
+              <p className="text-[11px] text-slate-400 mt-3">
+                {activeMetric === "produktivitas"
+                  ? "Baris footer = rata-rata tertimbang (Σ produksi ÷ Σ luas panen), bukan penjumlahan produktivitas."
+                  : "Baris footer = penjumlahan seluruh kecamatan yang tampil."}
+              </p>
             </SectionCard>
+
+            {/* Sumber Data */}
+            <div className="rounded-xl border border-slate-200 bg-slate-50/60 p-4 flex items-start gap-3">
+              <FileSpreadsheet size={18} className="text-emerald-600 shrink-0 mt-0.5" />
+              <div className="text-xs leading-relaxed text-slate-500">
+                <p className="font-semibold text-slate-700 mb-1">Sumber Data</p>
+                <p>
+                  Dinas Ketahanan Pangan Kabupaten Banjarnegara — tabel “Luas Panen Tanaman Sayuran Menurut
+                  Kecamatan dan Jenis Tanaman (ha)”, “Produksi Tanaman Sayuran Menurut Kecamatan dan Jenis
+                  Tanaman (ton)”, “Produksi Buah-buahan Menurut Kecamatan dan Jenis Tanaman (ton)”, dan
+                  “Produksi Buah–Buahan dan Sayuran Tahunan Menurut Jenis Tanaman (ton)” (2017–2024;
+                  data tahunan 2018–2025). Nilai “-” pada sumber dibaca sebagai 0.
+                </p>
+              </div>
+            </div>
           </>
         )}
       </section>

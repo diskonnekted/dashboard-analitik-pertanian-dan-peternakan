@@ -114,7 +114,7 @@ export default function EconomicValuePage() {
 
     // Jenis dengan kontribusi nilai terbesar
     let topJenis = "-";
-    let topVal = -1;
+    let topVal = 0;
     byJenis.forEach((j) => {
       if (j.nilaiRibu > topVal) {
         topVal = j.nilaiRibu;
@@ -287,7 +287,7 @@ export default function EconomicValuePage() {
               <div className="bg-emerald-50 border border-slate-200 p-6 shadow-sm text-left flex flex-col justify-between transition-all duration-300 hover:shadow-md">
                 <div className="flex justify-between items-start">
                   <span className="text-xs font-mono font-bold uppercase text-slate-500">
-                    Total Nilai Ekonomi
+                    Total Nilai Ekonomi — {subSektor} {selectedYear}
                   </span>
                   <DollarSign className="text-emerald-600" size={20} />
                 </div>
@@ -507,6 +507,24 @@ export default function EconomicValuePage() {
                       </tr>
                     ))}
                   </tbody>
+                  <tfoot>
+                    <tr className="border-t-2 border-slate-300 bg-slate-100 font-bold">
+                      <td className="py-2 px-3 font-mono text-xs uppercase">
+                        {selectedKecamatan === "Semua"
+                          ? "Jumlah (20 kecamatan)"
+                          : `Jumlah (${selectedKecamatan})`}
+                      </td>
+                      <td className="py-2 px-3 font-mono text-sm text-right">
+                        {formatNum(stats.totalProduksi)}
+                      </td>
+                      <td className="py-2 px-3 font-mono text-sm text-right">
+                        {formatRp(stats.totalRp)}
+                      </td>
+                      <td className="py-2 px-3 font-mono text-sm text-right">
+                        {stats.totalProduksi > 0 ? formatRp(stats.hargaRata) : "-"}
+                      </td>
+                    </tr>
+                  </tfoot>
                 </table>
               </div>
             </div>
@@ -516,11 +534,15 @@ export default function EconomicValuePage() {
 
       {/* Catatan koreksi data sumber */}
       <p className="text-[10px] font-mono text-slate-400 leading-relaxed">
-        Catatan: 6 sel nilai produksi pada data sumber (Distankan KP) telah dikoreksi — 4 sel
-        tahun 2022 budidaya tertulis dalam rupiah (seharusnya ribu rupiah) dan 2 sel tahun 2021
-        tangkap kehilangan digit belakang. Harga implisit hasil koreksi (Rp 20.000–24.000/kg
-        budidaya; Rp 17.000–22.000/kg tangkap) konsisten dengan asumsi harga resmi BPS KDA 2025
-        (Pembesaran Rp 22.145/kg, KJA Rp 23.820/kg, Minapadi Rp 22.000/kg).
+        Catatan: nilai produksi pada data sumber (Distankan KP) memakai satuan ribu rupiah. Pada 2022
+        budidaya, 4 sel kecamatan di xlsx tertulis dalam rupiah penuh (1000× lipat) — KJA: Bawang &amp;
+        Wanadadi; Minapadi: Mandiraja &amp; Purwanegara — dan dikoreksi saat regenerasi CSV; baris
+        Jumlah xlsx 2022 untuk KJA &amp; Minapadi ikut terdistorsi sel salah sehingga tidak dipakai
+        sebagai pembanding (Σ produksi semua tahun dan Σ nilai tahun lain cocok persis dengan baris
+        Jumlah resmi). Harga implisit 2022 pasca-koreksi kembali wajar (KJA ≈Rp 24.000/kg, Minapadi
+        ≈Rp 20.000/kg; Pembesaran semua tahun ≈Rp 21.300–22.600/kg). Minapadi 2021 tidak tercatat
+        pada sumber. Dua sel "Lainnya" 2021 tangkap (Bawang, Wanadadi) bernilai jauh di bawah
+        produksi × harga wajar (quirk data BPS) dibiarkan sesuai sumber.
       </p>
     </DefaultLayout>
   );

@@ -6,6 +6,7 @@ import App from "./App.tsx";
 import { Provider } from "./provider.tsx";
 import { ErrorBoundary } from "./components/ErrorBoundary.tsx";
 import "@/styles/globals.css";
+import "maplibre-gl/dist/maplibre-gl.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

@@ -337,7 +337,7 @@ export const fetchOpenDataCatalog = async (): Promise<CkanCatalog> => {
 };
 
 export const fetchLahanBanjarnegara = async (): Promise<LahanDesa[]> => {
-  const cacheKey = "banjarnegara_lahan_cache_v3";
+  const cacheKey = "banjarnegara_lahan_cache_v4";
   const cached = getCachedData<LahanDesa[]>(cacheKey);
 
   // Fetch-first: file lokal kecil (~50KB), selalu ambil yang terbaru.
@@ -363,6 +363,8 @@ const KECAMATAN_VARIANTS: Record<string, string> = {
   "PURWONEGORO": "Purwanegara",
   "PURWOREJO KLAMPOK": "Purwareja Klampok",
   "PURWOREJOKLAMPOK": "Purwareja Klampok",
+  "PURWOREJO KLP.": "Purwareja Klampok",
+  "PURWOREJO KLP": "Purwareja Klampok",
 };
 
 const normalizeKecamatanName = (raw: string): string => {
@@ -385,32 +387,36 @@ export interface PadiProduction {
   luasPanen: number;
   produksi: number;
   rataRata: number;
-  tahun?: string;
+  tahun: string;
 }
 
 export const fetchPadiProduction = async (): Promise<PadiProduction[]> =>
-  withCache("cache_padi_production_v2", async () => {
+  withCache("cache_padi_production_v5", async () => {
   try {
     let response;
     let isLocal = false;
     try {
-      response = await fetchWithTimeout(
-        "/dataset/9238267d-6b2e-4c44-a3f6-6d70351c75a0/resource/8180ee00-dedd-4b08-b165-ef3bd6bb7075/download/total-luas-panen-produksi-dan-rata-rata-produksi-tanaman-pangan-padi-2025.csv",
+      response = await fetch(
+        "/14. Distankan KP/Luas  Panen,  Produksi dan Rata-rata Produksi/Luas Panen, Produksi dan Rata-rata Produksi Padi Sawah Dan Padi Ladang CSV.csv",
       );
-      const contentType = response.headers.get("content-type") || "";
-      if (!response.ok || contentType.includes("html")) throw new Error("Gagal online");
+      if (!response.ok) throw new Error("CSV lokal tidak tersedia");
+      isLocal = true;
     } catch (e) {
-      // Lapis 2: snapshot CKAN lokal (format identik dgn file CKAN -> isLocal tetap false)
+      // Fallback 1: snapshot CKAN lokal
       try {
-        console.warn("CKAN padi gagal, mencoba snapshot lokal...");
+        console.warn("CSV lokal padi gagal, mencoba snapshot CKAN...");
         response = await fetchWithTimeout("/data/snapshots/padi-2025.csv");
         if (!response.ok) throw new Error("Snapshot tidak ditemukan");
+        isLocal = false;
       } catch (e2) {
-        console.warn("Menggunakan data padi offline lokal.");
-        response = await fetch(
-          "/14. Distankan KP/Luas  Panen,  Produksi dan Rata-rata Produksi/Luas Panen, Produksi dan Rata-rata Produksi Padi Sawah Dan Padi Ladang CSV.csv",
+        // Fallback 2: CKAN online (terakhir)
+        console.warn("Snapshot CKAN gagal, mencoba CKAN online...");
+        response = await fetchWithTimeout(
+          "/dataset/9238267d-6b2e-4c44-a3f6-6d70351c75a0/resource/8180ee00-dedd-4b08-b165-ef3bd6bb7075/download/total-luas-panen-produksi-dan-rata-rata-produksi-tanaman-pangan-padi-2025.csv",
         );
-        isLocal = true;
+        const contentType = response.headers.get("content-type") || "";
+        if (!response.ok || contentType.includes("html")) throw new Error("CKAN online gagal");
+        isLocal = false;
       }
     }
 
@@ -445,22 +451,27 @@ export const fetchPadiProduction = async (): Promise<PadiProduction[]> =>
               };
 
               const rawKec = row["Kecamatan"] || "";
-              const kecName = normalizeKecamatanName(rawKec);
+              // Normalisasi typo BPS
+              let normalizedKec = rawKec;
+              if (normalizedKec === "Purwonegoro") normalizedKec = "Purwanegara";
+              if (normalizedKec === "Purworejo Klampok") normalizedKec = "Purwareja Klampok";
+              const kecName = normalizeKecamatanName(normalizedKec);
               if (!kecName || kecName.toLowerCase().includes("jumlah") || kecName.toLowerCase().includes("total")) return;
 
               const tahunKey = Object.keys(row).find((k) => k.trim().toLowerCase() === "tahun") || "Tahun";
               const year = parseInt(row[tahunKey]) || 0;
-              const luasSawah = parseNum(row["Padi Sawah (Ha)"]);
-              const luasLadang = parseNum(row["Padi Ladang (Ha)"]);
-              const prodSawah = parseNum(row["Produksi Padi Sawah (Ton)"]);
-              const prodLadang = parseNum(row["Produksi Padi Ladang(Ton)"]);
-              const rataSawah = parseNum(row["Rata-rata Produksi Padi Sawah(Kw/Ha)"]);
+              if (!year) return; // lewati baris tanpa tahun valid
+              // CSV lokal (normalisasi xlsx asli BPS Distankan): kolom terpisah
+              // Padi Sawah + Padi Ladang, nilai total = Sawah + Ladang
+              const luasPanen = parseNum(row["Padi Sawah (Ha)"]) + parseNum(row["Padi Ladang (Ha)"]);
+              const produksi = parseNum(row["Produksi Padi Sawah (Ton)"]) + parseNum(row["Produksi Padi Ladang(Ton)"]);
+              const rataRata = parseNum(row["Rata-rata Produksi Padi Sawah(Kw/Ha)"]);
 
               const entry: PadiProduction = {
                 kecamatan: kecName,
-                luasPanen: luasSawah + luasLadang,
-                produksi: prodSawah + prodLadang,
-                rataRata: rataSawah,
+                luasPanen,
+                produksi,
+                rataRata,
                 tahun: year.toString(),
               };
 
@@ -497,6 +508,7 @@ export const fetchPadiProduction = async (): Promise<PadiProduction[]> =>
                 luasPanen: cleanNum(row[1]),
                 produksi: cleanNum(row[2]),
                 rataRata: cleanNum(row[3]),
+                tahun: "2025", // Data CKAN online adalah prediksi 2025
               });
             }
             resolve(parsedData);
@@ -532,21 +544,35 @@ export const fetchPadiHistory = async (): Promise<PadiHistoryPoint[]> => {
     return parseFloat(cleaned) || 0;
   };
 
+  type YearAgg = { luas: number; produksi: number; areaWeighted: number; reporters: number };
+
   const aggregate = (
-    agg: Map<string, { luas: number; produksi: number; areaWeighted: number }>,
+    agg: Map<string, YearAgg>,
     year: string,
     luas: number,
     produksi: number,
     rata: number,
   ) => {
-    const cur = agg.get(year) || { luas: 0, produksi: 0, areaWeighted: 0 };
+    const cur = agg.get(year) || { luas: 0, produksi: 0, areaWeighted: 0, reporters: 0 };
     cur.luas += luas;
     cur.produksi += produksi;
     cur.areaWeighted += rata * luas;
+    if (luas > 0) cur.reporters += 1; // hanya kecamatan yang benar-benar melapor
     agg.set(year, cur);
   };
 
-  const toPoints = (agg: Map<string, { luas: number; produksi: number; areaWeighted: number }>): PadiHistoryPoint[] =>
+  const pruneIncompleteYears = (agg: Map<string, YearAgg>) => {
+    // Buang tahun dengan cakupan tidak lengkap di CSV sumber (mis. 2018/2020/2021
+    // yang hanya beberapa kecamatan melapor) agar tren & proyeksi tidak terdistorsi
+    for (const [y, v] of Array.from(agg.entries())) {
+      if (v.reporters < 10) {
+        console.warn(`fetchPadiHistory: tahun ${y} dilewati (hanya ${v.reporters} kecamatan melapor)`);
+        agg.delete(y);
+      }
+    }
+  };
+
+  const toPoints = (agg: Map<string, YearAgg>): PadiHistoryPoint[] =>
     Array.from(agg.entries())
       .map(([tahun, v]) => ({
         tahun,
@@ -556,10 +582,10 @@ export const fetchPadiHistory = async (): Promise<PadiHistoryPoint[]> => {
       }))
       .sort((a, b) => parseInt(a.tahun) - parseInt(b.tahun));
 
-  const agg = new Map<string, { luas: number; produksi: number; areaWeighted: number }>();
+  const agg = new Map<string, YearAgg>();
 
   try {
-    // 1. Data historis multi-tahun (2018–2024) dari CSV lokal
+    // 1. Data historis multi-tahun (2018–2024) dari CSV lokal (merged, tipe C)
     const localRes = await fetch(
       "/14. Distankan KP/Luas  Panen,  Produksi dan Rata-rata Produksi/Luas Panen, Produksi dan Rata-rata Produksi Padi Sawah Dan Padi Ladang CSV.csv",
     );
@@ -573,11 +599,16 @@ export const fetchPadiHistory = async (): Promise<PadiHistoryPoint[]> => {
           complete: (results) => {
             const rows = results.data as any[];
             rows.forEach((row) => {
-              const kecName = normalizeKecamatanName(row["Kecamatan"] || "");
+              // Normalisasi typo BPS
+              let rawKec = row["Kecamatan"] || "";
+              if (rawKec === "Purwonegoro") rawKec = "Purwanegara";
+              if (rawKec === "Purworejo Klampok") rawKec = "Purwareja Klampok";
+              const kecName = normalizeKecamatanName(rawKec);
               if (!kecName || kecName.toLowerCase().includes("jumlah") || kecName.toLowerCase().includes("total")) return;
               const tahunKey = Object.keys(row).find((k) => k.trim().toLowerCase() === "tahun") || "Tahun";
               const year = parseInt(row[tahunKey]) || 0;
               if (!year) return;
+              // CSV lokal (normalisasi xlsx asli BPS Distankan): Padi Sawah + Padi Ladang
               const luas = parseNum(row["Padi Sawah (Ha)"]) + parseNum(row["Padi Ladang (Ha)"]);
               const produksi = parseNum(row["Produksi Padi Sawah (Ton)"]) + parseNum(row["Produksi Padi Ladang(Ton)"]);
               const rata = parseNum(row["Rata-rata Produksi Padi Sawah(Kw/Ha)"]);
@@ -612,18 +643,45 @@ export const fetchPadiHistory = async (): Promise<PadiHistoryPoint[]> => {
           skipEmptyLines: true,
           complete: (results) => {
             const rows = results.data as string[][];
-            for (let i = 4; i < rows.length; i++) {
+            // Deteksi posisi kolom dari baris header (snapshot lokal berformat
+            // "No,Kecamatan,Luas Panen (Ha),Produksi (Ton),Rata-rata Produksi (Kw/Ha)")
+            let nameIdx = -1, luasIdx = -1, prodIdx = -1, rataIdx = -1, dataStart = 0;
+            for (let i = 0; i < Math.min(rows.length, 10); i++) {
+              const r = rows[i];
+              for (let c = 0; c < r.length; c++) {
+                const cell = (r[c] || "").trim().toLowerCase();
+                if (cell === "kecamatan" && nameIdx === -1) nameIdx = c;
+                if (/^luas/.test(cell) && luasIdx === -1) luasIdx = c;
+                if (/^produksi/.test(cell) && prodIdx === -1) prodIdx = c;
+                if (/rata/.test(cell) && rataIdx === -1) rataIdx = c;
+              }
+              if (nameIdx >= 0 && luasIdx >= 0 && prodIdx >= 0) {
+                dataStart = i + 1;
+                break;
+              }
+            }
+            // Fallback: format CKAN online lama (tanpa baris header, data mulai baris ke-5)
+            if (nameIdx === -1) {
+              nameIdx = 0; luasIdx = 1; prodIdx = 2; rataIdx = 3; dataStart = 4;
+            }
+            const cleanNum = (val: string) => {
+              if (!val) return 0;
+              return parseFloat(val.replace(/,/g, "")) || 0;
+            };
+            for (let i = dataStart; i < rows.length; i++) {
               const row = rows[i];
-              if (!row[0] || row[0].toLowerCase().includes("jumlah") || row[0].toLowerCase().includes("total")) continue;
-              const nameClean = normalizeKecamatanName(row[0]);
+              const rawName = (row[nameIdx] || "").trim();
+              if (
+                !rawName ||
+                rawName.toLowerCase().includes("jumlah") ||
+                rawName.toLowerCase().includes("total")
+              )
+                continue;
+              const nameClean = normalizeKecamatanName(rawName);
               if (!nameClean) continue;
-              const cleanNum = (val: string) => {
-                if (!val) return 0;
-                return parseFloat(val.replace(/,/g, "")) || 0;
-              };
-              const luas = cleanNum(row[1]);
-              const produksi = cleanNum(row[2]);
-              const rata = cleanNum(row[3]);
+              const luas = cleanNum(row[luasIdx]);
+              const produksi = cleanNum(row[prodIdx]);
+              const rata = cleanNum(row[rataIdx]);
               aggregate(agg, "2025", luas, produksi, rata);
             }
             resolve();
@@ -633,9 +691,11 @@ export const fetchPadiHistory = async (): Promise<PadiHistoryPoint[]> => {
       });
     }
 
+    pruneIncompleteYears(agg);
     return toPoints(agg);
   } catch (error) {
     console.error("Error fetchPadiHistory:", error);
+    pruneIncompleteYears(agg);
     return toPoints(agg);
   }
 };
@@ -714,7 +774,7 @@ const fetchTanamanPangan = async (
 export const fetchJagungUbiKayu = (): Promise<FoodCropRow[]> =>
   fetchTanamanPangan(
     "/14. Distankan KP/Luas  Panen,  Produksi dan Rata-rata Produksi/Luas Panen, Produksi dan Rata-rata Produksi Tanaman Pangan (Jagung dan Ubi Kayu) CSV.csv",
-    "cache_jagung_ubi_kayu_v1",
+    "cache_jagung_ubi_kayu_v2",
     "Jagung",
     "Ubi Kayu",
   );
@@ -722,7 +782,7 @@ export const fetchJagungUbiKayu = (): Promise<FoodCropRow[]> =>
 export const fetchKacangKedelai = (): Promise<FoodCropRow[]> =>
   fetchTanamanPangan(
     "/14. Distankan KP/Luas  Panen,  Produksi dan Rata-rata Produksi/Luas Panen, Produksi dan Rata-rata Produksi Tanaman Pangan (Kacang Tanah dan Kedelai) CSV.csv",
-    "cache_kacang_kedelai_v1",
+    "cache_kacang_kedelai_v2",
     "Kacang Tanah",
     "Kedelai",
   );
@@ -730,10 +790,77 @@ export const fetchKacangKedelai = (): Promise<FoodCropRow[]> =>
 export const fetchUbiKacangHijau = (): Promise<FoodCropRow[]> =>
   fetchTanamanPangan(
     "/14. Distankan KP/Luas  Panen,  Produksi dan Rata-rata Produksi/Luas Panen, Produksi dan Rata-rata Produksi Tanaman Pangan (Ubi Jalar dan Kacang Hijau) CSV.csv",
-    "cache_ubi_kacang_hijau_v1",
+    "cache_ubi_kacang_hijau_v2",
     "Ubi Jalar",
     "Kacang Hijau",
   );
+
+// ---- Padi (Sawah + Ladang) untuk halaman Tanaman Pangan ----
+// Sumber: CSV normalisasi xlsx asli BPS Distankan (140 baris, 2018-2024).
+// CATATAN: jangan pakai file "511b" di _tmp maupun merged lama — keduanya
+// berisi data geser/tidak akurat (lihat scripts/regenerate-merged-padi.cjs).
+export const fetchPadiSawahLadang = (): Promise<FoodCropRow[]> =>
+  withCache("cache_padi_sawah_ladang_v1", async () => {
+    try {
+      const res = await fetch(
+        "/14. Distankan KP/Luas  Panen,  Produksi dan Rata-rata Produksi/Luas Panen, Produksi dan Rata-rata Produksi Padi Sawah Dan Padi Ladang CSV.csv",
+      );
+      if (!res.ok) throw new Error("CSV lokal tidak tersedia");
+      const text = await res.text();
+
+      return new Promise<FoodCropRow[]>((resolve) => {
+        Papa.parse(text, {
+          header: true,
+          skipEmptyLines: true,
+          transformHeader: (h) => h.trim(),
+          complete: (results) => {
+            const rows = results.data as any[];
+            const out: FoodCropRow[] = [];
+            for (const row of rows) {
+              const kec = normalizeKecamatanName(row["Kecamatan"] || "");
+              if (
+                !kec ||
+                kec.toLowerCase().includes("jumlah") ||
+                kec.toLowerCase().includes("total")
+              )
+                continue;
+              const tahunKey =
+                Object.keys(row).find((k) => k.trim().toLowerCase() === "tahun") ||
+                "Tahun";
+              const tahun = (row[tahunKey] || "").toString().trim();
+              if (!tahun) continue;
+              out.push({
+                kecamatan: kec,
+                tahun,
+                items: [
+                  {
+                    komoditas: "Padi Sawah",
+                    luasPanen: cleanFloat(row["Padi Sawah (Ha)"]),
+                    produksi: cleanFloat(row["Produksi Padi Sawah (Ton)"]),
+                    rataRata: cleanFloat(row["Rata-rata Produksi Padi Sawah(Kw/Ha)"]),
+                  },
+                  {
+                    komoditas: "Padi Ladang",
+                    luasPanen: cleanFloat(row["Padi Ladang (Ha)"]),
+                    produksi: cleanFloat(row["Produksi Padi Ladang(Ton)"]),
+                    rataRata: cleanFloat(row["Rata-rata Produksi Padi Ladang(Ku/Ha)"]),
+                  },
+                ],
+              });
+            }
+            console.log(
+              `✓ fetchPadiSawahLadang: ${out.length} baris (Padi Sawah + Padi Ladang)`,
+            );
+            resolve(out);
+          },
+          error: () => resolve([]),
+        });
+      });
+    } catch (error) {
+      console.error("Error fetchPadiSawahLadang:", error);
+      return [];
+    }
+  });
 
 export interface VegetableProduction {
   kecamatan: string;
@@ -751,30 +878,38 @@ export interface VegetableProduction {
 export const fetchVegetableProduction = async (): Promise<
   VegetableProduction[]
 > =>
-  withCache("cache_vegetable_production_v1", async () => {
+  withCache("cache_vegetable_production_v2", async () => {
   try {
     let response;
+    let sourceLabel = "lokal";
+
+    // Prioritas 1: CSV lokal dari folder "14. Distankan KP"
     try {
-      response = await fetchWithTimeout(
-        "/dataset/226f7b4c-a07c-4248-a837-ea4dba4ec05e/resource/e6481f04-0ffd-40df-871f-7005a8d266cb/download/produksi-tanaman-sayuran-menurut-kecamatan-dan-jenis-tanaman-2018-2024.csv",
+      response = await fetch(
+        "/14. Distankan KP/Produksi Tanaman Sayuran Menurut Kecamatan dan Jenis Tanaman (ton)/Produksi Tanaman Sayuran Menurut Kecamatan dan Jenis Tanaman (ton) CSV.csv",
       );
-      const contentType = response.headers.get("content-type") || "";
-      if (!response.ok || contentType.includes("html")) throw new Error("Gagal online");
+      if (!response.ok) throw new Error("CSV lokal tidak tersedia");
+      sourceLabel = "lokal";
     } catch (e) {
-      // Lapis 2: snapshot CKAN lokal
+      // Fallback 1: snapshot CKAN lokal
       try {
-        console.warn("CKAN sayuran gagal, mencoba snapshot lokal...");
+        console.warn("CSV lokal sayuran gagal, mencoba snapshot CKAN...");
         response = await fetchWithTimeout("/data/snapshots/sayuran-2018-2024.csv");
         if (!response.ok) throw new Error("Snapshot tidak ditemukan");
+        sourceLabel = "snapshot CKAN";
       } catch (e2) {
-        console.warn("Menggunakan data sayuran offline lokal.");
-        response = await fetch(
-          "/14. Distankan KP/Produksi Tanaman Sayuran Menurut Kecamatan dan Jenis Tanaman (ton)/Produksi Tanaman Sayuran Menurut Kecamatan dan Jenis Tanaman CSV.csv",
+        // Fallback 2: CKAN online (terakhir)
+        console.warn("Snapshot CKAN gagal, mencoba CKAN online...");
+        response = await fetchWithTimeout(
+          "/dataset/226f7b4c-a07c-4248-a837-ea4dba4ec05e/resource/e6481f04-0ffd-40df-871f-7005a8d266cb/download/produksi-tanaman-sayuran-menurut-kecamatan-dan-jenis-tanaman-2018-2024.csv",
         );
+        const contentType = response.headers.get("content-type") || "";
+        if (!response.ok || contentType.includes("html")) throw new Error("CKAN online gagal");
+        sourceLabel = "CKAN online";
       }
     }
 
-    if (!response.ok) throw new Error("Gagal mengambil data produksi sayuran");
+    if (!response.ok) throw new Error("Gagal mengambil data produksi sayuran dari semua sumber");
     const csvText = await response.text();
 
     return new Promise<VegetableProduction[]>((resolve) => {
@@ -787,48 +922,71 @@ export const fetchVegetableProduction = async (): Promise<
             .map((row) => {
               const cleanNum = (val: any) => {
                 if (val === undefined || val === null || val === "") return 0;
-
                 return parseFloat(val.toString().replace(/,/g, "")) || 0;
               };
 
-              const kecClean = normalizeKecamatanName(
-                row["Kecamatan"] || row["kecamatan"] || "",
-              );
+              // Normalisasi nama kecamatan (Purwonegoro → Purwanegara, Purworejo Klampok → Purwareja Klampok)
+              let kecRaw = row["Kecamatan"] || row["kecamatan"] || "";
+              if (kecRaw === "Purwonegoro") kecRaw = "Purwanegara";
+              if (kecRaw === "Purworejo Klampok") kecRaw = "Purwareja Klampok";
+              const kecClean = normalizeKecamatanName(kecRaw);
 
+              // Ambil tahun dari kolom "Tahun" di akhir baris
               const tahunKey = Object.keys(row).find(k => k.trim().toLowerCase() === "tahun") || "Tahun";
+              const tahun = (row[tahunKey] || "").toString().trim();
+
+              // Helper: cari kolom dengan pola "<Tanaman> (ton) <Tahun>"
+              const findVal = (tanaman: string, yr: string) => {
+                const keys = Object.keys(row);
+                // Pola 1: "Bawang Merah (ton) 2018" — exact match dengan tahun
+                for (const k of keys) {
+                  const m = k.match(/^([^(]+?)\s*\(ton\)\s*(\d{4})$/);
+                  if (!m) continue;
+                  const metricName = m[1].trim();
+                  const colYear = m[2];
+                  if (metricName === tanaman && colYear === yr) {
+                    return row[k];
+                  }
+                }
+                // Pola 2: fallback tanpa suffix tahun (untuk CSV CKAN jika ada)
+                const direct = row[tanaman] ?? row[tanaman.toLowerCase().replace(/\s+/g, "_")];
+                if (direct !== undefined) return direct;
+                
+                return undefined;
+              };
 
               return {
                 kecamatan: kecClean,
-                bawangMerah: cleanNum(
-                  row["Bawang Merah"] || row["bawang_merah"],
-                ),
-                cabaiBesar: cleanNum(row["Cabai Besar"] || row["cabai_besar"]),
-                kentang: cleanNum(row["Kentang"] || row["kentang"]),
-                kubis: cleanNum(row["Kubis"] || row["kubis"]),
-                petsai: cleanNum(row["Petsai"] || row["petsai"]),
-                tomat: cleanNum(row["Tomat"] || row["tomat"]),
-                bawangPutih: cleanNum(
-                  row["Bawang Putih"] || row["bawang_putih"],
-                ),
-                cabaiRawit: cleanNum(row["Cabai Rawit"] || row["cabai_rawit"]),
-                tahun: (row[tahunKey] || "").toString().trim(),
+                bawangMerah: cleanNum(findVal("Bawang Merah", tahun)),
+                cabaiBesar: cleanNum(findVal("Cabai Besar", tahun)),
+                kentang: cleanNum(findVal("Kentang", tahun)),
+                kubis: cleanNum(findVal("Kubis", tahun)),
+                petsai: cleanNum(findVal("Petsai", tahun)),
+                tomat: cleanNum(findVal("Tomat", tahun)),
+                bawangPutih: cleanNum(findVal("Bawang Putih", tahun)),
+                cabaiRawit: cleanNum(findVal("Cabai Rawit", tahun)),
+                tahun: tahun,
               };
             })
             .filter(
               (item) =>
                 item.kecamatan &&
+                item.tahun &&
                 !item.kecamatan.toLowerCase().includes("jumlah") &&
                 !item.kecamatan.toLowerCase().includes("total"),
             );
 
+          console.log(`✓ fetchVegetableProduction: loaded ${cleanData.length} rows from ${sourceLabel}`);
           resolve(cleanData);
         },
-        error: () => resolve([]),
+        error: (err: any) => {
+          console.error("Papa.parse error:", err);
+          resolve([]);
+        },
       });
     });
   } catch (error) {
     console.error("Error fetchVegetableProduction:", error);
-
     return [];
   }
   });
@@ -911,31 +1069,42 @@ export interface LumbungPangan {
   lumbungKapasitas: number;
   gudangLuas: number;
   gudangKapasitas: number;
+  tahun?: number;
 }
 
+// Data lumbung & gudang pangan.
+// Prioritas (sesuai perbaikan.md): 1) CSV lokal hasil normalisasi dari 7 xlsx asli BPS di _tmp
+// (2018-2024, terverifikasi 140/140 baris vs blok JUMLAH resmi: 63 unit / 95.826 ton pada 2024),
+// diambil baris tahun terbaru per kecamatan. 2) Snapshot CKAN 2025. 3) CKAN online.
+// Catatan: snapshot CKAN 2025 korup sebagian (Bawang tertulis 12 unit, xlsx asli: 3;
+// total kolom = 72 != Jumlah resmi 63) -> hanya dijadikan fallback.
 export const fetchLumbungPangan = async (): Promise<LumbungPangan[]> =>
-  withCache("cache_lumbung_pangan_v2", async () => {
+  withCache("cache_lumbung_pangan_v3", async () => {
   try {
     let response;
-    let isLocal = false;
+    let isLocal = true;
     try {
+      // Lapis 1: CSV lokal (header: Kecamatan, Lumbung Jumlah, Lumbung Kapasitas, Luas (M2), Lumbung Kapasitas/Bulan, Tahun)
       response = await fetchWithTimeout(
-        "/dataset/bd6ca920-4cd8-49a2-8e5d-291f01e1a11e/resource/1e578131-0fc4-4db4-95a4-a3af66aa7bec/download/banyaknya-lumbung-dan-gudang-pangan-kab-banjarnegara-menurut-kecamatan-2025.csv",
+        "/14. Distankan KP/Banyaknya Lumbung dan Gudang Pangan/Banyaknya Lumbung dan Gudang Pangan CSV.csv",
       );
-      const contentType = response.headers.get("content-type") || "";
-      if (!response.ok || contentType.includes("html")) throw new Error("Gagal online");
+      if (!response.ok) throw new Error("CSV lokal tidak tersedia");
     } catch (e) {
-      // Lapis 2: snapshot CKAN lokal (format identik dgn CKAN -> isLocal tetap false)
+      // Lapis 2: snapshot CKAN lokal (format identik dgn CKAN -> isLocal false)
       try {
-        console.warn("CKAN lumbung gagal, mencoba snapshot lokal...");
+        console.warn("CSV lokal lumbung gagal, mencoba snapshot CKAN...");
         response = await fetchWithTimeout("/data/snapshots/lumbung-pangan-2025.csv");
         if (!response.ok) throw new Error("Snapshot tidak ditemukan");
+        isLocal = false;
       } catch (e2) {
-        console.warn("Menggunakan data lumbung offline lokal.");
-        response = await fetch(
-          "/14. Distankan KP/Banyaknya Lumbung dan Gudang Pangan/Banyaknya Lumbung dan Gudang Pangan CSV.csv",
+        // Lapis 3: CKAN online (terakhir)
+        console.warn("Snapshot lumbung gagal, mencoba CKAN online...");
+        response = await fetchWithTimeout(
+          "/dataset/bd6ca920-4cd8-49a2-8e5d-291f01e1a11e/resource/1e578131-0fc4-4db4-95a4-a3af66aa7bec/download/banyaknya-lumbung-dan-gudang-pangan-kab-banjarnegara-menurut-kecamatan-2025.csv",
         );
-        isLocal = true;
+        const contentType = response.headers.get("content-type") || "";
+        if (!response.ok || contentType.includes("html")) throw new Error("CKAN online gagal");
+        isLocal = false;
       }
     }
 
@@ -946,65 +1115,65 @@ export const fetchLumbungPangan = async (): Promise<LumbungPangan[]> =>
       Papa.parse(csvText, {
         header: isLocal,
         skipEmptyLines: true,
+        transformHeader: (h) => h.trim(),
         complete: (results) => {
           const parsedData: LumbungPangan[] = [];
 
           if (isLocal) {
+            // Kelompokkan per kecamatan, ambil baris tahun terbaru (mis. 2024)
             const list = results.data as any[];
-            const mapData = new Map<string, LumbungPangan>();
+            const mapData = new Map<string, { tahun: number; data: LumbungPangan }>();
+            let maxTahun = 0;
 
             list.forEach((row: any) => {
-              const parseNum = (val: string) => {
-                if (!val) return 0;
-                const cleaned = val.toString().replace(/ /g, "").replace(/\./g, "").replace(/,/g, ".");
-                return parseFloat(cleaned) || 0;
-              };
-
               const rawKec = row["Kecamatan"] || "";
-              const kecName = normalizeKecamatanName(rawKec);
+              // Normalisasi typo BPS
+              let normalizedKec = rawKec;
+              if (normalizedKec === "Purwonegoro") normalizedKec = "Purwanegara";
+              if (normalizedKec === "Purworejo Klampok") normalizedKec = "Purwareja Klampok";
+              const kecName = normalizeKecamatanName(normalizedKec);
               if (!kecName || kecName.toLowerCase().includes("jumlah") || kecName.toLowerCase().includes("total")) return;
 
-              const unit = parseNum(row["Jumlah (Unit)"] || row["jumlah_unit"]);
-              const kapasitas = parseNum(row["Kapasitas"] || row["kapasitas"]);
+              const tahunKey = Object.keys(row).find((k) => k.trim().toLowerCase() === "tahun") || "Tahun";
+              const tahun = parseInt(row[tahunKey]) || 0;
+              if (tahun < 2000 || tahun > 2100) return; // lewati baris tanpa tahun valid
 
-              const entry = {
+              // CSV lokal menyimpan angka polos bergaya JS ("11.3", "95.826") -> cleanFloat aman
+              const entry: LumbungPangan = {
                 kecamatan: kecName,
-                lumbungUnit: unit,
-                lumbungKapasitas: kapasitas,
-                gudangLuas: 0,
-                gudangKapasitas: 0,
+                lumbungUnit: cleanFloat(row["Lumbung Jumlah"]),
+                lumbungKapasitas: cleanFloat(row["Lumbung Kapasitas"]),
+                gudangLuas: cleanFloat(row["Luas (M2)"]),
+                gudangKapasitas: cleanFloat(row["Lumbung Kapasitas/Bulan"]),
+                tahun,
               };
 
-              const key = kecName.toUpperCase();
-              if (!mapData.has(key) || (row["Tahun"] && mapData.get(key)!.lumbungUnit === 0)) {
-                mapData.set(key, entry);
+              const existing = mapData.get(kecName);
+              if (!existing || tahun > existing.tahun) {
+                mapData.set(kecName, { tahun, data: entry });
+                if (tahun > maxTahun) maxTahun = tahun;
               }
             });
-            resolve(Array.from(mapData.values()));
+
+            console.log(`Lumbung pangan dari CSV lokal (${mapData.size} kecamatan, tahun terbaru ${maxTahun})`);
+            resolve(Array.from(mapData.values()).map((v) => v.data));
           } else {
+            // Snapshot/CKAN: 4 baris pertama adalah header bertingkat.
+            // Kolom: [no, Kecamatan, Lumbung Unit, Lumbung Kapasitas, Gudang Luas, Gudang Kapasitas]
             const rows = results.data as string[][];
             for (let i = 4; i < rows.length; i++) {
               const row = rows[i];
+              if (!row[1] || row[1].replace(/\s/g, "").toLowerCase().includes("jumlah")) continue;
 
-              if (
-                !row[0] ||
-                row[0].toLowerCase().includes("jumlah") ||
-                row[0].toLowerCase().includes("total")
-              )
-                continue;
-
-              const cleanNum = (val: string) => {
-                if (!val) return 0;
-
-                return parseFloat(val.replace(/,/g, "")) || 0;
-              };
+              const kecName = normalizeKecamatanName(row[1]);
+              if (!kecName) continue;
 
               parsedData.push({
-                kecamatan: normalizeKecamatanName(row[0]),
-                lumbungUnit: cleanNum(row[1]),
-                lumbungKapasitas: cleanNum(row[2]),
-                gudangLuas: cleanNum(row[3]),
-                gudangKapasitas: cleanNum(row[4]),
+                kecamatan: kecName,
+                lumbungUnit: cleanFloat(row[2]),
+                lumbungKapasitas: cleanFloat(row[3]),
+                gudangLuas: cleanFloat(row[4]),
+                gudangKapasitas: cleanFloat(row[5]),
               });
             }
             resolve(parsedData);
@@ -1117,9 +1286,10 @@ export interface Unggas {
 }
 
 export const fetchTernakKecil = async (): Promise<TernakKecil[]> =>
-  withCache("cache_ternak_kecil_v1", async () => {
+  withCache("cache_ternak_kecil_v2", async () => {
   try {
-    const response = await fetch("/14. Distankan KP/Jumlah  Ternak Kecil Menurut Kecamatan dan Jenis Ternak/Jumlah Ternak Kecil Menurut Kecamatan dan Jenis Ternak CSV.csv");
+    // Nama file di disk memakai SPASI GANDA ("Jumlah  Ternak Kecil ... CSV.csv") — jangan dirapatkan!
+    const response = await fetch("/14. Distankan KP/Jumlah  Ternak Kecil Menurut Kecamatan dan Jenis Ternak/Jumlah  Ternak Kecil Menurut Kecamatan dan Jenis Ternak CSV.csv");
     if (!response.ok) throw new Error("Gagal mengambil data");
     const text = await response.text();
     return new Promise((resolve) => {
@@ -1128,14 +1298,23 @@ export const fetchTernakKecil = async (): Promise<TernakKecil[]> =>
         transformHeader: (h) => h.trim(),
         complete: (results) => {
           const rows = results.data as any[];
-          resolve(rows.filter(r => r.Kecamatan && !r.Kecamatan.toLowerCase().includes("jumlah")).map(r => ({
-            kecamatan: r.Kecamatan?.trim() || "Unknown",
-            kambing: parseInt(r.Kambing?.toString().replace(/[^\d]/g, "") || "0"),
-            domba: parseInt(r.Domba?.toString().replace(/[^\d]/g, "") || "0"),
-            babi: parseInt(r.Babi?.toString().replace(/[^\d]/g, "") || "0"),
-            kelinci: parseInt(r.Kelinci?.toString().replace(/[^\d]/g, "") || "0"),
-            tahun: r.Tahun?.trim() || "2024"
-          })));
+          // cleanFloat: nilai desimal (mis. Domba 2021 "597.59") TIDAK boleh di-parseInt
+          // (strip titik desimal → tergelembung 100x). Baris tanpa tahun 4-digit dilewati.
+          resolve(rows.filter(r => {
+            const kec = String(r.Kecamatan ?? "").trim();
+            if (!kec || kec.toLowerCase().includes("jumlah")) return false;
+            return /^\d{4}$/.test(String(r.Tahun ?? "").trim());
+          }).map(r => {
+            const kecRaw = String(r.Kecamatan ?? "").trim();
+            return {
+              kecamatan: kecRaw === "Purwonegoro" ? "Purwanegara" : kecRaw.replace("Purworejo Klampok", "Purwareja Klampok"),
+              kambing: cleanFloat(r.Kambing),
+              domba: cleanFloat(r.Domba),
+              babi: cleanFloat(r.Babi),
+              kelinci: cleanFloat(r.Kelinci),
+              tahun: String(r.Tahun ?? "").trim()
+            };
+          }));
         }
       });
     });
@@ -1143,7 +1322,7 @@ export const fetchTernakKecil = async (): Promise<TernakKecil[]> =>
   });
 
 export const fetchTernakBesar = async (): Promise<TernakBesar[]> =>
-  withCache("cache_ternak_besar_v1", async () => {
+  withCache("cache_ternak_besar_v2", async () => {
   try {
     const response = await fetch("/14. Distankan KP/Jumlah Ternak Besar Menurut Kecamatan dan Jenis Ternak/Jumlah Ternak Besar Menurut Kecamatan dan Jenis Ternak CSV.csv");
     if (!response.ok) throw new Error("Gagal mengambil data");
@@ -1154,14 +1333,21 @@ export const fetchTernakBesar = async (): Promise<TernakBesar[]> =>
         transformHeader: (h) => h.trim(),
         complete: (results) => {
           const rows = results.data as any[];
-          resolve(rows.filter(r => r.Kecamatan && !r.Kecamatan.toLowerCase().includes("jumlah")).map(r => ({
-            kecamatan: r.Kecamatan?.trim() || "Unknown",
-            sapi: parseInt(r.Sapi?.toString().replace(/[^\d]/g, "") || "0"),
-            sapiPerah: parseInt(r["Sapi Perah"]?.toString().replace(/[^\d]/g, "") || "0"),
-            kerbau: parseInt(r.Kerbau?.toString().replace(/[^\d]/g, "") || "0"),
-            kuda: parseInt(r.Kuda?.toString().replace(/[^\d]/g, "") || "0"),
-            tahun: r.Tahun?.trim() || "2024"
-          })));
+          resolve(rows.filter(r => {
+            const kec = String(r.Kecamatan ?? "").trim();
+            if (!kec || kec.toLowerCase().includes("jumlah")) return false;
+            return /^\d{4}$/.test(String(r.Tahun ?? "").trim());
+          }).map(r => {
+            const kecRaw = String(r.Kecamatan ?? "").trim();
+            return {
+              kecamatan: kecRaw === "Purwonegoro" ? "Purwanegara" : kecRaw.replace("Purworejo Klampok", "Purwareja Klampok"),
+              sapi: cleanFloat(r.Sapi),
+              sapiPerah: cleanFloat(r["Sapi Perah"]),
+              kerbau: cleanFloat(r.Kerbau),
+              kuda: cleanFloat(r.Kuda),
+              tahun: String(r.Tahun ?? "").trim()
+            };
+          }));
         }
       });
     });
@@ -1169,7 +1355,7 @@ export const fetchTernakBesar = async (): Promise<TernakBesar[]> =>
   });
 
 export const fetchUnggas = async (): Promise<Unggas[]> =>
-  withCache("cache_unggas_v1", async () => {
+  withCache("cache_unggas_v2", async () => {
   try {
     const response = await fetch("/14. Distankan KP/Jumlah Unggas Menurut Kecamatan dan Jenis Ternak/Jumlah Unggas Menurut Kecamatan dan Jenis Ternak CSV.csv");
     if (!response.ok) throw new Error("Gagal mengambil data");
@@ -1180,15 +1366,24 @@ export const fetchUnggas = async (): Promise<Unggas[]> =>
         transformHeader: (h) => h.trim(),
         complete: (results) => {
           const rows = results.data as any[];
-          resolve(rows.filter(r => r.Kecamatan && !r.Kecamatan.toLowerCase().includes("jumlah")).map(r => ({
-            kecamatan: r.Kecamatan?.trim() || "Unknown",
-            ayamKampung: parseInt(r["Ayam Kampung"]?.toString().replace(/[^\d]/g, "") || "0"),
-            ayamRasLayer: parseInt(r["Ayam Ras Layer"]?.toString().replace(/[^\d]/g, "") || "0"),
-            ayamBroiler: parseInt(r["Ayam Broiler"]?.toString().replace(/[^\d]/g, "") || "0"),
-            itikBiasa: parseInt(r["Itik Biasa"]?.toString().replace(/[^\d]/g, "") || "0"),
-            itikManila: parseInt(r["Itik Manila"]?.toString().replace(/[^\d]/g, "") || "0"),
-            tahun: r.Tahun?.trim() || "2024"
-          })));
+          // cleanFloat mempertahankan nilai negatif (revisi BPS, mis. Itik Biasa 2022 "-65")
+          // — parseInt lama membalik tandanya menjadi positif.
+          resolve(rows.filter(r => {
+            const kec = String(r.Kecamatan ?? "").trim();
+            if (!kec || kec.toLowerCase().includes("jumlah")) return false;
+            return /^\d{4}$/.test(String(r.Tahun ?? "").trim());
+          }).map(r => {
+            const kecRaw = String(r.Kecamatan ?? "").trim();
+            return {
+              kecamatan: kecRaw === "Purwonegoro" ? "Purwanegara" : kecRaw.replace("Purworejo Klampok", "Purwareja Klampok"),
+              ayamKampung: cleanFloat(r["Ayam Kampung"]),
+              ayamRasLayer: cleanFloat(r["Ayam Ras Layer"]),
+              ayamBroiler: cleanFloat(r["Ayam Broiler"]),
+              itikBiasa: cleanFloat(r["Itik Biasa"]),
+              itikManila: cleanFloat(r["Itik Manila"]),
+              tahun: String(r.Tahun ?? "").trim()
+            };
+          }));
         }
       });
     });
@@ -1209,7 +1404,12 @@ export interface TernakFlow {
   items: TernakFlowItem[];
 }
 
-// Struktur CSV lalu-lintas ternak: [Kecamatan, Jumlah Jenis1..N, Tahun]
+// Struktur CSV lalu-lintas ternak: [Kecamatan, Jumlah Jenis1..N, Tahun].
+// Panjang jenisLabels HARUS sama dengan jumlah kolom jenis di CSV — Tahun dibaca
+// pada indeks jenisLabels.length + 1 (label kurang → tahun terbaca dari kolom jenis;
+// label lebih → kolom Tahun masuk sebagai jumlah, mis. "2019 kg").
+// Nilai bisa desimal (Produksi Daging Unggas, mis. "46612.06") → wajib cleanFloat;
+// cleanInt menstrip titik desimal → tergelembung 100×.
 const parseTernakFlow = (
   text: string,
   jenisLabels: string[],
@@ -1227,13 +1427,15 @@ const parseTernakFlow = (
           if (!r || !r[0]) continue;
           const kec = normalizeKecamatanName(r[0]);
           if (!kec || kec.toLowerCase().includes("jumlah")) continue;
+          const tahun = String(r[jenisLabels.length + 1] ?? "").trim();
+          if (!/^\d{4}$/.test(tahun)) continue; // lewati baris tanpa tahun valid
           out.push({
             kecamatan: kec,
-            tahun: (r[jenisLabels.length + 1] || "").trim(),
+            tahun,
             unit,
             items: jenisLabels.map((j, idx) => ({
               jenis: j,
-              jumlah: cleanInt(r[idx + 1]),
+              jumlah: cleanFloat(r[idx + 1]),
             })),
           });
         }
@@ -1262,23 +1464,23 @@ const fetchTernakFlow = async (
 export const fetchPemasukanTernak = (): Promise<TernakFlow[]> =>
   fetchTernakFlow(
     "/14. Distankan KP/Banyaknya Pemasukan Ternak ke Kabupaten Banjarnegara/Banyaknya Pemasukan Ternak Ke Kabupaten Banjarnegara CSV.csv",
-    "cache_pemasukan_ternak_v1",
+    "cache_pemasukan_ternak_v2",
     ["Sapi Perah", "Sapi Potong", "Kerbau", "Kuda", "Kambing", "Domba"],
     "ekor",
   );
 
 export const fetchPengeluaranTernak = (): Promise<TernakFlow[]> =>
   fetchTernakFlow(
-    "/14. Distankan KP/Banyaknya Pengeluaran Ternak Potong ke Kabupaten Banjarnegara/Banyaknya Pengeluaran Ternak Potong ke Kabupaten Banjarnegara dan jenis Ternak CSV.csv",
-    "cache_pengeluaran_ternak_v1",
+    "/14. Distankan KP/Banyaknya Pengeluaran Ternak Potong ke Kabupaten Banjarnegara/Banyaknya Pengeluaran Ternak Potong ke Kabupaten Banjarnegara CSV.csv",
+    "cache_pengeluaran_ternak_v2",
     ["Sapi Perah", "Sapi Potong", "Kerbau", "Kuda", "Kambing", "Domba"],
     "ekor",
   );
 
 export const fetchLuarRPH = (): Promise<TernakFlow[]> =>
   fetchTernakFlow(
-    "/14. Distankan KP/Jumlah (Perkiraan) Ternak yang Dipotong di Luar RPH/Jumlah (Perkiraan ) Ternak Yang di potong di luar RPH CSV.csv",
-    "cache_luar_rph_v1",
+    "/14. Distankan KP/Jumlah (Perkiraan) Ternak yang Dipotong di Luar RPH/Jumlah (Perkiraan) Ternak yang Dipotong di Luar RPH CSV.csv",
+    "cache_luar_rph_v2",
     ["Sapi", "Kerbau", "Babi", "Kambing", "Domba"],
     "ekor",
   );
@@ -1286,20 +1488,15 @@ export const fetchLuarRPH = (): Promise<TernakFlow[]> =>
 export const fetchDagingUnggas = (): Promise<TernakFlow[]> =>
   fetchTernakFlow(
     "/14. Distankan KP/Produksi Daging Unggas Menurut Kecamatan dan Jenis Unggas/Produksi Daging Unggas Menurut Kecamatan dan Jenis Unggas CSV.csv",
-    "cache_daging_unggas_v1",
-    ["Ayam Ras Layer", "Ayam Kampung", "Itik"],
+    "cache_daging_unggas_v2",
+    // CSV hanya punya 2 kolom jenis (Ayam Ras Layer, Ayam Kampung) — Tahun di indeks 3.
+    // Label "Itik" lama membuat kolom Tahun terbaca sebagai jumlah (2019 kg!)
+    // dan field tahun jadi kosong semua.
+    ["Ayam Ras Layer", "Ayam Kampung"],
     "kg",
   );
 
 // ---- Perikanan ----
-
-const cleanInt = (val: any): number => {
-  const raw = val?.toString().trim() || "0";
-  const isNeg = raw.startsWith("(") && raw.endsWith(")");
-  const digits = raw.replace(/[^\d]/g, "");
-  const parsed = parseInt(digits, 10);
-  return isNaN(parsed) ? 0 : (isNeg ? -parsed : parsed);
-};
 
 export interface PerikananBudidaya {
   kecamatan: string;
@@ -1336,7 +1533,7 @@ const isSummaryRow = (kec?: string) => {
 };
 
 export const fetchPerikananBudidaya = async (): Promise<PerikananBudidaya[]> =>
-  withCache("cache_perikanan_budidaya_v1", async () => {
+  withCache("cache_perikanan_budidaya_v3", async () => {
   try {
     const response = await fetch(
       "/14. Distankan KP/Luas dan Produksi Ikan Menurut Kecamatan dan Tempat Pemeliharaan/Luas dan Produksi Ikan Menurut Kecamatan dan Jenis Tempat Pemeliharaan CSV.csv",
@@ -1354,13 +1551,14 @@ export const fetchPerikananBudidaya = async (): Promise<PerikananBudidaya[]> =>
             rows
               .filter((r) => !isSummaryRow(r.Kecamatan))
               .map((r) => ({
-                kecamatan: r.Kecamatan?.trim() || "Unknown",
-                kolamPembesaran: cleanInt(r["Kolam Pembesaran Ikan Produksi (Kg)"]),
-                karambaApung: cleanInt(r["Jaring Karamba Apung Produksi (Kg)"]),
-                minaPenyelang: cleanInt(r["Mina Padi Penyelang Produksi (Kg)"]),
-                minaTumpangsari: cleanInt(r["Mina Padi Tumpang sari Produksi (Kg)"]),
-                tahun: r.Tahun?.trim() || "2024",
-              })),
+                kecamatan: normalizeKecamatanName(String(r.Kecamatan ?? "")),
+                kolamPembesaran: cleanFloat(r["Kolam Pembesaran Ikan Produksi (Kg)"]),
+                karambaApung: cleanFloat(r["Jaring Karamba Apung Produksi (Kg)"]),
+                minaPenyelang: cleanFloat(r["Mina Padi Penyelang Produksi (Kg)"]),
+                minaTumpangsari: cleanFloat(r["Mina Padi Tumpang sari Produksi (Kg)"]),
+                tahun: String(r.Tahun ?? "").trim(),
+              }))
+              .filter((d) => d.tahun),
           );
         },
       });
@@ -1388,31 +1586,31 @@ export interface NilaiProduksiRow {
 // Pasangan kolom (produksi, nilai) per jenis untuk tiap dataset
 const NILAI_BUDIDAYA_PAIRS: { label: string; prod: string; val: string }[] = [
   {
-    label: "Pembesaran",
-    prod: "Produksi (Kg) Pembesaran",
-    val: "Nilai Produksi (ribu rupiah) Pembesaran",
+    label: "Kolam Pembesaran",
+    prod: "Pembesaran Produksi (Kg)",
+    val: "Pembesaran Nilai (Ribu Rupiah)",
   },
   {
     label: "Karamba Jaring Apung",
-    prod: "Produksi (Kg) Karamba Jaring Apung",
-    val: "Nilai Produksi (ribu rupiah) Karamba Jaring Apung",
+    prod: "Karamba Jaring Apung Produksi (Kg)",
+    val: "Karamba Jaring Apung Nilai (Ribu Rupiah)",
   },
   {
     label: "Minapadi Tumpang Sari",
-    prod: "Produksi (Kg) Minapadi Tumpang Sari",
-    val: "Nilai Produksi (ribu rupiah) Minapadi Tumpang Sari",
+    prod: "Minapadi Tumpang Sari Produksi (Kg)",
+    val: "Minapadi Tumpang Sari Nilai (Ribu Rupiah)",
   },
 ];
 
 const NILAI_TANGKAP_PAIRS: { label: string; prod: string; val: string }[] = [
-  { label: "Jala Tebar", prod: "Produksi Jala Tebar", val: "Nilai Produksi Jala Tebar" },
-  { label: "Pancing", prod: "Produksi Pancing", val: "Nilai Produksi Pancing" },
+  { label: "Jala Tebar", prod: "Jala Tebar Produksi (Kg)", val: "Jala Tebar Nilai (Ribu Rupiah)" },
+  { label: "Pancing", prod: "Pancing Produksi (Kg)", val: "Pancing Nilai (Ribu Rupiah)" },
   {
-    label: "Jaring Ingsang",
-    prod: "Produksi Jaring Ingsang",
-    val: "Nilai Produksi Jaring Ingsang",
+    label: "Jaring Insang",
+    prod: "Jaring Ingsang Produksi (Kg)",
+    val: "Jaring Ingsang Nilai (Ribu Rupiah)",
   },
-  { label: "Lainnya", prod: "Produksi Lainnya", val: "Nilai Produksi Lainnya" },
+  { label: "Lainnya", prod: "Lainnya Produksi (Kg)", val: "Lainnya Nilai (Ribu Rupiah)" },
 ];
 
 const fetchNilaiProduksi = (
@@ -1438,15 +1636,16 @@ const fetchNilaiProduksi = (
                 rows
                   .filter((r) => !isSummaryRow(r.Kecamatan))
                   .map((r) => ({
-                    kecamatan: r.Kecamatan?.trim() || "Unknown",
-                    tahun: r.Tahun?.trim() || "2024",
+                    kecamatan: normalizeKecamatanName(String(r.Kecamatan ?? "")),
+                    tahun: String(r.Tahun ?? "").trim(),
                     subSektor,
                     jenis: pairs.map((p) => ({
                       label: p.label,
-                      produksi: cleanInt(r[p.prod]),
-                      nilai: cleanInt(r[p.val]),
+                      produksi: cleanFloat(r[p.prod]),
+                      nilai: cleanFloat(r[p.val]),
                     })),
-                  })),
+                  }))
+                  .filter((r) => r.tahun),
               );
             },
           });
@@ -1455,21 +1654,25 @@ const fetchNilaiProduksi = (
     .catch(() => []);
 
 export const fetchNilaiProduksiBudidaya = (): Promise<NilaiProduksiRow[]> =>
-  fetchNilaiProduksi(
-    "/14. Distankan KP/Produksi dan Nilai Produksi Perikanan Budidaya Menurut Kecamatan dan Jenis Budidaya/Produksi dan Nilai Produksi Perikanan Budidaya Menurut Kecamatan dan Jenis Budidaya CSV.csv",
-    "Budidaya",
-    NILAI_BUDIDAYA_PAIRS,
+  withCache("cache_nilai_produksi_budidaya_v3", () =>
+    fetchNilaiProduksi(
+      "/14. Distankan KP/Produksi dan Nilai Produksi Perikanan Budidaya Menurut Kecamatan dan Jenis Budidaya/Produksi dan Nilai Produksi Perikanan Budidaya Menurut Kecamatan dan Jenis Budidaya CSV.csv",
+      "Budidaya",
+      NILAI_BUDIDAYA_PAIRS,
+    ),
   );
 
 export const fetchNilaiProduksiTangkap = (): Promise<NilaiProduksiRow[]> =>
-  fetchNilaiProduksi(
-    "/14. Distankan KP/Produksi dan Nilai Produksi Perikanan Tangkap Menurut Kecamatan dan Jenis Penangkapan/Produksi dan Nilai Produksi Perikanan Tangkap Menurut Kecamatan dan Jenis Penangkapan CSV.csv",
-    "Tangkap",
-    NILAI_TANGKAP_PAIRS,
+  withCache("cache_nilai_produksi_tangkap_v3", () =>
+    fetchNilaiProduksi(
+      "/14. Distankan KP/Produksi dan Nilai Produksi Perikanan Tangkap Menurut Kecamatan dan Jenis Penangkapan/Produksi dan Nilai Produksi Perikanan Tangkap Menurut Kecamatan dan Jenis Penangkapan CSV.csv",
+      "Tangkap",
+      NILAI_TANGKAP_PAIRS,
+    ),
   );
 
 export const fetchPerikananTangkap = async (): Promise<PerikananTangkap[]> =>
-  withCache("cache_perikanan_tangkap_v1", async () => {
+  withCache("cache_perikanan_tangkap_v3", async () => {
   try {
     const response = await fetch(
       "/14. Distankan KP/Produksi dan Nilai Produksi Perikanan Tangkap Menurut Kecamatan dan Jenis Penangkapan/Produksi dan Nilai Produksi Perikanan Tangkap Menurut Kecamatan dan Jenis Penangkapan CSV.csv",
@@ -1487,13 +1690,14 @@ export const fetchPerikananTangkap = async (): Promise<PerikananTangkap[]> =>
             rows
               .filter((r) => !isSummaryRow(r.Kecamatan))
               .map((r) => ({
-                kecamatan: r.Kecamatan?.trim() || "Unknown",
-                jalaTebar: cleanInt(r["Produksi Jala Tebar"]),
-                pancing: cleanInt(r["Produksi Pancing"]),
-                jaringIngsang: cleanInt(r["Produksi Jaring Ingsang"]),
-                lainnya: cleanInt(r["Produksi Lainnya"]),
-                tahun: r.Tahun?.trim() || "2024",
-              })),
+                kecamatan: normalizeKecamatanName(String(r.Kecamatan ?? "")),
+                jalaTebar: cleanFloat(r["Jala Tebar Produksi (Kg)"]),
+                pancing: cleanFloat(r["Pancing Produksi (Kg)"]),
+                jaringIngsang: cleanFloat(r["Jaring Ingsang Produksi (Kg)"]),
+                lainnya: cleanFloat(r["Lainnya Produksi (Kg)"]),
+                tahun: String(r.Tahun ?? "").trim(),
+              }))
+              .filter((d) => d.tahun),
           );
         },
       });
@@ -1504,7 +1708,7 @@ export const fetchPerikananTangkap = async (): Promise<PerikananTangkap[]> =>
   });
 
 export const fetchPerikananBenih = async (): Promise<PerikananBenih[]> =>
-  withCache("cache_perikanan_benih_v1", async () => {
+  withCache("cache_perikanan_benih_v3", async () => {
   try {
     const response = await fetch(
       "/14. Distankan KP/Distribusi Produksi Perikanan Hasil Obyek Pembenihan Ikan/Distribusi Produksi Perikanan Hasil Obyek Pembenihan Ikan CSV.csv",
@@ -1522,13 +1726,12 @@ export const fetchPerikananBenih = async (): Promise<PerikananBenih[]> =>
             rows
               .filter((r) => !isSummaryRow(r.Kecamatan))
               .map((r) => ({
-                kecamatan: r.Kecamatan?.trim() || "Unknown",
-                dipeliharaSendiri: cleanInt(
-                  r["Hasil Obyek Pembenihan Ikan Dipelihara Sendiri (Ekor)"],
-                ),
-                dijualLuar: cleanInt(r["Dijual ke Lain Daerah (Ekor)"]),
-                tahun: r.Tahun?.trim() || "2024",
-              })),
+                kecamatan: normalizeKecamatanName(String(r.Kecamatan ?? "")),
+                dipeliharaSendiri: cleanFloat(r["Sendiri"]),
+                dijualLuar: cleanFloat(r["Lain Daerah"]),
+                tahun: String(r.Tahun ?? "").trim(),
+              }))
+              .filter((d) => d.tahun),
           );
         },
       });
@@ -1566,12 +1769,15 @@ export interface PlantationProduction {
 }
 
 export const fetchPlantationArea = async (): Promise<PlantationArea[]> =>
-  withCache("cache_plantation_area_v1", async () => {
+  withCache("cache_plantation_area_v2", async () => {
   try {
     const response = await fetch(
-      "/14. Distankan KP/Luas Areal Tanaman Perkebunan Menurut Kecamatan dan Jenis Tanaman (ha)/Luas Areal Tanaman Perkebunan Menurut Kecamatan dan Jenis Tanaman CSV.csv"
+      "/14. Distankan KP/Luas Areal Tanaman Perkebunan Menurut Kecamatan dan Jenis Tanaman (ha)/Luas Areal Tanaman Perkebunan Menurut Kecamatan dan Jenis Tanaman (ha) CSV.csv"
     );
-    if (!response.ok) throw new Error("Gagal mengambil data");
+    // Vite dev server membalas index.html (status 200) untuk file yang tidak ada —
+    // cek content-type agar tidak mem-parsing HTML sebagai CSV.
+    const contentType = response.headers.get("content-type") || "";
+    if (!response.ok || contentType.includes("html")) throw new Error("Gagal mengambil data");
     const text = await response.text();
     return new Promise((resolve) => {
       Papa.parse(text, {
@@ -1580,23 +1786,41 @@ export const fetchPlantationArea = async (): Promise<PlantationArea[]> =>
         transformHeader: normalizeHeader,
         complete: (results) => {
           const rows = results.data as any[];
-          resolve(
-            rows
-              .filter((r) => !isSummaryRow(r.Kecamatan))
-              .map((r) => ({
-                kecamatan: r.Kecamatan?.trim() || "Unknown",
-                kelapaSawit: cleanInt(r["Kelapa Sawit"]),
-                kelapaDalam: cleanInt(r["Kelapa Dalam"]),
-                karet: cleanInt(r["Karet"]),
-                kopiRobusta: cleanInt(r["Kopi Robusta"]),
-                kakao: cleanInt(r["Kakao"]),
-                tebu: cleanInt(r["Tebu"]),
-                teh: cleanInt(r["Teh"]),
-                tembakau: cleanInt(r["Tembakau"]),
-                kopiArabica: cleanInt(r["Kopi Arabica"]),
-                tahun: r.Tahun?.trim() || "2024",
-              }))
-          );
+          const out: PlantationArea[] = [];
+          for (const row of rows) {
+            // Normalisasi nama kecamatan (Purwonegoro → Purwanegara, Purworejo Klampok → Purwareja Klampok)
+            let kecRaw = (row["Kecamatan"] || "").toString().replace(/^\d+\.\s*/, "").trim();
+            if (kecRaw === "Purwonegoro") kecRaw = "Purwanegara";
+            if (kecRaw === "Purworejo Klampok") kecRaw = "Purwareja Klampok";
+            if (!kecRaw || isSummaryRow(kecRaw)) continue;
+            const kecClean = normalizeKecamatanName(kecRaw);
+            const tahun = (row["Tahun"] || "").toString().trim();
+            if (!/^\d{4}$/.test(tahun)) continue;
+            // CSV berformat wide×tahun: kolom "Kelapa Sawit (ha) 2017" … "(ha) 2024",
+            // nilai hanya terisi pada grup kolom yang cocok dengan kolom "Tahun".
+            const findVal = (tanaman: string, yr: string) => {
+              for (const k of Object.keys(row)) {
+                const m = k.match(/^([^(]+?)\s*\(ha\)\s*(\d{4})$/);
+                if (m && m[1].trim() === tanaman && m[2] === yr) return row[k];
+              }
+              const direct = row[tanaman];
+              return direct !== undefined ? direct : undefined;
+            };
+            out.push({
+              kecamatan: kecClean,
+              kelapaSawit: cleanFloat(findVal("Kelapa Sawit", tahun)),
+              kelapaDalam: cleanFloat(findVal("Kelapa Dalam", tahun)),
+              karet: cleanFloat(findVal("Karet", tahun)),
+              kopiRobusta: cleanFloat(findVal("Kopi Robusta", tahun)),
+              kakao: cleanFloat(findVal("Kakao", tahun)),
+              tebu: cleanFloat(findVal("Tebu", tahun)),
+              teh: cleanFloat(findVal("Teh", tahun)),
+              tembakau: cleanFloat(findVal("Tembakau", tahun)),
+              kopiArabica: cleanFloat(findVal("Kopi Arabica", tahun)),
+              tahun,
+            });
+          }
+          resolve(out);
         },
       });
     });
@@ -1606,12 +1830,15 @@ export const fetchPlantationArea = async (): Promise<PlantationArea[]> =>
   });
 
 export const fetchPlantationProduction = async (): Promise<PlantationProduction[]> =>
-  withCache("cache_plantation_production_v1", async () => {
+  withCache("cache_plantation_production_v2", async () => {
   try {
     const response = await fetch(
-      "/14. Distankan KP/Produksi Perkebunan Menurut Kecamatan dan Jenis Tanaman (ton)/Produksi Tanaman Perkebunan Menurut Kecamatan dan Jenis Tanaman CSV.csv"
+      "/14. Distankan KP/Produksi Perkebunan Menurut Kecamatan dan Jenis Tanaman (ton)/Produksi Perkebunan Menurut Kecamatan dan Jenis Tanaman (ton) CSV.csv"
     );
-    if (!response.ok) throw new Error("Gagal mengambil data");
+    // Vite dev server membalas index.html (status 200) untuk file yang tidak ada —
+    // cek content-type agar tidak mem-parsing HTML sebagai CSV.
+    const contentType = response.headers.get("content-type") || "";
+    if (!response.ok || contentType.includes("html")) throw new Error("Gagal mengambil data");
     const text = await response.text();
     return new Promise((resolve) => {
       Papa.parse(text, {
@@ -1620,22 +1847,57 @@ export const fetchPlantationProduction = async (): Promise<PlantationProduction[
         transformHeader: normalizeHeader,
         complete: (results) => {
           const rows = results.data as any[];
-          resolve(
-            rows
-              .filter((r) => !isSummaryRow(r.Kecamatan))
-              .map((r) => ({
-                kecamatan: r.Kecamatan?.trim() || "Unknown",
-                kelapaSawit: cleanInt(r["Kelapa Sawit"]),
-                kelapaDalam: cleanInt(r["Kelapa Dalam"]),
-                karet: cleanInt(r["Karet"]),
-                kopiRobusta: cleanInt(r["Kopi Robusta"]),
-                kakao: cleanInt(r["Kakao"]),
-                tebu: cleanInt(r["Tebu"]),
-                teh: cleanInt(r["Teh"]),
-                tembakau: cleanInt(r["Tembakau"]),
-                tahun: r.Tahun?.trim() || "2024",
-              }))
-          );
+          // Data 2017–2021 memuat baris agregat kabupaten per komoditas
+          // ("JENIS", "Kakao", "Karet", dst. — nilainya di kolom ke-2, bukan di grup
+          // kolom tahun). Baris itu bukan kecamatan — filter agar tidak terbaca sebagai data.
+          const AGG_ROWS = new Set([
+            "JENIS",
+            "Jenis",
+            "Kakao",
+            "Karet",
+            "Kelapa Dalam",
+            "Kelapa Sawit",
+            "Kopi Robusta",
+            "Kopi Arabica",
+            "Tebu",
+            "Teh",
+            "Tembakau",
+          ]);
+          const out: PlantationProduction[] = [];
+          for (const row of rows) {
+            // Normalisasi nama kecamatan (Purwonegoro → Purwanegara, Purworejo Klampok → Purwareja Klampok)
+            let kecRaw = (row["Kecamatan"] || "").toString().replace(/^\d+\.\s*/, "").trim();
+            if (kecRaw === "Purwonegoro") kecRaw = "Purwanegara";
+            if (kecRaw === "Purworejo Klampok") kecRaw = "Purwareja Klampok";
+            if (!kecRaw || isSummaryRow(kecRaw) || AGG_ROWS.has(kecRaw)) continue;
+            const kecClean = normalizeKecamatanName(kecRaw);
+            const tahun = (row["Tahun"] || "").toString().trim();
+            if (!/^\d{4}$/.test(tahun)) continue;
+            // CSV berformat wide×tahun: kolom "Kelapa Sawit (ton) 2017" … "(ton) 2024",
+            // nilai hanya terisi pada grup kolom yang cocok dengan kolom "Tahun".
+            // (Kolom "Kelapa Dalam (ton)" baru ada mulai 2018 → 2017 bernilai 0.)
+            const findVal = (tanaman: string, yr: string) => {
+              for (const k of Object.keys(row)) {
+                const m = k.match(/^([^(]+?)\s*\(ton\)\s*(\d{4})$/);
+                if (m && m[1].trim() === tanaman && m[2] === yr) return row[k];
+              }
+              const direct = row[tanaman];
+              return direct !== undefined ? direct : undefined;
+            };
+            out.push({
+              kecamatan: kecClean,
+              kelapaSawit: cleanFloat(findVal("Kelapa Sawit", tahun)),
+              kelapaDalam: cleanFloat(findVal("Kelapa Dalam", tahun)),
+              karet: cleanFloat(findVal("Karet", tahun)),
+              kopiRobusta: cleanFloat(findVal("Kopi Robusta", tahun)),
+              kakao: cleanFloat(findVal("Kakao", tahun)),
+              tebu: cleanFloat(findVal("Tebu", tahun)),
+              teh: cleanFloat(findVal("Teh", tahun)),
+              tembakau: cleanFloat(findVal("Tembakau", tahun)),
+              tahun,
+            });
+          }
+          resolve(out);
         },
       });
     });
@@ -1703,12 +1965,15 @@ const bpsAnnualHorticulture2025: AnnualHorticultureProduction[] = [
 ];
 
 export const fetchVegetableArea = async (): Promise<VegetableArea[]> =>
-  withCache("cache_vegetable_area_v1", async () => {
+  withCache("cache_vegetable_area_v2", async () => {
   try {
     const response = await fetch(
-      "/14. Distankan KP/Luas Panen Tanaman Sayuran Menurut Kecamatan dan Jenis Tanaman (ha)/Luas Panen Tanaman Sayuran Menurut Kecamatan dan Jenis Tanaman CSV.csv"
+      "/14. Distankan KP/Luas Panen Tanaman Sayuran Menurut Kecamatan dan Jenis Tanaman (ha)/Luas Panen Tanaman Sayuran Menurut Kecamatan dan Jenis Tanaman (ha) CSV.csv"
     );
-    if (!response.ok) throw new Error("Gagal mengambil data");
+    // Vite dev server membalas index.html (status 200) untuk file yang tidak ada —
+    // cek content-type agar tidak mem-parsing HTML sebagai CSV.
+    const contentType = response.headers.get("content-type") || "";
+    if (!response.ok || contentType.includes("html")) throw new Error("Gagal mengambil data");
     const text = await response.text();
     return new Promise((resolve) => {
       Papa.parse(text, {
@@ -1717,22 +1982,40 @@ export const fetchVegetableArea = async (): Promise<VegetableArea[]> =>
         transformHeader: normalizeHeader,
         complete: (results) => {
           const rows = results.data as any[];
-          resolve(
-            rows
-              .filter((r) => !isSummaryRow(r.Kecamatan))
-              .map((r) => ({
-                kecamatan: r.Kecamatan?.toString().replace(/^\d+\.\s*/, "").trim() || "Unknown",
-                bawangMerah: cleanInt(r["Bawang Merah"]),
-                cabaiBesar: cleanInt(r["Cabai Besar"]),
-                kentang: cleanInt(r["Kentang"]),
-                kubis: cleanInt(r["Kubis"]),
-                petsai: cleanInt(r["Petsai"]),
-                tomat: cleanInt(r["Tomat"]),
-                bawangPutih: cleanInt(r["Bawang Putih"]),
-                cabaiRawit: cleanInt(r["Cabai Rawit"]),
-                tahun: r.Tahun?.trim() || "2024",
-              }))
-          );
+          const out: VegetableArea[] = [];
+          for (const row of rows) {
+            // Normalisasi nama kecamatan (Purwonegoro → Purwanegara, Purworejo Klampok → Purwareja Klampok)
+            let kecRaw = (row["Kecamatan"] || "").toString().replace(/^\d+\.\s*/, "").trim();
+            if (kecRaw === "Purwonegoro") kecRaw = "Purwanegara";
+            if (kecRaw === "Purworejo Klampok") kecRaw = "Purwareja Klampok";
+            if (!kecRaw || isSummaryRow(kecRaw)) continue;
+            const kecClean = normalizeKecamatanName(kecRaw);
+            const tahun = (row["Tahun"] || "").toString().trim();
+            if (!/^\d{4}$/.test(tahun)) continue;
+            // CSV berformat wide×tahun: kolom "Bawang Merah (ha) 2017" … "(ha) 2024",
+            // nilai hanya terisi pada grup kolom yang cocok dengan kolom "Tahun".
+            const findVal = (tanaman: string, yr: string) => {
+              for (const k of Object.keys(row)) {
+                const m = k.match(/^([^(]+?)\s*\(ha\)\s*(\d{4})$/);
+                if (m && m[1].trim() === tanaman && m[2] === yr) return row[k];
+              }
+              const direct = row[tanaman];
+              return direct !== undefined ? direct : undefined;
+            };
+            out.push({
+              kecamatan: kecClean,
+              bawangMerah: cleanFloat(findVal("Bawang Merah", tahun)),
+              cabaiBesar: cleanFloat(findVal("Cabai Besar", tahun)),
+              kentang: cleanFloat(findVal("Kentang", tahun)),
+              kubis: cleanFloat(findVal("Kubis", tahun)),
+              petsai: cleanFloat(findVal("Petsai", tahun)),
+              tomat: cleanFloat(findVal("Tomat", tahun)),
+              bawangPutih: cleanFloat(findVal("Bawang Putih", tahun)),
+              cabaiRawit: cleanFloat(findVal("Cabai Rawit", tahun)),
+              tahun,
+            });
+          }
+          resolve(out);
         },
       });
     });
@@ -1742,12 +2025,15 @@ export const fetchVegetableArea = async (): Promise<VegetableArea[]> =>
   });
 
 export const fetchAnnualHorticultureProduction = async (): Promise<AnnualHorticultureProduction[]> =>
-  withCache("cache_annual_horticulture_prod_v1", async () => {
+  withCache("cache_annual_horticulture_prod_v2", async () => {
   try {
     const response = await fetch(
-      "/14. Distankan KP/Produksi Buah–Buahan dan Sayuran Tahunan Menurut Jenis Tanaman (ton)/Produksi Buah–Buahan dan Sayuran Tahunan Menurut Jenis Tanaman CSV.csv"
+      "/14. Distankan KP/Produksi Buah–Buahan dan Sayuran Tahunan Menurut Jenis Tanaman (ton)/Produksi Buah–Buahan dan Sayuran Tahunan Menurut Jenis Tanaman (ton) CSV.csv"
     );
-    if (!response.ok) return bpsAnnualHorticulture2025;
+    // Vite dev server membalas index.html (status 200) untuk file yang tidak ada —
+    // cek content-type agar tidak mem-parsing HTML sebagai CSV.
+    const contentType = response.headers.get("content-type") || "";
+    if (!response.ok || contentType.includes("html")) return bpsAnnualHorticulture2025;
 
     const text = await response.text();
     return new Promise((resolve) => {
@@ -1757,14 +2043,25 @@ export const fetchAnnualHorticultureProduction = async (): Promise<AnnualHorticu
         transformHeader: normalizeHeader,
         complete: (results) => {
           const rows = results.data as any[];
-          const localRows = rows
-            .filter((r) => r["Jenis tanaman"] && r.Tahun)
+          // Header bisa "Jenis Tanaman" atau "Jenis tanaman" — cari case-insensitive
+          const sample = rows[0] || {};
+          const jenisKey =
+            Object.keys(sample).find((k) => /^jenis\s*tanaman$/i.test(k.trim())) || "Jenis Tanaman";
+          const prodKey =
+            Object.keys(sample).find((k) => /^produksi\s*\(ton\)$/i.test(k.trim())) || "Produksi (ton)";
+          const tahunKey = Object.keys(sample).find((k) => /^tahun$/i.test(k.trim())) || "Tahun";
+          const localRows: AnnualHorticultureProduction[] = rows
             .map((r) => ({
-              jenisTanaman: r["Jenis tanaman"]?.toString().trim() || "Unknown",
-              produksiTon: cleanInt(r["Produksi (ton)"]),
-              tahun: r.Tahun?.toString().trim() || "",
+              jenisTanaman: (r[jenisKey] || "").toString().trim(),
+              produksiTon: cleanFloat(r[prodKey]),
+              tahun: (r[tahunKey] || "").toString().trim(),
             }))
-            .filter((r) => r.jenisTanaman !== "Unknown" && r.produksiTon > 0 && r.tahun);
+            .filter(
+              (r) =>
+                r.jenisTanaman &&
+                !isSummaryRow(r.jenisTanaman) &&
+                /^\d{4}$/.test(r.tahun)
+            );
 
           resolve([...localRows, ...bpsAnnualHorticulture2025]);
         },
@@ -1777,12 +2074,15 @@ export const fetchAnnualHorticultureProduction = async (): Promise<AnnualHorticu
   });
 
 export const fetchFruitProduction = async (): Promise<FruitProduction[]> =>
-  withCache("cache_fruit_production_v1", async () => {
+  withCache("cache_fruit_production_v2", async () => {
   try {
     const response = await fetch(
-      "/14. Distankan KP/Produksi Buah-buahan Menurut Kecamatan dan Jenis Tanaman (ton)/Produksi Buah-buahan Menurut Kecamatan dan Jenis Tanaman CSV.csv"
+      "/14. Distankan KP/Produksi Buah-buahan Menurut Kecamatan dan Jenis Tanaman (ton)/Produksi Buah-buahan Menurut Kecamatan dan Jenis Tanaman (ton) CSV.csv"
     );
-    if (!response.ok) throw new Error("Gagal mengambil data");
+    // Vite dev server membalas index.html (status 200) untuk file yang tidak ada —
+    // cek content-type agar tidak mem-parsing HTML sebagai CSV.
+    const contentType = response.headers.get("content-type") || "";
+    if (!response.ok || contentType.includes("html")) throw new Error("Gagal mengambil data");
     const text = await response.text();
     return new Promise((resolve) => {
       Papa.parse(text, {
@@ -1791,21 +2091,39 @@ export const fetchFruitProduction = async (): Promise<FruitProduction[]> =>
         transformHeader: normalizeHeader,
         complete: (results) => {
           const rows = results.data as any[];
-          resolve(
-            rows
-              .filter((r) => !isSummaryRow(r.Kecamatan))
-              .map((r) => ({
-                kecamatan: r.Kecamatan?.toString().replace(/^\d+\.\s*/, "").trim() || "Unknown",
-                mangga: cleanInt(r["Mangga"]),
-                durian: cleanInt(r["Durian"]),
-                jerukBesar: cleanInt(r["Jeruk Besar"]),
-                pisang: cleanInt(r["Pisang"]),
-                pepaya: cleanInt(r["Pepaya"]),
-                salak: cleanInt(r["Salak"]),
-                jerukSiam: cleanInt(r["Jeruk Siam"]),
-                tahun: r.Tahun?.trim() || "2024",
-              }))
-          );
+          const out: FruitProduction[] = [];
+          for (const row of rows) {
+            // Normalisasi nama kecamatan (Purwonegoro → Purwanegara, Purworejo Klampok → Purwareja Klampok)
+            let kecRaw = (row["Kecamatan"] || "").toString().replace(/^\d+\.\s*/, "").trim();
+            if (kecRaw === "Purwonegoro") kecRaw = "Purwanegara";
+            if (kecRaw === "Purworejo Klampok") kecRaw = "Purwareja Klampok";
+            if (!kecRaw || isSummaryRow(kecRaw)) continue;
+            const kecClean = normalizeKecamatanName(kecRaw);
+            const tahun = (row["Tahun"] || "").toString().trim();
+            if (!/^\d{4}$/.test(tahun)) continue;
+            // CSV berformat wide×tahun: kolom "Mangga (ton) 2017" … "(ton) 2024",
+            // nilai hanya terisi pada grup kolom yang cocok dengan kolom "Tahun".
+            const findVal = (tanaman: string, yr: string) => {
+              for (const k of Object.keys(row)) {
+                const m = k.match(/^([^(]+?)\s*\(ton\)\s*(\d{4})$/);
+                if (m && m[1].trim() === tanaman && m[2] === yr) return row[k];
+              }
+              const direct = row[tanaman];
+              return direct !== undefined ? direct : undefined;
+            };
+            out.push({
+              kecamatan: kecClean,
+              mangga: cleanFloat(findVal("Mangga", tahun)),
+              durian: cleanFloat(findVal("Durian", tahun)),
+              jerukBesar: cleanFloat(findVal("Jeruk Besar", tahun)),
+              pisang: cleanFloat(findVal("Pisang", tahun)),
+              pepaya: cleanFloat(findVal("Pepaya", tahun)),
+              salak: cleanFloat(findVal("Salak", tahun)),
+              jerukSiam: cleanFloat(findVal("Jeruk Siam", tahun)),
+              tahun,
+            });
+          }
+          resolve(out);
         },
       });
     });
@@ -1834,6 +2152,7 @@ export interface KelompokTaniRow {
   anggotaGapoktan: number;
   tahun: string;
   kelompokTaniHutan?: number;
+  anggotaTaniHutan?: number;
   kthPemula?: number;
   kthMadya?: number;
   kthUtama?: number;
@@ -1886,17 +2205,16 @@ const mergeKelompokTaniHutan = (baseData: KelompokTaniRow[], hutanData: Kelompok
     hutanByKey.set(getKelompokTaniKey(item.desa, item.kecamatan), item);
   });
 
-  const baseKeys = new Set<string>();
   const merged = baseData.map((item) => {
     const key = getKelompokTaniKey(item.desa, item.kecamatan);
     const hutan = hutanByKey.get(key);
-    baseKeys.add(key);
 
     if (!hutan) return item;
 
     return {
       ...item,
       kelompokTaniHutan: hutan.kelompokTaniHutan,
+      anggotaTaniHutan: hutan.anggotaTaniHutan,
       kthPemula: hutan.kthPemula,
       kthMadya: hutan.kthMadya,
       kthUtama: hutan.kthUtama,
@@ -1904,11 +2222,10 @@ const mergeKelompokTaniHutan = (baseData: KelompokTaniRow[], hutanData: Kelompok
     };
   });
 
-  hutanData.forEach((item) => {
-    const key = getKelompokTaniKey(item.desa, item.kecamatan);
-    if (!baseKeys.has(key)) merged.push(item);
-  });
-
+  // Catatan: baris hutan untuk desa yang tidak ada di data kelembagaan Dinas TIDAK
+  // di-append lagi. Dulu di-append dengan tahun "2026" sehingga muncul opsi tahun
+  // 2026 yang menyesatkan (semua poktan 0). KTH untuk seluruh kecamatan (termasuk
+  // 5 kecamatan tanpa data Dinas) kini disajikan lewat fetchKelompokTaniHutanSnapshot.
   return merged;
 };
 
@@ -1922,8 +2239,17 @@ const fetchKelompokTaniHutan = async (): Promise<KelompokTaniRow[]> => {
   }
 };
 
+/**
+ * Snapshot Kelompok Tani Hutan (KTH) SIMLUH seluruh 20 kecamatan.
+ * Tidak terikat tahun data kelembagaan Dinas — dipakai untuk statistik KTH
+ * yang mencakup kecamatan tanpa data Dinas (Banjarmangu, Kalibening, Madukara,
+ * Pagedongan, Purwareja Klampok) dan sebagai panel snapshot terpisah.
+ */
+export const fetchKelompokTaniHutanSnapshot = async (): Promise<KelompokTaniRow[]> =>
+  withCache("cache_kelompok_tani_hutan_snapshot_v1", async () => fetchKelompokTaniHutan());
+
 export const fetchKelompokTani = async (): Promise<KelompokTaniRow[]> => {
-  const cacheKey = "banjarnegara_kelompok_tani_cache_v4";
+  const cacheKey = "banjarnegara_kelompok_tani_cache_v6";
 
   const fetchFresh = async (): Promise<KelompokTaniRow[]> => {
     let fallbackData: KelompokTaniRow[] = [];
@@ -1976,7 +2302,7 @@ export interface St2023DesaExtra {
 }
 
 export const fetchSt2023DesaExtra = async (): Promise<St2023DesaExtra[]> =>
-  withCache("cache_st2023_desa_extra_v1", async () => {
+  withCache("cache_st2023_desa_extra_v2", async () => {
     try {
       const response = await fetch("/data/st2023-desa-fallback.json");
       if (!response.ok) throw new Error("Gagal mengambil data ST2023 per-desa");

@@ -22,6 +22,7 @@ export default function FoodSecurityPage() {
   const [combinedData, setCombinedData] = useState<FoodSecurityCombined[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
+  const [lumbungTahun, setLumbungTahun] = useState<number>(0);
 
   useEffect(() => {
     const loadData = async () => {
@@ -69,6 +70,7 @@ export default function FoodSecurityPage() {
         });
 
         setCombinedData(combined);
+        setLumbungTahun(Math.max(0, ...lumbung.map((l) => l.tahun || 0)));
       } catch (err) {
         console.error("Gagal memuat data ketahanan pangan:", err);
       } finally {
@@ -270,6 +272,11 @@ export default function FoodSecurityPage() {
                 </table>
               </div>
             </div>
+
+            <p className="text-xs text-slate-500 italic text-right">
+              Sumber: BPS/Distankan KP Kab. Banjarnegara. Data lumbung &amp; gudang pangan per tahun{" "}
+              {lumbungTahun > 0 ? lumbungTahun : "terakhir tersedia"}.
+            </p>
           </>
         )}
       </section>

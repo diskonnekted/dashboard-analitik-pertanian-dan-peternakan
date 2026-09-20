@@ -1,0 +1,165 @@
+﻿import { Beef, Rabbit, Bird } from "lucide-react";
+import type { PopulasiTernak } from "../../services/api";
+import { EmptyBlock } from "./EmptyBlock";
+
+interface Props {
+  data: PopulasiTernak[];
+}
+
+/**
+ * Ternak dikelompokkan menjadi 3 kategori visual: besar, kecil, unggas.
+ * Setiap kategori menampilkan total + bar chart per-jenis.
+ */
+export function DesaTernak({ data }: Props) {
+  if (!data || data.length === 0) {
+    return (
+      <EmptyBlock
+        label="Populasi Ternak"
+        message="Data ternak dari BPS ST2023 belum tersedia untuk desa ini."
+      />
+    );
+  }
+
+  // Kelompokkan per kategori (BESAR / KECIL / UNGGAS)
+  const groups: Record<string, PopulasiTernak[]> = {};
+  for (const r of data) {
+    const cat = (r.kategori || "").toUpperCase().trim();
+    if (!groups[cat]) groups[cat] = [];
+    groups[cat].push(r);
+  }
+
+  const order = ["BESAR", "KECIL", "UNGGAS"];
+  const present = order.filter((k) => groups[k] && groups[k].length > 0);
+
+  if (present.length === 0) {
+    return (
+      <EmptyBlock
+        label="Populasi Ternak"
+        message="Data ternak dari BPS ST2023 belum tersedia untuk desa ini."
+      />
+    );
+  }
+
+  const unit = (n: number) => n.toLocaleString("id-ID");
+
+  return (
+    <section className="bg-white border border-slate-200 rounded-xl p-5">
+      <header className="mb-4 flex items-start gap-2.5">
+        <span
+          aria-hidden
+          className="
+            mt-1 inline-block h-5 w-1 rounded-full
+            bg-gradient-to-b from-amber-500 to-amber-700
+          "
+        />
+        <div className="flex-1">
+          <h2 className="flex items-center gap-2 text-base font-bold text-slate-800 leading-tight">
+            <Beef className="w-4 h-4 text-amber-600" />
+            Populasi Ternak
+          </h2>
+          <p className="mt-0.5 text-xs text-slate-500">
+            Per kategori: ternak besar, kecil, dan unggas (BPS ST2023).
+          </p>
+        </div>
+      </header>
+
+      <div className="space-y-4">
+        {present.map((cat) => (
+          <GroupCard
+            key={cat}
+            cat={cat}
+            rows={groups[cat]}
+            unit={unit}
+          />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function GroupCard({
+  cat,
+  rows,
+  unit,
+}: {
+  cat: string;
+  rows: PopulasiTernak[];
+  unit: (n: number) => string;
+}) {
+  const meta = {
+    BESAR: {
+      Icon: Beef,
+      label: "Ternak Besar",
+      sub: "Sapi, kerbau, kuda",
+      bar: "from-amber-500 to-orange-500",
+      bg: "from-amber-50/60 to-white",
+      ring: "ring-amber-100",
+    },
+    KECIL: {
+      Icon: Rabbit,
+      label: "Ternak Kecil",
+      sub: "Kambing, domba, babi",
+      bar: "from-emerald-500 to-teal-500",
+      bg: "from-emerald-50/60 to-white",
+      ring: "ring-emerald-100",
+    },
+    UNGGAS: {
+      Icon: Bird,
+      label: "Unggas",
+      sub: "Ayam, bebek, burung",
+      bar: "from-blue-500 to-indigo-500",
+      bg: "from-blue-50/60 to-white",
+      ring: "ring-blue-100",
+    },
+  }[cat];
+
+  if (!meta) return null;
+  const { Icon, label, sub, bar, bg, ring } = meta;
+
+  const max = Math.max(...rows.map((r) => r.jumlah || 0));
+  const total = rows.reduce((a, r) => a + (r.jumlah || 0), 0);
+
+  return (
+    <div className={`rounded-xl bg-gradient-to-br ${bg} ring-1 ${ring} p-3.5`}>
+      <div className="flex items-center gap-2 mb-2.5">
+        <div
+          className="
+            flex h-7 w-7 items-center justify-center
+            rounded-md bg-white ring-1 ring-slate-200 shadow-sm
+          "
+        >
+          <Icon className="w-4 h-4 text-slate-700" />
+        </div>
+        <div className="flex-1">
+          <div className="text-sm font-bold text-slate-800 leading-tight">{label}</div>
+          <div className="text-[11px] text-slate-500">{sub}</div>
+        </div>
+        <div className="text-right">
+          <div className="text-base font-bold text-slate-800 tabular-nums">{unit(total)}</div>
+          <div className="text-[10px] uppercase tracking-wider text-slate-500">total ekor</div>
+        </div>
+      </div>
+
+      <div className="space-y-1.5">
+        {rows.map((r) => {
+          const pct = max > 0 ? (r.jumlah / max) * 100 : 0;
+          return (
+            <div key={`${r.kategori}-${r.jenis}`} className="text-xs">
+              <div className="flex items-center justify-between mb-0.5">
+                <span className="font-medium text-slate-700">{r.jenis}</span>
+                <span className="text-slate-600 tabular-nums">{unit(r.jumlah)}</span>
+              </div>
+              <div className="h-1.5 w-full rounded-full bg-slate-100 overflow-hidden">
+                <div
+                  className={`h-full bg-gradient-to-r ${bar} rounded-full transition-all`}
+                  style={{ width: `${Math.max(2, pct).toFixed(1)}%` }}
+                />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+

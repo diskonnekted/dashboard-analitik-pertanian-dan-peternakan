@@ -66,7 +66,7 @@ export default function LivestockPage() {
   const stats = useMemo(() => {
     let total = 0;
     let topDistrict = "-";
-    let topVal = -1;
+    let topVal = 0;
     let breakdown: { name: string; value: number }[] = [];
 
     if (category === "besar") {
@@ -510,10 +510,10 @@ export default function LivestockPage() {
                         fontSize: "12px",
                         boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)",
                       }}
-                      formatter={(value: any) => [formatNum(Number(value)), ""]}
+                      formatter={(value: any, name: any) => [formatNum(Number(value)), String(name ?? "")]}
                     />
                     <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: "11px" }} />
-                    <Line type="monotone" dataKey="total" name="Total" stroke="#64748b" strokeWidth={3} dot={{ fill: "#475569", r: 4 }} activeDot={{ r: 6 }} connectNulls={false} />
+                    <Line type="monotone" dataKey="total" name="Total Populasi" stroke="#64748b" strokeWidth={3} dot={{ fill: "#475569", r: 4 }} activeDot={{ r: 6 }} connectNulls={false} />
                     <Line type="monotone" dataKey="proyeksi" name="Proyeksi" stroke="#ef4444" strokeWidth={2} strokeDasharray="6 4" dot={{ fill: "#ef4444", r: 4 }} connectNulls={true} />
                     {seriesKeys.map((s, idx) => {
                       const colors = ["#f59e0b", "#3b82f6", "#8b5cf6", "#10b981", "#ef4444", "#f472b6", "#a855f7"];
@@ -691,7 +691,8 @@ export default function LivestockPage() {
               icon={<TrendingUp size={16} className="text-amber-600" />}
             >
               <p className="text-xs text-slate-500 mb-4">
-                Populasi per Kecamatan di Banjarnegara Tahun {selectedYear}
+                Populasi per Kecamatan di Banjarnegara Tahun {selectedYear} · batang ditumpuk per jenis ternak,
+                tinggi total batang = total populasi kecamatan
               </p>
               
               <div className="h-[420px] w-full">
@@ -714,7 +715,7 @@ export default function LivestockPage() {
                       axisLine={{ stroke: "#cbd5e1", strokeWidth: 1 }}
                       tickLine={{ stroke: "#cbd5e1" }}
                     />
-                    <Tooltip 
+                    <Tooltip
                       contentStyle={{
                         backgroundColor: "#ffffff",
                         border: "1px solid #e2e8f0",
@@ -722,15 +723,17 @@ export default function LivestockPage() {
                         fontSize: "12px",
                         boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)"
                       }}
+                      formatter={(value: any, name: any) => [formatNum(Number(value)), String(name ?? "")]}
                     />
                     <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: "11px" }} />
                     {stats.breakdown.map((item, idx) => {
                       const colors = ["#f59e0b", "#3b82f6", "#8b5cf6", "#10b981", "#ef4444", "#f472b6", "#a855f7"];
                       return (
-                        <Bar 
+                        <Bar
                           key={idx}
-                          dataKey={item.name} 
-                          fill={colors[idx % colors.length]} 
+                          dataKey={item.name}
+                          stackId="a"
+                          fill={colors[idx % colors.length]}
                           stroke="#64748b"
                           strokeWidth={1}
                         />
@@ -772,6 +775,23 @@ export default function LivestockPage() {
                       );
                     })}
                   </tbody>
+                  {tableData.length > 0 && (
+                    <tfoot>
+                      <tr className="border-t-2 border-slate-300 bg-slate-100 font-semibold">
+                        <td className="px-3 py-2.5 text-[11px] uppercase tracking-wide text-slate-600" colSpan={2}>
+                          Jumlah · {selectedKecamatan === "Semua" ? "Seluruh Kabupaten" : selectedKecamatan}
+                        </td>
+                        {stats.breakdown.map((b, idx) => (
+                          <td key={idx} className="px-3 py-2.5 text-xs text-right tabular-nums">
+                            {formatNum(tableData.reduce((a: number, row: any) => a + (Number(row[b.name]) || 0), 0))}
+                          </td>
+                        ))}
+                        <td className="px-3 py-2.5 text-xs font-bold text-right bg-amber-50 tabular-nums">
+                          {formatNum(stats.total)}
+                        </td>
+                      </tr>
+                    </tfoot>
+                  )}
                 </table>
               </div>
             </SectionCard>

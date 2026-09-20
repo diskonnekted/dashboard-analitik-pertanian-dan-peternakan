@@ -1,17 +1,22 @@
-Kecamatan,Sapi,Kerbau,Kuda,Babi,Kambing,Domba,Tahun 
-Banjarnegara,"3,231", - , - , - , - , - ,2018
-Wanayasa,870, - , - , - , - , - ,2018
-Banjarnegara,"2,928", - , - , - , - , - ,2019
-Wanayasa,838, - , - , - , - , - ,2019
-Banjarnegara,"2,810", - , - , - , - , - ,2019
-Wanayasa,868, - , - , - , - , - ,2019
-Banjarnegara,"2,810", - , - , - , - , - ,2020
-Wanayasa,868, - , - , - , - , - ,2020
-Banjarnegara,"2,944", - , - , - , - , - ,2021
-Wanayasa,993, - , - , - , - , - ,2021
-Banjarnegara,"3,144", - , - , - , - , - ,2022
-Wanayasa,"1,001", - , - , - , - , - ,2022
-Banjarnegara,"3,097", - , - , - , - , - ,2023
-Wanayasa,"1,080", - , - , - , - , - ,2023
-Banjarnegara,"2,922", - , - , - , - , - ,2024
-Wanayasa,"1,150", - , - , - , - , - ,2024
+﻿Kecamatan,Sapi,Kerbau,Kuda,Babi,Kambing,Domba,Tahun
+Banjarnegara,3231,,,,0,0,2018
+Banjarnegara,2928,,,,0,0,2019
+Banjarnegara,2810,0,0,0,0,0,2020
+Banjarnegara,2944,0,0,0,0,0,2021
+Banjarnegara,3144,0,0,0,0,0,2022
+Banjarnegara,3097,0,0,0,0,0,2023
+Banjarnegara,2922,0,0,0,0,0,2024
+Wanayasa,870,,,,0,0,2018
+Wanayasa,838,,,,0,0,2019
+Wanayasa,868,0,0,0,0,0,2020
+Wanayasa,993,0,0,0,0,0,2021
+Wanayasa,1001,0,0,0,0,0,2022
+Wanayasa,1080,0,0,0,0,0,2023
+Wanayasa,1150,0,0,0,0,0,2024
+Jumlah,4101,0,0,0,0,0,2018
+Jumlah,3766,,,,0,0,2019
+Jumlah,3678,0,0,0,0,0,2020
+Jumlah,3937,0,0,0,0,0,2021
+Jumlah,4145,0,0,0,0,0,2022
+J u m l a h,4177,0,0,0,0,,2023
+J u m l a h,4072,0,0,0,0,,2024

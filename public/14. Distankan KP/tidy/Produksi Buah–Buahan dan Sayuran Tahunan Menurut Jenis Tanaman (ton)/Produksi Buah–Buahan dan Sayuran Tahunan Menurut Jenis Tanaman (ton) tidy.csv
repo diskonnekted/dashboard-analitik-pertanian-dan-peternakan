@@ -1,0 +1,161 @@
+﻿jenis_tanaman,tahun,metric,value
+Alpukat,2018,Produksi (ton),234.3
+Alpukat,2019,Produksi (ton),326.9
+Alpukat,2020,Produksi (ton),344.9
+Alpukat,2021,Produksi (ton),279.1
+Alpukat,2022,Produksi (ton),58.8
+Alpukat,2023,Produksi (ton),803.03
+Alpukat,2024,Produksi (ton),4760.65
+Belimbing,2018,Produksi (ton),112
+Belimbing,2019,Produksi (ton),127.4
+Belimbing,2020,Produksi (ton),158.3
+Belimbing,2021,Produksi (ton),246
+Belimbing,2022,Produksi (ton),55.3
+Belimbing,2023,Produksi (ton),1.62
+Belimbing,2024,Produksi (ton),117.97
+Duku,2018,Produksi (ton),1662.2
+Duku,2019,Produksi (ton),1756.7
+Duku,2020,Produksi (ton),1999.5
+Duku,2021,Produksi (ton),2499.2
+Duku,2022,Produksi (ton),745.9
+Duku,2023,Produksi (ton),125.54
+Duku,2024,Produksi (ton),2074.3
+Durian,2018,Produksi (ton),6050.4
+Durian,2019,Produksi (ton),9525.2
+Durian,2020,Produksi (ton),11684
+Durian,2021,Produksi (ton),6736.3
+Durian,2022,Produksi (ton),12298.3
+Durian,2023,Produksi (ton),290092.81
+Durian,2024,Produksi (ton),5412.33
+Jambu Biji,2018,Produksi (ton),2856.5
+Jambu Biji,2019,Produksi (ton),4501.8
+Jambu Biji,2020,Produksi (ton),5083.7
+Jambu Biji,2021,Produksi (ton),4061.7
+Jambu Biji,2022,Produksi (ton),2225.1
+Jambu Biji,2023,Produksi (ton),3940.8
+Jambu Biji,2024,Produksi (ton),14958.31
+Jambu Air,2018,Produksi (ton),237.1
+Jambu Air,2019,Produksi (ton),508.5
+Jambu Air,2020,Produksi (ton),930.8
+Jambu Air,2021,Produksi (ton),799.5
+Jambu Air,2022,Produksi (ton),190.7
+Jambu Air,2023,Produksi (ton),735.45
+Jambu Air,2024,Produksi (ton),435.48
+Jeruk Siam,2018,Produksi (ton),255.9
+Jeruk Siam,2019,Produksi (ton),262.3
+Jeruk Siam,2020,Produksi (ton),291.5
+Jeruk Siam,2021,Produksi (ton),242.1
+Jeruk Siam,2022,Produksi (ton),75.9
+Jeruk Siam,2023,Produksi (ton),2.35
+Jeruk Siam,2024,Produksi (ton),25.08
+Jeruk Besa (Pomelo),2018,Produksi (ton),181.6
+Jeruk Besa (Pomelo),2019,Produksi (ton),180.4
+Jeruk Besa (Pomelo),2020,Produksi (ton),721.5
+Jeruk Besa (Pomelo),2022,Produksi (ton),743.4
+Jeruk Besa (Pomelo),2023,Produksi (ton),25.96
+Jeruk Besa (Pomelo),2024,Produksi (ton),354.9
+Jeruk (Tangerine + Pomelo),2018,Produksi (ton),0
+Jeruk (Tangerine + Pomelo),2019,Produksi (ton),0
+Jeruk (Tangerine + Pomelo),2020,Produksi (ton),0
+Jeruk (Tangerine + Pomelo),2021,Produksi (ton),0
+Jeruk (Tangerine + Pomelo),2022,Produksi (ton),0
+Jeruk (Tangerine + Pomelo),2023,Produksi (ton),0
+Jeruk (Tangerine + Pomelo),2024,Produksi (ton),0
+Mangga,2018,Produksi (ton),1050.9
+Mangga,2019,Produksi (ton),3077.7
+Mangga,2020,Produksi (ton),3088.9
+Mangga,2021,Produksi (ton),2486.4
+Mangga,2022,Produksi (ton),2807.7
+Mangga,2023,Produksi (ton),1575.1
+Mangga,2024,Produksi (ton),575.52
+Manggis,2018,Produksi (ton),482.4
+Manggis,2019,Produksi (ton),561.7
+Manggis,2020,Produksi (ton),572
+Manggis,2021,Produksi (ton),925.5
+Manggis,2022,Produksi (ton),48.5
+Manggis,2023,Produksi (ton),40.16
+Manggis,2024,Produksi (ton),271.12
+Nangka,2018,Produksi (ton),5115.5
+Nangka,2019,Produksi (ton),4453.4
+Nangka,2020,Produksi (ton),4636.1
+Nangka,2021,Produksi (ton),10046.7
+Nangka,2022,Produksi (ton),7744
+Nangka,2023,Produksi (ton),539.13
+Nangka,2024,Produksi (ton),2272.99
+Nenas,2018,Produksi (ton),60
+Nenas,2019,Produksi (ton),163.1
+Nenas,2020,Produksi (ton),279.3
+Nenas,2021,Produksi (ton),189
+Nenas,2022,Produksi (ton),71
+Nenas,2023,Produksi (ton),18.68
+Nenas,2024,Produksi (ton),61.84
+Pepaya,2018,Produksi (ton),31316.3
+Pepaya,2019,Produksi (ton),23070.4
+Pepaya,2020,Produksi (ton),30063.5
+Pepaya,2021,Produksi (ton),26445.3
+Pepaya,2022,Produksi (ton),7149.5
+Pepaya,2023,Produksi (ton),4500.14
+Pepaya,2024,Produksi (ton),12728.13
+Pisang,2018,Produksi (ton),18010.4
+Pisang,2019,Produksi (ton),20367.1
+Pisang,2020,Produksi (ton),24884.3
+Pisang,2021,Produksi (ton),25614
+Pisang,2022,Produksi (ton),30646.6
+Pisang,2023,Produksi (ton),36129.99
+Pisang,2024,Produksi (ton),92200.52
+Rambutan,2018,Produksi (ton),4814
+Rambutan,2019,Produksi (ton),6941.3
+Rambutan,2020,Produksi (ton),7107.4
+Rambutan,2021,Produksi (ton),4487.9
+Rambutan,2022,Produksi (ton),1291.1
+Rambutan,2023,Produksi (ton),800.48
+Rambutan,2024,Produksi (ton),4635.36
+Salak,2018,Produksi (ton),400216.7
+Salak,2019,Produksi (ton),350011.1
+Salak,2020,Produksi (ton),376343.8
+Salak,2021,Produksi (ton),360212.6
+Salak,2022,Produksi (ton),230334.6
+Salak,2023,Produksi (ton),1816886.39
+Salak,2024,Produksi (ton),199677.28
+Sawo,2018,Produksi (ton),149
+Sawo,2019,Produksi (ton),156.4
+Sawo,2020,Produksi (ton),239.8
+Sawo,2021,Produksi (ton),193.4
+Sawo,2022,Produksi (ton),117.5
+Sawo,2023,Produksi (ton),72.03
+Sawo,2024,Produksi (ton),300.42
+Markisa,2018,Produksi (ton),0
+Markisa,2019,Produksi (ton),0
+Markisa,2020,Produksi (ton),0
+Markisa,2021,Produksi (ton),0
+Markisa,2022,Produksi (ton),754.7
+Markisa,2023,Produksi (ton),0
+Markisa,2024,Produksi (ton),0
+Sirsak,2018,Produksi (ton),164.1
+Sirsak,2019,Produksi (ton),212.8
+Sirsak,2020,Produksi (ton),245.5
+Sirsak,2021,Produksi (ton),237.4
+Sirsak,2022,Produksi (ton),143.4
+Sirsak,2023,Produksi (ton),33.81
+Sirsak,2024,Produksi (ton),364.08
+Sukun,2018,Produksi (ton),91.4
+Sukun,2019,Produksi (ton),653.4
+Sukun,2020,Produksi (ton),552.1
+Sukun,2021,Produksi (ton),509.9
+Sukun,2022,Produksi (ton),134.9
+Sukun,2023,Produksi (ton),8.9
+Sukun,2024,Produksi (ton),6.33
+Melinjo,2018,Produksi (ton),567
+Melinjo,2019,Produksi (ton),1256.4
+Melinjo,2020,Produksi (ton),1655.7
+Melinjo,2021,Produksi (ton),1044.8
+Melinjo,2022,Produksi (ton),14512
+Melinjo,2023,Produksi (ton),751.24
+Melinjo,2024,Produksi (ton),2521.3
+Petai,2018,Produksi (ton),3748.3
+Petai,2019,Produksi (ton),5878.2
+Petai,2020,Produksi (ton),5996.5
+Petai,2021,Produksi (ton),3627.4
+Petai,2022,Produksi (ton),319292.9
+Petai,2023,Produksi (ton),2157314.91
+Petai,2024,Produksi (ton),344558.91

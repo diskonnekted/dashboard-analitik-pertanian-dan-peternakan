@@ -77,6 +77,12 @@ export default function FisheriesPage() {
     }
   }, [category, yearsList]);
 
+  // Ganti kategori -> reset filter kecamatan agar tidak tersangkut
+  // pada kecamatan yang tidak tersedia di kategori baru.
+  useEffect(() => {
+    setSelectedKecamatan("Semua");
+  }, [category]);
+
   const currentData = useMemo(() => {
     return activeRaw.filter((d) => d.tahun === selectedYear);
   }, [activeRaw, selectedYear]);
@@ -107,7 +113,7 @@ export default function FisheriesPage() {
       return [
         { key: "jalaTebar", label: "Jala Tebar" },
         { key: "pancing", label: "Pancing" },
-        { key: "jaringIngsang", label: "Jaring Ingsang" },
+        { key: "jaringIngsang", label: "Jaring Insang" },
         { key: "lainnya", label: "Lainnya" },
       ];
     return [
@@ -121,7 +127,7 @@ export default function FisheriesPage() {
   const stats = useMemo(() => {
     let total = 0;
     let topDistrict = "-";
-    let topVal = -1;
+    let topVal = 0;
     const totalsByKey: Record<string, number> = {};
     seriesKeys.forEach((s) => (totalsByKey[s.key] = 0));
 
@@ -605,7 +611,10 @@ export default function FisheriesPage() {
                         fontWeight: "bold",
                         boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)",
                       }}
-                      formatter={(value: any) => [formatNum(Number(value)), ""]}
+                      formatter={(value: any, name: any) => [
+                        formatNum(Number(value)),
+                        String(name ?? ""),
+                      ]}
                     />
                     <Legend
                       verticalAlign="top"
@@ -619,7 +628,7 @@ export default function FisheriesPage() {
                     <Line
                       type="monotone"
                       dataKey="total"
-                      name="Total"
+                      name={`Total (${unit})`}
                       stroke="#64748b"
                       strokeWidth={3}
                       dot={{ fill: "#475569", r: 4 }}
@@ -629,7 +638,7 @@ export default function FisheriesPage() {
                     <Line
                       type="monotone"
                       dataKey="proyeksi"
-                      name="Proyeksi"
+                      name={`Proyeksi (${unit})`}
                       stroke="#ef4444"
                       strokeWidth={2}
                       strokeDasharray="6 4"
@@ -888,7 +897,10 @@ export default function FisheriesPage() {
                         fontWeight: "bold",
                         boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)",
                       }}
-                      formatter={(value: any) => [formatNum(Number(value)), ""]}
+                      formatter={(value: any, name: any) => [
+                        formatNum(Number(value)),
+                        String(name ?? ""),
+                      ]}
                     />
                     <Legend
                       verticalAlign="top"
@@ -979,6 +991,36 @@ export default function FisheriesPage() {
                       </tr>
                     ))}
                   </tbody>
+                  <tfoot>
+                    <tr className="border-t-2 border-slate-300 bg-slate-100 font-bold">
+                      <td
+                        colSpan={2}
+                        className="p-3 border-r border-slate-200 text-xs uppercase"
+                      >
+                        {selectedKecamatan === "Semua"
+                          ? "Jumlah (20 kecamatan)"
+                          : `Jumlah (${selectedKecamatan})`}
+                      </td>
+                      {stats.breakdown.map((b, i) => (
+                        <td
+                          key={i}
+                          className="p-3 border-r border-slate-200 text-right"
+                        >
+                          {formatNum(
+                            chartData.reduce(
+                              (a: number, r: any) => a + (r[b.name] || 0),
+                              0,
+                            ),
+                          )}
+                        </td>
+                      ))}
+                      <td className="p-3 text-right bg-slate-200">
+                        {formatNum(
+                          chartData.reduce((a: number, r: any) => a + (r.total || 0), 0),
+                        )}
+                      </td>
+                    </tr>
+                  </tfoot>
                 </table>
               </div>
             </div>

@@ -1,0 +1,11 @@
+const fs = require('fs');
+const c = fs.readFileSync('src/services/desa.ts', 'utf8');
+const urls = [...new Set(c.match(/https?:\/\/[^\s'"`]+/g) || [])];
+console.log("URLs in desa.ts:");
+urls.forEach(u => console.log(' ', u));
+console.log('\n--- Path strings ---');
+const paths = c.match(/['"`]\/[a-z][^'"` ]+['"`]/g) || [];
+console.log(paths.slice(0, 20).join('\n'));
+console.log('\n--- import lines ---');
+const imps = c.split('\n').filter(l => l.startsWith('import') || l.includes('from '));
+imps.slice(0, 20).forEach(l => console.log(l));
