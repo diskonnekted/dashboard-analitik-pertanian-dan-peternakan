@@ -12,53 +12,121 @@ function renderMarkdown(text: string): string {
   const escapeHtml = (s: string) =>
     s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
-  const lines = text.split("\n");
-  let html = "";
-  let inList = false;
-  let inNumList = false;
-
-  for (const line of lines) {
-    const trimmed = line.trim();
-
-    if (trimmed === "") {
-      if (inList) { html += "</ul>"; inList = false; }
-      if (inNumList) { html += "</ol>"; inNumList = false; }
-      html += "<br/>";
-      continue;
-    }
-
-    let processed = escapeHtml(trimmed);
-
-    // Inline formatting: bold, italic, code
-    processed = processed
+  const inlineFmt = (s: string) =>
+    escapeHtml(s)
       .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
       .replace(/\*(.+?)\*/g, "<em>$1</em>")
       .replace(/`(.+?)`/g, '<code class="px-1 py-0.5 bg-slate-100 rounded text-[11px] font-mono">$1</code>');
 
-    // Headers (h1-h6)
+  // Baris pemisah tabel: |---|, |:---:|, dsb.
+  const isSeparatorRow = (s: string) =>
+    /^\|?[\s:|-]+\|?$/.test(s) && s.includes("-");
+
+  const parseRow = (line: string): string[] => {
+    let l = line.trim();
+    if (l.startsWith("|")) l = l.slice(1);
+    if (l.endsWith("|")) l = l.slice(0, -1);
+    return l.split("|").map((c) => c.trim());
+  };
+
+  const lines = text.split("\n");
+  let html = "";
+  let inList = false;
+  let inNumList = false;
+  const closeLists = () => {
+    if (inList) { html += "</ul>"; inList = false; }
+    if (inNumList) { html += "</ol>"; inNumList = false; }
+  };
+
+  let i = 0;
+  while (i < lines.length) {
+    const trimmed = lines[i].trim();
+
+    if (trimmed === "") {
+      closeLists();
+      html += "<br/>";
+      i++;
+      continue;
+    }
+
+    /* â”€â”€ Tabel markdown â”€â”€
+       Deteksi: baris "|" diikuti baris pemisah |---| (boleh ada
+       baris kosong di antaranya â€” output LLM sering begitu).
+       Baris data juga boleh dipisah baris kosong. */
+    if (trimmed.startsWith("|")) {
+      let j = i + 1;
+      while (j < lines.length && lines[j].trim() === "") j++;
+      if (j < lines.length && lines[j].trim().startsWith("|") && isSeparatorRow(lines[j].trim())) {
+        closeLists();
+        const header = parseRow(trimmed);
+        const aligns = parseRow(lines[j].trim()).map((a) =>
+          a.startsWith(":") && a.endsWith(":") ? "center" : a.endsWith(":") ? "right" : "left"
+        );
+        const alignOf = (idx: number) => aligns[idx] || "left";
+
+        const rows: string[][] = [];
+        let k = j + 1;
+        while (k < lines.length) {
+          const t = lines[k].trim();
+          if (t === "") {
+            // toleransi baris kosong antar baris tabel
+            let m = k + 1;
+            while (m < lines.length && lines[m].trim() === "") m++;
+            if (m < lines.length && lines[m].trim().startsWith("|")) { k = m; continue; }
+            break;
+          }
+          if (!t.startsWith("|")) break;
+          if (isSeparatorRow(t)) { k++; continue; }
+          rows.push(parseRow(t));
+          k++;
+        }
+
+        html += '<div class="overflow-x-auto my-2 rounded-lg border border-slate-200 shadow-sm"><table class="min-w-full text-[11px] leading-snug border-collapse">';
+        html += "<thead><tr>";
+        header.forEach((h, idx) => {
+          html += `<th class="bg-emerald-700 text-white font-semibold px-2.5 py-1.5 border-b-2 border-emerald-800 whitespace-nowrap" style="text-align:${alignOf(idx)}">${inlineFmt(h)}</th>`;
+        });
+        html += "</tr></thead><tbody>";
+        rows.forEach((r, ri) => {
+          html += `<tr class="${ri % 2 === 1 ? "bg-slate-50" : "bg-white"}">`;
+          r.forEach((c, ci) => {
+            html += `<td class="px-2.5 py-1.5 border-b border-slate-100 align-top text-slate-700" style="text-align:${alignOf(ci)}">${inlineFmt(c)}</td>`;
+          });
+          html += "</tr>";
+        });
+        html += "</tbody></table></div>";
+        i = k;
+        continue;
+      }
+    }
+
+    let processed = inlineFmt(trimmed);
+
+    // Headers (h4-h2)
     if (processed.startsWith("#### ")) {
-      if (inList) { html += "</ul>"; inList = false; }
-      if (inNumList) { html += "</ol>"; inNumList = false; }
+      closeLists();
       html += `<p class="font-mono font-bold text-[12px] text-emerald-700 uppercase tracking-wide mt-2.5">${processed.slice(5)}</p>`;
+      i++;
       continue;
     }
     if (processed.startsWith("### ")) {
-      if (inList) { html += "</ul>"; inList = false; }
-      if (inNumList) { html += "</ol>"; inNumList = false; }
+      closeLists();
       html += `<p class="font-mono font-bold text-xs text-slate-800 uppercase tracking-wide mt-2">${processed.slice(4)}</p>`;
+      i++;
       continue;
     }
     if (processed.startsWith("## ")) {
-      if (inList) { html += "</ul>"; inList = false; }
-      if (inNumList) { html += "</ol>"; inNumList = false; }
+      closeLists();
       html += `<p class="font-mono font-bold text-sm text-slate-800 mt-2">${processed.slice(3)}</p>`;
+      i++;
       continue;
     }
 
     // Bullet list
-    if (processed.startsWith("- ") || processed.startsWith("• ")) {
+    if (processed.startsWith("- ") || processed.startsWith("* ")) {
       if (!inList) { html += '<ul class="space-y-1 my-1">'; inList = true; }
-      html += `<li class="flex gap-1.5"><span class="text-emerald-600 shrink-0">▸</span><span>${processed.replace(/^[-•]\s+/, "")}</span></li>`;
+      html += `<li class="flex gap-1.5"><span class="text-emerald-600 shrink-0">&#9656;</span><span>${processed.replace(/^[-*]\s+/, "")}</span></li>`;
+      i++;
       continue;
     }
 
@@ -67,21 +135,18 @@ function renderMarkdown(text: string): string {
     if (numMatch) {
       if (!inNumList) { html += '<ol class="space-y-1 my-1">'; inNumList = true; }
       html += `<li class="flex gap-1.5"><span class="font-mono font-bold text-emerald-600 shrink-0">${numMatch[1]}.</span><span>${numMatch[2]}</span></li>`;
+      i++;
       continue;
     }
 
-    if (inList) { html += "</ul>"; inList = false; }
-    if (inNumList) { html += "</ol>"; inNumList = false; }
-
+    closeLists();
     html += `<p>${processed}</p>`;
+    i++;
   }
 
-  if (inList) html += "</ul>";
-  if (inNumList) html += "</ol>";
-
+  closeLists();
   return html;
 }
-
 interface ChatBotProps {
   /** Ringkasan data pertanian untuk konteks AI */
   dataContext: string;
@@ -122,7 +187,7 @@ GAYA KONSULTASI:
 - Bahasa Indonesia profesional, analitis, dan mudah dipahami -- melayani petani, penyuluh, maupun pengambil kebijakan.
 - Solutif dan actionable: berikan langkah konkret, bukan teori kosong. Pertimbangkan kelayakan ekonomi, keberlanjutan lingkungan, dan dampak sosial.
 - Untuk konsultasi budidaya (jadwal tanam, pemupukan, pengendalian hama/penyakit, pascapanen, pemasaran): sesuaikan dengan agroekologi Banjarnegara (dataran tinggi Dieng vs dataran rendah; pola musim muson), dan sarankan konfirmasi ke penyuluh/PPL kecamatan setempat untuk keputusan lapangan.
-- Gunakan format rapi (poin bernomor/bullet; tabel kecil bila membantu). Ringkas namun komprehensif.
+- Gunakan format rapi (poin bernomor/bullet; tabel bila membantu). Jika menyajikan tabel, tulis tabel markdown standar (baris header, baris pemisah |---|, baris data) TANPA baris kosong di antaranya. Ringkas namun komprehensif.
 - Jika pertanyaan di luar konteks pertanian, jawab seperlunya lalu arahkan kembali ke topik pertanian Banjarnegara.
 
 Ingat seluruh riwayat percakapan dalam sesi ini; jawabanmu harus konsisten dengan jawaban sebelumnya.`;
