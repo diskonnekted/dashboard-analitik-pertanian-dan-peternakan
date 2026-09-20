@@ -17,10 +17,10 @@ export function DesaHero({ desa }: Props) {
         >
           <Link to="/" className="hover:text-white">Beranda</Link>
           <span className="mx-1.5">/</span>
-          <Link to="/map" className="hover:text-white">Peta</Link>
+          <Link to="/" className="hover:text-white">Peta</Link>
           <span className="mx-1.5">/</span>
           <Link
-            to={`/map?kecamatan=${encodeURIComponent(desa.kecamatanTampil)}`}
+            to={`/?kecamatan=${encodeURIComponent(desa.kecamatanTampil)}`}
             className="hover:text-white"
           >
             {desa.kecamatanTampil}
@@ -57,7 +57,7 @@ export function DesaHero({ desa }: Props) {
 
         <div className="mt-6">
           <Link
-            to="/map"
+            to="/"
             className="inline-flex items-center text-xs bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1.5 transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5 mr-1.5" />

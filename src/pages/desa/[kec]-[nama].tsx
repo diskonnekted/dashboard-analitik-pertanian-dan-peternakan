@@ -67,7 +67,7 @@ export default function DesaDetailPage() {
           {error ?? "Desa ini tidak ada dalam dataset. Periksa kembali ejaan nama & kecamatan."}
         </p>
         <Link
-          to="/map"
+          to="/"
           className="inline-flex items-center text-sm bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg"
         >
           <Home className="w-4 h-4 mr-1.5" />

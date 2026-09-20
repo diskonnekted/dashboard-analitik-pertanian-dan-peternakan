@@ -32,8 +32,8 @@ export function DesaFooter() {
             Catatan: sesuai keputusan arsitektur, halaman ini hanya memuat data per-desa.
             Data tingkat kecamatan (padi, perkebunan, sayuran, buah) ditampilkan di
             dasbor utama pada bagian peta.{" "}
-            <a href="/map" className="text-emerald-700 hover:underline inline-flex items-center gap-0.5">
-              Buka peta <ExternalLink className="w-3 h-3" />
+            <a href="/" className="text-emerald-700 hover:underline inline-flex items-center gap-0.5">
+              Buka dasbor <ExternalLink className="w-3 h-3" />
             </a>
           </p>
         </div>
