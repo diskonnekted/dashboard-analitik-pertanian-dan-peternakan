@@ -337,7 +337,7 @@ export const fetchOpenDataCatalog = async (): Promise<CkanCatalog> => {
 };
 
 export const fetchLahanBanjarnegara = async (): Promise<LahanDesa[]> => {
-  const cacheKey = "banjarnegara_lahan_cache_v4";
+  const cacheKey = "banjarnegara_lahan_cache_v5";
   const cached = getCachedData<LahanDesa[]>(cacheKey);
 
   // Fetch-first: file lokal kecil (~50KB), selalu ambil yang terbaru.
@@ -354,6 +354,53 @@ export const fetchLahanBanjarnegara = async (): Promise<LahanDesa[]> => {
     }
     return [];
   }
+};
+
+// Total resmi kabupaten dari dataset tidy Distankan "Luas Penggunaan Lahan
+// menurut Jenis Penggunaan (Ha)" â€” dipakai kartu dasbor agar sesuai rilis resmi.
+export interface LahanResmiKabupaten {
+  tahun: number;
+  sawah: number; // I. Lahan sawah (Ha)
+  bukanSawah: number; // II. Bukan lahan sawah (Ha)
+}
+
+export const fetchLahanResmiKabupaten = async (): Promise<LahanResmiKabupaten | null> => {
+  return withCache("lahan-resmi-kabupaten-v1", async () => {
+    try {
+      const response = await fetch(
+        "/14. Distankan KP/tidy/Luas Penggunaan Lahan menurut Jenis Penggunaan (Ha)/Luas Penggunaan Lahan menurut Jenis Penggunaan (Ha) tidy.csv",
+      );
+      if (!response.ok) throw new Error("CSV tidy lahan tidak tersedia");
+      const csvText = await response.text();
+      return await new Promise<LahanResmiKabupaten | null>((resolve) => {
+        Papa.parse(csvText, {
+          header: true,
+          skipEmptyLines: true,
+          complete: (results) => {
+            const rows = results.data as any[];
+            let tahun = 0;
+            rows.forEach((r) => {
+              const t = parseInt(r.tahun);
+              if (!isNaN(t) && t > tahun) tahun = t;
+            });
+            if (!tahun) return resolve(null);
+            const pick = (kat: string) => {
+              const row = rows.find(
+                (r) => String(r.kategori || "").trim() === kat && parseInt(r.tahun) === tahun,
+              );
+              const v = row ? parseFloat(String(row.value).replace(",", ".")) : NaN;
+              return isNaN(v) ? 0 : v;
+            };
+            resolve({ tahun, sawah: pick("I. Lahan sawah"), bukanSawah: pick("II. Bukan lahan sawah") });
+          },
+          error: () => resolve(null),
+        });
+      });
+    } catch (e) {
+      console.warn("fetchLahanResmiKabupaten gagal:", e);
+      return null;
+    }
+  });
 };
 
 // Normalisasi nama kecamatan dari sumber CKAN/Distan yang kadang memuat

@@ -7,7 +7,9 @@ import { MapWidget } from "@/components/MapWidget";
 import {
   fetchOpenDataPertanian,
   fetchLahanBanjarnegara,
+  fetchLahanResmiKabupaten,
   LahanDesa,
+  LahanResmiKabupaten,
 } from "@/services/api";
 import { LandAreaChart } from "@/components/LandAreaChart";
 import { WarningTable } from "@/components/WarningTable";
@@ -15,10 +17,11 @@ import { WarningTable } from "@/components/WarningTable";
 export default function IndexPage() {
   const [datasetCount, setDatasetCount] = useState<number | string>("...");
   const [lahanData, setLahanData] = useState<LahanDesa[]>([]);
+  const [lahanResmi, setLahanResmi] = useState<LahanResmiKabupaten | null>(null);
 
   useEffect(() => {
     const loadData = async () => {
-      const [data, lahan] = await Promise.all([
+      const [data, lahan, resmi] = await Promise.all([
         fetchOpenDataPertanian().catch((error) => {
           console.error(error);
           setDatasetCount("Error");
@@ -28,20 +31,21 @@ export default function IndexPage() {
           console.error(error);
           return [];
         }),
+        fetchLahanResmiKabupaten().catch(() => null),
       ]);
 
       if (data) setDatasetCount(data.result.count);
       if (lahan) setLahanData(lahan);
+      if (resmi) setLahanResmi(resmi);
     };
 
     loadData();
   }, []);
 
-  const totalSawah = lahanData.reduce((acc, curr) => acc + curr.lahanSawah, 0);
-  const totalBukanSawah = lahanData.reduce(
-    (acc, curr) => acc + curr.lahanBukanSawah,
-    0,
-  );
+  const totalSawah = lahanResmi?.sawah || lahanData.reduce((acc, curr) => acc + curr.lahanSawah, 0);
+  const totalBukanSawah =
+    lahanResmi?.bukanSawah ||
+    lahanData.reduce((acc, curr) => acc + curr.lahanBukanSawah, 0);
   const totalDesa = lahanData.length;
 
   const formatNum = (num: number) =>
@@ -82,7 +86,7 @@ export default function IndexPage() {
           <StatWidget
             icon={<Sprout size={20} />}
             title="Total Lahan Sawah"
-            trend="Padi & Palawija"
+            trend={`Irigasi & Tadah Hujan (${lahanResmi?.tahun ?? "resmi"})`}
             trendUp={true}
             value={`${formatNum(totalSawah)} Ha`}
             color="bg-emerald-300"
@@ -90,7 +94,7 @@ export default function IndexPage() {
           <StatWidget
             icon={<Tractor size={20} />}
             title="Lahan Bukan Sawah"
-            trend="Tegalan & Perkebunan"
+            trend={`Tegal, Perkebunan, dll (${lahanResmi?.tahun ?? "resmi"})`}
             trendUp={true}
             value={`${formatNum(totalBukanSawah)} Ha`}
             color="bg-amber-300"
@@ -98,9 +102,9 @@ export default function IndexPage() {
           <StatWidget
             icon={<MapPin size={20} />}
             title="Cakupan Wilayah"
-            trend="Terpetakan"
+            trend="20 Kecamatan"
             trendUp={true}
-            value={`${totalDesa} Desa`}
+            value={`${totalDesa} Desa/Kelurahan`}
             color="bg-purple-300"
           />
         </div>

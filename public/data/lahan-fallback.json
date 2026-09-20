@@ -471,7 +471,7 @@
     "confidence": "rendah"
   },
   {
-    "desa": "KARANTENGAH",
+    "desa": "Karangtengah",
     "kecamatan": "Batur",
     "lahanSawah": 0,
     "lahanBukanSawah": 458.34,
@@ -1185,17 +1185,6 @@
     "confidence": "tinggi"
   },
   {
-    "desa": "PURWODADI",
-    "kecamatan": "Karangkobar",
-    "lahanSawah": 0,
-    "lahanBukanSawah": 0,
-    "jumlah": 222,
-    "tahun": 2025,
-    "rincian": null,
-    "sumber": "fallback-manual",
-    "confidence": "rendah"
-  },
-  {
     "desa": "SAMPANG",
     "kecamatan": "Karangkobar",
     "lahanSawah": 0.971,
@@ -1518,17 +1507,6 @@
     },
     "sumber": "BPS ST2023",
     "confidence": "tinggi"
-  },
-  {
-    "desa": "PAGEALAK",
-    "kecamatan": "Madukara",
-    "lahanSawah": 0,
-    "lahanBukanSawah": 0,
-    "jumlah": 161.202,
-    "tahun": 2025,
-    "rincian": null,
-    "sumber": "fallback-manual",
-    "confidence": "rendah"
   },
   {
     "desa": "DAWUHAN",
@@ -3691,168 +3669,6 @@
       "belumDitanami": 0.801,
       "tanamanTahunan": 36.112,
       "kandangBangunan": 2.428
-    },
-    "sumber": "BPS ST2023",
-    "confidence": "tinggi"
-  },
-  {
-    "desa": "SINGOMERTO",
-    "kecamatan": "Sigaluh",
-    "lahanSawah": 1.001,
-    "lahanBukanSawah": 81.72,
-    "jumlah": 82.721,
-    "tahun": 2023,
-    "rincian": {
-      "bukanSawah": 2.462,
-      "padangRumputSementara": 1.568,
-      "padangRumputPermanen": 1.432,
-      "belumDitanami": 3.089,
-      "tanamanTahunan": 72.322,
-      "kandangBangunan": 0.847
-    },
-    "sumber": "BPS ST2023",
-    "confidence": "tinggi"
-  },
-  {
-    "desa": "KALILANDAK",
-    "kecamatan": "Purwarejaklampok",
-    "lahanSawah": 79.868,
-    "lahanBukanSawah": 11.897,
-    "jumlah": 91.764,
-    "tahun": 2023,
-    "rincian": {
-      "bukanSawah": 1.731,
-      "padangRumputSementara": 0.35,
-      "padangRumputPermanen": 0,
-      "belumDitanami": 0.006,
-      "tanamanTahunan": 9.39,
-      "kandangBangunan": 0.419
-    },
-    "sumber": "BPS ST2023",
-    "confidence": "tinggi"
-  },
-  {
-    "desa": "KALIMANDI",
-    "kecamatan": "Purwarejaklampok",
-    "lahanSawah": 69.605,
-    "lahanBukanSawah": 22.404,
-    "jumlah": 92.009,
-    "tahun": 2023,
-    "rincian": {
-      "bukanSawah": 4.517,
-      "padangRumputSementara": 0.28,
-      "padangRumputPermanen": 0,
-      "belumDitanami": 0.219,
-      "tanamanTahunan": 16.455,
-      "kandangBangunan": 0.932
-    },
-    "sumber": "BPS ST2023",
-    "confidence": "tinggi"
-  },
-  {
-    "desa": "KALIWINASUH",
-    "kecamatan": "Purwarejaklampok",
-    "lahanSawah": 64.768,
-    "lahanBukanSawah": 12.495,
-    "jumlah": 77.263,
-    "tahun": 2023,
-    "rincian": {
-      "bukanSawah": 0.568,
-      "padangRumputSementara": 0.07,
-      "padangRumputPermanen": 0.001,
-      "belumDitanami": 1.414,
-      "tanamanTahunan": 9.95,
-      "kandangBangunan": 0.491
-    },
-    "sumber": "BPS ST2023",
-    "confidence": "tinggi"
-  },
-  {
-    "desa": "KECITRAN",
-    "kecamatan": "Purwarejaklampok",
-    "lahanSawah": 71.442,
-    "lahanBukanSawah": 15.275,
-    "jumlah": 86.717,
-    "tahun": 2023,
-    "rincian": {
-      "bukanSawah": 3.373,
-      "padangRumputSementara": 0.087,
-      "padangRumputPermanen": 0,
-      "belumDitanami": 0,
-      "tanamanTahunan": 10.986,
-      "kandangBangunan": 0.829
-    },
-    "sumber": "BPS ST2023",
-    "confidence": "tinggi"
-  },
-  {
-    "desa": "KLAMPOK",
-    "kecamatan": "Purwarejaklampok",
-    "lahanSawah": 48.819,
-    "lahanBukanSawah": 28.435,
-    "jumlah": 77.253,
-    "tahun": 2023,
-    "rincian": {
-      "bukanSawah": 6.071,
-      "padangRumputSementara": 1.871,
-      "padangRumputPermanen": 0.035,
-      "belumDitanami": 0.561,
-      "tanamanTahunan": 18.824,
-      "kandangBangunan": 1.073
-    },
-    "sumber": "BPS ST2023",
-    "confidence": "tinggi"
-  },
-  {
-    "desa": "PAGAK",
-    "kecamatan": "Purwarejaklampok",
-    "lahanSawah": 65.203,
-    "lahanBukanSawah": 11.761,
-    "jumlah": 76.964,
-    "tahun": 2023,
-    "rincian": {
-      "bukanSawah": 1.505,
-      "padangRumputSementara": 0.072,
-      "padangRumputPermanen": 0,
-      "belumDitanami": 0.329,
-      "tanamanTahunan": 9.249,
-      "kandangBangunan": 0.607
-    },
-    "sumber": "BPS ST2023",
-    "confidence": "tinggi"
-  },
-  {
-    "desa": "PURWAREJA",
-    "kecamatan": "Purwarejaklampok",
-    "lahanSawah": 38.731,
-    "lahanBukanSawah": 14.491,
-    "jumlah": 53.222,
-    "tahun": 2023,
-    "rincian": {
-      "bukanSawah": 4.272,
-      "padangRumputSementara": 0.172,
-      "padangRumputPermanen": 0.052,
-      "belumDitanami": 0.028,
-      "tanamanTahunan": 9.26,
-      "kandangBangunan": 0.707
-    },
-    "sumber": "BPS ST2023",
-    "confidence": "tinggi"
-  },
-  {
-    "desa": "SIRKANDI",
-    "kecamatan": "Purwarejaklampok",
-    "lahanSawah": 52.288,
-    "lahanBukanSawah": 101.061,
-    "jumlah": 153.349,
-    "tahun": 2023,
-    "rincian": {
-      "bukanSawah": 18.651,
-      "padangRumputSementara": 0.6,
-      "padangRumputPermanen": 0.552,
-      "belumDitanami": 3.953,
-      "tanamanTahunan": 75.03,
-      "kandangBangunan": 2.276
     },
     "sumber": "BPS ST2023",
     "confidence": "tinggi"
