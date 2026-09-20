@@ -2,11 +2,31 @@ import { useEffect, useState, useMemo } from "react";
 import { MapContainer, TileLayer, GeoJSON, LayersControl, useMap, LayerGroup } from "react-leaflet";
 import L from "leaflet";
 import ReactDOMServer from "react-dom/server";
-import { Search, Plus, Minus, Lock, AlertTriangle, RotateCw } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Search, Plus, Minus, Lock, AlertTriangle, RotateCw, ArrowUpRight } from "lucide-react";
 import { LoadingSpinner } from "@/components/ui";
 
 import "leaflet/dist/leaflet.css";
 import { LahanDesa, KelompokTaniRow, fetchKelompokTani, fetchSt2023DesaExtra, St2023DesaExtra } from "@/services/api";
+import { buildDesaPath } from "@/services/desa";
+
+/**
+ * Link inline di header popup — arahkan ke halaman detail desa.
+ * Dipakai sebagai <Link href="..."/> biasa via react-router-dom (SPA, tidak reload).
+ */
+const DetailDesaLink = ({ desaName, kecName }: { desaName: string; kecName: string }) => {
+  const path = buildDesaPath(kecName, desaName);
+  return (
+    <Link
+      to={path}
+      className="mt-1 inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wide text-white bg-white/15 hover:bg-white/25 border border-white/20 rounded px-1.5 py-0.5 transition-colors"
+      onClick={(e) => e.stopPropagation()}
+    >
+      Detail Desa
+      <ArrowUpRight className="w-3 h-3" />
+    </Link>
+  );
+};
 
 // Label ramah untuk kunci ternak ST2023 (urutan = prioritas tampilan di popup)
 const TERNAK_LABELS: [string, string][] = [
@@ -312,6 +332,7 @@ const PopupContent = ({ desaName, kecName, data, taniData, st2023 }: { desaName:
           <div className="min-w-0">
             <h3 className="text-[16px] font-black leading-tight uppercase drop-shadow-sm">{desaName}</h3>
             <p className="text-emerald-200/90 text-[10px] font-bold uppercase tracking-[0.18em]">{kecName}</p>
+            <DetailDesaLink desaName={desaName} kecName={kecName} />
           </div>
           {sentraBadge && (
             <span className="shrink-0 bg-amber-300 text-amber-900 text-[9px] font-black uppercase rounded-full px-2 py-1 shadow-sm">

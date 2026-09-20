@@ -25,6 +25,7 @@ const RenstraPage = lazy(() => import("@/pages/renstra"));
 const GovernmentAssistancePage = lazy(() => import("@/pages/government-assistance"));
 const ManualPage = lazy(() => import("@/pages/manual"));
 const ComingSoonPage = lazy(() => import("@/pages/coming-soon"));
+const DesaDetailPage = lazy(() => import("@/pages/desa/[kec]-[nama]"));
 
 function PageLoading() {
   return <LoadingSpinner height="min-h-[60vh]" label="Memuat halaman..." />;
@@ -57,6 +58,7 @@ function App() {
           <Route element={<InfoPage />} path="/info" />
           {/* Area internal — TIDAK ada di menu publik, akses langsung via URL */}
           <Route element={<AdminPage />} path="/admin" />
+          <Route element={<DesaDetailPage />} path="/desa/:kec/:nama" />
           {/* Routes for modules in development */}
           <Route element={<ComingSoonPage />} path="/early-warning" />
           <Route element={<ComingSoonPage />} path="/master-petani" />
