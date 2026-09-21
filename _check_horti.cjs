@@ -69,7 +69,7 @@ console.log("  Σ salak per tahun:", JSON.stringify(salakByYear));
 
 // --- Tahunan (long format) ---
 const tahPath =
-  "public/14. Distankan KP/Produksi Buah–Buahan dan Sayuran Tahunan Menurut Jenis Tanaman (ton)/Produksi Buah–Buahan dan Sayuran Tahunan Menurut Jenis Tanaman (ton) CSV.csv";
+  "public/14. Distankan KP/Produksi Buah-buahan dan Sayuran Tahunan Menurut Jenis Tanaman (ton)/Produksi Buah-buahan dan Sayuran Tahunan Menurut Jenis Tanaman (ton) CSV.csv";
 const tahRes = Papa.parse(fs.readFileSync(tahPath, "utf8"), {
   header: true,
   skipEmptyLines: true,

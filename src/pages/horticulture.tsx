@@ -796,7 +796,7 @@ export default function HorticulturePage() {
               <p className="text-xs text-slate-500 mb-4">
                 {annualRanking.year === "2025"
                   ? "Data BPS 2025, dikonversi dari kuintal ke ton. Hanya tersedia agregat tingkat kabupaten, sehingga panel ini tidak berubah saat filter kecamatan atau tahun diganti."
-                  : `Sumber: "Produksi Buah–Buahan dan Sayuran Tahunan Menurut Jenis Tanaman" (Distankan KP/BPS) — ${annualRanking.count} jenis tanaman tahunan ${annualRanking.year}.`}
+                  : `Sumber: "Produksi Buah-buahan dan Sayuran Tahunan Menurut Jenis Tanaman" (Distankan KP/BPS) — ${annualRanking.count} jenis tanaman tahunan ${annualRanking.year}.`}
               </p>
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2 h-[320px]">
@@ -1193,7 +1193,7 @@ export default function HorticulturePage() {
                   Dinas Ketahanan Pangan Kabupaten Banjarnegara — tabel “Luas Panen Tanaman Sayuran Menurut
                   Kecamatan dan Jenis Tanaman (ha)”, “Produksi Tanaman Sayuran Menurut Kecamatan dan Jenis
                   Tanaman (ton)”, “Produksi Buah-buahan Menurut Kecamatan dan Jenis Tanaman (ton)”, dan
-                  “Produksi Buah–Buahan dan Sayuran Tahunan Menurut Jenis Tanaman (ton)” (2017–2024;
+                  “Produksi Buah-buahan dan Sayuran Tahunan Menurut Jenis Tanaman (ton)” (2017–2024;
                   data tahunan 2018–2025). Nilai “-” pada sumber dibaca sebagai 0.
                 </p>
               </div>

@@ -787,7 +787,7 @@
     "tidy_csv": "tidy\\Produksi Buah-buahan Menurut Kecamatan dan Jenis Tanaman (ton)\\Produksi Buah-buahan Menurut Kecamatan dan Jenis Tanaman (ton) tidy.csv"
   },
   {
-    "folder": "Produksi Buah–Buahan dan Sayuran Tahunan Menurut Jenis Tanaman (ton)",
+    "folder": "Produksi Buah-buahan dan Sayuran Tahunan Menurut Jenis Tanaman (ton)",
     "status": "OK",
     "mode": "E",
     "years": [
@@ -803,8 +803,8 @@
     "col_labels": [
       "Produksi (ton)"
     ],
-    "wide_csv": "Produksi Buah–Buahan dan Sayuran Tahunan Menurut Jenis Tanaman (ton)\\Produksi Buah–Buahan dan Sayuran Tahunan Menurut Jenis Tanaman (ton) CSV.csv",
-    "tidy_csv": "tidy\\Produksi Buah–Buahan dan Sayuran Tahunan Menurut Jenis Tanaman (ton)\\Produksi Buah–Buahan dan Sayuran Tahunan Menurut Jenis Tanaman (ton) tidy.csv"
+    "wide_csv": "Produksi Buah-buahan dan Sayuran Tahunan Menurut Jenis Tanaman (ton)\\Produksi Buah-buahan dan Sayuran Tahunan Menurut Jenis Tanaman (ton) CSV.csv",
+    "tidy_csv": "tidy\\Produksi Buah-buahan dan Sayuran Tahunan Menurut Jenis Tanaman (ton)\\Produksi Buah-buahan dan Sayuran Tahunan Menurut Jenis Tanaman (ton) tidy.csv"
   },
   {
     "folder": "Produksi Daging  Ternak Menurut Kecamatan dan Jenis Ternak",

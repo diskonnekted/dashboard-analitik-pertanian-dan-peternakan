@@ -2075,7 +2075,7 @@ export const fetchAnnualHorticultureProduction = async (): Promise<AnnualHorticu
   withCache("cache_annual_horticulture_prod_v2", async () => {
   try {
     const response = await fetch(
-      "/14. Distankan KP/Produksi Buah–Buahan dan Sayuran Tahunan Menurut Jenis Tanaman (ton)/Produksi Buah–Buahan dan Sayuran Tahunan Menurut Jenis Tanaman (ton) CSV.csv"
+      "/14. Distankan KP/Produksi Buah-buahan dan Sayuran Tahunan Menurut Jenis Tanaman (ton)/Produksi Buah-buahan dan Sayuran Tahunan Menurut Jenis Tanaman (ton) CSV.csv"
     );
     // Vite dev server membalas index.html (status 200) untuk file yang tidak ada —
     // cek content-type agar tidak mem-parsing HTML sebagai CSV.
