@@ -243,7 +243,7 @@ export default function DefaultLayout({
               <Link
                 to="/admin"
                 className="hidden sm:inline-flex items-center px-3 py-1.5 bg-emerald-50 border border-emerald-200 rounded-lg text-xs font-semibold text-emerald-700 hover:bg-emerald-100 hover:border-emerald-300 transition-all"
-                title="Buka Dasbor Admin — terhubung ke Sanity Studio"
+                title="Buka Dasbor Admin — manajemen data & import/export Excel"
               >
                 <Lock className="w-3 h-3 mr-1" />
                 Login

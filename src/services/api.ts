@@ -108,6 +108,71 @@ const fetchWithTimeout = async (
   }
 };
 
+// ============================================================
+// FASE B - Sumber utama data: backend MySQL read-only (backend/).
+// Skema pengambilan data tiap fetcher:
+//   1. API backend (bila tersedia) - data paling segar dari DB.
+//   2. Fallback jalur lama (CKAN / CSV lokal / snapshot) - tetap hidup
+//      utuh, dipakai otomatis bila backend down/unreachable.
+// Deteksi ketersediaan backend dilakukan SEKALI per sesi browser
+// (health check) sehingga fallback tidak menunggu timeout tiap fetch.
+// ============================================================
+
+export const API_BASE: string =
+  (import.meta.env.VITE_API_BASE as string | undefined) || "/sispertani-api";
+
+let apiHealthPromise: Promise<boolean> | null = null;
+
+const apiAvailable = (): Promise<boolean> => {
+  if (!apiHealthPromise) {
+    apiHealthPromise = (async () => {
+      try {
+        const res = await fetchWithTimeout(`${API_BASE}/health`, {}, 4000);
+        if (!res.ok) return false;
+        const body = (await res.json()) as { ok?: boolean };
+        return body.ok === true;
+      } catch {
+        return false;
+      }
+    })();
+    apiHealthPromise.catch(() => undefined); // hindari unhandled rejection
+  }
+  return apiHealthPromise;
+};
+
+/** Ambil data dari backend; null bila backend down, endpoint error, atau bentuk respons tidak valid. */
+const apiGet = async <T>(path: string): Promise<T | null> => {
+  try {
+    if (!(await apiAvailable())) return null;
+    const res = await fetchWithTimeout(`${API_BASE}${path}`, {}, 8000);
+    if (!res.ok) return null;
+    const data = (await res.json()) as T;
+    // Endpoint array yang sah tidak pernah kosong di dataset nyata;
+    // array kosong dibaca sebagai kegagalan agar fallback CSV dijalankan.
+    if (Array.isArray(data) && data.length === 0) return null;
+    return data;
+  } catch {
+    return null;
+  }
+};
+
+/**
+ * Bungkus fetcher CSV/CKAN lama dengan sumber utama backend.
+ * - Cache SWR dengan prefix `api_` menyimpan hasil TERBAIK terakhir
+ *   (dari backend bila hidup, dari fallback bila tidak).
+ * - Refresh background selalu mencoba backend dulu lagi.
+ * - Fallback internal tetap memakai cache lamanya sendiri.
+ */
+const apiFirst = <T>(path: string, fetchFromCsv: () => Promise<T>): (() => Promise<T>) => {
+  const cacheKey = `api_${path.replace(/\//g, "_")}`;
+  const fetchBest = async (): Promise<T> => {
+    const fromApi = await apiGet<T>(path);
+    if (fromApi !== null) return fromApi;
+    return fetchFromCsv();
+  };
+  return async () => withCache(cacheKey, fetchBest);
+};
+
 /**
  * Wrapper stale-while-revalidate: return cache immediately if available,
  * trigger background refresh if stale. If no cache, fetch fresh and cache it.
@@ -336,7 +401,7 @@ export const fetchOpenDataCatalog = async (): Promise<CkanCatalog> => {
   }
 };
 
-export const fetchLahanBanjarnegara = async (): Promise<LahanDesa[]> => {
+const fetchLahanBanjarnegaraCsv = async (): Promise<LahanDesa[]> => {
   const cacheKey = "banjarnegara_lahan_cache_v5";
   const cached = getCachedData<LahanDesa[]>(cacheKey);
 
@@ -364,7 +429,7 @@ export interface LahanResmiKabupaten {
   bukanSawah: number; // II. Bukan lahan sawah (Ha)
 }
 
-export const fetchLahanResmiKabupaten = async (): Promise<LahanResmiKabupaten | null> => {
+const fetchLahanResmiKabupatenCsv = async (): Promise<LahanResmiKabupaten | null> => {
   return withCache("lahan-resmi-kabupaten-v1", async () => {
     try {
       const response = await fetch(
@@ -437,7 +502,7 @@ export interface PadiProduction {
   tahun: string;
 }
 
-export const fetchPadiProduction = async (): Promise<PadiProduction[]> =>
+const fetchPadiProductionCsv = async (): Promise<PadiProduction[]> =>
   withCache("cache_padi_production_v5", async () => {
   try {
     let response;
@@ -579,7 +644,7 @@ export interface PadiHistoryPoint {
   rataRata: number;
 }
 
-export const fetchPadiHistory = async (): Promise<PadiHistoryPoint[]> => {
+const fetchPadiHistoryCsv = async (): Promise<PadiHistoryPoint[]> => {
   const parseNum = (val: string): number => {
     if (!val) return 0;
     let cleaned = val.toString().trim().replace(/ /g, "");
@@ -818,7 +883,7 @@ const fetchTanamanPangan = async (
     }
   });
 
-export const fetchJagungUbiKayu = (): Promise<FoodCropRow[]> =>
+const fetchJagungUbiKayuCsv = (): Promise<FoodCropRow[]> =>
   fetchTanamanPangan(
     "/14. Distankan KP/Luas  Panen,  Produksi dan Rata-rata Produksi/Luas Panen, Produksi dan Rata-rata Produksi Tanaman Pangan (Jagung dan Ubi Kayu) CSV.csv",
     "cache_jagung_ubi_kayu_v2",
@@ -826,7 +891,7 @@ export const fetchJagungUbiKayu = (): Promise<FoodCropRow[]> =>
     "Ubi Kayu",
   );
 
-export const fetchKacangKedelai = (): Promise<FoodCropRow[]> =>
+const fetchKacangKedelaiCsv = (): Promise<FoodCropRow[]> =>
   fetchTanamanPangan(
     "/14. Distankan KP/Luas  Panen,  Produksi dan Rata-rata Produksi/Luas Panen, Produksi dan Rata-rata Produksi Tanaman Pangan (Kacang Tanah dan Kedelai) CSV.csv",
     "cache_kacang_kedelai_v2",
@@ -834,7 +899,7 @@ export const fetchKacangKedelai = (): Promise<FoodCropRow[]> =>
     "Kedelai",
   );
 
-export const fetchUbiKacangHijau = (): Promise<FoodCropRow[]> =>
+const fetchUbiKacangHijauCsv = (): Promise<FoodCropRow[]> =>
   fetchTanamanPangan(
     "/14. Distankan KP/Luas  Panen,  Produksi dan Rata-rata Produksi/Luas Panen, Produksi dan Rata-rata Produksi Tanaman Pangan (Ubi Jalar dan Kacang Hijau) CSV.csv",
     "cache_ubi_kacang_hijau_v2",
@@ -846,7 +911,7 @@ export const fetchUbiKacangHijau = (): Promise<FoodCropRow[]> =>
 // Sumber: CSV normalisasi xlsx asli BPS Distankan (140 baris, 2018-2024).
 // CATATAN: jangan pakai file "511b" di _tmp maupun merged lama — keduanya
 // berisi data geser/tidak akurat (lihat scripts/regenerate-merged-padi.cjs).
-export const fetchPadiSawahLadang = (): Promise<FoodCropRow[]> =>
+const fetchPadiSawahLadangCsv = (): Promise<FoodCropRow[]> =>
   withCache("cache_padi_sawah_ladang_v1", async () => {
     try {
       const res = await fetch(
@@ -922,7 +987,7 @@ export interface VegetableProduction {
   tahun: string;
 }
 
-export const fetchVegetableProduction = async (): Promise<
+const fetchVegetableProductionCsv = async (): Promise<
   VegetableProduction[]
 > =>
   withCache("cache_vegetable_production_v2", async () => {
@@ -1044,7 +1109,7 @@ export interface InflationData {
   tahun: string;
 }
 
-export const fetchInflationData = async (): Promise<InflationData[]> =>
+const fetchInflationDataCsv = async (): Promise<InflationData[]> =>
   withCache("cache_inflation_data_v1", async () => {
   try {
     let response;
@@ -1125,7 +1190,7 @@ export interface LumbungPangan {
 // diambil baris tahun terbaru per kecamatan. 2) Snapshot CKAN 2025. 3) CKAN online.
 // Catatan: snapshot CKAN 2025 korup sebagian (Bawang tertulis 12 unit, xlsx asli: 3;
 // total kolom = 72 != Jumlah resmi 63) -> hanya dijadikan fallback.
-export const fetchLumbungPangan = async (): Promise<LumbungPangan[]> =>
+const fetchLumbungPanganCsv = async (): Promise<LumbungPangan[]> =>
   withCache("cache_lumbung_pangan_v3", async () => {
   try {
     let response;
@@ -1242,7 +1307,7 @@ export interface MarketData {
   tahun: string;
 }
 
-export const fetchMarketData = async (): Promise<MarketData[]> =>
+const fetchMarketDataCsv = async (): Promise<MarketData[]> =>
   withCache("cache_market_data_v1", async () => {
   try {
     let response;
@@ -1332,7 +1397,7 @@ export interface Unggas {
   tahun: string;
 }
 
-export const fetchTernakKecil = async (): Promise<TernakKecil[]> =>
+const fetchTernakKecilCsv = async (): Promise<TernakKecil[]> =>
   withCache("cache_ternak_kecil_v2", async () => {
   try {
     // Nama file di disk memakai SPASI GANDA ("Jumlah  Ternak Kecil ... CSV.csv") — jangan dirapatkan!
@@ -1368,7 +1433,7 @@ export const fetchTernakKecil = async (): Promise<TernakKecil[]> =>
   } catch (e) { return []; }
   });
 
-export const fetchTernakBesar = async (): Promise<TernakBesar[]> =>
+const fetchTernakBesarCsv = async (): Promise<TernakBesar[]> =>
   withCache("cache_ternak_besar_v2", async () => {
   try {
     const response = await fetch("/14. Distankan KP/Jumlah Ternak Besar Menurut Kecamatan dan Jenis Ternak/Jumlah Ternak Besar Menurut Kecamatan dan Jenis Ternak CSV.csv");
@@ -1401,7 +1466,7 @@ export const fetchTernakBesar = async (): Promise<TernakBesar[]> =>
   } catch (e) { return []; }
   });
 
-export const fetchUnggas = async (): Promise<Unggas[]> =>
+const fetchUnggasCsv = async (): Promise<Unggas[]> =>
   withCache("cache_unggas_v2", async () => {
   try {
     const response = await fetch("/14. Distankan KP/Jumlah Unggas Menurut Kecamatan dan Jenis Ternak/Jumlah Unggas Menurut Kecamatan dan Jenis Ternak CSV.csv");
@@ -1508,7 +1573,7 @@ const fetchTernakFlow = async (
     }
   });
 
-export const fetchPemasukanTernak = (): Promise<TernakFlow[]> =>
+const fetchPemasukanTernakCsv = (): Promise<TernakFlow[]> =>
   fetchTernakFlow(
     "/14. Distankan KP/Banyaknya Pemasukan Ternak ke Kabupaten Banjarnegara/Banyaknya Pemasukan Ternak Ke Kabupaten Banjarnegara CSV.csv",
     "cache_pemasukan_ternak_v2",
@@ -1516,7 +1581,7 @@ export const fetchPemasukanTernak = (): Promise<TernakFlow[]> =>
     "ekor",
   );
 
-export const fetchPengeluaranTernak = (): Promise<TernakFlow[]> =>
+const fetchPengeluaranTernakCsv = (): Promise<TernakFlow[]> =>
   fetchTernakFlow(
     "/14. Distankan KP/Banyaknya Pengeluaran Ternak Potong ke Kabupaten Banjarnegara/Banyaknya Pengeluaran Ternak Potong ke Kabupaten Banjarnegara CSV.csv",
     "cache_pengeluaran_ternak_v2",
@@ -1524,7 +1589,7 @@ export const fetchPengeluaranTernak = (): Promise<TernakFlow[]> =>
     "ekor",
   );
 
-export const fetchLuarRPH = (): Promise<TernakFlow[]> =>
+const fetchLuarRPHCsv = (): Promise<TernakFlow[]> =>
   fetchTernakFlow(
     "/14. Distankan KP/Jumlah (Perkiraan) Ternak yang Dipotong di Luar RPH/Jumlah (Perkiraan) Ternak yang Dipotong di Luar RPH CSV.csv",
     "cache_luar_rph_v2",
@@ -1532,7 +1597,7 @@ export const fetchLuarRPH = (): Promise<TernakFlow[]> =>
     "ekor",
   );
 
-export const fetchDagingUnggas = (): Promise<TernakFlow[]> =>
+const fetchDagingUnggasCsv = (): Promise<TernakFlow[]> =>
   fetchTernakFlow(
     "/14. Distankan KP/Produksi Daging Unggas Menurut Kecamatan dan Jenis Unggas/Produksi Daging Unggas Menurut Kecamatan dan Jenis Unggas CSV.csv",
     "cache_daging_unggas_v2",
@@ -1579,7 +1644,7 @@ const isSummaryRow = (kec?: string) => {
   return low.includes("jumlah") || low.includes("total");
 };
 
-export const fetchPerikananBudidaya = async (): Promise<PerikananBudidaya[]> =>
+const fetchPerikananBudidayaCsv = async (): Promise<PerikananBudidaya[]> =>
   withCache("cache_perikanan_budidaya_v3", async () => {
   try {
     const response = await fetch(
@@ -1700,7 +1765,7 @@ const fetchNilaiProduksi = (
     )
     .catch(() => []);
 
-export const fetchNilaiProduksiBudidaya = (): Promise<NilaiProduksiRow[]> =>
+const fetchNilaiProduksiBudidayaCsv = (): Promise<NilaiProduksiRow[]> =>
   withCache("cache_nilai_produksi_budidaya_v3", () =>
     fetchNilaiProduksi(
       "/14. Distankan KP/Produksi dan Nilai Produksi Perikanan Budidaya Menurut Kecamatan dan Jenis Budidaya/Produksi dan Nilai Produksi Perikanan Budidaya Menurut Kecamatan dan Jenis Budidaya CSV.csv",
@@ -1709,7 +1774,7 @@ export const fetchNilaiProduksiBudidaya = (): Promise<NilaiProduksiRow[]> =>
     ),
   );
 
-export const fetchNilaiProduksiTangkap = (): Promise<NilaiProduksiRow[]> =>
+const fetchNilaiProduksiTangkapCsv = (): Promise<NilaiProduksiRow[]> =>
   withCache("cache_nilai_produksi_tangkap_v3", () =>
     fetchNilaiProduksi(
       "/14. Distankan KP/Produksi dan Nilai Produksi Perikanan Tangkap Menurut Kecamatan dan Jenis Penangkapan/Produksi dan Nilai Produksi Perikanan Tangkap Menurut Kecamatan dan Jenis Penangkapan CSV.csv",
@@ -1718,7 +1783,7 @@ export const fetchNilaiProduksiTangkap = (): Promise<NilaiProduksiRow[]> =>
     ),
   );
 
-export const fetchPerikananTangkap = async (): Promise<PerikananTangkap[]> =>
+const fetchPerikananTangkapCsv = async (): Promise<PerikananTangkap[]> =>
   withCache("cache_perikanan_tangkap_v3", async () => {
   try {
     const response = await fetch(
@@ -1754,7 +1819,7 @@ export const fetchPerikananTangkap = async (): Promise<PerikananTangkap[]> =>
   }
   });
 
-export const fetchPerikananBenih = async (): Promise<PerikananBenih[]> =>
+const fetchPerikananBenihCsv = async (): Promise<PerikananBenih[]> =>
   withCache("cache_perikanan_benih_v3", async () => {
   try {
     const response = await fetch(
@@ -1815,7 +1880,7 @@ export interface PlantationProduction {
   tahun: string;
 }
 
-export const fetchPlantationArea = async (): Promise<PlantationArea[]> =>
+const fetchPlantationAreaCsv = async (): Promise<PlantationArea[]> =>
   withCache("cache_plantation_area_v2", async () => {
   try {
     const response = await fetch(
@@ -1876,7 +1941,7 @@ export const fetchPlantationArea = async (): Promise<PlantationArea[]> =>
   }
   });
 
-export const fetchPlantationProduction = async (): Promise<PlantationProduction[]> =>
+const fetchPlantationProductionCsv = async (): Promise<PlantationProduction[]> =>
   withCache("cache_plantation_production_v2", async () => {
   try {
     const response = await fetch(
@@ -2011,7 +2076,7 @@ const bpsAnnualHorticulture2025: AnnualHorticultureProduction[] = [
   { jenisTanaman: "Lengkeng", produksiTon: 16.875, tahun: "2025" },
 ];
 
-export const fetchVegetableArea = async (): Promise<VegetableArea[]> =>
+const fetchVegetableAreaCsv = async (): Promise<VegetableArea[]> =>
   withCache("cache_vegetable_area_v2", async () => {
   try {
     const response = await fetch(
@@ -2071,7 +2136,7 @@ export const fetchVegetableArea = async (): Promise<VegetableArea[]> =>
   }
   });
 
-export const fetchAnnualHorticultureProduction = async (): Promise<AnnualHorticultureProduction[]> =>
+const fetchAnnualHorticultureProductionCsv = async (): Promise<AnnualHorticultureProduction[]> =>
   withCache("cache_annual_horticulture_prod_v2", async () => {
   try {
     const response = await fetch(
@@ -2120,7 +2185,7 @@ export const fetchAnnualHorticultureProduction = async (): Promise<AnnualHorticu
   }
   });
 
-export const fetchFruitProduction = async (): Promise<FruitProduction[]> =>
+const fetchFruitProductionCsv = async (): Promise<FruitProduction[]> =>
   withCache("cache_fruit_production_v2", async () => {
   try {
     const response = await fetch(
@@ -2292,10 +2357,10 @@ const fetchKelompokTaniHutan = async (): Promise<KelompokTaniRow[]> => {
  * yang mencakup kecamatan tanpa data Dinas (Banjarmangu, Kalibening, Madukara,
  * Pagedongan, Purwareja Klampok) dan sebagai panel snapshot terpisah.
  */
-export const fetchKelompokTaniHutanSnapshot = async (): Promise<KelompokTaniRow[]> =>
+const fetchKelompokTaniHutanSnapshotCsv = async (): Promise<KelompokTaniRow[]> =>
   withCache("cache_kelompok_tani_hutan_snapshot_v1", async () => fetchKelompokTaniHutan());
 
-export const fetchKelompokTani = async (): Promise<KelompokTaniRow[]> => {
+const fetchKelompokTaniCsv = async (): Promise<KelompokTaniRow[]> => {
   const cacheKey = "banjarnegara_kelompok_tani_cache_v6";
 
   const fetchFresh = async (): Promise<KelompokTaniRow[]> => {
@@ -2348,7 +2413,7 @@ export interface St2023DesaExtra {
   sumber?: string;
 }
 
-export const fetchSt2023DesaExtra = async (): Promise<St2023DesaExtra[]> =>
+const fetchSt2023DesaExtraCsv = async (): Promise<St2023DesaExtra[]> =>
   withCache("cache_st2023_desa_extra_v2", async () => {
     try {
       const response = await fetch("/data/st2023-desa-fallback.json");
@@ -2359,5 +2424,45 @@ export const fetchSt2023DesaExtra = async (): Promise<St2023DesaExtra[]> =>
       return [];
     }
   });
+
+// ============================================================
+// FASE B - Export fetcher publik: backend MySQL dulu, fallback
+// CSV/CKAN/snapshot (implementasi *Csv di atas) tetap hidup.
+// fetchOpenDataPertanian & fetchOpenDataCatalog TIDAK dibungkus:
+// keduanya katalog CKAN live, bukan data numerik yang dimigrasi.
+// ============================================================
+
+export const fetchLahanBanjarnegara = apiFirst<LahanDesa[]>("/v1/lahan/desa", fetchLahanBanjarnegaraCsv);
+export const fetchLahanResmiKabupaten = apiFirst<LahanResmiKabupaten | null>("/v1/lahan/kabupaten", fetchLahanResmiKabupatenCsv);
+export const fetchPadiProduction = apiFirst<PadiProduction[]>("/v1/padi/production", fetchPadiProductionCsv);
+export const fetchPadiHistory = apiFirst<PadiHistoryPoint[]>("/v1/padi/history", fetchPadiHistoryCsv);
+export const fetchJagungUbiKayu = apiFirst<FoodCropRow[]>("/v1/palawija/jagung-ubi-kayu", fetchJagungUbiKayuCsv);
+export const fetchKacangKedelai = apiFirst<FoodCropRow[]>("/v1/palawija/kacang-kedelai", fetchKacangKedelaiCsv);
+export const fetchUbiKacangHijau = apiFirst<FoodCropRow[]>("/v1/palawija/ubi-kacang-hijau", fetchUbiKacangHijauCsv);
+export const fetchPadiSawahLadang = apiFirst<FoodCropRow[]>("/v1/padi/sawah-ladang", fetchPadiSawahLadangCsv);
+export const fetchVegetableProduction = apiFirst<VegetableProduction[]>("/v1/hortikultura/sayuran-produksi", fetchVegetableProductionCsv);
+export const fetchVegetableArea = apiFirst<VegetableArea[]>("/v1/hortikultura/sayuran-luas", fetchVegetableAreaCsv);
+export const fetchFruitProduction = apiFirst<FruitProduction[]>("/v1/hortikultura/buah-produksi", fetchFruitProductionCsv);
+export const fetchAnnualHorticultureProduction = apiFirst<AnnualHorticultureProduction[]>("/v1/hortikultura/produksi-tahunan", fetchAnnualHorticultureProductionCsv);
+export const fetchInflationData = apiFirst<InflationData[]>("/v1/ekonomi/inflasi", fetchInflationDataCsv);
+export const fetchMarketData = apiFirst<MarketData[]>("/v1/ekonomi/pasar", fetchMarketDataCsv);
+export const fetchLumbungPangan = apiFirst<LumbungPangan[]>("/v1/lumbung", fetchLumbungPanganCsv);
+export const fetchTernakKecil = apiFirst<TernakKecil[]>("/v1/peternakan/kecil", fetchTernakKecilCsv);
+export const fetchTernakBesar = apiFirst<TernakBesar[]>("/v1/peternakan/besar", fetchTernakBesarCsv);
+export const fetchUnggas = apiFirst<Unggas[]>("/v1/peternakan/unggas", fetchUnggasCsv);
+export const fetchPemasukanTernak = apiFirst<TernakFlow[]>("/v1/peternakan/pemasukan", fetchPemasukanTernakCsv);
+export const fetchPengeluaranTernak = apiFirst<TernakFlow[]>("/v1/peternakan/pengeluaran", fetchPengeluaranTernakCsv);
+export const fetchLuarRPH = apiFirst<TernakFlow[]>("/v1/peternakan/luar-rph", fetchLuarRPHCsv);
+export const fetchDagingUnggas = apiFirst<TernakFlow[]>("/v1/peternakan/daging-unggas", fetchDagingUnggasCsv);
+export const fetchPerikananBudidaya = apiFirst<PerikananBudidaya[]>("/v1/perikanan/budidaya", fetchPerikananBudidayaCsv);
+export const fetchPerikananTangkap = apiFirst<PerikananTangkap[]>("/v1/perikanan/tangkap", fetchPerikananTangkapCsv);
+export const fetchPerikananBenih = apiFirst<PerikananBenih[]>("/v1/perikanan/benih", fetchPerikananBenihCsv);
+export const fetchNilaiProduksiBudidaya = apiFirst<NilaiProduksiRow[]>("/v1/perikanan/nilai-budidaya", fetchNilaiProduksiBudidayaCsv);
+export const fetchNilaiProduksiTangkap = apiFirst<NilaiProduksiRow[]>("/v1/perikanan/nilai-tangkap", fetchNilaiProduksiTangkapCsv);
+export const fetchPlantationArea = apiFirst<PlantationArea[]>("/v1/perkebunan/areal", fetchPlantationAreaCsv);
+export const fetchPlantationProduction = apiFirst<PlantationProduction[]>("/v1/perkebunan/produksi", fetchPlantationProductionCsv);
+export const fetchKelompokTaniHutanSnapshot = apiFirst<KelompokTaniRow[]>("/v1/kelembagaan/kth", fetchKelompokTaniHutanSnapshotCsv);
+export const fetchKelompokTani = apiFirst<KelompokTaniRow[]>("/v1/kelembagaan/kelompok-tani", fetchKelompokTaniCsv);
+export const fetchSt2023DesaExtra = apiFirst<St2023DesaExtra[]>("/v1/st2023/desa", fetchSt2023DesaExtraCsv);
 
 

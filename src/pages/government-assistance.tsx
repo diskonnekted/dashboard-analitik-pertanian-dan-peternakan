@@ -27,8 +27,8 @@ import {
   type BantuanData,
 } from "@/services/bantuan";
 
-// Semua data halaman ini bersumber dari Sanity Content Lake (input manual
-// admin Distan via Studio) — lihat src/services/bantuan.ts.
+// Semua data halaman ini bersumber dari backend MySQL SISPERTANI (input manual
+// admin Distan via Dasbor Admin /admin — import Excel) — lihat src/services/bantuan.ts.
 
 export default function GovernmentAssistancePage() {
   // null = sedang memuat; setelah itu selalu ada nilai (bisa kosong).

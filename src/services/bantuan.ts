@@ -1,24 +1,21 @@
-// ============================================================
-// Data Bantuan Pemerintah — sumber: Sanity Content Lake
-// Diisi manual oleh admin Distan melalui Sanity Studio
-// (project: spukl1fj, dataset: datasispertani — public, read-only
-//  dari aplikasi; penulisan HANYA via Studio yang ter-autentikasi).
-//
-// Pola: fetch CDN → sukses: timpa cache lokal; gagal (CORS belum
-// di-set / offline / Sanity down): pakai cache basi (stale-if-error);
-// tanpa cache: struktur kosong (belum ada input admin).
-// ============================================================
+/**
+ * Data Bantuan Pemerintah — sumber: backend SISPERTANI (MySQL `sispertani`,
+ * tabel bantuan_program / bantuan_alokasi / bantuan_korelasi).
+ * Diisi manual oleh admin Distan melalui Dasbor Admin (/admin — import Excel).
+ * Pengganti Sanity Content Lake (dilepas penuh 2026-09-22).
+ *
+ * Bentuk BantuanData dipertahankan identik (termasuk _id/_updatedAt) supaya
+ * halaman /government-assistance tidak berubah. BantuanTidakAda fallback:
+ * cache stale-if-error → EMPTY.
+ */
+import { API_BASE } from "./api";
 
-export const SANITY_PROJECT_ID = "spukl1fj";
-export const SANITY_DATASET = "datasispertani";
-
-export interface BantuanProgram {
+export interface ProgramBantuan {
   _id: string;
   _updatedAt: string;
   nama: string;
   sumber: "APBD" | "APBN";
   tahunAnggaran: number;
-  /** Nilai dalam Rupiah penuh, mis. 3200000000 (= Rp 3,2 Miliar) */
   nilaiRupiah: number;
   sektor: string;
   penerimaJumlah: number;
@@ -27,175 +24,88 @@ export interface BantuanProgram {
   dampakCatatan: string;
 }
 
-export interface BantuanAlokasi {
+export interface AlokasiTahunan {
   _id: string;
   _updatedAt: string;
   tahun: number;
-  /** APBD dalam Miliar Rp */
   apbdMiliar: number;
-  /** APBN dalam Miliar Rp */
   apbnMiliar: number;
 }
 
-export interface BantuanKorelasi {
+export interface KorelasiSektor {
   _id: string;
   _updatedAt: string;
   sektor: string;
-  /** Total bantuan sektor dalam Miliar Rp */
   bantuanMiliar: number;
-  /** Kenaikan produksi sektor (%) */
   kenaikanProduksiPct: number;
 }
 
 export interface BantuanData {
-  program: BantuanProgram[];
-  alokasi: BantuanAlokasi[];
-  korelasi: BantuanKorelasi[];
-  /** _updatedAt terbaru lintas seluruh dokumen (null bila belum ada data) */
-  updatedAt: string | null;
+  program: ProgramBantuan[];
+  alokasi: AlokasiTahunan[];
+  korelasi: KorelasiSektor[];
+  updatedAt: string;
 }
 
-export const EMPTY_BANTUAN: BantuanData = {
+export const EMPTY: BantuanData = {
   program: [],
   alokasi: [],
   korelasi: [],
-  updatedAt: null,
+  updatedAt: new Date().toISOString(),
 };
 
 const CACHE_KEY = "sispertani:bantuan-pemerintah";
 
-const GROQ =
-  '{"program": *[_type == "programBantuan"] | order(_createdAt asc), ' +
-  '"alokasi": *[_type == "alokasiTahunan"] | order(tahun asc), ' +
-  '"korelasi": *[_type == "korelasiSektor"] | order(sektor asc)}';
-
-const num = (v: unknown): number =>
-  typeof v === "number" && isFinite(v) ? v : 0;
-const str = (v: unknown): string => (typeof v === "string" ? v : "");
-
-function normalize(r: {
-  program?: unknown[];
-  alokasi?: unknown[];
-  korelasi?: unknown[];
-}): BantuanData {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const rows = (arr: unknown): any[] => (Array.isArray(arr) ? arr : []);
-  const program: BantuanProgram[] = rows(r.program).map((d) => ({
-    _id: str(d._id),
-    _updatedAt: str(d._updatedAt),
-    nama: str(d.nama),
-    sumber: d.sumber === "APBD" ? "APBD" : "APBN",
-    tahunAnggaran: num(d.tahunAnggaran),
-    nilaiRupiah: num(d.nilaiRupiah),
-    sektor: str(d.sektor),
-    penerimaJumlah: num(d.penerimaJumlah),
-    penerimaJenis: str(d.penerimaJenis),
-    dampakLevel:
-      d.dampakLevel === "Tinggi" || d.dampakLevel === "Sedang"
-        ? d.dampakLevel
-        : "Rendah",
-    dampakCatatan: str(d.dampakCatatan),
-  }));
-  const alokasi: BantuanAlokasi[] = rows(r.alokasi).map((d) => ({
-    _id: str(d._id),
-    _updatedAt: str(d._updatedAt),
-    tahun: num(d.tahun),
-    apbdMiliar: num(d.apbdMiliar),
-    apbnMiliar: num(d.apbnMiliar),
-  }));
-  const korelasi: BantuanKorelasi[] = rows(r.korelasi).map((d) => ({
-    _id: str(d._id),
-    _updatedAt: str(d._updatedAt),
-    sektor: str(d.sektor),
-    bantuanMiliar: num(d.bantuanMiliar),
-    kenaikanProduksiPct: num(d.kenaikanProduksiPct),
-  }));
-  const stamps = [...program, ...alokasi, ...korelasi]
-    .map((d) => d._updatedAt)
-    .filter(Boolean)
-    .sort();
-  return {
-    program,
-    alokasi,
-    korelasi,
-    updatedAt: stamps.length ? stamps[stamps.length - 1] : null,
-  };
-}
-
-/** Ambil data bantuan (dengan cache stale-if-error; tidak pernah melempar). */
-export async function fetchBantuanPemerintah(): Promise<BantuanData> {
-  const url = `https://${SANITY_PROJECT_ID}.apicdn.sanity.io/v1/data/query/${SANITY_DATASET}?query=${encodeURIComponent(GROQ)}`;
-  const ctrl = new AbortController();
-  const t = setTimeout(() => ctrl.abort(), 15000);
+/** Cache stale-if-error: bila MySQL/backend gagal, pakai snapshot terakhir. */
+function readCache(): BantuanData | null {
   try {
-    const res = await fetch(url, { signal: ctrl.signal });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const json = (await res.json()) as { result?: Record<string, unknown> };
-    const data = normalize(
-      (json.result ?? {}) as {
-        program?: unknown[];
-        alokasi?: unknown[];
-        korelasi?: unknown[];
-      },
-    );
-    try {
-      localStorage.setItem(
-        CACHE_KEY,
-        JSON.stringify({ savedAt: Date.now(), data }),
-      );
-    } catch {
-      /* localStorage penuh/blocked — abaikan */
-    }
-    return data;
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as { data?: BantuanData };
+    return parsed?.data && Array.isArray(parsed.data.program) ? parsed.data : null;
   } catch {
-    // Gagal (CORS belum diizinkan / offline / gangguan) → cache basi → kosong
-    try {
-      const raw = localStorage.getItem(CACHE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw) as { data?: BantuanData };
-        if (parsed.data && Array.isArray(parsed.data.program)) {
-          return parsed.data;
-        }
-      }
-    } catch {
-      /* cache korup — abaikan */
-    }
-    return EMPTY_BANTUAN;
-  } finally {
-    clearTimeout(t);
+    return null;
   }
 }
 
-/** Hapus cache (dipakai halaman admin untuk refresh paksa). */
+/** Muat data bantuan dari backend. Fallback: cache lama → EMPTY. */
+export async function fetchBantuanPemerintah(): Promise<BantuanData> {
+  try {
+    const res = await fetch(`${API_BASE}/v1/bantuan`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = (await res.json()) as BantuanData;
+    if (!Array.isArray(data?.program) || !Array.isArray(data?.alokasi) || !Array.isArray(data?.korelasi)) {
+      throw new Error("Bentuk data bantuan tidak sesuai");
+    }
+    localStorage.setItem(CACHE_KEY, JSON.stringify({ data, cachedAt: new Date().toISOString() }));
+    return data;
+  } catch {
+    return readCache() ?? EMPTY;
+  }
+}
+
+/** Hapus cache bantuan (dipakai dasbor admin setelah import data baru). */
 export function clearBantuanCache(): void {
   try {
     localStorage.removeItem(CACHE_KEY);
   } catch {
-    /* abaikan */
+    /* localStorage bisa tidak tersedia (private mode) */
   }
 }
 
-// ---------- Formatter tampilan ----------
-
-/** 3200000000 → "Rp 3,2 Miliar"; 980000000 → "Rp 980 Juta" */
 export function formatRupiahShort(n: number): string {
-  if (!isFinite(n) || n <= 0) return "Rp 0";
-  if (n >= 1e12)
-    return `Rp ${(n / 1e12).toLocaleString("id-ID", { maximumFractionDigits: 1 })} Triliun`;
-  if (n >= 1e9)
-    return `Rp ${(n / 1e9).toLocaleString("id-ID", { maximumFractionDigits: 1 })} Miliar`;
-  if (n >= 1e6)
-    return `Rp ${(n / 1e6).toLocaleString("id-ID", { maximumFractionDigits: 0 })} Juta`;
-  return `Rp ${n.toLocaleString("id-ID")}`;
+  const abs = Math.abs(n);
+  if (abs >= 1e12) return `${(n / 1e12).toLocaleString("id-ID", { maximumFractionDigits: 1 })} T`;
+  if (abs >= 1e9) return `${(n / 1e9).toLocaleString("id-ID", { maximumFractionDigits: 1 })} M`;
+  if (abs >= 1e6) return `${(n / 1e6).toLocaleString("id-ID", { maximumFractionDigits: 1 })} jt`;
+  if (abs >= 1e3) return `${(n / 1e3).toLocaleString("id-ID", { maximumFractionDigits: 1 })} rb`;
+  return n.toLocaleString("id-ID");
 }
 
-/** "2026-09-19T03:14:22Z" → "19 September 2026" */
 export function formatTanggal(iso: string): string {
-  const d = new Date(iso);
-  if (isNaN(d.getTime())) return "-";
-  return d.toLocaleDateString("id-ID", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+  try {
+    return new Date(iso).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" });
+  } catch {
+    return iso;
+  }
 }
