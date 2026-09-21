@@ -2432,7 +2432,7 @@ const fetchSt2023DesaExtraCsv = async (): Promise<St2023DesaExtra[]> =>
 // keduanya katalog CKAN live, bukan data numerik yang dimigrasi.
 // ============================================================
 
-export const fetchLahanBanjarnegara = apiFirst<LahanDesa[]>("/v1/lahan/desa", fetchLahanBanjarnegaraCsv);
+export const fetchLahanBanjarnegara = apiFirst<LahanDesa[]>("/v1/lahan/desa?koreksi=20260922", fetchLahanBanjarnegaraCsv);
 export const fetchLahanResmiKabupaten = apiFirst<LahanResmiKabupaten | null>("/v1/lahan/kabupaten", fetchLahanResmiKabupatenCsv);
 export const fetchPadiProduction = apiFirst<PadiProduction[]>("/v1/padi/production", fetchPadiProductionCsv);
 export const fetchPadiHistory = apiFirst<PadiHistoryPoint[]>("/v1/padi/history", fetchPadiHistoryCsv);

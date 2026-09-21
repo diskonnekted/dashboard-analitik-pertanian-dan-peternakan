@@ -24,13 +24,13 @@
   {
     "desa": "PARAKANCANGGAH",
     "kecamatan": "Banjarnegara",
-    "lahanSawah": 153.625,
-    "lahanBukanSawah": 580.2,
-    "jumlah": 733.825,
+    "lahanSawah": 15.3625,
+    "lahanBukanSawah": 58.02,
+    "jumlah": 73.3825,
     "tahun": 2025,
     "rincian": null,
-    "sumber": "fallback-manual",
-    "confidence": "rendah"
+    "sumber": "pemkab-csv-m2-ha",
+    "confidence": "sedang"
   },
   {
     "desa": "WANGON",
@@ -112,13 +112,13 @@
   {
     "desa": "KARANGTENGAH",
     "kecamatan": "Banjarnegara",
-    "lahanSawah": 1119.994,
-    "lahanBukanSawah": 314.052,
-    "jumlah": 1434.046,
+    "lahanSawah": 111.9994,
+    "lahanBukanSawah": 31.4052,
+    "jumlah": 143.4046,
     "tahun": 2025,
     "rincian": null,
-    "sumber": "fallback-manual",
-    "confidence": "rendah"
+    "sumber": "pemkab-csv-m2-ha",
+    "confidence": "sedang"
   },
   {
     "desa": "KRANDEGAN",
@@ -1704,12 +1704,12 @@
   {
     "desa": "SOMAWANGI",
     "kecamatan": "Mandiraja",
-    "lahanSawah": 3.652,
-    "lahanBukanSawah": 1800,
-    "jumlah": 1803.652,
+    "lahanSawah": 0.3652,
+    "lahanBukanSawah": 0.18,
+    "jumlah": 0.5452,
     "tahun": 2025,
     "rincian": null,
-    "sumber": "fallback-manual",
+    "sumber": "pemkab-csv-m2-ha",
     "confidence": "rendah"
   },
   {

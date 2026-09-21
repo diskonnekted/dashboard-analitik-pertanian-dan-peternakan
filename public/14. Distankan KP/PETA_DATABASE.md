@@ -315,6 +315,22 @@ Output: 39 folder processed, console log per folder + summary "OK/ERROR".
 - **278 desa, 20 kecamatan lengkap**; dipakai /sensus, MapWidget, detail desa, dan (baru 20 Sep 2026) /farmers sebagai "Konteks BPS".
 - **Validasi ulang 20 Sep 2026**: re-ekstraksi Purwanegara & Wanadadi (pdfplumber di miniforge) → **0 field berbeda** vs JSON existing.
 
+### Koreksi Skala m²→Ha — Lahan per Desa (22 Sep 2026)
+
+Sumber: dataset Pemkab **opendata.banjarnegarakab.go.id** per kecamatan (datastore + CSV "5.1 Luas Lahan Pertanian Menurut Jenis Tanah dan Desa"). **Datastore menyimpan campuran format**: sebagian desa Ha desimal-koma ("3.500" = 3,5 Ha), sebagian m² integer ("1.119.994" m²). Parser lama salah membaca nilai m² sebagai Ha, dan package lama `5-1-...di-banjarnegara` sudah di-rename server (jadi `...di-kec-banjarnegara`) sehingga verifikasi ulang wajib ke nama baru.
+
+| Desa (Kec.) | Salah (Ha) | Benar (Ha) | Bukti |
+|---|---|---|---|
+| KARANGTENGAH (Banjarnegara) | sawah 1.119,994 / bukan 314,052 | **111,9994 / 31,4052** (jumlah 143,4) | 1.119.994 m² = 97% luas fisik kelurahan 148 Ha (geojson BIG); konsisten 2023–2025 di datastore |
+| PARAKANCANGGAH (Banjarnegara) | 153,625 / 580,2 | **15,3625 / 58,02** (jumlah 73,4) | integer 6-digit murni = m²; 36% fisik 204,7 Ha |
+| SOMAWANGI (Mandiraja) | 3,652 / 1.800 | **0,3652 / 0,18** (jumlah 0,5452) | pola m² konsisten Candiwulan (59.157+52.797=111.954 ✓) dalam CSV yang sama; aritmetika jumlah ✓ 3 tahun; desa perbatasan hutan |
+| WANACIPTA (Sigaluh) | 155 (baris korup MySQL `lahan_desa` id 322) | baris dihapus; dipakai ST2023 **3,983 / 26,76** (30,744) | CSV Sigaluh resmi 9,476/7,734/17,21 Ha (2023); ST2023 = 1,08× fisik 28,4 Ha |
+
+- Diterapkan di: MySQL `sispertani.lahan_desa` + `public/data/lahan-fallback.json` + cache bump `?koreksi=20260922` pada `fetchLahanBanjarnegara` (nilai sumber `pemkab-csv-m2-ha`).
+- Σ sawah 276 desa: 15.004,7 → **13.810,1 Ha** (resmi BPS kabupaten 12.057,3 Ha th 2024; selisih +14,6% tersisa berasal dari desa rasio 1,2–1,8× luas fisik geojson — kemungkinan beda definisi batas, TIDAK dikoreksi tanpa bukti satuan).
+- **Bukan penggabungan 3 desa bernama sama**: data selalu terpisah per (kecamatan, desa) — Karangtengah Batur 0 Ha sawah, Wanayasa 13 Ha.
+- Datastore Pemkab juga memuat baris kacau lain yang tidak bisa diselamatkan tanpa PDF asli (mis. KRANDEGAN: jumlah 15.346 ≠ 61 + 80.800) — diberi confidence rendah.
+
 ## File Sumber
 
 - **Extractor**: `I:\pertanian\pertanian-2\extract_distankan.py`
