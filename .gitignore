@@ -46,6 +46,7 @@ __pycache__/
 # Scripts debugging / audit (not shipped to repo)
 scripts/*.cjs
 scripts/*.mjs
+!scripts/test-admin.mjs
 scripts/hasil-*.txt
 scripts/kda-*.txt
 scripts/kda-*.clean

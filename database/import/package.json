@@ -1,0 +1,19 @@
+{
+  "name": "sispertani-db-import",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Import CSV/JSON/GeoJSON SISPERTANI ke MySQL (satu arah: file -> database)",
+  "scripts": {
+    "dry": "node run.mjs --dry-run",
+    "import": "node --env-file=.env run.mjs",
+    "import:only": "node --env-file=.env run.mjs --only"
+  },
+  "dependencies": {
+    "mysql2": "^3.11.0",
+    "papaparse": "^5.4.1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
