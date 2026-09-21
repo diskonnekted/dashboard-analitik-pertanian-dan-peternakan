@@ -556,7 +556,7 @@ ${padiTop5}
 
 == SEKTOR HORTIKULTURA ==
 Data sayuran meliputi: Bawang Merah, Bawang Putih, Cabai Besar, Cabai Rawit, Kentang, Kubis, Petsai (Sawi), Tomat.
-Banjarnegara dikenal sebagai sentra bawang merah nasional.
+Banjarnegara BUKAN daerah sentra maupun produsen bawang merah; produksi bawang merah di Banjarnegara sangat kecil dan tidak signifikan. Jangan pernah menyebut atau menganggap Banjarnegara sebagai sentra bawang merah. Komoditas hortikultura unggulan Banjarnegara yang sesungguhnya adalah salak (produksi buah tahunan terbesar di kabupaten ini).
 
 == SEKTOR PERKEBUNAN ==
 Komoditas: Kopi, Teh, Karet, Kakao, Tebu, Kelapa, Cengkeh, Kapulaga, Panili.
