@@ -81,9 +81,15 @@ if ($LASTEXITCODE -ne 0) {
 # --- 1. build frontend ------------------------------------------------------
 if (-not $SkipBuild) {
   Write-Host "`n[1/5] npm run build (frontend)..." -ForegroundColor Cyan
-  Push-Location $root
-  try { npm run build } finally { Pop-Location }
-  if ($LASTEXITCODE -ne 0) { throw "Build frontend gagal." }
+  # EAP 'Continue' lokal: vite kadang menulis info ke stderr (PLUGIN_TIMINGS dll)
+  # yang di PS 5.1 menjadi terminating error saat EAP=Stop.
+  $prev = $ErrorActionPreference; $ErrorActionPreference = 'Continue'
+  try {
+    Push-Location $root
+    try { npm run build 2>&1 | Select-Object -Last 12 | Out-Host; $code = $LASTEXITCODE }
+    finally { Pop-Location }
+  } finally { $ErrorActionPreference = $prev }
+  if ($code -ne 0) { throw "Build frontend gagal (exit $code)." }
 } else {
   Write-Host "`n[1/5] Build dilewati (-SkipBuild)." -ForegroundColor DarkGray
 }

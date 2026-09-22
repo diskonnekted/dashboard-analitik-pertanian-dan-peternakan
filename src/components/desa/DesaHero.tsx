@@ -1,4 +1,4 @@
-import { ArrowLeft, Maximize, MapPin, Users, Sprout } from "lucide-react";
+import { ArrowLeft, Map as MapIcon, Maximize, MapPin, Users, Sprout } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
   namaKecamatanTanpaSingkatan,
@@ -32,32 +32,48 @@ export function DesaHero({ desa }: Props) {
       />
 
       <div className="relative px-5 sm:px-6 py-6 sm:py-7">
-        {/* Breadcrumb */}
-        <nav
-          aria-label="breadcrumb"
-          className="flex items-center text-[11px] text-emerald-100/85 mb-3"
-        >
+        {/* Breadcrumb + tombol kembali ke peta utama */}
+        <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <nav
+            aria-label="breadcrumb"
+            className="flex items-center text-[11px] text-emerald-100/85 min-w-0"
+          >
+            <Link
+              to="/"
+              className="
+                inline-flex items-center gap-1.5 rounded-full
+                bg-white/10 hover:bg-white/20 transition-colors
+                px-2.5 py-1
+              "
+            >
+              <ArrowLeft size={11} aria-hidden />
+              <span>Dasbor Banjarnegara</span>
+            </Link>
+            <span aria-hidden className="mx-1.5 text-emerald-300/60">/</span>
+            <Link
+              to={`/?kecamatan=${encodeURIComponent(desa.kecamatanSlug)}`}
+              className="hover:text-white transition-colors truncate"
+            >
+              {singkatanKecamatan(desa.kecamatanTampil)}
+            </Link>
+            <span aria-hidden className="mx-1.5 text-emerald-300/60">/</span>
+            <span className="text-white font-semibold truncate">{desa.namaTampil}</span>
+          </nav>
           <Link
             to="/"
+            title="Kembali ke peta utama Banjarnegara"
+            aria-label="Kembali ke peta utama Banjarnegara"
             className="
-              inline-flex items-center gap-1.5 rounded-full
-              bg-white/10 hover:bg-white/20 transition-colors
-              px-2.5 py-1
+              inline-flex flex-shrink-0 items-center gap-1.5 rounded-full
+              bg-white/90 hover:bg-white text-emerald-800
+              px-3 py-1.5 text-[11px] font-semibold
+              shadow-sm transition-colors
             "
           >
-            <ArrowLeft size={11} aria-hidden />
-            <span>Dasbor Banjarnegara</span>
+            <MapIcon size={12} aria-hidden />
+            <span>Kembali ke Peta Utama</span>
           </Link>
-          <span aria-hidden className="mx-1.5 text-emerald-300/60">/</span>
-          <Link
-            to={`/?kecamatan=${encodeURIComponent(desa.kecamatanSlug)}`}
-            className="hover:text-white transition-colors truncate"
-          >
-            {singkatanKecamatan(desa.kecamatanTampil)}
-          </Link>
-          <span aria-hidden className="mx-1.5 text-emerald-300/60">/</span>
-          <span className="text-white font-semibold truncate">{desa.namaTampil}</span>
-        </nav>
+        </div>
 
         {/* Judul + subtitle */}
         <h1 className="text-2xl sm:text-3xl font-bold tracking-tight leading-tight">
