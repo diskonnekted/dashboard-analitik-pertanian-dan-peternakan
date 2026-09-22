@@ -402,7 +402,7 @@ export const fetchOpenDataCatalog = async (): Promise<CkanCatalog> => {
 };
 
 const fetchLahanBanjarnegaraCsv = async (): Promise<LahanDesa[]> => {
-  const cacheKey = "banjarnegara_lahan_cache_v5";
+  const cacheKey = "banjarnegara_lahan_cache_v6";
   const cached = getCachedData<LahanDesa[]>(cacheKey);
 
   // Fetch-first: file lokal kecil (~50KB), selalu ambil yang terbaru.
