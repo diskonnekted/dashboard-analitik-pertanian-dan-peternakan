@@ -208,6 +208,49 @@ export function TrendPill({
   );
 }
 
+/* ---------- Empty state informatif (panel/halaman tanpa data) ---------- */
+export function EmptyStatePlaceholder({
+  icon,
+  title,
+  message,
+  action,
+  className = "",
+}: {
+  icon?: ReactNode;
+  title: string;
+  message: string;
+  action?: ReactNode;
+  className?: string;
+}) {
+  return (
+    <section
+      className={`flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white p-10 text-center ${className}`}
+    >
+      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-400">
+        {icon ?? (
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-6 w-6"
+            aria-hidden
+          >
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 16v-4" />
+            <path d="M12 8h.01" />
+          </svg>
+        )}
+      </div>
+      <h3 className="mt-3 text-base font-bold text-slate-700">{title}</h3>
+      <p className="mt-1.5 max-w-xl text-sm leading-relaxed text-slate-500">{message}</p>
+      {action && <div className="mt-4">{action}</div>}
+    </section>
+  );
+}
+
 /* ---------- Loading spinner ---------- */
 export function LoadingSpinner({
   height = "h-[300px]",

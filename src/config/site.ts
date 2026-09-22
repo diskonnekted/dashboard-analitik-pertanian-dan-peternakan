@@ -71,10 +71,6 @@ export const siteConfig = {
           href: "/komoditas-unggulan",
         },
         {
-          label: "Nilai Ekonomi",
-          href: "/nilai-ekonomi",
-        },
-        {
           label: "LTT & Kalender Tanam",
           href: "/ltt-katam",
         },
@@ -120,6 +116,32 @@ export const siteConfig = {
         {
           label: "Nilai Ekonomi & Pasar",
           href: "/economic-value",
+        },
+      ],
+    },
+    // 7b. Nilai Ekonomi (lintas bidang — estimasi volume produksi × harga referensi)
+    {
+      title: "Nilai Ekonomi",
+      items: [
+        {
+          label: "Pangan",
+          href: "/nilai-ekonomi/pangan",
+        },
+        {
+          label: "Hortikultura",
+          href: "/nilai-ekonomi/hortikultura",
+        },
+        {
+          label: "Perkebunan",
+          href: "/nilai-ekonomi/perkebunan",
+        },
+        {
+          label: "Peternakan",
+          href: "/nilai-ekonomi/peternakan",
+        },
+        {
+          label: "Perikanan",
+          href: "/nilai-ekonomi/perikanan",
         },
       ],
     },

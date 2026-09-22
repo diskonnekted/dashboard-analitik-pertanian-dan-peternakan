@@ -1,5 +1,5 @@
 import { Suspense, lazy } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { LoadingSpinner } from "@/components/ui";
 
 
@@ -66,7 +66,8 @@ function App() {
           <Route element={<AdminPage />} path="/admin" />
 <Route element={<KewirausahaanKwtPage />} path="/kewirausahaan/kwt" />
 <Route element={<KomoditasUnggulanPage />} path="/komoditas-unggulan" />
-<Route element={<NilaiEkonomiPage />} path="/nilai-ekonomi" />
+<Route element={<Navigate to="/nilai-ekonomi/pangan" replace />} path="/nilai-ekonomi" />
+<Route element={<NilaiEkonomiPage />} path="/nilai-ekonomi/:bidang" />
 <Route element={<LttKatamPage />} path="/ltt-katam" />
           <Route element={<DesaDetailPage />} path="/desa/:kec/:nama" />
           {/* Routes for modules in development */}
