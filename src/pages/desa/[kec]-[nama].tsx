@@ -8,12 +8,19 @@ import {
   type DesaDetail,
   type DesaIndex,
 } from "../../services/desa";
+import {
+  fetchPerikananBudidaya,
+  fetchPerikananTangkap,
+  type PerikananBudidaya,
+  type PerikananTangkap,
+} from "../../services/api";
 import { DesaHero } from "../../components/desa/DesaHero";
 import { DesaMapMini } from "../../components/desa/DesaMapMini";
 import { DesaLahan } from "../../components/desa/DesaLahan";
 import { DesaDemografi } from "../../components/desa/DesaDemografi";
 import { DesaTernak } from "../../components/desa/DesaTernak";
 import { DesaKelembagaan } from "../../components/desa/DesaKelembagaan";
+import { DesaPerikanan } from "../../components/desa/DesaPerikanan";
 
 /**
  * Status pelaporan kegagalan per-sumber data agregat.
@@ -36,6 +43,27 @@ export default function DesaDetailPage() {
   const [sourceFailures, setSourceFailures] = useState<SourceStatus>(NO_FAILURE);
   /** Counter untuk memicu re-fetch manual lewat tombol "Coba lagi". */
   const [retryToken, setRetryToken] = useState(0);
+
+  // P1-5: konteks perikanan kecamatan (BPS budidaya + tangkap) — diambil sekali,
+  // difilter per kecamatan di panel DesaPerikanan.
+  const [perikanan, setPerikanan] = useState<{
+    budidaya: PerikananBudidaya[];
+    tangkap: PerikananTangkap[];
+  } | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    Promise.all([fetchPerikananBudidaya(), fetchPerikananTangkap()])
+      .then(([budidaya, tangkap]) => {
+        if (!cancelled) setPerikanan({ budidaya, tangkap });
+      })
+      .catch((e: unknown) => {
+        console.warn("Gagal memuat konteks perikanan kecamatan:", e);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     if (!kec || !nama) {
@@ -193,6 +221,12 @@ export default function DesaDetailPage() {
           <DesaLahan data={detail.lahan} />
           <DesaDemografi data={detail.st2023} />
           <DesaTernak data={detail.st2023?.ternak ?? null} />
+          <DesaPerikanan
+            kecamatan={detail.kecamatanTampil}
+            budidaya={perikanan?.budidaya ?? []}
+            tangkap={perikanan?.tangkap ?? []}
+            ready={perikanan !== null}
+          />
           <DesaKelembagaan data={detail.kelompokTani} />
         </div>
       </main>

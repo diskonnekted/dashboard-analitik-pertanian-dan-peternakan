@@ -11,9 +11,9 @@ Legenda: ✅ selesai · 🟡 sebagian · ❌ belum mulai · 🔴 blocker
 |---|------|-----|--------|-----------------|
 | P1-1 | **Susu & kulit ternak** | S | ✅ **DONE** | `backend/src/routes/peternakan.js:118-130` (Σ=121.087); `src/pages/peternakan-susu-kulit.tsx`; route + menu di `App.tsx`/`config/site.ts`; commit `9ef39ab` |
 | P1-2 | **Audit log admin** | S | ✅ | `backend/src/routes/admin.js` `/admin/sync-log` (requireAdmin); panel tabel di `src/pages/admin.tsx` |
-| P1-3 | **Profil kelompok tani (detail)** | M | ❌ | Butuh `kth_detail` JSON + SIMLUH; route/fetcher belum ada |
+| P1-3 | **Profil kelompok tani (detail)** | M | 🟢 | SELESAI 22 Sep: detail KTH per desa kini tampil di panel Kelembagaan detail desa (DesaKelembagaan + seksi KTH SIMLUH: nama, kelas badge Pemula/Madya/Utama, ketua, SK/noRegister, tanggal berdiri, alamat; dedupe lintas tahun) — data sudah mengalir via `/v1/kelembagaan/kelompok-tani` (`kelompokTaniHutanList`), tinggal ditampilkan |
 | P1-4 | **Rasionalisasi telur & unggas** | S | 🟢 | SELESAI 22 Sep: unggas via panel Populasi Ternak (DesaTernak) + blok baru **Estimasi Produksi Telur** per desa — populasi ST2023 × faktor konversi indikatif (250/60/250 butir/ekor/thn; 60/45/12 g) × harga `harga-referensi.ts` (ras layer Rp 28rb/kg, kampung Rp 45rb/kg, puyuh Rp 30rb/kg indikatif); data telur resmi 3 jenis menyusul dari Distankan KP (master §3.3) |
-| P1-5 | **Peta kolam per desa** | M | 🟡 | `fisheries` ada, tapi layer kolam per-desa (`ikan_kolam`) belum |
+| P1-5 | **Peta kolam per desa** | M | 🟡 | 22 Sep: panel **DesaPerikanan** baru di detail desa — konteks BPS kecamatan (budidaya kolam/karamba/minapadi + tangkap per alat, tahun terbaru; susuk 2024 = 164.285 kg ✓) + RT desa tetap di Demografi. **Data kolam per-DESA belum ada** (ST2023 hanya hitung RT) & tabel `ikan_kolam` BPS ANOMALI (luas beku 68,93 Ha semua tahun, 2019 korup Σ1,72 Mkg, produksi hanya Bawang ≠ 0) → tidak ditampilkan sampai diverifikasi; layer peta kolam menunggu geo-data dinas |
 
 ## P2 — Data publik BPS/CKAN
 | # | Item | Est | Status | Evidence |
@@ -47,10 +47,10 @@ Legenda: ✅ selesai · 🟡 sebagian · ❌ belum mulai · 🔴 blocker
 ---
 
 ## Prioritas Selanjutnya (urut roadmap pengembangan.md)
-> 1. **P1-3 profil kelompok tani detail** → data KTH/SIMLUH ada; lalu **P1-5 peta kolam per desa** (ikan_kolam MySQL ada) — P1-4 ✅ selesai
+> 1. **P2-5 kawasan hortikultura** (M; data horti_produksi + polygon desa tersedia) — P1-3 ✅ & P1-5 panel ✅ selesai 22 Sep
 > 2. **P4-1 deploy produksi** → 🔴 **blocker utama seluruh roadmap — menunggu keputusan hosting user**
-> 3. **P1-3 profil kelompok tani detail** → data KTH/SIMLUH ada; lalu **P1-5 peta kolam per desa** (ikan_kolam MySQL ada)
-> 4. **P2-5 kawasan hortikultura** (M; data horti_produksi + polygon desa tersedia)
+> 3. **P2-4 restrukturisasi kelapa deres/porang** (M; data BPS perkebunan ada) → lalu P3 sesuai data dinas
+> 4. **P2-6 rules kelayakan & BAST bantuan** (menunggu data sospol/detail dinas)
 > 5. P2-2/P2-3 sedang berjalan di sesi lain (nilai-ekonomi harga + data varietas 23 Sep); P3/P4 sisanya mengikuti ketersediaan data dinas
 
 <!-- AUTO-SYNC dari public/gap-analysis-master.md + pengembangan.md (22 Sep 2026) -->

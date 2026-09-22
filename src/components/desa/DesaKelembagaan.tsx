@@ -1,11 +1,21 @@
 import { Users2, Tractor, Fish, Trees, ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import type { KelompokTaniRow } from "../../services/api";
+import type { KelompokTaniRow, KelompokTaniHutanDetail } from "../../services/api";
 import { EmptyBlock } from "./EmptyBlock";
 
 interface Props {
   data: KelompokTaniRow[];
 }
+
+/** Badge kelas KTH (SIMLUH) — Pemula / Madya / Utama. */
+const kthKelasBadge = (kelas: string): string => {
+  const k = (kelas ?? "").toLowerCase();
+  const base =
+    "px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wide shrink-0 ";
+  if (k.includes("utama")) return base + "bg-emerald-100 text-emerald-700 ring-1 ring-emerald-200";
+  if (k.includes("madya")) return base + "bg-amber-100 text-amber-700 ring-1 ring-amber-200";
+  return base + "bg-slate-100 text-slate-600 ring-1 ring-slate-200";
+};
 
 /**
  * Kelembagaan Pertanian — agregasi per desa:
@@ -83,6 +93,20 @@ export function DesaKelembagaan({ data }: Props) {
     },
   ];
 
+  // P1-3: daftar KTH detail (SIMLUH) — data per tahun bisa memuat list yang sama,
+  // dedupe berdasarkan nama + no. register.
+  const kthSeen = new Set<string>();
+  const kthList: KelompokTaniHutanDetail[] = [];
+  for (const r of data) {
+    for (const k of r.kelompokTaniHutanList ?? []) {
+      const key = `${k.namaKelompok}|${k.noRegister}`;
+      if (!kthSeen.has(key)) {
+        kthSeen.add(key);
+        kthList.push(k);
+      }
+    }
+  }
+
   return (
     <section className="bg-white border border-slate-200 rounded-xl p-4">
       <header className="mb-2.5 flex items-start gap-2.5">
@@ -133,6 +157,48 @@ export function DesaKelembagaan({ data }: Props) {
           </div>
         ))}
       </div>
+
+      {/* P1-3: detail KTH desa ini (SIMLUH) — nama, kelas, ketua, SK, berdiri, alamat */}
+      {kthList.length > 0 && (
+        <div className="mt-3">
+          <div className="mb-2 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+            <Trees className="w-3.5 h-3.5 text-green-700" />
+            Kelompok Tani Hutan — {kthList.length} kelompok (detail SIMLUH)
+          </div>
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            {kthList.map((k) => (
+              <div
+                key={`${k.noRegister}-${k.namaKelompok}`}
+                className="
+                  rounded-lg border border-slate-200 bg-white
+                  px-3 py-2 hover:border-slate-300 transition-colors
+                "
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <span className="text-xs font-bold text-slate-800 leading-snug">
+                    {k.namaKelompok}
+                  </span>
+                  <span className={kthKelasBadge(k.kelas)}>{k.kelas}</span>
+                </div>
+                {k.ketua && (
+                  <div className="mt-1 text-[11px] text-slate-600">
+                    Ketua: <b>{k.ketua}</b>
+                  </div>
+                )}
+                {k.noRegister && (
+                  <div className="mt-0.5 text-[10px] font-mono text-slate-500 truncate">
+                    SK: {k.noRegister}
+                  </div>
+                )}
+                <div className="mt-0.5 text-[10px] text-slate-500 leading-snug">
+                  {k.tanggalBerdiri && <>Berdiri {k.tanggalBerdiri} · </>}
+                  {k.alamat}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* CTA ringkas */}
       <div
