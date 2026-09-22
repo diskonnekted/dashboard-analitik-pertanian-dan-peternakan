@@ -2464,10 +2464,10 @@ export const fetchPerikananBudidaya = apiFirst<PerikananBudidaya[]>("/v1/perikan
 
 export interface TernakSusuKulit {
   kecamatan: string;
-  jenis: string; // "Sapi/Kerbau" atau "Kambing/Domba"
-  periode: string; // tahun, mis. "2024"
-  jumlah_unit: number; // ekuivalen "lembar kulit" / "liter susu" (nilai gabungan per grup)
-  satuan: string; // "lembar" | "liter" | "gabungan"
+  jenis: "Sapi/Kerbau" | "Kambing/Domba";
+  tahun: string;
+  jumlah: number;
+  satuan: string;
 }
 
 /**
@@ -2476,13 +2476,37 @@ export interface TernakSusuKulit {
  * Σ data live == 121.087 unit (verif backend: 120 baris).
  * Auth: tidak perlu (public read-only backend MySQL read-only).
  */
+const susuKulitTransform = (raw: any): TernakSusuKulit[] => {
+  if (!raw || typeof raw !== "object") return [];
+  const list = Array.isArray(raw) ? raw : (Array.isArray(raw.value) ? raw.value : raw.data);
+  if (!Array.isArray(list)) return [];
+  const out: TernakSusuKulit[] = [];
+  const satuan = "gabungan (kulit lembar / susu liter)";
+  for (const rec of list) {
+    const kec = String(rec.kecamatan ?? "");
+    const thn = String(rec.tahun ?? "");
+    const unit = rec.unit ?? satuan;
+    for (const item of rec.items ?? []) {
+      out.push({
+        kecamatan: kec,
+        jenis: item.jenis,
+        tahun: thn,
+        jumlah: Number(item.jumlah) || 0,
+        satuan: unit,
+      });
+    }
+  }
+  return out;
+};
+
 const fetchTernakSusuKulitCsv = async (): Promise<TernakSusuKulit[]> => {
-  // Fallback: snapshot lokal (regenerasi dari xlsx _tmp jika ada).
-  // Jika belum ada snapshot, kirim array kosong → UI akan menampilkan empty state.
+  // Fallback: snapshot lokal public/data/susu-kulit-fallback.json (dump endpoint
+  // /v1/peternakan/susu-kulit, 120 record, Σ 121.087 unit). Bentuk payload sama
+  // dengan respons API → cukup lewat susuKulitTransform.
   try {
     const res = await fetch("/data/susu-kulit-fallback.json");
     if (!res.ok) return [];
-    return (await res.json()) as TernakSusuKulit[];
+    return susuKulitTransform(await res.json());
   } catch {
     return [];
   }
@@ -2615,3 +2639,9 @@ export const fetchKwt = createFetcher<KwtRow>("/v1/kewirausahaan/kwt");
 export const fetchKomoditasUnggulan = createFetcher<KomoditasUnggulanRow>("/v1/komoditas-unggulan");
 export const fetchNilaiEkonomi = createFetcher<NilaiEkonomiRow>("/v1/nilai-ekonomi");
 export const fetchLttKatam = createFetcher<LttKatamRow>("/v1/ltt-katam");
+
+// --- Nilai Ekonomi (halaman /nilai-ekonomi): daging ternak & telur per kecamatan ---
+// Bentuk TernakFlow (items + unit kg), konsisten dengan fetchDagingUnggas / fetchTernakSusuKulit.
+// Data hanya di MySQL (tidak ada CSV publik) -> fallback kosong; UI menampilkan EmptyBlock.
+export const fetchTernakDaging = apiFirst<TernakFlow[]>("/v1/peternakan/daging", async () => []);
+export const fetchTernakTelur = apiFirst<TernakFlow[]>("/v1/peternakan/telur", async () => []);

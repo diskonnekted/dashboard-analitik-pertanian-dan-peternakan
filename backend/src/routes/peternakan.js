@@ -131,3 +131,18 @@ peternakanRouter.get(
     }),
   ),
 );
+
+/** GET /api/v1/peternakan/daging -> TernakFlow[] (kg) — daging ternak besar & kecil
+ *  (Sapi, Kerbau, Kambing, Domba, Babi). Daging unggas lihat /daging-unggas. */
+const DAGING_TERNAK_LABELS = ["Sapi", "Kerbau", "Kambing", "Domba", "Babi"];
+peternakanRouter.get(
+  "/daging",
+  route(() => ternakFlow({ table: "ternak_daging", where: "WHERE t.kelompok = ?", params: ["ternak"], labels: DAGING_TERNAK_LABELS, valueCol: "produksi_kg", unit: "kg" })),
+);
+
+/** GET /api/v1/peternakan/telur -> TernakFlow[] (kg) — telur ayam kampung & ras layer. */
+const TELUR_LABELS = ["Ayam Kampung", "Ayam Ras Layer"];
+peternakanRouter.get(
+  "/telur",
+  route(() => ternakFlow({ table: "ternak_telur", where: "", params: [], labels: TELUR_LABELS, valueCol: "produksi_kg", unit: "kg" })),
+);
