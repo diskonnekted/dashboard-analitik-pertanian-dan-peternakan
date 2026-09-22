@@ -23,6 +23,7 @@ import {
 import { Link, useNavigate, useParams } from "react-router-dom";
 import DefaultLayout from "@/layouts/default";
 import { Badge, LoadingSpinner, SectionCard } from "@/components/ui";
+import { KecamatanMapMini } from "@/components/kecamatan/KecamatanMapMini";
 import {
   fetchKecamatanDetail,
   fetchKecamatanIndex,
@@ -307,6 +308,11 @@ export default function KecamatanDetailPage() {
             </div>
           </div>
         </div>
+
+        {/* ---------- Peta wilayah (minimap) ---------- */}
+        {d.desa.some((v) => v.geometry) && (
+          <KecamatanMapMini desaList={d.desa} namaKecamatan={d.namaTampil} />
+        )}
 
         {/* ---------- Panel domain ---------- */}
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
