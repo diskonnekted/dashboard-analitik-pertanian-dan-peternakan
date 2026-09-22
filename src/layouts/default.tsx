@@ -39,6 +39,7 @@ import {
   UserCog,
   Lock,
   Store,
+  MapPin,
 } from "lucide-react";
 import { siteConfig } from "@/config/site";
 
@@ -121,6 +122,8 @@ export default function DefaultLayout({
         return <Scale className={cls} />;
       case "Kelembagaan Tani":
         return <Users className={cls} />;
+      case "Profil Kecamatan":
+        return <MapPin className={cls} />;
       case "Kewirausahaan KWT":
         return <Store className={cls} />;
       case "Jadwal & Materi Penyuluhan":

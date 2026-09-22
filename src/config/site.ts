@@ -32,6 +32,10 @@ export const siteConfig = {
           label: "Sensus Pertanian 2023 (BPS)",
           href: "/sensus-2023",
         },
+        {
+          label: "Profil Kecamatan",
+          href: "/kecamatan",
+        },
       ],
     },
     // 3. Bidang Tanaman Pangan

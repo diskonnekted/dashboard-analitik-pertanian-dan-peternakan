@@ -26,6 +26,8 @@ const GovernmentAssistancePage = lazy(() => import("@/pages/government-assistanc
 const ManualPage = lazy(() => import("@/pages/manual"));
 const ComingSoonPage = lazy(() => import("@/pages/coming-soon"));
 const DesaDetailPage = lazy(() => import("@/pages/desa/[kec]-[nama]"));
+const KecamatanDetailPage = lazy(() => import("@/pages/kecamatan/[kec]"));
+const KecamatanIndexPage = lazy(() => import("@/pages/kecamatan/index"));
 const PeternakanSusuKulitPage = lazy(() => import("@/pages/peternakan-susu-kulit"));
 const KewirausahaanKwtPage = lazy(() => import("@/pages/kewirausahaan-kwt"));
 const KomoditasUnggulanPage = lazy(() => import("@/pages/komoditas-unggulan"));
@@ -71,6 +73,8 @@ function App() {
 <Route element={<NilaiEkonomiPage />} path="/nilai-ekonomi/:bidang" />
 <Route element={<LttKatamPage />} path="/ltt-katam" />
           <Route element={<DesaDetailPage />} path="/desa/:kec/:nama" />
+      <Route element={<KecamatanIndexPage />} path="/kecamatan" />
+      <Route element={<KecamatanDetailPage />} path="/kecamatan/:kec" />
           {/* Routes for modules in development */}
           <Route element={<ComingSoonPage />} path="/early-warning" />
           <Route element={<ComingSoonPage />} path="/master-petani" />
