@@ -4,8 +4,8 @@
  * Estimasi = volume produksi (fetcher api.ts yang SUDAH ADA, dikomposisikan
  * di src/services/nilai-ekonomi-estimasi.ts) × harga referensi
  * (src/data/harga-referensi.ts — kelas "resmi-live" Bappebti / "indikatif").
- * Khusus perikanan: menampilkan nilai produksi AKTUAL dataset Distankan
- * (budidaya + tangkap), bukan estimasi harga.
+ * Bidang perikanan dialihkan ke /economic-value — halaman kanonik nilai
+ * produksi perikanan (budidaya + tangkap, data aktual Distankan).
  *
  * Struktur baris komoditas sengaja di-align dengan schema tabel
  * nilai_ekonomi_tahunan (endpoint /api/v1/nilai-ekonomi, data resmi datang
@@ -13,7 +13,7 @@
  * tanpa rombak UI.
  */
 import { useEffect, useMemo, useState } from "react";
-import { Link, Navigate, useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import {
   Bar,
   BarChart,
@@ -30,8 +30,6 @@ import {
   Carrot,
   Coffee,
   DollarSign,
-  ExternalLink,
-  Fish,
   Trophy,
   Wheat,
 } from "lucide-react";
@@ -57,7 +55,7 @@ import {
   type KelasEstimasi,
 } from "@/services/nilai-ekonomi-estimasi";
 
-const IKON_BIDANG = { wheat: Wheat, carrot: Carrot, coffee: Coffee, beef: Beef, fish: Fish } as const;
+const IKON_BIDANG = { wheat: Wheat, carrot: Carrot, coffee: Coffee, beef: Beef } as const;
 
 const PALET = [
   "#1d4ed8",
@@ -109,8 +107,6 @@ const badgeKelas = (kelas: KelasEstimasi) => {
   switch (kelas) {
     case "resmi-live":
       return <Badge tone="emerald">Resmi-live · Bappebti</Badge>;
-    case "resmi-dataset":
-      return <Badge tone="blue">Dataset resmi</Badge>;
     case "indikatif":
       return <Badge tone="amber">Indikatif · perlu verifikasi</Badge>;
     default:
@@ -240,9 +236,7 @@ export default function NilaiEkonomiPage() {
 
   const teratas = barisKomoditas.find((b) => b.terhitung);
   const shareTeratas = teratas && totalRp > 0 ? (teratas.subtotalRp / totalRp) * 100 : 0;
-  const nResmi = barisKomoditas.filter(
-    (b) => b.kelas === "resmi-live" || b.kelas === "resmi-dataset",
-  ).length;
+  const nResmi = barisKomoditas.filter((b) => b.kelas === "resmi-live").length;
   const nIndikatif = barisKomoditas.filter((b) => b.kelas === "indikatif").length;
   const nTanpa = barisKomoditas.filter((b) => !b.terhitung).length;
 
@@ -254,8 +248,7 @@ export default function NilaiEkonomiPage() {
 
   const meta = BIDANG_META[bidangKey];
   const Ikon = IKON_BIDANG[meta.ikon];
-  const isPerikanan = bidangKey === "perikanan";
-  const namaSeri = isPerikanan ? "Nilai Produksi (juta Rp)" : "Estimasi Nilai (juta Rp)";
+  const namaSeri = "Estimasi Nilai (juta Rp)";
   const cakupanKec =
     kecamatan === SEMUA_KEC ? `${perKecamatan.length} kecamatan` : kecamatan;
 
@@ -265,17 +258,7 @@ export default function NilaiEkonomiPage() {
         <PageHeader
           icon={<Ikon className="h-6 w-6" aria-hidden />}
           title={meta.judul}
-          subtitle={`${meta.tagline} ${isPerikanan ? "" : `Harga referensi diakses ${AKSES_HARGA_TANGGAL}.`}`}
-          actions={
-            isPerikanan ? (
-              <Link
-                to="/economic-value"
-                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-600 hover:border-blue-300 hover:text-blue-700"
-              >
-                Detail Nilai Perikanan <ExternalLink className="h-3.5 w-3.5" aria-hidden />
-              </Link>
-            ) : undefined
-          }
+          subtitle={`${meta.tagline} Harga referensi diakses ${AKSES_HARGA_TANGGAL}.`}
         />
 
         <Toolbar>
@@ -341,16 +324,6 @@ export default function NilaiEkonomiPage() {
                   "Struktur halaman sudah siap menyerap dataset resmi nilai ekonomi (tabel nilai_ekonomi_tahunan) begitu diunggah — perkiraan 23 Sep 2026."
                 : `Tidak ada data ${meta.label.toLowerCase()} untuk filter tahun${tahun ? ` ${tahun}` : ""} dan kecamatan terpilih. Pilih kombinasi filter lain.`
             }
-            action={
-              isPerikanan ? (
-                <Link
-                  to="/economic-value"
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-600 hover:border-blue-300 hover:text-blue-700"
-                >
-                  Lihat Nilai Produksi Perikanan <ExternalLink className="h-3.5 w-3.5" aria-hidden />
-                </Link>
-              ) : undefined
-            }
           />
         ) : (
           <>
@@ -358,7 +331,7 @@ export default function NilaiEkonomiPage() {
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               <KpiCard
                 icon={<DollarSign className="h-6 w-6" aria-hidden />}
-                label={isPerikanan ? "Total Nilai Produksi" : "Total Estimasi Nilai"}
+                label="Total Estimasi Nilai"
                 value={fmtRp(totalRp)}
                 hint={`${barisKomoditas.length} komoditas · ${cakupanKec}${tahun ? ` · ${tahun}` : ""}`}
                 color="bg-emerald-50 text-emerald-600"
@@ -465,7 +438,7 @@ export default function NilaiEkonomiPage() {
 
               {/* Harga referensi per komoditas */}
               <SectionCard
-                title={isPerikanan ? "Harga implisit per komoditas (Rp/kg)" : "Harga referensi per komoditas"}
+                title="Harga referensi per komoditas"
                 icon={<BadgeCheck className="h-4 w-4 text-blue-800" aria-hidden />}
               >
                 <div className="h-80">
@@ -600,9 +573,7 @@ export default function NilaiEkonomiPage() {
               Kelas sumber: <span className="font-semibold text-emerald-700">resmi-live</span> = harga
               Bappebti infoharga tingkat petani ({AKSES_HARGA_TANGGAL});{" "}
               <span className="font-semibold text-amber-700">indikatif</span> = harga wajar yang
-              belum terverifikasi — perlu verifikasi lapangan;{" "}
-              <span className="font-semibold text-blue-700">resmi-dataset</span> = nilai aktual
-              dataset Distankan.
+              belum terverifikasi — perlu verifikasi lapangan.
             </li>
             <li>{KETERANGAN_PENCARIAN}</li>
             <li>

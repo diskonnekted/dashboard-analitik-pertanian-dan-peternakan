@@ -113,10 +113,6 @@ export const siteConfig = {
           label: "Produksi Perikanan",
           href: "/fisheries",
         },
-        {
-          label: "Nilai Ekonomi & Pasar",
-          href: "/economic-value",
-        },
       ],
     },
     // 7b. Nilai Ekonomi (lintas bidang — estimasi volume produksi × harga referensi)
@@ -141,7 +137,7 @@ export const siteConfig = {
         },
         {
           label: "Perikanan",
-          href: "/nilai-ekonomi/perikanan",
+          href: "/economic-value",
         },
       ],
     },

@@ -67,6 +67,7 @@ function App() {
 <Route element={<KewirausahaanKwtPage />} path="/kewirausahaan/kwt" />
 <Route element={<KomoditasUnggulanPage />} path="/komoditas-unggulan" />
 <Route element={<Navigate to="/nilai-ekonomi/pangan" replace />} path="/nilai-ekonomi" />
+<Route element={<Navigate to="/economic-value" replace />} path="/nilai-ekonomi/perikanan" />
 <Route element={<NilaiEkonomiPage />} path="/nilai-ekonomi/:bidang" />
 <Route element={<LttKatamPage />} path="/ltt-katam" />
           <Route element={<DesaDetailPage />} path="/desa/:kec/:nama" />

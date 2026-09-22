@@ -6,7 +6,6 @@
  *    sesi lain) — modul ini murni MENGOMPOSISIKAN fetcher existing.
  *  - Harga TIDAK hardcode di komponen — semua dari src/data/harga-referensi.ts.
  *  - Kelas sumber jujur: "resmi-live" (Bappebti), "indikatif" (perlu verifikasi),
- *    "resmi-dataset" (nilai aktual dari dataset Distankan — perikanan),
  *    "tanpa-harga" (harga referensi belum tersedia — subtotal tidak dihitung).
  *  - Struktur output di-align dengan schema tabel nilai_ekonomi_tahunan
  *    (endpoint /api/v1/nilai-ekonomi, data resmi datang 23 Sep 2026) agar
@@ -24,8 +23,6 @@ import {
   fetchTernakBesar,
   fetchTernakKecil,
   fetchUnggas,
-  fetchNilaiProduksiBudidaya,
-  fetchNilaiProduksiTangkap,
 } from "@/services/api";
 import { HARGA_PANGAN, HARGA_HORTI, HARGA_KEBUN, HARGA_DAGING, type HargaRef } from "@/data/harga-referensi";
 
@@ -34,7 +31,6 @@ export const BIDANG_NILAI_EKONOMI = [
   "hortikultura",
   "perkebunan",
   "peternakan",
-  "perikanan",
 ] as const;
 
 export type BidangKey = (typeof BIDANG_NILAI_EKONOMI)[number];
@@ -47,7 +43,7 @@ export interface BidangMeta {
   /** subjudul deskriptif */
   tagline: string;
   /** ikon lucide key — dipetakan di halaman */
-  ikon: "wheat" | "carrot" | "coffee" | "beef" | "fish";
+  ikon: "wheat" | "carrot" | "coffee" | "beef";
   /** catatan metode per bidang (ditampilkan di disklosur) */
   catatan: string[];
 }
@@ -105,21 +101,9 @@ export const BIDANG_META: Record<BidangKey, BidangMeta> = {
       "Kuda dinilai sebagai hewan kerja (bukan daging) — harga referensi tidak relevan; kelinci belum ada harga referensi.",
     ],
   },
-  perikanan: {
-    label: "Perikanan",
-    judul: "Nilai Ekonomi Perikanan",
-    tagline:
-      "Nilai produksi perikanan AKTUAL (budidaya + tangkap) dari dataset resmi — bukan estimasi harga.",
-    ikon: "fish",
-    catatan: [
-      "Nilai = data aktual Distankan KP (ribu rupiah pada sumber → dikonversi Rupiah penuh), bukan estimasi harga referensi.",
-      "4 sel budidaya 2022 dikoreksi saat regenerasi CSV (KJA: Bawang & Wanadadi; Minapadi: Mandiraja & Purwanegara) — lihat catatan /economic-value.",
-      "Harga pada tabel = harga implisit (nilai ÷ volume kg), bukan harga referensi.",
-    ],
-  },
 };
 
-export type KelasEstimasi = "resmi-live" | "indikatif" | "resmi-dataset" | "tanpa-harga";
+export type KelasEstimasi = "resmi-live" | "indikatif" | "tanpa-harga";
 
 /** Satu baris estimasi mentah per (kecamatan, tahun, komoditas). */
 export interface EstimasiUnit {
@@ -129,14 +113,14 @@ export interface EstimasiUnit {
   /** volume dalam satuan asli dataset (ton / ekor / kg) */
   volume: number;
   satuanVolume: string;
-  /** volume dikonversi ke kg (ton×1.000 atau ekor×bobot potong) — 0 utk perikanan */
+  /** volume dikonversi ke kg (ton×1.000 atau ekor×bobot potong) */
   konversiKg: number;
   /** harga referensi per satuanHarga; null = belum ada harga (subtotal tidak dihitung) */
   hargaRp: number | null;
   satuanHarga: string;
   kelas: KelasEstimasi;
   sumber: string;
-  /** nilai aktual langsung dari dataset (khusus perikanan — bukan estimasi) */
+  /** nilai aktual langsung dari dataset resmi (disiapkan utk /v1/nilai-ekonomi nanti) */
   nilaiRpLangsung?: number;
   catatan?: string;
   /** asumsi bobot potong (khusus peternakan) */
@@ -375,29 +359,7 @@ export async function loadEstimasiUnit(bidang: BidangKey): Promise<EstimasiUnit[
     return units;
   }
 
-  // perikanan — nilai AKTUAL dataset (bukan estimasi harga referensi)
-  const [budidaya, tangkap] = await Promise.all([
-    fetchNilaiProduksiBudidaya(),
-    fetchNilaiProduksiTangkap(),
-  ]);
-  [...budidaya, ...tangkap].forEach((row) => {
-    row.jenis.forEach((j) => {
-      if (j.produksi <= 0 && j.nilai <= 0) return;
-      const nilaiRp = j.nilai * 1000; // sumber: ribu rupiah
-      units.push({
-        kecamatan: row.kecamatan,
-        tahun: row.tahun,
-        komoditas: j.label,
-        volume: j.produksi,
-        satuanVolume: "kg",
-        konversiKg: j.produksi,
-        hargaRp: j.produksi > 0 ? nilaiRp / j.produksi : null, // harga implisit
-        satuanHarga: "kg",
-        kelas: "resmi-dataset",
-        sumber: "Distankan KP — nilai produksi aktual (bukan estimasi harga)",
-        nilaiRpLangsung: nilaiRp,
-      });
-    });
-  });
+  // bidang perikanan tidak diestimasi di sini — nilai produksi aktual
+  // perikanan ditampilkan halaman kanonik /economic-value (budidaya+tangkap).
   return units;
 }
