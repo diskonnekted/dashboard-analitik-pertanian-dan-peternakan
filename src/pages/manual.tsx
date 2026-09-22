@@ -28,7 +28,7 @@ const menuItems = [
   ["Hortikultura", "Data sayuran, buah-buahan, dan proyeksi hortikultura."],
   ["Kelembagaan Tani", "Data kelompok tani, anggota, kelompok perikanan, dan gapoktan."],
   ["Perikanan", "Data perikanan budidaya, tangkap, dan pembenihan."],
-  ["Nilai Ekonomi", "Nilai ekonomi produksi perikanan."],
+  ["Nilai Ekonomi per Bidang", "Estimasi nilai ekonomi produksi — sub-menu di bawah tiap bidang (pangan, hortikultura, perkebunan, peternakan, perikanan)."],
   ["Rekomendasi", "Rekomendasi strategis berbasis data."],
   ["Analisis Bantuan", "Analisis bantuan pemerintah dan rekomendasi alokasi."],
   ["Analisis Renstra", "Evaluasi capaian indikator Renstra."],

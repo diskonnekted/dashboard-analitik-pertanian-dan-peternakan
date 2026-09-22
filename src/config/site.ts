@@ -46,6 +46,10 @@ export const siteConfig = {
           label: "Tanaman Pangan (Padi & Palawija)",
           href: "/food-crops",
         },
+        {
+          label: "Nilai Ekonomi Pangan",
+          href: "/nilai-ekonomi/pangan",
+        },
       ],
     },
     // 4. Bidang Hortikultura
@@ -55,6 +59,10 @@ export const siteConfig = {
         {
           label: "Produksi Sayuran, Buah & Flora Hias",
           href: "/horticulture",
+        },
+        {
+          label: "Nilai Ekonomi Hortikultura",
+          href: "/nilai-ekonomi/hortikultura",
         },
       ],
     },
@@ -74,6 +82,10 @@ export const siteConfig = {
           label: "LTT & Kalender Tanam",
           href: "/ltt-katam",
         },
+        {
+          label: "Nilai Ekonomi Perkebunan",
+          href: "/nilai-ekonomi/perkebunan",
+        },
       ],
     },
     // 6. Bidang Peternakan
@@ -91,6 +103,10 @@ export const siteConfig = {
         {
           label: "Susu & Kulit Ternak",
           href: "/peternakan/susu-kulit",
+        },
+        {
+          label: "Nilai Ekonomi Peternakan",
+          href: "/nilai-ekonomi/peternakan",
         },
       ],
     },
@@ -113,30 +129,8 @@ export const siteConfig = {
           label: "Produksi Perikanan",
           href: "/fisheries",
         },
-      ],
-    },
-    // 7b. Nilai Ekonomi (lintas bidang — estimasi volume produksi × harga referensi)
-    {
-      title: "Nilai Ekonomi",
-      items: [
         {
-          label: "Pangan",
-          href: "/nilai-ekonomi/pangan",
-        },
-        {
-          label: "Hortikultura",
-          href: "/nilai-ekonomi/hortikultura",
-        },
-        {
-          label: "Perkebunan",
-          href: "/nilai-ekonomi/perkebunan",
-        },
-        {
-          label: "Peternakan",
-          href: "/nilai-ekonomi/peternakan",
-        },
-        {
-          label: "Perikanan",
+          label: "Nilai Ekonomi Perikanan",
           href: "/economic-value",
         },
       ],

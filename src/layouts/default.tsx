@@ -102,7 +102,11 @@ export default function DefaultLayout({
         return <Droplets className={cls} />;
       case "Produksi Perikanan":
         return <Fish className={cls} />;
-      case "Nilai Ekonomi & Pasar":
+      case "Nilai Ekonomi Pangan":
+      case "Nilai Ekonomi Hortikultura":
+      case "Nilai Ekonomi Perkebunan":
+      case "Nilai Ekonomi Peternakan":
+      case "Nilai Ekonomi Perikanan":
         return <DollarSign className={cls} />;
       case "Kesehatan Ikan & Lingkungan Perairan":
         return <Waves className={cls} />;
