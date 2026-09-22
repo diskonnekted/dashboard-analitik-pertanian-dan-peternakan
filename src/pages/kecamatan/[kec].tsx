@@ -1,7 +1,8 @@
 /**
  * /kecamatan/:kec — profil pertanian satu kecamatan (mirror logika halaman
  * detail desa /desa/:kec/:nama, tapi level agregat kecamatan):
- * DefaultLayout di semua state, hero gradient, KPI, panel per domain
+ * DefaultLayout di semua state, hero gradient (dengan dropdown pengalih
+ * kecamatan), KPI, panel per domain
  * (lahan ST2023, tanaman pangan, ternak, perikanan, lumbung, kelembagaan),
  * daftar desa yang menaut ke detail desa, banner agregat bila ada sumber gagal.
  *
@@ -19,7 +20,7 @@ import {
   Table2,
   Users,
 } from "lucide-react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import DefaultLayout from "@/layouts/default";
 import { Badge, LoadingSpinner, SectionCard } from "@/components/ui";
 import {
@@ -49,22 +50,26 @@ function Row({ label, value }: { label: string; value: string }) {
 
 export default function KecamatanDetailPage() {
   const { kec } = useParams<{ kec: string }>();
+  const navigate = useNavigate();
   const [result, setResult] = useState<KecamatanDetailResult | null>(null);
   const [notFound, setNotFound] = useState(false);
+  /** Index 20 kecamatan — untuk dropdown pengalih di hero + chips NotFound. */
   const [index, setIndex] = useState<KecamatanIndex[] | null>(null);
 
   useEffect(() => {
     let alive = true;
     setNotFound(false);
     setResult(null);
+    // Index dimuat di semua state (cached, tanpa biaya tambahan) — dipakai
+    // dropdown "Lihat kecamatan lain" dan daftar chips saat NotFound.
+    fetchKecamatanIndex()
+      .then((idx) => alive && setIndex(idx))
+      .catch(() => alive && setIndex([]));
     fetchKecamatanDetail(kec ?? "")
       .then((r) => {
         if (!alive) return;
         if (!r.detail) {
           setNotFound(true);
-          fetchKecamatanIndex()
-            .then((idx) => alive && setIndex(idx))
-            .catch(() => alive && setIndex([]));
         } else {
           setResult(r);
         }
@@ -194,9 +199,35 @@ export default function KecamatanDetailPage() {
                   {num(d.luasWilayahHa)} Ha wilayah
                 </p>
               </div>
-              <div className="flex gap-2">
-                <Badge tone="emerald">{d.jumlahDesa} desa</Badge>
-                <Badge tone="blue">{num(d.luasWilayahHa)} Ha</Badge>
+              <div className="flex flex-col items-start gap-2.5 sm:items-end">
+                {index && index.length > 0 && (
+                  <label className="flex items-center gap-2">
+                    <span className="text-xs font-semibold text-emerald-100">
+                      Lihat kecamatan lain
+                    </span>
+                    <select
+                      aria-label="Pilih kecamatan lain"
+                      value={d.slug}
+                      onChange={(e) => {
+                        const slug = e.currentTarget.value;
+                        if (slug && slug !== d.slug) {
+                          navigate(`/kecamatan/${slug}`);
+                        }
+                      }}
+                      className="h-8 max-w-[14rem] rounded-lg border border-white/40 bg-white px-2 text-xs font-semibold text-slate-800 focus:outline-none"
+                    >
+                      {index.map((k) => (
+                        <option key={k.slug} value={k.slug}>
+                          {k.namaTampil}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                )}
+                <div className="flex gap-2">
+                  <Badge tone="emerald">{d.jumlahDesa} desa</Badge>
+                  <Badge tone="blue">{num(d.luasWilayahHa)} Ha</Badge>
+                </div>
               </div>
             </div>
           </div>
