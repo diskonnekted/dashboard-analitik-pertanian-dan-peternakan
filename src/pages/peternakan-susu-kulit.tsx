@@ -13,7 +13,7 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   BarChart, Bar, Legend,
 } from "recharts";
-import { Droplets } from "lucide-react";
+import { CalendarDays, ClipboardList, Droplets, Table2, Trophy } from "lucide-react";
 import { KpiCard, SectionCard, Toolbar, ToolbarField, LoadingSpinner, Badge, PageHeader } from "@/components/ui";
 import type { TernakSusuKulit } from "@/services/api";
 import { fetchTernakSusuKulit } from "@/services/api";
@@ -55,25 +55,25 @@ export default function PeternakanSusuKulitPage() {
 
   const kecRows = useMemo(() => {
     let out = rows ?? [];
-    if (kec) out = out.filter((r) => r.kecamatan === kec);
-    if (group === "susu") out = out.filter((r) => r.satuan === "liter");
-    if (group === "kulit") out = out.filter((r) => r.satuan === "lembar");
+    if (kec) out = out.filter((r: TernakSusuKulit) => r.kecamatan === kec);
+    if (group === "susu") out = out.filter((r: TernakSusuKulit) => r.jenis === "Sapi/Kerbau");
+    if (group === "kulit") out = out.filter((r: TernakSusuKulit) => r.jenis === "Kambing/Domba");
     return out;
   }, [rows, kec, group]);
 
   // --- KPI ---
-  const kpiTotal = kecRows.reduce((a, r) => a + r.jumlah_unit, 0);
+  const kpiTotal = kecRows.reduce((a: number, r: TernakSusuKulit) => a + r.jumlah, 0);
   const unitLabel = group === "susu" ? "liter" : "lembar";
   const topRow = kecRows.reduce(
-    (best, r) => (r.jumlah_unit > best.jumlah_unit ? r : best),
+    (best: TernakSusuKulit | null, r: TernakSusuKulit) => (r.jumlah > (best?.jumlah ?? 0) ? r : best),
     kecRows[0] ?? null,
   );
 
   // --- Trend line (Σ per tahun) ---
   const trendData = useMemo(() => {
     const m = new Map<string, number>();
-    kecRows.forEach((r) => {
-      m.set(r.periode, (m.get(r.periode) ?? 0) + r.jumlah_unit);
+    kecRows.forEach((r: TernakSusuKulit) => {
+      m.set(r.tahun, (m.get(r.tahun) ?? 0) + r.jumlah);
     });
     return Array.from(m.entries())
       .map(([periode, total]) => ({ periode, total }))
@@ -83,8 +83,8 @@ export default function PeternakanSusuKulitPage() {
   // --- Bar chart (Σ per kecamatan) ---
   const barData = useMemo(() => {
     const m = new Map<string, number>();
-    kecRows.forEach((r) => {
-      m.set(r.kecamatan, (m.get(r.kecamatan) ?? 0) + r.jumlah_unit);
+    kecRows.forEach((r: TernakSusuKulit) => {
+      m.set(r.kecamatan, (m.get(r.kecamatan) ?? 0) + r.jumlah);
     });
     return Array.from(m.entries())
       .map(([name, total]) => ({ name, total }))
@@ -93,22 +93,21 @@ export default function PeternakanSusuKulitPage() {
 
   // --- Tabel ---
   const tableRows = useMemo(() => {
-    const m = new Map<string, { kec: string; periode: string; jumlah_unit: number }>();
-    kecRows.forEach((r) => {
-      const key = `${r.kecamatan}|${r.periode}`;
+    const m = new Map<string, { kec: string; tahun: string; jumlah: number }>();
+    kecRows.forEach((r: TernakSusuKulit) => {
+      const key = `${r.kecamatan}|${r.tahun}`;
       const cur = m.get(key);
-      if (cur) cur.jumlah_unit += r.jumlah_unit;
-      else m.set(key, { kec: r.kecamatan, periode: r.periode, jumlah_unit: r.jumlah_unit });
+      if (cur) cur.jumlah += r.jumlah;
+      else m.set(key, { kec: r.kecamatan, tahun: r.tahun, jumlah: r.jumlah });
     });
     return Array.from(m.values()).sort((a, b) =>
-      a.kec.localeCompare(b.kec) || a.periode.localeCompare(b.periode),
+      a.kec.localeCompare(b.kec) || a.tahun.localeCompare(b.tahun),
     );
   }, [kecRows]);
 
   return (
     <DefaultLayout>
-      <section className="py-8">
-        <div className="container mx-auto px-4 lg:px-8">
+      <section className="flex flex-col gap-8">
         <PageHeader
           icon={<Droplets className="h-6 w-6" />}
           title="Produksi Susu &amp; Kulit"
@@ -120,7 +119,7 @@ export default function PeternakanSusuKulitPage() {
         />
 
         {/* --- Toolbar filter --- */}
-        <Toolbar className="mt-6">
+        <Toolbar>
           <ToolbarField label="Kecamatan">
             <select
               value={kec}
@@ -165,15 +164,15 @@ export default function PeternakanSusuKulitPage() {
 
         {/* --- Loading / Error / Empty --- */}
         {error && (
-          <p className="mt-6 text-sm text-red-600">Gagal memuat data: {error.message}</p>
+          <p className="text-sm text-red-600">Gagal memuat data: {error.message}</p>
         )}
         {!rows && loading && (
-          <div className="mt-8 flex justify-center">
+          <div className="flex justify-center">
             <LoadingSpinner label="Memuat data susu &amp; kulit…" />
           </div>
         )}
         {rows && rows.length === 0 && (
-          <p className="mt-8 text-sm text-slate-500">
+          <p className="text-sm text-slate-500">
             Server mengembalikan data kosong. Belum ada data produksi susu/kulit.
           </p>
         )}
@@ -181,28 +180,34 @@ export default function PeternakanSusuKulitPage() {
         {/* --- KPI + charts --- */}
         {rows && rows.length > 0 && (
           <>
-            <div className="mt-6 grid gap-4 sm:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-3">
               <KpiCard
-                icon={<span className="text-2xl">📊</span>}
+                icon={<ClipboardList className="h-5 w-5" />}
                 label="Total Produksi"
                 value={fmt(kpiTotal)}
                 unit={unitLabel}
+                color="bg-blue-300"
+                hint="Σ produksi pada filter aktif"
               />
               <KpiCard
-                icon={<span className="text-2xl">🏆</span>}
+                icon={<Trophy className="h-5 w-5" />}
                 label="Kecamatan Teratas"
                 value={topRow?.kecamatan ?? "-"}
-                unit={topRow ? `${fmt(topRow.jumlah_unit)} ${unitLabel}` : ""}
+                unit={topRow ? `${fmt(topRow.jumlah)} ${unitLabel}` : ""}
+                color="bg-amber-300"
+                hint="kecamatan dengan produksi terbesar"
               />
               <KpiCard
-                icon={<span className="text-2xl">📅</span>}
+                icon={<CalendarDays className="h-5 w-5" />}
                 label="Tahun Terbaru"
-                value={topRow?.periode ?? "-"}
+                value={topRow?.tahun ?? "-"}
                 unit=""
+                color="bg-emerald-300"
+                hint="periode data terakhir tersedia"
               />
             </div>
 
-            <SectionCard title="Tren Produksi per Tahun" className="mt-6">
+            <SectionCard title="Tren Produksi per Tahun">
               <div className="h-72">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={trendData}>
@@ -226,7 +231,7 @@ export default function PeternakanSusuKulitPage() {
               {loading && <p className="mt-2 text-xs text-slate-400">Memperbarui data…</p>}
             </SectionCard>
 
-            <SectionCard title={`Sebaran ${unitLabel === "liter" ? "Susu" : "Kulit"} per Kecamatan`} className="mt-6">
+            <SectionCard title={`Sebaran ${unitLabel === "liter" ? "Susu" : "Kulit"} per Kecamatan`}>
               <div className="h-80">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={barData}>
@@ -248,7 +253,7 @@ export default function PeternakanSusuKulitPage() {
 
         {/* --- Tabel --- */}
         {rows && rows.length > 0 && kecRows.length > 0 && (
-          <SectionCard title="Tabel Data" className="mt-6">
+          <SectionCard title="Tabel Data" icon={<Table2 className="h-4 w-4 text-blue-800" />}>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
@@ -261,10 +266,10 @@ export default function PeternakanSusuKulitPage() {
                 </thead>
                 <tbody>
                   {tableRows.slice(0, limit).map((r) => (
-                    <tr key={`${r.kec}|${r.periode}`} className="border-t border-slate-100">
+                    <tr key={`${r.kec}|${r.tahun}`} className="border-t border-slate-100">
                       <td className="px-3 py-2"><Badge tone="slate">{r.kec}</Badge></td>
-                      <td className="px-3 py-2">{r.periode}</td>
-                      <td className="px-3 py-2 text-right">{fmt(r.jumlah_unit)}</td>
+                      <td className="px-3 py-2">{r.tahun}</td>
+                      <td className="px-3 py-2 text-right">{fmt(r.jumlah)}</td>
                       <td className="px-3 py-2">{unitLabel}</td>
                     </tr>
                   ))}
@@ -272,7 +277,7 @@ export default function PeternakanSusuKulitPage() {
                 <tfoot>
                   <tr className="border-t-2 border-slate-300 font-semibold">
                     <td colSpan={2} className="px-3 py-2">Total</td>
-                    <td className="px-3 py-2 text-right">{fmt(tableRows.slice(0, limit).reduce((a, r) => a + r.jumlah_unit, 0))}</td>
+                    <td className="px-3 py-2 text-right">{fmt(tableRows.slice(0, limit).reduce((a, r) => a + r.jumlah, 0))}</td>
                     <td className="px-3 py-2">{unitLabel}</td>
                   </tr>
                 </tfoot>
@@ -285,7 +290,6 @@ export default function PeternakanSusuKulitPage() {
             </div>
           </SectionCard>
         )}
-      </div>
     </section>
   </DefaultLayout>
   );
