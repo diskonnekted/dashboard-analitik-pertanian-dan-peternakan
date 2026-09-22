@@ -155,7 +155,7 @@ interface ChatBotProps {
 /* ── Konfigurasi API ──────────────────────────────────────── */
 const API_KEY = import.meta.env.VITE_CHATBOT_API_KEY || "";
 const API_URL = import.meta.env.VITE_CHATBOT_API_URL || "https://9inference.cloud/v1/package/chat/completions";
-const MODEL = import.meta.env.VITE_CHATBOT_MODEL || "kimi-k3";
+const MODEL = import.meta.env.VITE_CHATBOT_MODEL || "glm-5.3";
 
 /* ── System Prompt ────────────────────────────────────────── */
 const buildSystemPrompt = (dataContext: string) => `Kamu adalah "Si Pertani" -- asisten AI resmi SISPERTANI (Sistem Informasi Pertanian Kabupaten Banjarnegara, Dinas Ketahanan Pangan dan Pertanian). Kamu berperan ganda: Analis Pertanian Senior DAN Konsultan Agribisnis yang menguasai konteks Kabupaten Banjarnegara, Provinsi Jawa Tengah, Indonesia.
@@ -253,7 +253,7 @@ export default function ChatBot({ dataContext }: ChatBotProps) {
           model: MODEL,
           messages: apiMessages,
           temperature: 0.6,
-          max_tokens: 2048,
+          max_tokens: 8192,
           stream: false,
         }),
       });
