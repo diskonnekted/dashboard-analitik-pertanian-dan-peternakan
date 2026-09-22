@@ -6,7 +6,7 @@ import { Search, Plus, Minus, Lock, AlertTriangle, RotateCw, ArrowUpRight } from
 import { LoadingSpinner } from "@/components/ui";
 
 import "leaflet/dist/leaflet.css";
-import { LahanDesa, KelompokTaniRow, fetchKelompokTani, fetchSt2023DesaExtra, St2023DesaExtra } from "@/services/api";
+import { LahanDesa, KelompokTaniRow, fetchKelompokTani, fetchSt2023DesaExtra, St2023DesaExtra, fetchVegetableProduction, VegetableProduction } from "@/services/api";
 import { buildDesaPath } from "@/services/desa";
 
 /**
@@ -353,7 +353,86 @@ const HeroStat = ({ label, value, unit }: { label: string, value: string, unit: 
   </div>
 );
 
-const PopupContent = ({ desaName, kecName, data, taniData, st2023 }: { desaName: string, kecName: string, data: any, taniData?: KelompokTaniRow | null, st2023?: St2023DesaExtra | null }) => {
+// ——— Foto ilustrasi karakter desa (popup dasbor) ———
+// File: public/img/minidesa-min (hasil kompresi scripts/compress-minidesa.py;
+// foto mentah pengguna di public/img/minidesa dibiarkan utuh).
+// Kategori ditentukan dari data: komposisi lahan ST2023 T4.10 (sawah vs ladang),
+// rasio RT budidaya ikan (Sensus ST2023), dan sentra sayuran kecamatan (Distankan).
+type DesaFotoKategori = "sawah" | "ladang" | "kentang" | "kobis" | "kolam";
+
+const DESA_FOTO_FILES: Record<DesaFotoKategori, string[]> = {
+  sawah: ["sawah1.jpg", "sawah2.jpg", "sawah4.jpg", "sawah5.jpg", "sawah6.jpg", "sawah7.jpg", "sawah8.jpg", "sawah9.jpg"],
+  ladang: ["ladang1.jpg", "ladang3.jpg", "ladang4.jpg", "ladang5.jpg", "ladang7.jpg", "ladang8.jpg", "ladang9.jpg"],
+  kentang: ["kentang1.jpg", "kentang2.jpg", "kentang5.jpg", "kentang6.jpg"],
+  kobis: ["kobis1.jpg", "kobis5.jpg", "kobis6.jpg"],
+  kolam: ["kolam1.jpg", "kolam4.jpg", "kolam5.jpg"],
+};
+
+const DESA_FOTO_LABEL: Record<DesaFotoKategori, string> = {
+  sawah: "dominasi sawah (padi)",
+  ladang: "dominasi ladang / lahan kering",
+  kentang: "sentra kentang kecamatan",
+  kobis: "sentra kubis kecamatan",
+  kolam: "dominasi budidaya ikan (kolam)",
+};
+
+// Dominasi sayuran per kecamatan: komoditas dengan tonase terbesar (dari 8 jenis)
+// dan share >= 35% -> sentra foto (hanya kentang/kubis yang tersedia fotonya).
+function buildKecVegMap(rows: VegetableProduction[]): Record<string, "kentang" | "kubis"> {
+  const KEYS: (keyof VegetableProduction)[] = ["bawangMerah", "cabaiBesar", "kentang", "kubis", "petsai", "tomat", "bawangPutih", "cabaiRawit"];
+  const agg: Record<string, Record<string, number>> = {};
+  for (const r of rows || []) {
+    const kec = (r.kecamatan || "").trim().toLowerCase();
+    if (!kec || kec === "jumlah" || kec === "total") continue;
+    const e = (agg[kec] ??= {});
+    for (const k of KEYS) e[k] = (e[k] || 0) + ((r[k] as number) || 0);
+  }
+  const map: Record<string, "kentang" | "kubis"> = {};
+  for (const [kec, e] of Object.entries(agg)) {
+    let total = 0;
+    let bestKey: string | null = null;
+    let bestVal = 0;
+    for (const [k, v] of Object.entries(e)) {
+      total += v;
+      if (v > bestVal) {
+        bestVal = v;
+        bestKey = k;
+      }
+    }
+    if (total > 0 && bestKey && bestVal / total >= 0.35) {
+      if (bestKey === "kentang") map[kec] = "kentang";
+      else if (bestKey === "kubis") map[kec] = "kubis";
+    }
+  }
+  return map;
+}
+
+// Prioritas kategori foto: (1) mayoritas RT petani menekuni budidaya ikan -> kolam,
+// (2) lahan sawah >= 50% lahan usaha tani -> sawah, (3) lahan kering dominan ->
+// sentra sayuran kecamatan (kentang/kubis), sisanya ladang umum.
+function pickDesaFotoKategori(args: { data: any; st2023?: St2023DesaExtra | null; kecVeg?: "kentang" | "kubis" | null }): DesaFotoKategori | null {
+  const rtBud = args.st2023?.rtPerikananBudidaya ?? 0;
+  const rtPetani = args.st2023?.rumahTanggaPetani ?? 0;
+  if (rtBud > 0 && rtPetani > 0 && rtBud / rtPetani >= 0.5) return "kolam";
+  const sawah = args.data?.lahanSawah ?? 0;
+  const bukanSawah = args.data?.lahanBukanSawah ?? 0;
+  const totalLahan = sawah + bukanSawah;
+  if (totalLahan > 0 && sawah / totalLahan >= 0.5) return "sawah";
+  if (args.kecVeg === "kentang") return "kentang";
+  if (args.kecVeg === "kubis") return "kobis";
+  if (!args.data && !args.st2023 && !args.kecVeg) return null; // tanpa sinyal apa pun
+  return "ladang";
+}
+
+// Varian foto deterministik per desa (hash nama) — konsisten antar buka popup.
+function pickDesaFotoFile(kategori: DesaFotoKategori, key: string): string {
+  const files = DESA_FOTO_FILES[kategori];
+  let h = 0;
+  for (let i = 0; i < key.length; i++) h = (h * 31 + key.charCodeAt(i)) >>> 0;
+  return `/img/minidesa-min/${files[h % files.length]}`;
+}
+
+const PopupContent = ({ desaName, kecName, data, taniData, st2023, kecVeg }: { desaName: string, kecName: string, data: any, taniData?: KelompokTaniRow | null, st2023?: St2023DesaExtra | null, kecVeg?: "kentang" | "kubis" | null }) => {
   // Kec. Karangkobar & Madukara: sumber resmi (CKAN) hanya punya total, tanpa rincian
   const rincianTersedia = data && !(data.lahanSawah === 0 && data.lahanBukanSawah === 0 && data.jumlah > 0);
   const topTernak = st2023
@@ -363,6 +442,10 @@ const PopupContent = ({ desaName, kecName, data, taniData, st2023 }: { desaName:
         .sort((a, b) => b[1] - a[1])
         .slice(0, 4)
     : [];
+
+  // Foto ilustrasi karakter desa — kategori dari data, varian file deterministik per desa
+  const fotoKategori = pickDesaFotoKategori({ data, st2023, kecVeg });
+  const fotoSrc = fotoKategori ? pickDesaFotoFile(fotoKategori, `${kecName}|${desaName}`) : null;
 
   const sentraBadge = !rincianTersedia
     ? null
@@ -424,6 +507,19 @@ const PopupContent = ({ desaName, kecName, data, taniData, st2023 }: { desaName:
               <span className="w-1 h-1 rounded-full bg-slate-300" />
               Sumber: BPS ST2023 T4.10 {data.tahun}
             </p>
+          )}
+          {fotoKategori && fotoSrc && (
+            <figure className="mt-2.5">
+              <img
+                src={fotoSrc}
+                alt={`Foto ilustrasi desa — ${DESA_FOTO_LABEL[fotoKategori]}`}
+                className="h-28 w-full rounded-lg object-cover shadow-sm"
+                loading="lazy"
+              />
+              <figcaption className="mt-1 text-[9px] leading-tight text-slate-400">
+                Foto ilustrasi — {DESA_FOTO_LABEL[fotoKategori]}
+              </figcaption>
+            </figure>
           )}
         </div>
 
@@ -506,6 +602,7 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
   const [auxiliaryLayers, setAuxiliaryLayers] = useState<Record<string, any>>({});
   const [taniData, setTaniData] = useState<KelompokTaniRow[]>([]);
   const [st2023Data, setSt2023Data] = useState<St2023DesaExtra[]>([]);
+  const [kecVegMap, setKecVegMap] = useState<Record<string, "kentang" | "kubis">>({});
   const [mapLoadError, setMapLoadError] = useState<string | null>(null);
   const [reloadToken, setReloadToken] = useState(0);
   
@@ -611,6 +708,10 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
       .catch((err) => console.error("Gagal memuat layer GeoJSON tambahan:", err));
     fetchKelompokTani().then(setTaniData).catch((err) => console.error("Gagal memuat data kelompok tani:", err));
     fetchSt2023DesaExtra().then(setSt2023Data).catch((err) => console.error("Gagal memuat data ST2023 per-desa:", err));
+    // Sentra sayuran per kecamatan (kentang/kubis) untuk foto ilustrasi popup desa
+    fetchVegetableProduction()
+      .then((rows) => setKecVegMap(buildKecVegMap(rows)))
+      .catch((err) => console.error("Gagal memuat data sayuran per kecamatan:", err));
   }, [reloadToken]);
 
   const isKecamatanMatch = (kecGeo: string, kecCsv: string) => {
@@ -1081,20 +1182,21 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
             {desaGeoData && (
               <LayersControl.Overlay checked name="🗺️ Area & Choropleth">
                 <GeoJSON
-                  key={`desa-${desaGeoData.features.length}-${data?.length || 0}-${taniData.length || 0}-${st2023Data.length || 0}-${activeMetric}-${searchQuery}-${activeLegendCategory}-${searchTarget?.token || 0}`}
+                  key={`desa-${desaGeoData.features.length}-${data?.length || 0}-${taniData.length || 0}-${st2023Data.length || 0}-${Object.keys(kecVegMap).length}-${activeMetric}-${searchQuery}-${activeLegendCategory}-${searchTarget?.token || 0}`}
                   data={desaGeoData}
                   ref={desaGeoJsonRef as any}
                   style={getDesaStyle}
                   onEachFeature={(feature, layer) => {
                     const desaName = feature.properties?.Nama_Desa_ || feature.properties?.Name || "Tidak diketahui";
                     const kecName = feature.properties?.Kecamatan || "";
+                    const kecVeg = kecVegMap[kecName.replace(/^kec\.?\s*/i, "").trim().toLowerCase()] ?? null;
                     const desaData = getDesaData(feature);
                     const desaTaniData = getDesaTaniData(feature);
                     const desaSt2023 = getDesaSt2023(feature);
 
                     // Render Rich Popup Component to string
                     const htmlContent = ReactDOMServer.renderToString(
-                      <PopupContent desaName={desaName} kecName={kecName} data={desaData} taniData={desaTaniData} st2023={desaSt2023} />
+                      <PopupContent desaName={desaName} kecName={kecName} data={desaData} taniData={desaTaniData} st2023={desaSt2023} kecVeg={kecVeg} />
                     );
                     
                     layer.bindPopup(htmlContent, {
