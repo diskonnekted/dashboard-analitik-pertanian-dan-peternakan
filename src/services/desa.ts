@@ -125,6 +125,23 @@ export const kecamatanSlugOf = (kec: string): string => {
   return toSlug(normalized || kec || "");
 };
 
+/**
+ * Nama kecamatan TANPA singkatan "Kec." — untuk teks yang sudah didahului
+ * kata "Kecamatan" (geojson menyimpan "Kec.Pagentan", sehingga
+ * "Kecamatan Kec.Pagentan" menjadi dobel).
+ */
+export const namaKecamatanTanpaSingkatan = (t: string): string =>
+  t.replace(/^kec\.?\s*/i, "").trim();
+
+/**
+ * Singkatan rapi "Kec. X" (dengan spasi) untuk tampilan mandiri,
+ * mis. segmen breadcrumb halaman desa.
+ */
+export const singkatanKecamatan = (t: string): string => {
+  const bare = t.replace(/^kec\.?\s*/i, "").trim();
+  return bare ? `Kec. ${bare}` : t.trim();
+};
+
 /** Bangun URL path untuk desa. Dipakai dari popup MapWidget. */
 export function buildDesaPath(kecamatan: string, nama: string): string {
   return `/desa/${kecamatanSlugOf(kecamatan)}/${toSlug(nama)}`;

@@ -1,5 +1,9 @@
 import { ArrowLeft, Maximize, MapPin, Users, Sprout } from "lucide-react";
 import { Link } from "react-router-dom";
+import {
+  namaKecamatanTanpaSingkatan,
+  singkatanKecamatan,
+} from "../../services/desa";
 import type { DesaDetail } from "../../services/desa";
 
 interface Props {
@@ -49,7 +53,7 @@ export function DesaHero({ desa }: Props) {
             to={`/?kecamatan=${encodeURIComponent(desa.kecamatanSlug)}`}
             className="hover:text-white transition-colors truncate"
           >
-            {desa.kecamatanTampil}
+            {singkatanKecamatan(desa.kecamatanTampil)}
           </Link>
           <span aria-hidden className="mx-1.5 text-emerald-300/60">/</span>
           <span className="text-white font-semibold truncate">{desa.namaTampil}</span>
@@ -60,7 +64,7 @@ export function DesaHero({ desa }: Props) {
           {desa.namaTampil}
         </h1>
         <p className="mt-1 text-xs text-emerald-100/90">
-          Kecamatan {desa.kecamatanTampil}, Kabupaten {desa.kabupaten}
+          Kecamatan {namaKecamatanTanpaSingkatan(desa.kecamatanTampil)}, Kabupaten {desa.kabupaten}
         </p>
 
         {/* 4 stat tiles */}

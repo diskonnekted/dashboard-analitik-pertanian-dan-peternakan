@@ -1,6 +1,7 @@
 import { Fish, Waves, ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { PerikananBudidaya, PerikananTangkap } from "../../services/api";
+import { namaKecamatanTanpaSingkatan } from "../../services/desa";
 import { EmptyBlock } from "./EmptyBlock";
 
 /**
@@ -37,6 +38,10 @@ const fmtKg = (kg: number): string => {
 export function DesaPerikanan({ kecamatan, budidaya, tangkap, ready = true }: Props) {
   if (!ready) return null;
 
+  // "Kec.Pagentan" → "Pagentan" — agar tidak dobel di "se-Kecamatan X"
+  // dan pesan empty-state. Filter normKec tetap pakai nilai mentah.
+  const kecNama = namaKecamatanTanpaSingkatan(kecamatan);
+
   const rowsB = budidaya.filter((r) => normKec(r.kecamatan) === normKec(kecamatan));
   const rowsT = tangkap.filter((r) => normKec(r.kecamatan) === normKec(kecamatan));
 
@@ -44,7 +49,7 @@ export function DesaPerikanan({ kecamatan, budidaya, tangkap, ready = true }: Pr
     return (
       <EmptyBlock
         label="Perikanan Kecamatan"
-        message={`Data produksi perikanan belum tersedia untuk kecamatan ${kecamatan}.`}
+        message={`Data produksi perikanan belum tersedia untuk kecamatan ${kecNama}.`}
       />
     );
   }
@@ -106,7 +111,7 @@ export function DesaPerikanan({ kecamatan, budidaya, tangkap, ready = true }: Pr
         <div className="flex-1">
           <h2 className="flex items-center gap-2 text-base font-bold text-slate-800 leading-tight">
             <Fish className="w-4 h-4 text-cyan-700" />
-            Perikanan se-Kecamatan {kecamatan}
+            Perikanan se-Kecamatan {kecNama}
           </h2>
           <p className="mt-0.5 text-xs text-slate-500">
             Konteks BPS tingkat kecamatan — budidaya &amp; tangkap (jumlah RT

@@ -46,7 +46,12 @@ import {
   type TernakKecil,
   type Unggas,
 } from "./api";
-import { fetchAllDesa, kecamatanSlugOf, type DesaIndex } from "./desa";
+import {
+  fetchAllDesa,
+  kecamatanSlugOf,
+  namaKecamatanTanpaSingkatan,
+  type DesaIndex,
+} from "./desa";
 
 /* ------------------------------------------------------------------ */
 /* Tipe publik                                                         */
@@ -151,7 +156,9 @@ export async function fetchKecamatanIndex(): Promise<KecamatanIndex[]> {
       m.get(d.kecamatanSlug) ??
       {
         slug: d.kecamatanSlug,
-        namaTampil: d.kecamatanTampil,
+        // Geojson menyimpan "Kec.Pagentan" — buang singkatan agar tidak dobel
+        // saat halaman merender "Kecamatan {namaTampil}".
+        namaTampil: namaKecamatanTanpaSingkatan(d.kecamatanTampil),
         jumlahDesa: 0,
         luasWilayahHa: 0,
         desa: [] as DesaIndex[],
