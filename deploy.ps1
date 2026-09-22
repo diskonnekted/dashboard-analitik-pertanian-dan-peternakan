@@ -137,27 +137,30 @@ if ($ImportDb) {
   Write-Host "`n[4/5] Import DB dilewati (tanpa -ImportDb)." -ForegroundColor DarkGray
 }
 
-# --- 5. restart + verifikasi ------------------------------------------------
-Write-Host "`n[5/5] RESTART aplikasi:" -ForegroundColor Cyan
-Write-Host "  >>> Buka CloudPanel -> Sites -> pertanian.sistemdata.id -> Node.js -> RESTART <<<" -ForegroundColor Yellow
+# --- 5. restart (PM2) + verifikasi ------------------------------------------
+Write-Host "`n[5/5] Restart aplikasi via PM2..." -ForegroundColor Cyan
+if (-not $SkipBackend) {
+  Remote ('bash -lc ''export NVM_DIR=$HOME/.nvm; . $NVM_DIR/nvm.sh >/dev/null 2>&1; cd {0} && (pm2 restart sispertani-api 2>/dev/null || pm2 start ecosystem.config.cjs) && pm2 save >/dev/null 2>&1; echo PM2_OK''' -f $APP_ROOT)
+} else {
+  Write-Host "  Restart dilewati (-SkipBackend)." -ForegroundColor DarkGray
+}
 if ($NoVerify) {
-  Write-Host "  Verifikasi dilewati (-NoVerify). Cek manual: http://<domain>/sispertani-api/health" -ForegroundColor DarkGray
+  Write-Host "  Verifikasi dilewati (-NoVerify). Cek manual: https://<domain>/sispertani-api/health" -ForegroundColor DarkGray
 } else {
   if (-not $env:DEPLOY_DOMAIN) { Write-Host "  DEPLOY_DOMAIN belum diisi - verifikasi dilewati." -ForegroundColor DarkGray; exit 0 }
   Write-Host "  Menunggu API hidup (polling /sispertani-api/health tiap 5 dtk)..." -ForegroundColor Gray
   $ok = $false
   for ($i = 0; $i -lt 40; $i++) {
     Start-Sleep -Seconds 5
-    $code = curl.exe -s -o NUL -w "%{http_code}" "http://$($env:DEPLOY_DOMAIN)/sispertani-api/health" 2>$null
+    $code = curl.exe -s -o NUL -w "%{http_code}" "https://$($env:DEPLOY_DOMAIN)/sispertani-api/health" 2>$null
     if ("$code" -eq '200') { $ok = $true; break }
-    Write-Host "    ($($i+1)/40) HTTP=$code - klik RESTART di CloudPanel bila belum..."
+    Write-Host "    ($($i+1)/40) HTTP=$code..."
   }
   if ($ok) {
-    Write-Host "  API LIVE: http://$($env:DEPLOY_DOMAIN)/sispertani-api/health -> 200 OK" -ForegroundColor Green
-    Write-Host "  Frontend : http://$($env:DEPLOY_DOMAIN)/" -ForegroundColor Green
-    Write-Host "  Berikutnya: aktifkan SSL Let's Encrypt (CloudPanel -> Site -> SSL/TLS)" -ForegroundColor Yellow
+    Write-Host "  API LIVE: https://$($env:DEPLOY_DOMAIN)/sispertani-api/health -> 200 OK" -ForegroundColor Green
+    Write-Host "  Frontend : https://$($env:DEPLOY_DOMAIN)/" -ForegroundColor Green
   } else {
-    Write-Host "  API belum hidup setelah 200 dtk. Cek CloudPanel -> Site -> Logs / Node.js." -ForegroundColor Red
+    Write-Host "  API belum hidup setelah 200 dtk. Cek via SSH: pm2 list / pm2 logs sispertani-api." -ForegroundColor Red
     exit 1
   }
 }
