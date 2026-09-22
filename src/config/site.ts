@@ -91,12 +91,10 @@ export const siteConfig = {
         {
           label: "Komoditas Unggulan",
           href: "/komoditas-unggulan",
-          hidden: true, // placeholder data contoh — aktifkan saat endpoint resmi (23 Sep)
         },
         {
           label: "LTT & Kalender Tanam",
           href: "/ltt-katam",
-          hidden: true, // placeholder data contoh — aktifkan saat endpoint resmi (23 Sep)
         },
         {
           label: "Nilai Ekonomi Perkebunan",
@@ -170,7 +168,6 @@ export const siteConfig = {
         {
           label: "Kewirausahaan KWT",
           href: "/kewirausahaan/kwt",
-          hidden: true, // placeholder data contoh — aktifkan saat endpoint resmi (23 Sep)
         },
       ],
     },
