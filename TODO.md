@@ -18,7 +18,7 @@ Legenda: ✅ selesai · 🟡 sebagian · ❌ belum mulai · 🔴 blocker
 ## P2 — Data publik BPS/CKAN
 | # | Item | Est | Status | Evidence |
 |---|------|-----|--------|----------|
-| P2-1 | Breakdown perikanan per jenis ikan | M | 🟡 | `fetchFisheriesBudidaya` ada, tapi breakdown lele/nila/mujair belum (cek 39 folder) |
+| P2-1 | Breakdown perikanan per jenis ikan | M | 🟢 | SELESAI 22 Sep: kategori "Jenis Ikan" di `/fisheries` — katalog 5 ikan air tawar (lokal; estimasi pangsa × volume BPS) + 4 ikan laut (pasar, tanpa volume) + harga referensi indikatif di `src/data/produk-ikan.ts`; BPS tidak publish per jenis (39 folder: hanya per tempat pemeliharaan/alat tangkap) → rincian per jenis = estimasi komposisi, bukan angka resmi |
 | P2-2 | Nilai ekonomi multi-bidang | L | ❌ | Hanya perikanan di `/economic-value`; butuh pangan/hortikul/perkebunan |
 | P2-3 | Komoditas unggulan per bidang | M | ❌ | Butuh data varietas padi/jagung |
 | P2-4 | Restructure perkebunan | M | 🟡 | `/plantation` ada, belum kelapa deres/porang terpisah |
@@ -73,7 +73,7 @@ Legenda: ✅ selesai · 🟡 sebagian · ❌ belum mulai · 🔴 blocker
 | 1.TanamanPangan.NilaiEkonomi | Nilai ekonomi (triwulan/TP) | ❌ | Hanya produksi; butuh rilis kwaran BPS |
 | 1.TanamanPangan.Kalender | Kalender tanam (Katam/LTT) | 🟡 | Katam data belum; LTT masih ComingSoon |
 | 3.Perkebunan.KelapaDeres | Kelapa sawit & kelapa deres | 🟡 | `/plantation` ada, belum dipisah deres/porang |
-| 5.Perikanan.BreakdownIkan | Lele/Nila/Bandeng/Mujair/Tongkol | 🟡 | `fetchFisheriesBudidaya` ada, belum breakdown ikan |
+| 5.Perikanan.BreakdownIkan | Lele/Nila/Bandeng/Mujair/Tongkol | 🟢 | SELESAI 22 Sep via kategori "Jenis Ikan" `/fisheries` + `src/data/produk-ikan.ts` (air tawar: estimasi pangsa; laut: katalog pasar) |
 | 6.KetahananPangan.TigaPilar | Ketersediaan, akses, nutriensi (Bapanas) | ❌ | Hanya neraca beras + lumbung |
 | 8.BantuanSarpras.Detail | Detail barang (merk/tipe/harga/APBD) | 🟡 | 3 tabel bantuan ada, detail relasional belum |
 | 9.AdminUpload.RBAC | Multi-role users/admin | 🟡 | `requireAdmin` ada, belum users/roles table |

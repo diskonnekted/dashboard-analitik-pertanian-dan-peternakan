@@ -17,18 +17,48 @@ import {
   fetchPerikananBudidaya,
   fetchPerikananTangkap,
   fetchPerikananBenih,
+  fetchNilaiProduksiBudidaya,
+  fetchNilaiProduksiTangkap,
   PerikananBudidaya,
   PerikananTangkap,
   PerikananBenih,
+  NilaiProduksiRow,
 } from "@/services/api";
-import { Fish, Waves, Egg, Calendar, MapPin, Filter, AlertTriangle, ShieldCheck, TrendingUp } from "lucide-react";
+import {
+  PRODUK_IKAN_TAWAR,
+  PRODUK_IKAN_LAUT,
+  PRODUK_IKAN_SUMBER,
+  PRODUK_IKAN_TANGGAL,
+  hargaTengah,
+  HARGA_TAWAR_TERTIMBANG,
+} from "@/data/produk-ikan";
+import {
+  Fish,
+  Waves,
+  Egg,
+  Calendar,
+  MapPin,
+  Filter,
+  AlertTriangle,
+  ShieldCheck,
+  TrendingUp,
+  ShoppingBasket,
+  Banknote,
+} from "lucide-react";
 
-type Category = "budidaya" | "tangkap" | "benih";
+type Category = "budidaya" | "tangkap" | "benih" | "produk";
 
 export default function FisheriesPage() {
   const [budidayaData, setBudidayaData] = useState<PerikananBudidaya[]>([]);
   const [tangkapData, setTangkapData] = useState<PerikananTangkap[]>([]);
   const [benihData, setBenihData] = useState<PerikananBenih[]>([]);
+  // Nilai produksi resmi BPS (budidaya + tangkap) — pembanding estimasi katalog jenis ikan
+  const [nilaiBudidayaData, setNilaiBudidayaData] = useState<NilaiProduksiRow[]>(
+    [],
+  );
+  const [nilaiTangkapData, setNilaiTangkapData] = useState<NilaiProduksiRow[]>(
+    [],
+  );
 
   const [category, setCategory] = useState<Category>("budidaya");
   const [selectedYear, setSelectedYear] = useState<string>("2024");
@@ -38,14 +68,19 @@ export default function FisheriesPage() {
   useEffect(() => {
     const loadAllData = async () => {
       try {
-        const [budidaya, tangkap, benih] = await Promise.all([
-          fetchPerikananBudidaya(),
-          fetchPerikananTangkap(),
-          fetchPerikananBenih(),
-        ]);
+        const [budidaya, tangkap, benih, nilaiBudidaya, nilaiTangkap] =
+          await Promise.all([
+            fetchPerikananBudidaya(),
+            fetchPerikananTangkap(),
+            fetchPerikananBenih(),
+            fetchNilaiProduksiBudidaya(),
+            fetchNilaiProduksiTangkap(),
+          ]);
         setBudidayaData(budidaya);
         setTangkapData(tangkap);
         setBenihData(benih);
+        setNilaiBudidayaData(nilaiBudidaya);
+        setNilaiTangkapData(nilaiTangkap);
       } catch (err) {
         console.error("Gagal memuat data perikanan:", err);
       } finally {
@@ -61,7 +96,9 @@ export default function FisheriesPage() {
         ? budidayaData
         : category === "tangkap"
           ? tangkapData
-          : benihData,
+          : category === "produk"
+            ? ([...budidayaData, ...tangkapData] as any[])
+            : benihData,
     [category, budidayaData, tangkapData, benihData],
   );
 
@@ -102,6 +139,7 @@ export default function FisheriesPage() {
 
   // Definisi jenis (dataKey) per kategori
   const seriesKeys = useMemo(() => {
+    if (category === "produk") return [];
     if (category === "budidaya")
       return [
         { key: "kolamPembesaran", label: "Kolam Pembesaran" },
@@ -350,6 +388,82 @@ export default function FisheriesPage() {
     return base;
   }, [trendData, projection]);
 
+  // ===================== Kategori "Jenis Ikan" =====================
+  // Estimasi rincian produksi per jenis ikan air tawar (tahun & kecamatan terpilih).
+  // BPS hanya mempublikasikan produksi per tempat pemeliharaan (budidaya) dan per
+  // alat tangkap — TIDAK per jenis ikan — sehingga volume per jenis dihitung dari
+  // pangsa komposisi indikatif (src/data/produk-ikan.ts), bukan angka BPS.
+  const produkEstimasi = useMemo(() => {
+    const matchFilter = (d: { kecamatan: string; tahun: string }) =>
+      d.tahun === selectedYear &&
+      (selectedKecamatan === "Semua" || d.kecamatan === selectedKecamatan);
+
+    // Volume lokal air tawar = budidaya (kolam+karamba+2×mina) + tangkap (semua alat)
+    const budidayaRows = budidayaData.filter(matchFilter);
+    const tangkapRows = tangkapData.filter(matchFilter);
+    const volBudidaya = budidayaRows.reduce(
+      (a, d) =>
+        a +
+        (d.kolamPembesaran || 0) +
+        (d.karambaApung || 0) +
+        (d.minaPenyelang || 0) +
+        (d.minaTumpangsari || 0),
+      0,
+    );
+    const volTangkap = tangkapRows.reduce(
+      (a, d) =>
+        a +
+        (d.jalaTebar || 0) +
+        (d.pancing || 0) +
+        (d.jaringIngsang || 0) +
+        (d.lainnya || 0),
+      0,
+    );
+    const volumeTawar = volBudidaya + volTangkap;
+
+    // Rincian estimasi per jenis: volume = pangsa × total; nilai = volume × harga tengah
+    const rincian = PRODUK_IKAN_TAWAR.map((p) => {
+      const vol = (volumeTawar * (p.pangsa ?? 0)) / 100;
+      const harga = hargaTengah(p);
+      return { produk: p, volume: vol, harga, nilai: vol * harga };
+    });
+    const nilaiEstimasi = rincian.reduce((a, r) => a + r.nilai, 0);
+
+    // Pembanding resmi: nilai & volume BPS (tabel nilai produksi budidaya + tangkap)
+    const nilaiRows = [...nilaiBudidayaData, ...nilaiTangkapData].filter(
+      matchFilter,
+    );
+    const nilaiAktual =
+      nilaiRows.reduce(
+        (a, d) => a + d.jenis.reduce((b, j) => b + (j.nilai || 0), 0),
+        0,
+      ) * 1000; // ribu Rp -> Rp
+    const volumeAktual = nilaiRows.reduce(
+      (a, d) => a + d.jenis.reduce((b, j) => b + (j.produksi || 0), 0),
+      0,
+    );
+    const hargaImplisitAktual =
+      volumeAktual > 0 ? nilaiAktual / volumeAktual : null;
+
+    return {
+      volBudidaya,
+      volTangkap,
+      volumeTawar,
+      rincian,
+      nilaiEstimasi,
+      nilaiAktual,
+      volumeAktual,
+      hargaImplisitAktual,
+    };
+  }, [
+    selectedYear,
+    selectedKecamatan,
+    budidayaData,
+    tangkapData,
+    nilaiBudidayaData,
+    nilaiTangkapData,
+  ]);
+
   const formatNum = (num: number) =>
     new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 }).format(num);
 
@@ -358,6 +472,17 @@ export default function FisheriesPage() {
       minimumFractionDigits: 1,
       maximumFractionDigits: 1,
     }).format(val);
+
+  // Rupiah ringkas: jt / M / T
+  const formatRp = (v: number) => {
+    if (v >= 1e12)
+      return `Rp ${(v / 1e12).toLocaleString("id-ID", { maximumFractionDigits: 2 })} T`;
+    if (v >= 1e9)
+      return `Rp ${(v / 1e9).toLocaleString("id-ID", { maximumFractionDigits: 2 })} M`;
+    if (v >= 1e6)
+      return `Rp ${(v / 1e6).toLocaleString("id-ID", { maximumFractionDigits: 1 })} jt`;
+    return `Rp ${Math.round(v).toLocaleString("id-ID")}`;
+  };
 
   return (
     <DefaultLayout>
@@ -388,7 +513,7 @@ export default function FisheriesPage() {
             <label className="text-xs font-mono font-bold uppercase text-slate-500">
               Kategori Perikanan
             </label>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-4 gap-2">
               <button
                 onClick={() => setCategory("budidaya")}
                 className={`py-2 px-3 border border-slate-200 font-mono font-bold text-xs uppercase flex items-center justify-center gap-1 transition-all ${
@@ -421,6 +546,17 @@ export default function FisheriesPage() {
               >
                 <Egg size={14} />
                 Benih
+              </button>
+              <button
+                onClick={() => setCategory("produk")}
+                className={`py-2 px-3 border border-slate-200 font-mono font-bold text-xs uppercase flex items-center justify-center gap-1 transition-all ${
+                  category === "produk"
+                    ? "bg-blue-600 text-white shadow-sm"
+                    : "bg-white text-slate-800 hover:bg-slate-100 shadow-sm"
+                }`}
+              >
+                <ShoppingBasket size={14} />
+                Jenis Ikan
               </button>
             </div>
           </div>
@@ -470,6 +606,339 @@ export default function FisheriesPage() {
 
         {loading ? (
           <LoadingSpinner label="Memuat data perikanan..." />
+        ) : category === "produk" ? (
+          <>
+            {/* KPI: Volume & Nilai */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-sky-50 border border-slate-200 p-6 shadow-sm text-left flex flex-col justify-between transition-all duration-300 hover:shadow-md">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h5 className="text-xs font-mono font-bold text-slate-500 uppercase">
+                      Volume Ikan Air Tawar Lokal
+                    </h5>
+                    <h3 className="text-3xl font-serif font-black uppercase text-slate-800 mt-1">
+                      {formatNum(produkEstimasi.volumeTawar)}
+                    </h3>
+                  </div>
+                  <div className="p-2 border border-slate-200 bg-white">
+                    <Fish size={20} />
+                  </div>
+                </div>
+                <p className="text-xs font-mono text-slate-500 mt-4 uppercase">
+                  kg ({selectedYear}) · budidaya {formatNum(produkEstimasi.volBudidaya)} + tangkap {formatNum(produkEstimasi.volTangkap)}
+                  {selectedKecamatan !== "Semua" ? ` · ${selectedKecamatan}` : ""}
+                </p>
+              </div>
+
+              <div className="bg-violet-50 border border-slate-200 p-6 shadow-sm text-left flex flex-col justify-between transition-all duration-300 hover:shadow-md">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h5 className="text-xs font-mono font-bold text-slate-500 uppercase">
+                      Nilai Estimasi per Jenis
+                    </h5>
+                    <h3 className="text-3xl font-serif font-black uppercase text-slate-800 mt-1">
+                      {formatRp(produkEstimasi.nilaiEstimasi)}
+                    </h3>
+                  </div>
+                  <div className="p-2 border border-slate-200 bg-white">
+                    <Banknote size={20} />
+                  </div>
+                </div>
+                <p className="text-xs font-mono text-slate-500 mt-4 uppercase">
+                  harga referensi tertimbang Rp {formatNum(HARGA_TAWAR_TERTIMBANG)}/kg · estimasi (bukan angka BPS)
+                </p>
+              </div>
+
+              <div className="bg-emerald-50 border border-slate-200 p-6 shadow-sm text-left flex flex-col justify-between transition-all duration-300 hover:shadow-md">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h5 className="text-xs font-mono font-bold text-slate-500 uppercase">
+                      Nilai Produksi Resmi BPS
+                    </h5>
+                    <h3 className="text-3xl font-serif font-black uppercase text-slate-800 mt-1">
+                      {produkEstimasi.nilaiAktual > 0
+                        ? formatRp(produkEstimasi.nilaiAktual)
+                        : "—"}
+                    </h3>
+                  </div>
+                  <div className="p-2 border border-slate-200 bg-white">
+                    <ShieldCheck size={20} />
+                  </div>
+                </div>
+                <p className="text-xs font-mono text-slate-500 mt-4 uppercase">
+                  {produkEstimasi.hargaImplisitAktual
+                    ? `harga implisit Rp ${formatNum(Math.round(produkEstimasi.hargaImplisitAktual))}/kg · budidaya + tangkap`
+                    : "data nilai produksi belum tersedia untuk filter ini"}
+                </p>
+              </div>
+            </div>
+
+            {/* Katalog Jenis Ikan */}
+            <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
+              <div className="mb-4 text-left border-b border-slate-200 pb-2 flex flex-wrap items-center justify-between gap-2">
+                <h4 className="text-md font-mono font-bold uppercase tracking-wide">
+                  Katalog Jenis Ikan &amp; Harga Referensi
+                </h4>
+                <span className="font-mono text-[10px] uppercase text-slate-500">
+                  {PRODUK_IKAN_SUMBER} · {PRODUK_IKAN_TANGGAL}
+                </span>
+              </div>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Air Tawar — produksi lokal */}
+                <div className="text-left">
+                  <h5 className="flex items-center gap-2 text-xs font-mono font-bold uppercase text-sky-700 mb-3">
+                    <Fish size={14} /> Ikan Air Tawar — Produksi Lokal
+                  </h5>
+                  <div className="flex flex-col gap-3">
+                    {PRODUK_IKAN_TAWAR.map((p) => (
+                      <div
+                        key={p.nama}
+                        className="border border-slate-200 bg-white p-4 flex flex-col gap-2"
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <h6 className="text-sm font-mono font-bold uppercase text-slate-800">
+                            {p.nama}
+                          </h6>
+                          <span className="px-2 py-0.5 border border-sky-200 bg-sky-50 font-mono font-bold text-[10px] uppercase text-sky-700 shrink-0">
+                            Lokal
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-600 leading-relaxed">
+                          {p.deskripsi}
+                        </p>
+                        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-2">
+                          <span className="font-mono font-bold text-xs text-slate-800">
+                            Rp {formatNum(p.hargaMin)}–{formatNum(p.hargaMax)}/kg
+                          </span>
+                          {p.pangsa !== undefined && (
+                            <span className="font-mono text-[10px] font-bold uppercase text-slate-500">
+                              pangsa estimasi ±{p.pangsa}%
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-[10px] font-mono uppercase text-slate-400">
+                          {p.catatan}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Laut — peredaran pasar */}
+                <div className="text-left">
+                  <h5 className="flex items-center gap-2 text-xs font-mono font-bold uppercase text-blue-700 mb-3">
+                    <Waves size={14} /> Ikan Laut — Peredaran Pasar Lokal
+                  </h5>
+                  <div className="flex flex-col gap-3">
+                    {PRODUK_IKAN_LAUT.map((p) => (
+                      <div
+                        key={p.nama}
+                        className="border border-slate-200 bg-white p-4 flex flex-col gap-2"
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <h6 className="text-sm font-mono font-bold uppercase text-slate-800">
+                            {p.nama}
+                          </h6>
+                          <span className="px-2 py-0.5 border border-blue-200 bg-blue-50 font-mono font-bold text-[10px] uppercase text-blue-700 shrink-0">
+                            Pasar
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-600 leading-relaxed">
+                          {p.deskripsi}
+                        </p>
+                        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-2">
+                          <span className="font-mono font-bold text-xs text-slate-800">
+                            Rp {formatNum(p.hargaMin)}–{formatNum(p.hargaMax)}/kg
+                          </span>
+                        </div>
+                        <p className="text-[10px] font-mono uppercase text-slate-400">
+                          {p.catatan}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="mt-3 border border-dashed border-slate-300 bg-slate-50 p-3 text-[10px] font-mono uppercase leading-relaxed text-slate-500">
+                    Banjarnegara bukan penghasil ikan laut — produk laut
+                    didatangkan dari wilayah pesisir dan dikatalogkan
+                    harga/ketersediaannya saja (tanpa volume produksi lokal).
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Estimasi Komposisi Produksi per Jenis */}
+            <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
+              <div className="mb-4 text-left border-b border-slate-200 pb-2">
+                <h4 className="text-md font-mono font-bold uppercase tracking-wide">
+                  Estimasi Produksi per Jenis Ikan Air Tawar ({selectedYear})
+                  {selectedKecamatan !== "Semua" ? ` · ${selectedKecamatan}` : ""}
+                </h4>
+              </div>
+              {produkEstimasi.volumeTawar === 0 ? (
+                <div className="border border-dashed border-slate-300 bg-slate-50 p-6 text-center font-mono text-xs uppercase text-slate-500">
+                  Tidak ada data produksi ikan air tawar untuk filter ini.
+                </div>
+              ) : (
+                <>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left font-mono text-sm border-collapse">
+                      <thead>
+                        <tr className="border-b border-slate-200 bg-slate-100">
+                          <th className="p-3 border-r border-slate-200 font-bold uppercase text-xs">
+                            No
+                          </th>
+                          <th className="p-3 border-r border-slate-200 font-bold uppercase text-xs">
+                            Jenis Ikan
+                          </th>
+                          <th className="p-3 border-r border-slate-200 font-bold uppercase text-xs text-right">
+                            Pangsa
+                          </th>
+                          <th className="p-3 border-r border-slate-200 font-bold uppercase text-xs text-right">
+                            Volume Estimasi (kg)
+                          </th>
+                          <th className="p-3 border-r border-slate-200 font-bold uppercase text-xs text-right">
+                            Harga Referensi (Rp/kg)
+                          </th>
+                          <th className="p-3 font-bold uppercase text-xs text-right">
+                            Nilai Estimasi
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {produkEstimasi.rincian.map((r, idx) => {
+                          const maxVol = Math.max(
+                            ...produkEstimasi.rincian.map((x) => x.volume),
+                          );
+                          const pct =
+                            maxVol > 0 ? (r.volume / maxVol) * 100 : 0;
+                          return (
+                            <tr
+                              key={r.produk.nama}
+                              className="border-b border-slate-200 hover:bg-slate-50 transition-colors"
+                            >
+                              <td className="p-3 border-r border-slate-200 text-xs font-bold">
+                                {idx + 1}
+                              </td>
+                              <td className="p-3 border-r border-slate-200 font-bold uppercase">
+                                <div className="flex flex-col gap-1">
+                                  <span>{r.produk.nama}</span>
+                                  <div className="h-1.5 w-28 bg-slate-200 border border-slate-200">
+                                    <div
+                                      className="h-full bg-slate-800"
+                                      style={{ width: `${pct}%` }}
+                                    />
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="p-3 border-r border-slate-200 text-right">
+                                {r.produk.pangsa}%
+                              </td>
+                              <td className="p-3 border-r border-slate-200 text-right">
+                                {formatNum(Math.round(r.volume))}
+                              </td>
+                              <td className="p-3 border-r border-slate-200 text-right">
+                                {formatNum(r.harga)}
+                              </td>
+                              <td className="p-3 text-right font-bold bg-slate-50">
+                                {formatRp(r.nilai)}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                      <tfoot>
+                        <tr className="border-t-2 border-slate-300 bg-slate-100 font-bold">
+                          <td
+                            colSpan={2}
+                            className="p-3 border-r border-slate-200 text-xs uppercase"
+                          >
+                            Jumlah (estimasi komposisi)
+                          </td>
+                          <td className="p-3 border-r border-slate-200 text-right">
+                            100%
+                          </td>
+                          <td className="p-3 border-r border-slate-200 text-right">
+                            {formatNum(produkEstimasi.volumeTawar)}
+                          </td>
+                          <td className="p-3 border-r border-slate-200 text-right">
+                            {formatNum(HARGA_TAWAR_TERTIMBANG)}
+                          </td>
+                          <td className="p-3 text-right bg-slate-200">
+                            {formatRp(produkEstimasi.nilaiEstimasi)}
+                          </td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+
+                  {/* Pembanding resmi BPS */}
+                  <div className="mt-4 border border-slate-200 bg-slate-50 p-4 text-left">
+                    <h5 className="text-xs font-mono font-bold uppercase text-slate-600 mb-2">
+                      Pembanding Resmi BPS (budidaya + tangkap, {selectedYear})
+                    </h5>
+                    <ul className="list-disc pl-4 space-y-1 text-xs text-slate-600 leading-relaxed">
+                      <li>
+                        Nilai produksi resmi:{" "}
+                        <b>
+                          {produkEstimasi.nilaiAktual > 0
+                            ? formatRp(produkEstimasi.nilaiAktual)
+                            : "—"}
+                        </b>{" "}
+                        ({formatNum(produkEstimasi.volumeAktual)} kg
+                        {produkEstimasi.hargaImplisitAktual
+                          ? `, harga implisit Rp ${formatNum(Math.round(produkEstimasi.hargaImplisitAktual))}/kg`
+                          : ""}
+                        ).
+                      </li>
+                      <li>
+                        Estimasi katalog jenis ikan (harga pasar konsumen):{" "}
+                        <b>{formatRp(produkEstimasi.nilaiEstimasi)}</b> dengan
+                        harga tertimbang Rp {formatNum(HARGA_TAWAR_TERTIMBANG)}/kg.
+                      </li>
+                      <li>
+                        Estimasi umumnya lebih tinggi daripada nilai BPS karena
+                        harga katalog adalah harga pasar konsumen, sedangkan
+                        nilai BPS dihitung pada tingkat produsen
+                        (pembudidaya/nelayan).
+                      </li>
+                    </ul>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Catatan Metodologi */}
+            <div className="bg-amber-50 border border-amber-200 p-6 text-left">
+              <h4 className="flex items-center gap-2 text-md font-mono font-bold uppercase tracking-wide text-amber-800">
+                <AlertTriangle size={16} /> Catatan Metodologi
+              </h4>
+              <ul className="mt-3 list-disc space-y-1.5 pl-5 text-xs text-amber-900 leading-relaxed">
+                <li>
+                  BPS tidak mempublikasikan produksi perikanan per jenis ikan
+                  (hanya per tempat pemeliharaan budidaya dan per alat tangkap),
+                  sehingga rincian per jenis di atas adalah{" "}
+                  <b>estimasi komposisi</b> (pangsa indikatif) — bukan angka
+                  resmi BPS.
+                </li>
+                <li>
+                  Harga referensi bersifat <b>indikatif</b> ({PRODUK_IKAN_SUMBER}{" "}
+                  {PRODUK_IKAN_TANGGAL}) dan belum diverifikasi dari sumber
+                  resmi — gunakan untuk gambaran relatif antar jenis, bukan
+                  acuan transaksi.
+                </li>
+                <li>
+                  Volume ikan air tawar dihitung dari tabel produksi resmi BPS
+                  (budidaya: kolam + karamba + minapadi penyelang &amp;
+                  tumpangsari; tangkap: semua alat) untuk tahun &amp; kecamatan
+                  terpilih.
+                </li>
+                <li>
+                  Pangsa &amp; harga dapat disesuaikan di{" "}
+                  <code className="font-mono">src/data/produk-ikan.ts</code>.
+                </li>
+              </ul>
+            </div>
+          </>
         ) : (
           <>
             {/* Stats Row */}
