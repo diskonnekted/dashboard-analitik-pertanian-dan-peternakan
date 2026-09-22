@@ -1,17 +1,15 @@
 {
   "name": "template-import-export",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Generator template & export Excel/CSV SISPERTANI (16 domain, 37 tabel)",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "generate": "node generate-templates.mjs"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "csv-writer": "^1.6.0",
     "exceljs": "^4.4.0"
   }
 }
