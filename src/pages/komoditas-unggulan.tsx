@@ -6,6 +6,7 @@
  */
 import { useEffect, useMemo, useState } from "react";
 import { KpiCard, SectionCard, PageHeader } from "@/components/ui";
+import { EmptyBlock } from "@/components/desa/EmptyBlock";
 import type { KomoditasUnggulanRow } from "@/services/api";
 import { fetchKomoditasUnggulan } from "@/services/api";
 
@@ -43,9 +44,8 @@ export default function KomoditasUnggulanPage() {
         )}
         {rows && rows.length === 0 && (
           <EmptyBlock
-            label="Komoditas unggulan"
-            action={{ label: "Coming Soon", onClick: () => {} }}
-            note="Data akan diberikan 23 Sep 2026. UI sudah siap menampilkan chart & tabel."
+            label="Komoditas Unggulan"
+            message="Data akan diberikan 23 Sep 2026. UI sudah siap menampilkan KPI, chart & tabel."
           />
         )}
 

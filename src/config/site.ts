@@ -63,7 +63,7 @@ export const siteConfig = {
       title: "Bidang Perkebunan",
       items: [
         {
-          label: "Komoditas Unggulan",
+          label: "Analitik Perkebunan",
           href: "/plantation",
         },
         {
