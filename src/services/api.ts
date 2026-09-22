@@ -1284,6 +1284,114 @@ export const fetchAnomaliHargaPangan = (): Promise<AnomaliHargaRow[]> =>
     }
   });
 
+// ---------------------------------------------------------------------------
+// Harga Pangan Bulanan Provinsi Jawa Tengah (Konsumen & Produsen)
+// Sumber: sama seperti indeks anomali - Bapanas via apiindonesia.id.
+// Endpoint: /api/v1/harga-pangan/harga?tingkat=&wilayah=provinsi&provinsi=jawa tengah
+// limit di-cap server 100/halaman: konsumen ~11 halaman (1.002 baris, 27 komoditas,
+// 2021-01..2026-01), produsen ~6 halaman (503 baris, 17 komoditas, 2023-01..2026-01).
+// harga null = tidak tersedia (sumber menandai dengan tanda minus).
+// Lapisan: 1) API live per seri 2) snapshot lokal public/data/snapshots/harga-pangan-jateng.json
+// ---------------------------------------------------------------------------
+
+export interface HargaPanganRow {
+  /** "konsumen" (eceran) | "produsen" (petani/penggilingan/RPH) */
+  tingkat: string;
+  komoditas: string;
+  /** Edisi bulanan, format "YYYY-MM" */
+  tanggal: string;
+  /** Rupiah per bulan; null = tidak tersedia */
+  harga: number | null;
+}
+
+export interface HargaPanganJateng {
+  konsumen: HargaPanganRow[];
+  produsen: HargaPanganRow[];
+}
+
+const APIINDONESIA_HARGA_URL =
+  "https://use.apiindonesia.id/api/v1/harga-pangan/harga";
+
+const toHargaRow = (tingkat: string, raw: any): HargaPanganRow | null => {
+  const komoditas = String(raw?.komoditas ?? "").trim();
+  const tanggal = String(raw?.tanggal ?? "").trim();
+  if (!komoditas || !tanggal) return null;
+  const rawHarga = raw?.harga;
+  const harga =
+    rawHarga == null || rawHarga === "" ? null : Number(rawHarga);
+  return {
+    tingkat,
+    komoditas,
+    tanggal,
+    harga: Number.isFinite(harga as number) ? (harga as number) : null,
+  };
+};
+
+// Lapis 1: API live satu seri (paginasi sampai habis, maks 20 halaman).
+const fetchHargaSeri = async (tingkat: string): Promise<HargaPanganRow[]> => {
+  const rows: HargaPanganRow[] = [];
+  let page = 1;
+  let totalPages = 1;
+  do {
+    const res = await fetchWithTimeout(
+      `${APIINDONESIA_HARGA_URL}?tingkat=${tingkat}&wilayah=provinsi&provinsi=jawa%20tengah&limit=100&page=${page}`,
+      { headers: { "x-api-key": APIINDONESIA_KEY } },
+      12000,
+    );
+    if (!res.ok) throw new Error(`API harga (${tingkat}) HTTP ${res.status}`);
+    const json: any = await res.json();
+    if (!json?.success || !Array.isArray(json.data)) {
+      throw new Error("Struktur respons harga tidak dikenal");
+    }
+    for (const item of json.data) {
+      const row = toHargaRow(tingkat, item);
+      if (row) rows.push(row);
+    }
+    totalPages = Math.min(Number(json.meta?.total_pages) || 1, 20);
+    page += 1;
+  } while (page <= totalPages);
+  return rows;
+};
+
+// Lapis 2: snapshot lokal (hasil unduhan API yang sama, kedua seri).
+const fetchHargaFromSnapshot = async (): Promise<HargaPanganJateng> => {
+  const res = await fetchWithTimeout("/data/snapshots/harga-pangan-jateng.json");
+  if (!res.ok) throw new Error("Snapshot harga tidak ditemukan");
+  const json: any = await res.json();
+  const map = (tingkat: string): HargaPanganRow[] =>
+    (Array.isArray(json?.data?.[tingkat]) ? json.data[tingkat] : [])
+      .map((r: any) => toHargaRow(tingkat, r))
+      .filter((r: HargaPanganRow | null): r is HargaPanganRow => r !== null);
+  return { konsumen: map("konsumen"), produsen: map("produsen") };
+};
+
+// Fetcher publik: API live per seri (konsumen lalu produsen) -> snapshot hanya
+// untuk seri yang gagal -> null bila keduanya kosong (UI menampilkan empty state).
+// Full refresh = ~17 panggilan API; cache harian + snapshot menekan pemakaian kuota.
+export const fetchHargaPanganJateng = (): Promise<HargaPanganJateng | null> =>
+  withCache("cache_harga_pangan_jateng_v1", async () => {
+    const hasil: HargaPanganJateng = { konsumen: [], produsen: [] };
+    for (const tingkat of ["konsumen", "produsen"] as const) {
+      try {
+        hasil[tingkat] = await fetchHargaSeri(tingkat);
+      } catch (e) {
+        console.warn(`API harga ${tingkat} gagal:`, e);
+      }
+    }
+    try {
+      if (hasil.konsumen.length === 0 || hasil.produsen.length === 0) {
+        const snap = await fetchHargaFromSnapshot();
+        if (hasil.konsumen.length === 0) hasil.konsumen = snap.konsumen;
+        if (hasil.produsen.length === 0) hasil.produsen = snap.produsen;
+      }
+    } catch (e2) {
+      console.error("Error fetchHargaPanganJateng:", e2);
+    }
+    if (hasil.konsumen.length === 0 && hasil.produsen.length === 0) return null;
+    return hasil;
+  });
+
+
 export interface LumbungPangan {
   kecamatan: string;
   lumbungUnit: number;

@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import DefaultLayout from "@/layouts/default";
 import { LoadingSpinner } from "@/components/ui";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, Cell, ReferenceLine } from "recharts";
-import { fetchInflationData, fetchAnomaliHargaPangan, InflationData, AnomaliHargaRow } from "@/services/api";
-import { TrendingUp, AlertTriangle, ShieldAlert, Award, Info, CheckCircle2, Calendar, Filter } from "lucide-react";
+import { fetchInflationData, fetchAnomaliHargaPangan, fetchHargaPanganJateng, InflationData, AnomaliHargaRow, HargaPanganJateng } from "@/services/api";
+import { TrendingUp, AlertTriangle, ShieldAlert, Award, Info, CheckCircle2, Calendar, Filter, Banknote, Coins, MapPin, ArrowUpRight, ArrowDownRight } from "lucide-react";
 
 // ===== Indeks Anomali Harga Pangan Nasional (Bapanas via API Indonesia) =====
 
@@ -85,6 +85,32 @@ const TrenTooltip = ({ active, payload, label }: any) => {
   );
 };
 
+// ===== Harga Pangan Jawa Tengah (konsumen & produsen) =====
+
+const fmtRp = (v: number | null) => (v == null ? "-" : `Rp ${v.toLocaleString("id-ID")}`);
+const fmtPct = (v: number) => `${v >= 0 ? "+" : ""}${v.toFixed(1)}%`;
+
+/** Warna perubahan bulanan: naik = merah (tekanan mahal), turun = hijau, stabil = abu. */
+const momClass = (v: number | null) => {
+  if (v == null) return "text-slate-400";
+  if (v >= 0.05) return "text-red-600";
+  if (v <= -0.05) return "text-emerald-600";
+  return "text-slate-500";
+};
+
+const HargaTooltip = ({ active, payload, label }: any) => {
+  if (!active || !payload?.length) return null;
+  const v = payload[0].value;
+  return (
+    <div className="rounded-lg border border-slate-200 bg-white px-3 py-2 shadow-lg">
+      <p className="font-mono text-[11px] font-bold uppercase text-slate-800">{label}</p>
+      <p className="mt-1 font-mono text-[10px] font-bold uppercase text-blue-700">
+        Harga: {v == null ? "-" : fmtRp(Number(v))}
+      </p>
+    </div>
+  );
+};
+
 export default function PriceVolatilityPage() {
   const [inflationData, setInflationData] = useState<InflationData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -157,6 +183,77 @@ export default function PriceVolatilityPage() {
     if (!anomaliData || komoditasPilih) return;
     setKomoditasPilih(anomaliData.barisTerbaru[0]?.komoditas ?? anomaliData.komoditas[0] ?? "");
   }, [anomaliData, komoditasPilih]);
+
+  // ----- Harga Pangan Jawa Tengah (Konsumen & Produsen) -----
+  const [hargaJateng, setHargaJateng] = useState<HargaPanganJateng | null>(null);
+  const [hargaLoading, setHargaLoading] = useState<boolean>(true);
+  const [tingkatPilih, setTingkatPilih] = useState<"konsumen" | "produsen">("konsumen");
+  const [komoditasHargaPilih, setKomoditasHargaPilih] = useState<string>("");
+  const [rentangPilih, setRentangPilih] = useState<number>(24);
+
+  useEffect(() => {
+    let live = true;
+    fetchHargaPanganJateng()
+      .then((data) => {
+        if (!live) return;
+        setHargaJateng(data);
+        setHargaLoading(false);
+      })
+      .catch((err) => {
+        console.error("Gagal memuat harga pangan Jateng:", err);
+        if (live) setHargaLoading(false);
+      });
+    return () => {
+      live = false;
+    };
+  }, []);
+
+  const hargaData = (() => {
+    if (!hargaJateng) return null;
+    const rows = hargaJateng[tingkatPilih];
+    if (rows.length === 0) return null;
+    const edisi = Array.from(new Set(rows.map((r) => r.tanggal))).sort();
+    const komoditas = Array.from(new Set(rows.map((r) => r.komoditas))).sort();
+    const edisiTerbaru = edisi[edisi.length - 1];
+    const edisiLalu = edisi.length > 1 ? edisi[edisi.length - 2] : "";
+    const byKom = new Map<string, Map<string, number | null>>();
+    for (const r of rows) {
+      if (!byKom.has(r.komoditas)) byKom.set(r.komoditas, new Map());
+      byKom.get(r.komoditas)!.set(r.tanggal, r.harga);
+    }
+    const tabel = komoditas
+      .map((k) => {
+        const m = byKom.get(k)!;
+        const harga = m.get(edisiTerbaru) ?? null;
+        const lalu = m.get(edisiLalu) ?? null;
+        const mom = harga != null && lalu != null && lalu > 0 ? ((harga - lalu) / lalu) * 100 : null;
+        return { komoditas: k, harga, mom };
+      })
+      .filter((t) => t.harga != null)
+      .sort((a, b) => (b.mom ?? -Infinity) - (a.mom ?? -Infinity));
+    const staples =
+      tingkatPilih === "konsumen"
+        ? ["Beras Medium", "Cabai Rawit Merah", "Daging Ayam Ras", "Telur Ayam Ras"]
+        : ["GKP Tk. Petani", "GKG Tk. Penggilingan", "Bawang Merah Tingkat Petani", "Telur Ayam Ras"];
+    const kpiStaples = staples
+      .map((k) => tabel.find((t) => t.komoditas === k))
+      .filter((t): t is { komoditas: string; harga: number | null; mom: number | null } => t != null);
+    const kTerpilih = komoditasHargaPilih || kpiStaples[0]?.komoditas || komoditas[0] || "";
+    const edisiTren = rentangPilih > 0 ? edisi.slice(-rentangPilih) : edisi;
+    const tren = edisiTren.map((m) => ({
+      edisi: labelEdisi(m),
+      harga: byKom.get(kTerpilih)?.get(m) ?? null,
+    }));
+    return { edisi, komoditas, edisiTerbaru, tabel, kpiStaples, kTerpilih, tren };
+  })();
+
+  // Reset pilihan komoditas bila tidak tersedia pada seri tingkat aktif
+  useEffect(() => {
+    if (!hargaData) return;
+    if (komoditasHargaPilih && !hargaData.komoditas.includes(komoditasHargaPilih)) {
+      setKomoditasHargaPilih("");
+    }
+  }, [tingkatPilih, hargaData, komoditasHargaPilih]);
 
   const uniqueYears = Array.from(new Set(inflationData.map(item => item.tahun)))
     .filter(y => y !== "")
@@ -567,6 +664,171 @@ export default function PriceVolatilityPage() {
                     <Info className="shrink-0 mt-0.5 text-blue-600" size={14} />
                     <span className="font-mono text-[10px] font-bold leading-normal uppercase text-blue-800">
                       Sumber: Badan Pangan Nasional (Bapanas) melalui layanan API Indonesia (apiindonesia.id) - indeks anomali harga pangan edisi bulanan. Tanda IFPA menunjukkan arah anomali: positif = tekanan harga tinggi (mahal), negatif = tekanan harga rendah (murah).
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* ===== Harga Pangan Jawa Tengah (Konsumen & Produsen) ===== */}
+            <div className="flex flex-col gap-8">
+              <div className="flex flex-col border-b border-slate-200 pb-3">
+                <h4 className="text-lg font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
+                  <Banknote className="text-slate-800" size={20} />
+                  Harga Pangan Jawa Tengah
+                </h4>
+                <p className="text-xs font-mono font-bold text-slate-500 uppercase mt-1">
+                  Harga bulanan Bapanas tingkat provinsi - konsumen (eceran) & produsen (petani / penggilingan / RPH)
+                </p>
+              </div>
+
+              {hargaLoading ? (
+                <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+                  <LoadingSpinner label="Memuat harga pangan Jawa Tengah..." />
+                </div>
+              ) : !hargaData ? (
+                <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+                  <div className="flex items-start gap-2 text-slate-500">
+                    <AlertTriangle className="shrink-0 mt-0.5 text-amber-600" size={16} />
+                    <span className="font-mono text-xs font-bold uppercase">
+                      Data harga pangan belum tersedia - layanan API apiindonesia.id tidak dapat dijangkau.
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-8">
+                  {/* Toggle tingkat + info edisi */}
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div className="flex rounded-lg border border-slate-200 overflow-hidden shadow-sm">
+                      {(["konsumen", "produsen"] as const).map((t) => (
+                        <button
+                          key={t}
+                          type="button"
+                          onClick={() => setTingkatPilih(t)}
+                          className={`px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-wide transition-colors ${
+                            tingkatPilih === t ? "bg-slate-800 text-white" : "bg-white text-slate-500 hover:bg-slate-50"
+                          }`}
+                        >
+                          {t === "konsumen" ? "Konsumen" : "Produsen"}
+                        </button>
+                      ))}
+                    </div>
+                    <span className="inline-flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase text-slate-500">
+                      <MapPin size={12} className="text-slate-400" />
+                      Provinsi Jawa Tengah - Edisi {labelEdisi(hargaData.edisiTerbaru)}
+                    </span>
+                  </div>
+
+                  {/* KPI komoditas pokok */}
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    {hargaData.kpiStaples.map((s) => (
+                      <div key={s.komoditas} className="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 p-4">
+                        <p className="text-[9px] text-slate-400 uppercase font-mono font-bold leading-tight">{s.komoditas}</p>
+                        <p className="mt-1.5 text-lg font-mono font-bold text-slate-800">{fmtRp(s.harga)}</p>
+                        {s.mom != null ? (
+                          <p className={`mt-1 inline-flex items-center gap-1 font-mono text-[10px] font-bold uppercase ${momClass(s.mom)}`}>
+                            {s.mom >= 0 ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
+                            {fmtPct(s.mom)} MoM
+                          </p>
+                        ) : (
+                          <p className="mt-1 font-mono text-[10px] font-bold uppercase text-slate-400">Edisi lalu n/a</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Tren harga komoditas */}
+                  <div className="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 p-6 flex flex-col">
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-6 border-b border-slate-200 pb-3">
+                      <div className="flex flex-col">
+                        <h4 className="text-md font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
+                          <Coins className="text-slate-800" size={18} />
+                          Tren Harga Bulanan
+                        </h4>
+                        <p className="text-xs font-mono font-bold text-slate-500 uppercase mt-1">
+                          {tingkatPilih === "konsumen" ? "Harga eceran konsumen" : "Harga tingkat produsen"} per komoditas
+                        </p>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        <select
+                          value={hargaData.kTerpilih}
+                          onChange={(e) => setKomoditasHargaPilih(e.target.value)}
+                          className="border border-slate-200 rounded-lg px-3 py-1.5 font-mono text-xs font-bold uppercase text-slate-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 max-w-[220px]"
+                        >
+                          {hargaData.komoditas.map((k) => (
+                            <option key={k} value={k}>{k}</option>
+                          ))}
+                        </select>
+                        <select
+                          value={rentangPilih}
+                          onChange={(e) => setRentangPilih(Number(e.target.value))}
+                          className="border border-slate-200 rounded-lg px-3 py-1.5 font-mono text-xs font-bold uppercase text-slate-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                          <option value={12}>12 Bulan</option>
+                          <option value={24}>24 Bulan</option>
+                          <option value={0}>Semua Edisi</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="h-[340px] w-full mt-auto">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={hargaData.tren} margin={{ top: 10, right: 10, left: 0, bottom: 10 }}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#64748b" strokeOpacity={0.1} vertical={false} />
+                          <XAxis dataKey="edisi" tick={{ fill: "#475569", fontSize: 10, fontFamily: "monospace", fontWeight: "bold" }} tickLine={{ stroke: "#cbd5e1" }} axisLine={{ stroke: "#cbd5e1", strokeWidth: 1 }} />
+                          <YAxis
+                            tick={{ fill: "#475569", fontSize: 10, fontFamily: "monospace", fontWeight: "bold" }}
+                            tickLine={{ stroke: "#cbd5e1" }}
+                            axisLine={{ stroke: "#cbd5e1", strokeWidth: 1 }}
+                            tickFormatter={(v: number) => (v >= 1000 ? `${Math.round(v / 1000)}rb` : String(v))}
+                          />
+                          <Tooltip content={<HargaTooltip />} />
+                          <Line type="monotone" dataKey="harga" name="Harga (Rp)" stroke="#2563eb" strokeWidth={2.5} dot={{ r: 3 }} connectNulls />
+                          <Legend wrapperStyle={{ paddingTop: "10px", fontFamily: "monospace", fontWeight: "bold", fontSize: "11px" }} />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+
+                  {/* Tabel harga edisi terbaru */}
+                  <div className="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 p-6">
+                    <div className="flex flex-col mb-6 border-b border-slate-200 pb-3">
+                      <h4 className="text-md font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
+                        <Calendar className="text-slate-800" size={18} />
+                        Daftar Harga Edisi {labelEdisi(hargaData.edisiTerbaru)}
+                      </h4>
+                      <p className="text-xs font-mono font-bold text-slate-500 uppercase mt-1">
+                        {tingkatPilih === "konsumen" ? "Tingkat konsumen (eceran)" : "Tingkat produsen (petani / penggilingan / RPH)"} - diurutkan perubahan bulanan
+                      </p>
+                    </div>
+                    <div className="overflow-x-auto">
+                      <table className="w-full min-w-[480px]">
+                        <thead>
+                          <tr className="border-b-2 border-slate-200">
+                            <th className="py-2 pr-4 text-left font-mono text-[10px] font-bold uppercase text-slate-500">Komoditas</th>
+                            <th className="px-2 py-2 text-right font-mono text-[10px] font-bold uppercase text-slate-500">Harga</th>
+                            <th className="py-2 pl-4 text-right font-mono text-[10px] font-bold uppercase text-slate-500">Perubahan MoM</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {hargaData.tabel.map((t) => (
+                            <tr key={t.komoditas} className="border-b border-slate-100 last:border-0">
+                              <td className="py-2 pr-4 font-mono text-[11px] font-bold uppercase text-slate-700">{t.komoditas}</td>
+                              <td className="px-2 py-2 text-right font-mono text-[11px] font-bold text-slate-800">{fmtRp(t.harga)}</td>
+                              <td className={`py-2 pl-4 text-right font-mono text-[11px] font-bold ${momClass(t.mom)}`}>
+                                {t.mom == null ? "-" : `${t.mom >= 0 ? "+" : ""}${t.mom.toFixed(1)}%`}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  {/* Sumber data harga */}
+                  <div className="flex items-start gap-2 p-3 bg-blue-50 border border-slate-200 shadow-sm">
+                    <Info className="shrink-0 mt-0.5 text-blue-600" size={14} />
+                    <span className="font-mono text-[10px] font-bold leading-normal uppercase text-blue-800">
+                      Sumber: Badan Pangan Nasional (Bapanas) melalui layanan API Indonesia (apiindonesia.id) - harga bulanan provinsi Jawa Tengah (tingkat konsumen & produsen), rilis B+1. Sumber tidak menyediakan data harga level kabupaten/kota; Jawa Tengah adalah wilayah terdekat yang tersedia.
                     </span>
                   </div>
                 </div>
