@@ -1,9 +1,89 @@
 import { useEffect, useState } from "react";
 import DefaultLayout from "@/layouts/default";
 import { LoadingSpinner } from "@/components/ui";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { fetchInflationData, InflationData } from "@/services/api";
-import { TrendingUp, AlertTriangle, ShieldAlert, Award } from "lucide-react";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, Cell, ReferenceLine } from "recharts";
+import { fetchInflationData, fetchAnomaliHargaPangan, InflationData, AnomaliHargaRow } from "@/services/api";
+import { TrendingUp, AlertTriangle, ShieldAlert, Award, Info, CheckCircle2, Calendar, Filter } from "lucide-react";
+
+// ===== Indeks Anomali Harga Pangan Nasional (Bapanas via API Indonesia) =====
+
+const BULAN_PENDEK: Record<string, string> = {
+  "01": "Jan", "02": "Feb", "03": "Mar", "04": "Apr", "05": "Mei", "06": "Jun",
+  "07": "Jul", "08": "Agu", "09": "Sep", "10": "Okt", "11": "Nov", "12": "Des",
+};
+
+const labelEdisi = (tanggal: string) => {
+  const [y, m] = tanggal.split("-");
+  return m && BULAN_PENDEK[m] ? `${BULAN_PENDEK[m]} ${y}` : tanggal;
+};
+
+const fmtSigned = (v: number) => `${v >= 0 ? "+" : ""}${v.toFixed(3)}`;
+
+const severityOf = (status: string): "alert" | "warning" | "normal" => {
+  if (status.startsWith("Alert")) return "alert";
+  if (status.startsWith("Warning")) return "warning";
+  return "normal";
+};
+
+/** Arah anomali: "high" (tekanan harga tinggi/mahal), "low" (rendah/murah), null (normal). */
+const directionOf = (status: string): "high" | "low" | null => {
+  if (status.includes("High")) return "high";
+  if (status.includes("Low")) return "low";
+  return null;
+};
+
+const SEVERITY_BAR: Record<string, string> = {
+  alert: "#dc2626",
+  warning: "#d97706",
+  normal: "#059669",
+};
+
+const STATUS_LABEL: Record<string, string> = {
+  Normal: "Normal",
+  "Warning (High Price)": "Perhatian - cenderung mahal",
+  "Warning (Low Price)": "Perhatian - cenderung murah",
+  "Alert (High Price)": "Waspada - tekanan harga mahal",
+  "Alert (Low Price)": "Waspada - tekanan harga murah",
+};
+
+const badgeStatus = (status: string) => {
+  const sev = severityOf(status);
+  if (sev === "alert") return "bg-red-100 text-red-700";
+  if (sev === "warning") return "bg-amber-100 text-amber-700";
+  return "bg-emerald-100 text-emerald-700";
+};
+
+const AnomaliTooltip = ({ active, payload }: any) => {
+  if (!active || !payload?.length) return null;
+  const r: AnomaliHargaRow = payload[0].payload;
+  return (
+    <div className="rounded-lg border border-slate-200 bg-white px-3 py-2 shadow-lg">
+      <p className="font-mono text-[11px] font-bold uppercase text-slate-800">{r.komoditas}</p>
+      <p className={`mt-1 inline-flex px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase ${badgeStatus(r.status)}`}>
+        {STATUS_LABEL[r.status] ?? r.status}
+      </p>
+      <div className="mt-2 space-y-0.5 font-mono text-[10px] font-bold uppercase text-slate-600">
+        <p>IFPA: {fmtSigned(r.ifpa)}</p>
+        <p>QIPA: {fmtSigned(r.qipa)}</p>
+        <p>AIPA: {fmtSigned(r.aipa)}</p>
+      </div>
+    </div>
+  );
+};
+
+const TrenTooltip = ({ active, payload, label }: any) => {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="rounded-lg border border-slate-200 bg-white px-3 py-2 shadow-lg">
+      <p className="font-mono text-[11px] font-bold uppercase text-slate-800">{label}</p>
+      {payload.map((p: any) => (
+        <p key={p.dataKey} className="mt-1 font-mono text-[10px] font-bold uppercase" style={{ color: p.color }}>
+          {p.name}: {p.value == null ? "-" : fmtSigned(Number(p.value))}
+        </p>
+      ))}
+    </div>
+  );
+};
 
 export default function PriceVolatilityPage() {
   const [inflationData, setInflationData] = useState<InflationData[]>([]);
@@ -22,6 +102,61 @@ export default function PriceVolatilityPage() {
     };
     loadData();
   }, []);
+
+  // ----- Indeks Anomali Harga Pangan Nasional (Bapanas) -----
+  const [anomali, setAnomali] = useState<AnomaliHargaRow[]>([]);
+  const [anomaliLoading, setAnomaliLoading] = useState<boolean>(true);
+  const [komoditasPilih, setKomoditasPilih] = useState<string>("");
+
+  useEffect(() => {
+    let live = true;
+    fetchAnomaliHargaPangan()
+      .then((rows) => {
+        if (!live) return;
+        setAnomali(rows);
+        setAnomaliLoading(false);
+      })
+      .catch((err) => {
+        console.error("Gagal memuat indeks anomali harga pangan:", err);
+        if (live) setAnomaliLoading(false);
+      });
+    return () => {
+      live = false;
+    };
+  }, []);
+
+  const anomaliData = (() => {
+    if (anomali.length === 0) return null;
+    const edisi = Array.from(new Set(anomali.map((r) => r.tanggal))).sort();
+    const komoditas = Array.from(new Set(anomali.map((r) => r.komoditas))).sort();
+    const edisiTerbaru = edisi[edisi.length - 1];
+    const barisTerbaru = anomali
+      .filter((r) => r.tanggal === edisiTerbaru)
+      .sort((a, b) => Math.abs(b.ifpa) - Math.abs(a.ifpa));
+    const hitung = (sev: string) => barisTerbaru.filter((r) => severityOf(r.status) === sev).length;
+    const kpi = { alert: hitung("alert"), warning: hitung("warning"), normal: hitung("normal") };
+    const matriks = komoditas.map((k) => ({
+      komoditas: k,
+      sel: edisi.map((m) => anomali.find((r) => r.komoditas === k && r.tanggal === m)),
+    }));
+    return { edisi, komoditas, edisiTerbaru, barisTerbaru, kpi, matriks };
+  })();
+
+  const trenPilih = (() => {
+    if (!anomaliData) return [];
+    const k = komoditasPilih || anomaliData.komoditas[0];
+    if (!k) return [];
+    return anomaliData.edisi.map((m) => {
+      const r = anomali.find((x) => x.komoditas === k && x.tanggal === m);
+      return { edisi: labelEdisi(m), IFPA: r?.ifpa ?? null, QIPA: r?.qipa ?? null, AIPA: r?.aipa ?? null };
+    });
+  })();
+
+  // Pilihan awal: komoditas dengan sinyal terkuat pada edisi terbaru
+  useEffect(() => {
+    if (!anomaliData || komoditasPilih) return;
+    setKomoditasPilih(anomaliData.barisTerbaru[0]?.komoditas ?? anomaliData.komoditas[0] ?? "");
+  }, [anomaliData, komoditasPilih]);
 
   const uniqueYears = Array.from(new Set(inflationData.map(item => item.tahun)))
     .filter(y => y !== "")
@@ -228,6 +363,214 @@ export default function PriceVolatilityPage() {
                   </span>
                 </div>
               </div>
+            </div>
+
+            {/* ===== Indeks Anomali Harga Pangan Nasional (Bapanas) ===== */}
+            <div className="flex flex-col gap-8">
+              <div className="flex flex-col border-b border-slate-200 pb-3">
+                <h4 className="text-lg font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
+                  <ShieldAlert className="text-slate-800" size={20} />
+                  Indeks Anomali Harga Pangan Nasional
+                </h4>
+                <p className="text-xs font-mono font-bold text-slate-500 uppercase mt-1">
+                  QIPA (kualitas) - AIPA (akurasi) - IFPA (indikator utama) - edisi bulanan komoditas strategis nasional
+                </p>
+              </div>
+
+              {anomaliLoading ? (
+                <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+                  <LoadingSpinner label="Memuat indeks anomali harga pangan..." />
+                </div>
+              ) : !anomaliData ? (
+                <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+                  <div className="flex items-start gap-2 text-slate-500">
+                    <AlertTriangle className="shrink-0 mt-0.5 text-amber-600" size={16} />
+                    <span className="font-mono text-xs font-bold uppercase">
+                      Indeks anomali harga pangan belum tersedia - layanan API apiindonesia.id tidak dapat dijangkau.
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-8">
+                  {/* KPI edisi terbaru */}
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 p-4 flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
+                        <Calendar className="text-slate-600" size={20} />
+                      </div>
+                      <div>
+                        <p className="text-[9px] text-slate-400 uppercase font-mono font-bold">Edisi Terbaru</p>
+                        <p className="text-lg font-mono font-bold text-slate-800">{labelEdisi(anomaliData.edisiTerbaru)}</p>
+                      </div>
+                    </div>
+                    <div className="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 p-4 flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-lg bg-red-100 flex items-center justify-center shrink-0">
+                        <AlertTriangle className="text-red-600" size={20} />
+                      </div>
+                      <div>
+                        <p className="text-[9px] text-slate-400 uppercase font-mono font-bold">Komoditas Waspada</p>
+                        <p className="text-lg font-mono font-bold text-slate-800">{anomaliData.kpi.alert}</p>
+                      </div>
+                    </div>
+                    <div className="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 p-4 flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-lg bg-amber-100 flex items-center justify-center shrink-0">
+                        <Info className="text-amber-600" size={20} />
+                      </div>
+                      <div>
+                        <p className="text-[9px] text-slate-400 uppercase font-mono font-bold">Komoditas Perhatian</p>
+                        <p className="text-lg font-mono font-bold text-slate-800">{anomaliData.kpi.warning}</p>
+                      </div>
+                    </div>
+                    <div className="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 p-4 flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-lg bg-emerald-100 flex items-center justify-center shrink-0">
+                        <CheckCircle2 className="text-emerald-600" size={20} />
+                      </div>
+                      <div>
+                        <p className="text-[9px] text-slate-400 uppercase font-mono font-bold">Komoditas Normal</p>
+                        <p className="text-lg font-mono font-bold text-slate-800">{anomaliData.kpi.normal}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Grafik sinyal IFPA + tren per komoditas */}
+                  <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+                    <div className="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 p-6 flex flex-col">
+                      <div className="flex flex-col mb-6 border-b border-slate-200 pb-3">
+                        <h4 className="text-md font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
+                          <TrendingUp className="text-slate-800" size={18} />
+                          Sinyal IFPA per Komoditas
+                        </h4>
+                        <p className="text-xs font-mono font-bold text-slate-500 uppercase mt-1">
+                          Edisi {labelEdisi(anomaliData.edisiTerbaru)} - diurutkan kekuatan sinyal (|IFPA|)
+                        </p>
+                      </div>
+                      <div className="h-[340px] w-full">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <BarChart data={anomaliData.barisTerbaru} layout="vertical" margin={{ top: 4, right: 24, left: 8, bottom: 4 }}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#64748b" strokeOpacity={0.1} horizontal={false} />
+                            <XAxis type="number" tick={{ fill: "#475569", fontSize: 10, fontFamily: "monospace", fontWeight: "bold" }} tickLine={{ stroke: "#cbd5e1" }} axisLine={{ stroke: "#cbd5e1", strokeWidth: 1 }} />
+                            <YAxis type="category" dataKey="komoditas" width={128} tick={{ fill: "#334155", fontSize: 10, fontFamily: "monospace", fontWeight: "bold" }} tickLine={{ stroke: "#cbd5e1" }} axisLine={{ stroke: "#cbd5e1", strokeWidth: 1 }} />
+                            <Tooltip content={<AnomaliTooltip />} cursor={{ fill: "rgba(100,116,139,0.06)" }} />
+                            <ReferenceLine x={0} stroke="#94a3b8" />
+                            <Bar dataKey="ifpa" barSize={12} radius={2}>
+                              {anomaliData.barisTerbaru.map((r, i) => (
+                                <Cell key={i} fill={SEVERITY_BAR[severityOf(r.status)]} />
+                              ))}
+                            </Bar>
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </div>
+
+                    <div className="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 p-6 flex flex-col">
+                      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-6 border-b border-slate-200 pb-3">
+                        <div className="flex flex-col">
+                          <h4 className="text-md font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
+                            <Filter className="text-slate-800" size={18} />
+                            Tren QIPA - AIPA - IFPA
+                          </h4>
+                          <p className="text-xs font-mono font-bold text-slate-500 uppercase mt-1">
+                            Satu komoditas dipantau lintas edisi
+                          </p>
+                        </div>
+                        <select
+                          value={komoditasPilih || anomaliData.komoditas[0]}
+                          onChange={(e) => setKomoditasPilih(e.target.value)}
+                          className="border border-slate-200 rounded-lg px-3 py-1.5 font-mono text-xs font-bold uppercase text-slate-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                          {anomaliData.komoditas.map((k) => (
+                            <option key={k} value={k}>{k}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="h-[340px] w-full mt-auto">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <LineChart data={trenPilih} margin={{ top: 10, right: 10, left: 0, bottom: 10 }}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#64748b" strokeOpacity={0.1} vertical={false} />
+                            <XAxis dataKey="edisi" tick={{ fill: "#475569", fontSize: 10, fontFamily: "monospace", fontWeight: "bold" }} tickLine={{ stroke: "#cbd5e1" }} axisLine={{ stroke: "#cbd5e1", strokeWidth: 1 }} />
+                            <YAxis tick={{ fill: "#475569", fontSize: 10, fontFamily: "monospace", fontWeight: "bold" }} tickLine={{ stroke: "#cbd5e1" }} axisLine={{ stroke: "#cbd5e1", strokeWidth: 1 }} />
+                            <Tooltip content={<TrenTooltip />} />
+                            <ReferenceLine y={0} stroke="#94a3b8" strokeDasharray="4 4" />
+                            <Line type="monotone" dataKey="IFPA" name="IFPA (utama)" stroke="#dc2626" strokeWidth={3} dot={{ r: 4 }} />
+                            <Line type="monotone" dataKey="QIPA" name="QIPA (kualitas)" stroke="#2563eb" strokeWidth={2} dot={{ r: 3 }} />
+                            <Line type="monotone" dataKey="AIPA" name="AIPA (akurasi)" stroke="#d97706" strokeWidth={2} dot={{ r: 3 }} />
+                            <Legend wrapperStyle={{ paddingTop: "10px", fontFamily: "monospace", fontWeight: "bold", fontSize: "11px" }} />
+                          </LineChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Matriks status per edisi */}
+                  <div className="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 p-6">
+                    <div className="flex flex-col mb-6 border-b border-slate-200 pb-3">
+                      <h4 className="text-md font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
+                        <Calendar className="text-slate-800" size={18} />
+                        Matriks Status Komoditas per Edisi
+                      </h4>
+                      <p className="text-xs font-mono font-bold text-slate-500 uppercase mt-1">
+                        Panah atas = tekanan harga tinggi - panah bawah = tekanan harga rendah - arahkan kursor untuk nilai indeks
+                      </p>
+                    </div>
+                    <div className="overflow-x-auto">
+                      <table className="w-full min-w-[640px]">
+                        <thead>
+                          <tr className="border-b-2 border-slate-200">
+                            <th className="py-2 pr-4 text-left font-mono text-[10px] font-bold uppercase text-slate-500">Komoditas</th>
+                            {anomaliData.edisi.map((m) => (
+                              <th key={m} className="px-1 py-2 text-center font-mono text-[10px] font-bold uppercase text-slate-500">
+                                {labelEdisi(m).split(" ")[0]}
+                              </th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {anomaliData.matriks.map((row) => (
+                            <tr key={row.komoditas} className="border-b border-slate-100 last:border-0">
+                              <td className="py-2 pr-4 font-mono text-[11px] font-bold uppercase text-slate-700">{row.komoditas}</td>
+                              {row.sel.map((c, i) => (
+                                <td key={i} className="px-1 py-2 text-center">
+                                  {c ? (
+                                    <span
+                                      title={`${labelEdisi(c.tanggal)} - ${STATUS_LABEL[c.status] ?? c.status} - IFPA ${fmtSigned(c.ifpa)} - QIPA ${fmtSigned(c.qipa)} - AIPA ${fmtSigned(c.aipa)}`}
+                                      className={`inline-flex h-6 w-6 items-center justify-center rounded-md font-mono text-[10px] font-bold ${badgeStatus(c.status)}`}
+                                    >
+                                      {directionOf(c.status) === "high" ? "▲" : directionOf(c.status) === "low" ? "▼" : "•"}
+                                    </span>
+                                  ) : (
+                                    <span className="text-slate-300">-</span>
+                                  )}
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                    <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2">
+                      <span className="inline-flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase text-slate-500">
+                        <span className="h-3 w-3 rounded-sm bg-red-500" /> Waspada (Alert)
+                      </span>
+                      <span className="inline-flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase text-slate-500">
+                        <span className="h-3 w-3 rounded-sm bg-amber-500" /> Perhatian (Warning)
+                      </span>
+                      <span className="inline-flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase text-slate-500">
+                        <span className="h-3 w-3 rounded-sm bg-emerald-500" /> Normal
+                      </span>
+                      <span className="font-mono text-[10px] font-bold uppercase text-slate-400">▲ harga tinggi</span>
+                      <span className="font-mono text-[10px] font-bold uppercase text-slate-400">▼ harga rendah</span>
+                    </div>
+                  </div>
+
+                  {/* Sumber data */}
+                  <div className="flex items-start gap-2 p-3 bg-blue-50 border border-slate-200 shadow-sm">
+                    <Info className="shrink-0 mt-0.5 text-blue-600" size={14} />
+                    <span className="font-mono text-[10px] font-bold leading-normal uppercase text-blue-800">
+                      Sumber: Badan Pangan Nasional (Bapanas) melalui layanan API Indonesia (apiindonesia.id) - indeks anomali harga pangan edisi bulanan. Tanda IFPA menunjukkan arah anomali: positif = tekanan harga tinggi (mahal), negatif = tekanan harga rendah (murah).
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
           </>
         )}

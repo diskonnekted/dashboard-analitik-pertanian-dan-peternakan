@@ -1,0 +1,842 @@
+{
+  "success": true,
+  "meta": {
+    "total": 104,
+    "source": "snapshot",
+    "fetched": "2026-09-22"
+  },
+  "data": [
+    {
+      "tanggal": "2026-01",
+      "komoditas": "Bawang Merah",
+      "qipa": -0.652034855,
+      "aipa": 0.146238417,
+      "ifpa": -0.173070892,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-01",
+      "komoditas": "Bawang Putih",
+      "qipa": -0.157867954,
+      "aipa": -1.059996685,
+      "ifpa": -0.699145193,
+      "status": "Warning (Low Price)"
+    },
+    {
+      "tanggal": "2026-01",
+      "komoditas": "Beras Medium",
+      "qipa": -1.901395415,
+      "aipa": -0.954519503,
+      "ifpa": -1.333269868,
+      "status": "Alert (Low Price)"
+    },
+    {
+      "tanggal": "2026-01",
+      "komoditas": "Beras Premium",
+      "qipa": -1.971573017,
+      "aipa": -0.856234056,
+      "ifpa": -1.30236964,
+      "status": "Alert (Low Price)"
+    },
+    {
+      "tanggal": "2026-01",
+      "komoditas": "Cabai Merah Keriting",
+      "qipa": -1.860356762,
+      "aipa": -2.231149254,
+      "ifpa": -2.082832258,
+      "status": "Alert (Low Price)"
+    },
+    {
+      "tanggal": "2026-01",
+      "komoditas": "Cabai Rawit Merah",
+      "qipa": -0.168715044,
+      "aipa": -2.036697683,
+      "ifpa": -1.289504628,
+      "status": "Alert (Low Price)"
+    },
+    {
+      "tanggal": "2026-01",
+      "komoditas": "Daging Ayam Ras",
+      "qipa": -0.03399794,
+      "aipa": 0.274395199,
+      "ifpa": 0.151037944,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-01",
+      "komoditas": "Daging Sapi Murni",
+      "qipa": 0.758099103,
+      "aipa": -1.355278848,
+      "ifpa": -0.509927667,
+      "status": "Warning (Low Price)"
+    },
+    {
+      "tanggal": "2026-01",
+      "komoditas": "Gula Pasir Lokal/Curah",
+      "qipa": -0.557317102,
+      "aipa": -0.990910593,
+      "ifpa": -0.817473196,
+      "status": "Warning (Low Price)"
+    },
+    {
+      "tanggal": "2026-01",
+      "komoditas": "Kedelai Biji Kering",
+      "qipa": 0.151642775,
+      "aipa": 0.33134923,
+      "ifpa": 0.259466648,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-01",
+      "komoditas": "Minyak Goreng Kemasan",
+      "qipa": -0.581950219,
+      "aipa": -0.237838076,
+      "ifpa": -0.375482934,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-01",
+      "komoditas": "Telur Ayam Ras",
+      "qipa": -0.78806401,
+      "aipa": -0.225726927,
+      "ifpa": -0.45066176,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-01",
+      "komoditas": "Tepung Terigu Curah",
+      "qipa": -0.224137306,
+      "aipa": -0.418233928,
+      "ifpa": -0.340595279,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-02",
+      "komoditas": "Bawang Merah",
+      "qipa": -0.320331479,
+      "aipa": 0.592607777,
+      "ifpa": 0.227432074,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-02",
+      "komoditas": "Bawang Putih",
+      "qipa": -0.297215543,
+      "aipa": -0.627704254,
+      "ifpa": -0.49550877,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-02",
+      "komoditas": "Beras Medium",
+      "qipa": -1.584692219,
+      "aipa": -1.08742182,
+      "ifpa": -1.28632998,
+      "status": "Alert (Low Price)"
+    },
+    {
+      "tanggal": "2026-02",
+      "komoditas": "Beras Premium",
+      "qipa": -0.872155369,
+      "aipa": -0.793334004,
+      "ifpa": -0.82486255,
+      "status": "Warning (Low Price)"
+    },
+    {
+      "tanggal": "2026-02",
+      "komoditas": "Cabai Merah Keriting",
+      "qipa": -1.432354532,
+      "aipa": -0.987625149,
+      "ifpa": -1.165516902,
+      "status": "Alert (Low Price)"
+    },
+    {
+      "tanggal": "2026-02",
+      "komoditas": "Cabai Rawit Merah",
+      "qipa": 0.870376824,
+      "aipa": -0.210391789,
+      "ifpa": 0.221915656,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-02",
+      "komoditas": "Daging Ayam Ras",
+      "qipa": 2.415649625,
+      "aipa": 1.514580737,
+      "ifpa": 1.875008292,
+      "status": "Alert (High Price)"
+    },
+    {
+      "tanggal": "2026-02",
+      "komoditas": "Daging Sapi Murni",
+      "qipa": 1.655813802,
+      "aipa": -1.254415853,
+      "ifpa": -0.090323991,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-02",
+      "komoditas": "Gula Pasir Lokal/Curah",
+      "qipa": -0.673554891,
+      "aipa": -1.087247502,
+      "ifpa": -0.921770457,
+      "status": "Warning (Low Price)"
+    },
+    {
+      "tanggal": "2026-02",
+      "komoditas": "Kedelai Biji Kering",
+      "qipa": 0.065843444,
+      "aipa": 0.193717739,
+      "ifpa": 0.142568021,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-02",
+      "komoditas": "Minyak Goreng Kemasan",
+      "qipa": -0.593268708,
+      "aipa": -0.531763792,
+      "ifpa": -0.556365758,
+      "status": "Warning (Low Price)"
+    },
+    {
+      "tanggal": "2026-02",
+      "komoditas": "Telur Ayam Ras",
+      "qipa": -0.575517057,
+      "aipa": -0.23574228,
+      "ifpa": -0.371652191,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-02",
+      "komoditas": "Tepung Terigu Curah",
+      "qipa": -0.304119535,
+      "aipa": -0.55476511,
+      "ifpa": -0.45450688,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-03",
+      "komoditas": "Bawang Merah",
+      "qipa": -1.928329884,
+      "aipa": -0.612310794,
+      "ifpa": -1.13871843,
+      "status": "Alert (Low Price)"
+    },
+    {
+      "tanggal": "2026-03",
+      "komoditas": "Bawang Putih",
+      "qipa": -1.037557603,
+      "aipa": -0.930816624,
+      "ifpa": -0.973513016,
+      "status": "Warning (Low Price)"
+    },
+    {
+      "tanggal": "2026-03",
+      "komoditas": "Beras Medium",
+      "qipa": -1.326556462,
+      "aipa": -0.856300538,
+      "ifpa": -1.044402907,
+      "status": "Alert (Low Price)"
+    },
+    {
+      "tanggal": "2026-03",
+      "komoditas": "Beras Premium",
+      "qipa": -0.627596207,
+      "aipa": -0.493368546,
+      "ifpa": -0.54705961,
+      "status": "Warning (Low Price)"
+    },
+    {
+      "tanggal": "2026-03",
+      "komoditas": "Cabai Merah Keriting",
+      "qipa": -1.845911758,
+      "aipa": -1.074533437,
+      "ifpa": -1.383084765,
+      "status": "Alert (Low Price)"
+    },
+    {
+      "tanggal": "2026-03",
+      "komoditas": "Cabai Rawit Merah",
+      "qipa": -0.121966306,
+      "aipa": -0.560758817,
+      "ifpa": -0.385241813,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-03",
+      "komoditas": "Daging Ayam Ras",
+      "qipa": 0.838754801,
+      "aipa": 1.474635673,
+      "ifpa": 1.220283324,
+      "status": "Alert (High Price)"
+    },
+    {
+      "tanggal": "2026-03",
+      "komoditas": "Daging Sapi Murni",
+      "qipa": 5.957991259,
+      "aipa": 0.484330765,
+      "ifpa": 2.673794963,
+      "status": "Alert (High Price)"
+    },
+    {
+      "tanggal": "2026-03",
+      "komoditas": "Gula Pasir Lokal/Curah",
+      "qipa": -0.340716331,
+      "aipa": -0.520727457,
+      "ifpa": -0.448723007,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-03",
+      "komoditas": "Kedelai Biji Kering",
+      "qipa": -0.069515477,
+      "aipa": 0.285823904,
+      "ifpa": 0.143688151,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-03",
+      "komoditas": "Minyak Goreng Kemasan",
+      "qipa": -0.791214755,
+      "aipa": -0.336434422,
+      "ifpa": -0.518346555,
+      "status": "Warning (Low Price)"
+    },
+    {
+      "tanggal": "2026-03",
+      "komoditas": "Telur Ayam Ras",
+      "qipa": 0.272431144,
+      "aipa": 0.3575415,
+      "ifpa": 0.323497358,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-03",
+      "komoditas": "Tepung Terigu Curah",
+      "qipa": -0.456300662,
+      "aipa": -0.306721172,
+      "ifpa": -0.366552968,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-04",
+      "komoditas": "Bawang Merah",
+      "qipa": -1.053977274,
+      "aipa": -0.482611096,
+      "ifpa": -0.711157567,
+      "status": "Warning (Low Price)"
+    },
+    {
+      "tanggal": "2026-04",
+      "komoditas": "Bawang Putih",
+      "qipa": -1.217412108,
+      "aipa": -1.183431878,
+      "ifpa": -1.19702397,
+      "status": "Alert (Low Price)"
+    },
+    {
+      "tanggal": "2026-04",
+      "komoditas": "Beras Medium",
+      "qipa": -1.111397793,
+      "aipa": -0.942626191,
+      "ifpa": -1.010134832,
+      "status": "Alert (Low Price)"
+    },
+    {
+      "tanggal": "2026-04",
+      "komoditas": "Beras Premium",
+      "qipa": -0.363727601,
+      "aipa": -0.414864626,
+      "ifpa": -0.394409816,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-04",
+      "komoditas": "Cabai Merah Keriting",
+      "qipa": 0.638963346,
+      "aipa": -2.201968414,
+      "ifpa": -1.06559571,
+      "status": "Alert (Low Price)"
+    },
+    {
+      "tanggal": "2026-04",
+      "komoditas": "Cabai Rawit Merah",
+      "qipa": 2.732360742,
+      "aipa": -0.882836113,
+      "ifpa": 0.563242629,
+      "status": "Warning (High Price)"
+    },
+    {
+      "tanggal": "2026-04",
+      "komoditas": "Daging Ayam Ras",
+      "qipa": 0.066314544,
+      "aipa": 1.003577012,
+      "ifpa": 0.628672025,
+      "status": "Warning (High Price)"
+    },
+    {
+      "tanggal": "2026-04",
+      "komoditas": "Daging Sapi Murni",
+      "qipa": 1.028896287,
+      "aipa": 0.839367333,
+      "ifpa": 0.915178914,
+      "status": "Warning (High Price)"
+    },
+    {
+      "tanggal": "2026-04",
+      "komoditas": "Gula Pasir Lokal/Curah",
+      "qipa": -0.191475726,
+      "aipa": -0.216976237,
+      "ifpa": -0.206776032,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-04",
+      "komoditas": "Kedelai Biji Kering",
+      "qipa": 0.215485154,
+      "aipa": 0.480164503,
+      "ifpa": 0.374292763,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-04",
+      "komoditas": "Minyak Goreng Kemasan",
+      "qipa": -0.319282827,
+      "aipa": -0.074273221,
+      "ifpa": -0.172277063,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-04",
+      "komoditas": "Telur Ayam Ras",
+      "qipa": 0.074554173,
+      "aipa": 0.629847257,
+      "ifpa": 0.407730023,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-04",
+      "komoditas": "Tepung Terigu Curah",
+      "qipa": -0.718888364,
+      "aipa": -0.175604372,
+      "ifpa": -0.392917969,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-05",
+      "komoditas": "Bawang Merah",
+      "qipa": -0.756447592,
+      "aipa": -0.055797256,
+      "ifpa": -0.055797256,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-05",
+      "komoditas": "Bawang Putih",
+      "qipa": -0.57856197,
+      "aipa": -0.843696619,
+      "ifpa": -0.843696619,
+      "status": "Warning (Low Price)"
+    },
+    {
+      "tanggal": "2026-05",
+      "komoditas": "Beras Medium",
+      "qipa": 1.012336144,
+      "aipa": -0.402007121,
+      "ifpa": -0.402007121,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-05",
+      "komoditas": "Beras Premium",
+      "qipa": 1.478968594,
+      "aipa": 0.207183887,
+      "ifpa": 0.207183887,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-05",
+      "komoditas": "Cabai Merah Keriting",
+      "qipa": 1.191522323,
+      "aipa": 0.272077204,
+      "ifpa": 0.272077204,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-05",
+      "komoditas": "Cabai Rawit Merah",
+      "qipa": 0.689294279,
+      "aipa": 0.621879876,
+      "ifpa": 0.621879876,
+      "status": "Warning (High Price)"
+    },
+    {
+      "tanggal": "2026-05",
+      "komoditas": "Daging Ayam Ras",
+      "qipa": -1.770732827,
+      "aipa": -0.04226338,
+      "ifpa": -0.04226338,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-05",
+      "komoditas": "Daging Sapi Murni",
+      "qipa": 0.43391564,
+      "aipa": 0.780976319,
+      "ifpa": 0.780976319,
+      "status": "Warning (High Price)"
+    },
+    {
+      "tanggal": "2026-05",
+      "komoditas": "Gula Pasir Lokal/Curah",
+      "qipa": -0.074120429,
+      "aipa": -0.197541299,
+      "ifpa": -0.197541299,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-05",
+      "komoditas": "Kedelai Biji Kering",
+      "qipa": 0.704081649,
+      "aipa": 0.63100047,
+      "ifpa": 0.63100047,
+      "status": "Warning (High Price)"
+    },
+    {
+      "tanggal": "2026-05",
+      "komoditas": "Minyak Goreng Kemasan",
+      "qipa": -0.044618781,
+      "aipa": -0.031910424,
+      "ifpa": -0.031910424,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-05",
+      "komoditas": "Telur Ayam Ras",
+      "qipa": -1.350834131,
+      "aipa": -0.613372533,
+      "ifpa": -0.613372533,
+      "status": "Warning (Low Price)"
+    },
+    {
+      "tanggal": "2026-05",
+      "komoditas": "Tepung Terigu Curah",
+      "qipa": -0.356284914,
+      "aipa": -0.283445642,
+      "ifpa": -0.283445642,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-06",
+      "komoditas": "Bawang Merah",
+      "qipa": 0.112073567,
+      "aipa": 0.378731743,
+      "ifpa": 0.272068473,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-06",
+      "komoditas": "Bawang Putih",
+      "qipa": 0.212576058,
+      "aipa": -0.328004068,
+      "ifpa": -0.111772018,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-06",
+      "komoditas": "Beras Medium",
+      "qipa": 0.753485192,
+      "aipa": -1.694854848,
+      "ifpa": -0.715518832,
+      "status": "Warning (Low Price)"
+    },
+    {
+      "tanggal": "2026-06",
+      "komoditas": "Beras Premium",
+      "qipa": 0.972012399,
+      "aipa": -0.861561465,
+      "ifpa": -0.128131919,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-06",
+      "komoditas": "Cabai Merah Keriting",
+      "qipa": 0.893824211,
+      "aipa": 0.275232788,
+      "ifpa": 0.522669357,
+      "status": "Warning (High Price)"
+    },
+    {
+      "tanggal": "2026-06",
+      "komoditas": "Cabai Rawit Merah",
+      "qipa": 0.435520684,
+      "aipa": 0.430411454,
+      "ifpa": 0.432455146,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-06",
+      "komoditas": "Daging Ayam Ras",
+      "qipa": -2.158721714,
+      "aipa": 1.512428488,
+      "ifpa": 0.043968407,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-06",
+      "komoditas": "Daging Sapi Murni",
+      "qipa": -0.363327807,
+      "aipa": 1.194664747,
+      "ifpa": 0.571467725,
+      "status": "Warning (High Price)"
+    },
+    {
+      "tanggal": "2026-06",
+      "komoditas": "Gula Pasir Lokal/Curah",
+      "qipa": 0.572942029,
+      "aipa": -0.367547382,
+      "ifpa": -0.19754,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-06",
+      "komoditas": "Kedelai Biji Kering",
+      "qipa": 0.862168831,
+      "aipa": 0.65152973,
+      "ifpa": 0.735785371,
+      "status": "Warning (High Price)"
+    },
+    {
+      "tanggal": "2026-06",
+      "komoditas": "Minyak Goreng Kemasan",
+      "qipa": 0.564720262,
+      "aipa": 0.006438701,
+      "ifpa": -0.031910424,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-06",
+      "komoditas": "Telur Ayam Ras",
+      "qipa": -1.855504104,
+      "aipa": -0.800947773,
+      "ifpa": -1.222770306,
+      "status": "Alert (Low Price)"
+    },
+    {
+      "tanggal": "2026-06",
+      "komoditas": "Tepung Terigu Curah",
+      "qipa": 0.292119125,
+      "aipa": -0.240892385,
+      "ifpa": -0.283445642,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-07",
+      "komoditas": "Bawang Merah",
+      "qipa": -0.188553863,
+      "aipa": -0.536032179,
+      "ifpa": -0.397040853,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-07",
+      "komoditas": "Bawang Putih",
+      "qipa": 0.73019067,
+      "aipa": -0.065946433,
+      "ifpa": 0.252508408,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-07",
+      "komoditas": "Beras Medium",
+      "qipa": 0.224975261,
+      "aipa": -1.837076003,
+      "ifpa": -1.012255498,
+      "status": "Alert (Low Price)"
+    },
+    {
+      "tanggal": "2026-07",
+      "komoditas": "Beras Premium",
+      "qipa": 0.721822065,
+      "aipa": -0.999043277,
+      "ifpa": -0.31069714,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-07",
+      "komoditas": "Cabai Merah Keriting",
+      "qipa": 0.142741266,
+      "aipa": -0.005784491,
+      "ifpa": 0.053625812,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-07",
+      "komoditas": "Cabai Rawit Merah",
+      "qipa": -0.864792682,
+      "aipa": -0.465059447,
+      "ifpa": -0.624952741,
+      "status": "Warning (Low Price)"
+    },
+    {
+      "tanggal": "2026-07",
+      "komoditas": "Daging Ayam Ras",
+      "qipa": -1.018884221,
+      "aipa": 1.339286787,
+      "ifpa": 0.396018384,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-07",
+      "komoditas": "Daging Sapi Murni",
+      "qipa": 2.20499653,
+      "aipa": 1.788762662,
+      "ifpa": 1.955256209,
+      "status": "Alert (High Price)"
+    },
+    {
+      "tanggal": "2026-07",
+      "komoditas": "Gula Pasir Lokal/Curah",
+      "qipa": 0.323203443,
+      "aipa": -0.412931744,
+      "ifpa": -0.118477669,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-07",
+      "komoditas": "Kedelai Biji Kering",
+      "qipa": 0.815373454,
+      "aipa": 0.727286079,
+      "ifpa": 0.762521029,
+      "status": "Warning (High Price)"
+    },
+    {
+      "tanggal": "2026-07",
+      "komoditas": "Minyak Goreng Kemasan",
+      "qipa": 0.831372023,
+      "aipa": 0.04731248,
+      "ifpa": 0.360936297,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-07",
+      "komoditas": "Telur Ayam Ras",
+      "qipa": -2.785936636,
+      "aipa": -1.254390833,
+      "ifpa": -1.867009154,
+      "status": "Alert (Low Price)"
+    },
+    {
+      "tanggal": "2026-07",
+      "komoditas": "Tepung Terigu Curah",
+      "qipa": 0.321367139,
+      "aipa": -0.157448803,
+      "ifpa": 0.034077574,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-08",
+      "komoditas": "Bawang Merah",
+      "qipa": -0.167035982,
+      "aipa": -1.286131709,
+      "ifpa": -0.838493418,
+      "status": "Warning (Low Price)"
+    },
+    {
+      "tanggal": "2026-08",
+      "komoditas": "Bawang Putih",
+      "qipa": 0.782432631,
+      "aipa": -0.311752029,
+      "ifpa": 0.125921835,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-08",
+      "komoditas": "Beras Medium",
+      "qipa": -0.269446077,
+      "aipa": -2.043414729,
+      "ifpa": -1.333827268,
+      "status": "Alert (Low Price)"
+    },
+    {
+      "tanggal": "2026-08",
+      "komoditas": "Beras Premium",
+      "qipa": 0.212541825,
+      "aipa": -1.202809242,
+      "ifpa": -0.636668815,
+      "status": "Warning (Low Price)"
+    },
+    {
+      "tanggal": "2026-08",
+      "komoditas": "Cabai Merah Keriting",
+      "qipa": -0.434270639,
+      "aipa": 0.217685787,
+      "ifpa": -0.043096784,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-08",
+      "komoditas": "Cabai Rawit Merah",
+      "qipa": -0.891938089,
+      "aipa": 0.494063774,
+      "ifpa": -0.060336971,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-08",
+      "komoditas": "Daging Ayam Ras",
+      "qipa": 1.849542771,
+      "aipa": 4.08738136,
+      "ifpa": 3.192245925,
+      "status": "Alert (High Price)"
+    },
+    {
+      "tanggal": "2026-08",
+      "komoditas": "Daging Sapi Murni",
+      "qipa": 2.985970123,
+      "aipa": 2.135214881,
+      "ifpa": 2.475516978,
+      "status": "Alert (High Price)"
+    },
+    {
+      "tanggal": "2026-08",
+      "komoditas": "Gula Pasir Lokal/Curah",
+      "qipa": 0.407609881,
+      "aipa": -0.442249626,
+      "ifpa": -0.102305824,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-08",
+      "komoditas": "Kedelai Biji Kering",
+      "qipa": 1.041738073,
+      "aipa": 0.790860663,
+      "ifpa": 0.891211627,
+      "status": "Warning (High Price)"
+    },
+    {
+      "tanggal": "2026-08",
+      "komoditas": "Minyak Goreng Kemasan",
+      "qipa": 0.484650376,
+      "aipa": 0.013315739,
+      "ifpa": 0.201849594,
+      "status": "Normal"
+    },
+    {
+      "tanggal": "2026-08",
+      "komoditas": "Telur Ayam Ras",
+      "qipa": -1.45148386,
+      "aipa": -1.339206501,
+      "ifpa": -1.384117444,
+      "status": "Alert (Low Price)"
+    },
+    {
+      "tanggal": "2026-08",
+      "komoditas": "Tepung Terigu Curah",
+      "qipa": 0.262712125,
+      "aipa": -0.18206215,
+      "ifpa": -0.00415244,
+      "status": "Normal"
+    }
+  ]
+}

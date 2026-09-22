@@ -1181,6 +1181,109 @@ const fetchInflationDataCsv = async (): Promise<InflationData[]> =>
   }
   });
 
+// ---------------------------------------------------------------------------
+// Indeks Anomali Harga Pangan Nasional (QIPA - AIPA - IFPA)
+// Sumber: Badan Pangan Nasional (Bapanas) via layanan API apiindonesia.id.
+// Endpoint: https://use.apiindonesia.id/api/v1/harga-pangan/anomali
+// Respons: { success, data: [{ tanggal "YYYY-MM", komoditas, qipa, aipa, ifpa, status }], meta }
+// Status resmi Bapanas: "Normal", "Warning (High/Low Price)", "Alert (High/Low Price)".
+// Lapisan: 1) API live (paginasi limit=100, header x-api-key)
+//          2) snapshot lokal public/data/snapshots/anomali-harga-pangan.json
+//             (104 baris = 13 komoditas x 8 edisi Jan-Agu 2026, diambil 22 Sep 2026)
+// Tanda IFPA menunjukkan arah anomali: positif = tekanan harga tinggi, negatif = rendah.
+// ---------------------------------------------------------------------------
+
+export interface AnomaliHargaRow {
+  /** Edisi bulanan, format "YYYY-MM" */
+  tanggal: string;
+  komoditas: string;
+  /** QIPA - indeks kualitas anomali */
+  qipa: number;
+  /** AIPA - indeks akurasi anomali */
+  aipa: number;
+  /** IFPA - indikator gabungan utama (tanda = arah anomali harga) */
+  ifpa: number;
+  /** "Normal" | "Warning (High Price)" | "Warning (Low Price)" | "Alert (High Price)" | "Alert (Low Price)" */
+  status: string;
+}
+
+const APIINDONESIA_KEY =
+  (import.meta.env.VITE_APIINDONESIA_KEY as string | undefined) ||
+  "aip_live_nCXTtJCQcHSHTJ14526CseePHPlXjBsI";
+const APIINDONESIA_ANOMALI_URL =
+  "https://use.apiindonesia.id/api/v1/harga-pangan/anomali";
+
+const toAnomaliRow = (raw: any): AnomaliHargaRow | null => {
+  if (!raw || typeof raw !== "object") return null;
+  const tanggal = String(raw.tanggal ?? "").trim();
+  const komoditas = String(raw.komoditas ?? "").trim();
+  if (!tanggal || !komoditas) return null;
+  return {
+    tanggal,
+    komoditas,
+    qipa: Number(raw.qipa) || 0,
+    aipa: Number(raw.aipa) || 0,
+    ifpa: Number(raw.ifpa) || 0,
+    status: String(raw.status ?? "Normal").trim(),
+  };
+};
+
+// Lapis 1: API live apiindonesia.id (paginasi sampai habis, maks 10 halaman).
+const fetchAnomaliHargaFromApi = async (): Promise<AnomaliHargaRow[]> => {
+  const rows: AnomaliHargaRow[] = [];
+  let page = 1;
+  let totalPages = 1;
+  do {
+    const res = await fetchWithTimeout(
+      `${APIINDONESIA_ANOMALI_URL}?limit=100&page=${page}`,
+      { headers: { "x-api-key": APIINDONESIA_KEY } },
+      12000,
+    );
+    if (!res.ok) throw new Error(`API anomali HTTP ${res.status}`);
+    const json: any = await res.json();
+    if (!json?.success || !Array.isArray(json.data)) {
+      throw new Error("Struktur respons anomali tidak dikenal");
+    }
+    for (const item of json.data) {
+      const row = toAnomaliRow(item);
+      if (row) rows.push(row);
+    }
+    totalPages = Math.min(Number(json.meta?.total_pages) || 1, 10);
+    page += 1;
+  } while (page <= totalPages);
+  return rows;
+};
+
+// Lapis 2: snapshot lokal (hasil unduhan API yang sama).
+const fetchAnomaliHargaFromSnapshot = async (): Promise<AnomaliHargaRow[]> => {
+  const res = await fetchWithTimeout("/data/snapshots/anomali-harga-pangan.json");
+  if (!res.ok) throw new Error("Snapshot anomali tidak ditemukan");
+  const json: any = await res.json();
+  const rows = (Array.isArray(json?.data) ? json.data : [])
+    .map(toAnomaliRow)
+    .filter((r: AnomaliHargaRow | null): r is AnomaliHargaRow => r !== null);
+  return rows;
+};
+
+// Fetcher publik: API live -> snapshot lokal -> [] (UI menampilkan empty state).
+// Data edisi bulanan sehingga stale-while-revalidate harian sudah memadai.
+export const fetchAnomaliHargaPangan = (): Promise<AnomaliHargaRow[]> =>
+  withCache("cache_anomali_harga_pangan_v1", async () => {
+    try {
+      const rows = await fetchAnomaliHargaFromApi();
+      if (rows.length > 0) return rows;
+      throw new Error("Respons API anomali kosong");
+    } catch (e) {
+      console.warn("API anomali harga gagal, memakai snapshot lokal:", e);
+      try {
+        return await fetchAnomaliHargaFromSnapshot();
+      } catch (e2) {
+        console.error("Error fetchAnomaliHargaPangan:", e2);
+        return [];
+      }
+    }
+  });
+
 export interface LumbungPangan {
   kecamatan: string;
   lumbungUnit: number;
