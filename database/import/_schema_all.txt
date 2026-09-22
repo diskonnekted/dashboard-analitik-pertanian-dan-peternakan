@@ -1,0 +1,276 @@
+dataset_sumber	id	tinyint(3) unsigned
+dataset_sumber	folder	varchar(200)
+dataset_sumber	mode	varchar(10)
+dataset_sumber	tahun_min	smallint(6)
+dataset_sumber	tahun_max	smallint(6)
+dataset_sumber	row_count	int(11)
+dataset_sumber	file_csv	varchar(255)
+desa	id	smallint(5) unsigned
+desa	kecamatan_id	tinyint(3) unsigned
+desa	nama	varchar(80)
+desa	nama_norm	varchar(80)
+horti_luas	id	int(10) unsigned
+horti_luas	kecamatan_id	tinyint(3) unsigned
+horti_luas	kelompok	enum('sayuran','tanaman_hias','biofarmaka')
+horti_luas	komoditas	varchar(60)
+horti_luas	tahun	smallint(5) unsigned
+horti_luas	nilai	decimal(14,3)
+horti_luas	satuan	enum('ha','m2')
+horti_luas	sumber	enum('csv','ckan','manual')
+horti_luas_kabupaten	id	int(10) unsigned
+horti_luas_kabupaten	kelompok	enum('sayuran_buah_semusim','tanaman_hias','biofarmaka')
+horti_luas_kabupaten	komoditas	varchar(60)
+horti_luas_kabupaten	tahun	smallint(5) unsigned
+horti_luas_kabupaten	nilai	decimal(14,3)
+horti_luas_kabupaten	satuan	enum('ha','m2')
+horti_luas_kabupaten	sumber	enum('csv','ckan','manual')
+horti_produksi	id	int(10) unsigned
+horti_produksi	kecamatan_id	tinyint(3) unsigned
+horti_produksi	kelompok	enum('sayuran','buah_tahunan','tanaman_hias','biofarmaka')
+horti_produksi	komoditas	varchar(60)
+horti_produksi	tahun	smallint(5) unsigned
+horti_produksi	nilai	decimal(14,3)
+horti_produksi	satuan	enum('ton','tangkai')
+horti_produksi	sumber	enum('csv','ckan','manual')
+horti_produksi_kabupaten	id	int(10) unsigned
+horti_produksi_kabupaten	kelompok	enum('sayuran_buah_semusim','buah_sayuran_tahunan','tanaman_hias','biofarmaka')
+horti_produksi_kabupaten	komoditas	varchar(60)
+horti_produksi_kabupaten	tahun	smallint(5) unsigned
+horti_produksi_kabupaten	nilai	decimal(14,3)
+horti_produksi_kabupaten	satuan	enum('ton','tangkai')
+horti_produksi_kabupaten	sumber	enum('csv','ckan','manual')
+ikan_benih	id	int(10) unsigned
+ikan_benih	kecamatan_id	tinyint(3) unsigned
+ikan_benih	arah	enum('sendiri','lain_daerah')
+ikan_benih	tahun	smallint(5) unsigned
+ikan_benih	jumlah_ekor	decimal(16,2)
+ikan_benih	sumber	enum('csv','ckan','manual')
+ikan_budidaya	id	int(10) unsigned
+ikan_budidaya	kecamatan_id	tinyint(3) unsigned
+ikan_budidaya	jenis_budidaya	varchar(60)
+ikan_budidaya	tahun	smallint(5) unsigned
+ikan_budidaya	produksi_kg	decimal(14,3)
+ikan_budidaya	nilai_ribu_rp	decimal(16,2)
+ikan_budidaya	sumber	enum('csv','ckan','manual')
+ikan_kolam	id	int(10) unsigned
+ikan_kolam	kecamatan_id	tinyint(3) unsigned
+ikan_kolam	tahun	smallint(5) unsigned
+ikan_kolam	luas_ha	decimal(12,3)
+ikan_kolam	produksi_kg	decimal(14,3)
+ikan_kolam	luas_tambahan	decimal(12,3)
+ikan_kolam	sumber	enum('csv','ckan','manual')
+ikan_minapadi	id	int(10) unsigned
+ikan_minapadi	kecamatan_id	tinyint(3) unsigned
+ikan_minapadi	tahun	smallint(5) unsigned
+ikan_minapadi	produksi_kg	decimal(14,3)
+ikan_minapadi	dipelihara_sendiri_kg	decimal(14,3)
+ikan_minapadi	dijual_lain_daerah_kg	decimal(14,3)
+ikan_minapadi	produksi_tambahan_kg	decimal(14,3)
+ikan_minapadi	bbi_produksi_kg	decimal(14,3)
+ikan_minapadi	bbi_dipelihara_sendiri	decimal(14,3)
+ikan_minapadi	sumber	enum('csv','ckan','manual')
+ikan_obyek_penangkapan	id	int(10) unsigned
+ikan_obyek_penangkapan	kecamatan_id	tinyint(3) unsigned
+ikan_obyek_penangkapan	obyek	varchar(40)
+ikan_obyek_penangkapan	arah	enum('total','sendiri','lain_daerah')
+ikan_obyek_penangkapan	tahun	smallint(5) unsigned
+ikan_obyek_penangkapan	produksi_kg	decimal(14,3)
+ikan_obyek_penangkapan	sumber	enum('csv','ckan','manual')
+ikan_pemeliharaan	id	int(10) unsigned
+ikan_pemeliharaan	kecamatan_id	tinyint(3) unsigned
+ikan_pemeliharaan	tempat	varchar(60)
+ikan_pemeliharaan	tahun	smallint(5) unsigned
+ikan_pemeliharaan	luas_ha	decimal(12,3)
+ikan_pemeliharaan	produksi_kg	decimal(14,3)
+ikan_pemeliharaan	sumber	enum('csv','ckan','manual')
+ikan_tangkap	id	int(10) unsigned
+ikan_tangkap	kecamatan_id	tinyint(3) unsigned
+ikan_tangkap	jenis_alat	varchar(60)
+ikan_tangkap	tahun	smallint(5) unsigned
+ikan_tangkap	produksi_kg	decimal(14,3)
+ikan_tangkap	nilai_ribu_rp	decimal(16,2)
+ikan_tangkap	sumber	enum('csv','ckan','manual')
+ikan_tangkap_perairan_umum	id	int(10) unsigned
+ikan_tangkap_perairan_umum	kecamatan_id	tinyint(3) unsigned
+ikan_tangkap_perairan_umum	tahun	smallint(5) unsigned
+ikan_tangkap_perairan_umum	produksi_kg	decimal(14,3)
+ikan_tangkap_perairan_umum	nilai_ribu_rp	decimal(16,2)
+ikan_tangkap_perairan_umum	sumber	enum('csv','ckan','manual')
+ikan_waduk	id	int(10) unsigned
+ikan_waduk	kecamatan_id	tinyint(3) unsigned
+ikan_waduk	tahun	smallint(5) unsigned
+ikan_waduk	luas_ha	decimal(12,3)
+ikan_waduk	produksi_kg	decimal(14,3)
+ikan_waduk	sumber	enum('csv','ckan','manual')
+inflasi	id	int(10) unsigned
+inflasi	wilayah	varchar(40)
+inflasi	tahun	smallint(5) unsigned
+inflasi	inflasi_pct	decimal(6,2)
+inflasi	sumber	enum('csv','ckan','manual')
+kecamatan	id	tinyint(3) unsigned
+kecamatan	nama	varchar(50)
+kecamatan	nama_norm	varchar(50)
+kecamatan	varian	longtext
+kelompok_tani	id	int(10) unsigned
+kelompok_tani	kecamatan_id	tinyint(3) unsigned
+kelompok_tani	desa	varchar(80)
+kelompok_tani	desa_norm	varchar(80)
+kelompok_tani	tahun	smallint(5) unsigned
+kelompok_tani	kelompok_tani	int(11)
+kelompok_tani	anggota_tani	int(11)
+kelompok_tani	kelompok_perikanan	int(11)
+kelompok_tani	anggota_perikanan	int(11)
+kelompok_tani	gapoktan	int(11)
+kelompok_tani	anggota_gapoktan	int(11)
+kelompok_tani	sumber	enum('json_fallback','ckan','manual')
+kelompok_tani_hutan	id	int(10) unsigned
+kelompok_tani_hutan	kecamatan_id	tinyint(3) unsigned
+kelompok_tani_hutan	desa	varchar(80)
+kelompok_tani_hutan	desa_norm	varchar(80)
+kelompok_tani_hutan	tahun	smallint(5) unsigned
+kelompok_tani_hutan	kth	int(11)
+kelompok_tani_hutan	kth_pemula	int(11)
+kelompok_tani_hutan	kth_madya	int(11)
+kelompok_tani_hutan	kth_utama	int(11)
+kelompok_tani_hutan	sumber	enum('json_fallback','manual')
+kth_detail	id	int(10) unsigned
+kth_detail	kelompok_tani_hutan_id	int(10) unsigned
+kth_detail	nama_kelompok	varchar(120)
+kth_detail	no_register	varchar(80)
+kth_detail	tanggal_berdiri	varchar(20)
+kth_detail	kelas	varchar(20)
+kth_detail	alamat	varchar(255)
+kth_detail	ketua	varchar(100)
+lahan_desa	id	int(10) unsigned
+lahan_desa	kecamatan_id	tinyint(3) unsigned
+lahan_desa	desa	varchar(80)
+lahan_desa	desa_norm	varchar(80)
+lahan_desa	tahun	smallint(5) unsigned
+lahan_desa	sawah_ha	decimal(10,3)
+lahan_desa	bukan_sawah_ha	decimal(10,3)
+lahan_desa	total_ha	decimal(10,3)
+lahan_desa	sumber_json	varchar(60)
+lahan_desa	confidence	varchar(20)
+lahan_desa	sumber	enum('json_fallback','ckan','manual')
+lahan_penggunaan	id	int(10) unsigned
+lahan_penggunaan	kategori	varchar(120)
+lahan_penggunaan	tahun	smallint(5) unsigned
+lahan_penggunaan	luas_ha	decimal(12,3)
+lahan_penggunaan	sumber	enum('csv','ckan','manual')
+lumbung_pangan	id	int(10) unsigned
+lumbung_pangan	kecamatan_id	tinyint(3) unsigned
+lumbung_pangan	tahun	smallint(5) unsigned
+lumbung_pangan	lumbung_unit	int(11)
+lumbung_pangan	lumbung_kapasitas_ton	decimal(10,3)
+lumbung_pangan	gudang_luas_m2	decimal(10,3)
+lumbung_pangan	gudang_kapasitas_ton_bulan	decimal(10,3)
+lumbung_pangan	sumber	enum('csv','ckan','manual')
+padi_produksi	id	int(10) unsigned
+padi_produksi	kecamatan_id	tinyint(3) unsigned
+padi_produksi	tahun	smallint(5) unsigned
+padi_produksi	jenis	enum('sawah','ladang')
+padi_produksi	luas_panen_ha	decimal(10,3)
+padi_produksi	produksi_ton	decimal(12,3)
+padi_produksi	rata_ku_ha	decimal(8,3)
+padi_produksi	sumber	enum('csv','ckan','manual')
+palawija_produksi	id	int(10) unsigned
+palawija_produksi	kecamatan_id	tinyint(3) unsigned
+palawija_produksi	tahun	smallint(5) unsigned
+palawija_produksi	komoditas	varchar(30)
+palawija_produksi	luas_panen_ha	decimal(10,3)
+palawija_produksi	produksi_ton	decimal(12,3)
+palawija_produksi	rata_ku_ha	decimal(8,3)
+palawija_produksi	sumber	enum('csv','ckan','manual')
+pasar	id	int(10) unsigned
+pasar	jenis	varchar(40)
+pasar	tahun	smallint(5) unsigned
+pasar	jumlah	smallint(6)
+pasar	sumber	enum('csv','ckan','manual')
+perkebunan_areal	id	int(10) unsigned
+perkebunan_areal	kecamatan_id	tinyint(3) unsigned
+perkebunan_areal	tanaman	varchar(40)
+perkebunan_areal	tahun	smallint(5) unsigned
+perkebunan_areal	luas_ha	decimal(12,3)
+perkebunan_areal	sumber	enum('csv','ckan','manual')
+perkebunan_produksi	id	int(10) unsigned
+perkebunan_produksi	kecamatan_id	tinyint(3) unsigned
+perkebunan_produksi	tanaman	varchar(40)
+perkebunan_produksi	tahun	smallint(5) unsigned
+perkebunan_produksi	produksi_ton	decimal(12,3)
+perkebunan_produksi	sumber	enum('csv','ckan','manual')
+perkebunan_produksi_kabupaten	id	int(10) unsigned
+perkebunan_produksi_kabupaten	tanaman	varchar(40)
+perkebunan_produksi_kabupaten	tahun	smallint(5) unsigned
+perkebunan_produksi_kabupaten	produksi_ton	decimal(12,3)
+perkebunan_produksi_kabupaten	sumber	enum('csv','ckan','manual')
+renstra_target	id	int(10) unsigned
+renstra_target	indikator	varchar(120)
+renstra_target	satuan	varchar(30)
+renstra_target	target	decimal(16,2)
+renstra_target	tahun_target	smallint(5) unsigned
+renstra_target	sumber_dokumen	varchar(120)
+renstra_target	sumber	enum('manual')
+st2023_desa	id	int(10) unsigned
+st2023_desa	kecamatan_id	tinyint(3) unsigned
+st2023_desa	desa	varchar(80)
+st2023_desa	desa_norm	varchar(80)
+st2023_desa	rumah_tangga_petani	int(11)
+st2023_desa	petani	int(11)
+st2023_desa	rt_anggota_kelompok	int(11)
+st2023_desa	rt_bukan_anggota_kelompok	int(11)
+st2023_desa	rtup	int(11)
+st2023_desa	rt_perikanan	int(11)
+st2023_desa	rt_perikanan_budidaya	int(11)
+st2023_desa	rt_perikanan_tangkap	int(11)
+st2023_desa	ternak	longtext
+st2023_desa	sumber_teks	varchar(200)
+st2023_desa	sumber	enum('json_fallback','manual')
+sync_log	id	bigint(20) unsigned
+sync_log	dataset	varchar(80)
+sync_log	sumber	varchar(40)
+sync_log	aksi	varchar(20)
+sync_log	baris	int(11)
+sync_log	status	varchar(10)
+sync_log	pesan	text
+sync_log	created_at	datetime
+ternak_daging	id	int(10) unsigned
+ternak_daging	kecamatan_id	tinyint(3) unsigned
+ternak_daging	kelompok	enum('ternak','unggas')
+ternak_daging	jenis	varchar(40)
+ternak_daging	tahun	smallint(5) unsigned
+ternak_daging	produksi_kg	decimal(14,3)
+ternak_daging	sumber	enum('csv','ckan','manual')
+ternak_flow	id	int(10) unsigned
+ternak_flow	kecamatan_id	tinyint(3) unsigned
+ternak_flow	arah	enum('pemasukan','pengeluaran')
+ternak_flow	jenis	varchar(40)
+ternak_flow	tahun	smallint(5) unsigned
+ternak_flow	jumlah_ekor	decimal(14,3)
+ternak_flow	sumber	enum('csv','ckan','manual')
+ternak_pemotongan	id	int(10) unsigned
+ternak_pemotongan	kecamatan_id	tinyint(3) unsigned
+ternak_pemotongan	lokasi	enum('rph_pemerintah','luar_rph')
+ternak_pemotongan	jenis	varchar(40)
+ternak_pemotongan	tahun	smallint(5) unsigned
+ternak_pemotongan	jumlah_ekor	decimal(14,3)
+ternak_pemotongan	sumber	enum('csv','ckan','manual')
+ternak_populasi	id	int(10) unsigned
+ternak_populasi	kecamatan_id	tinyint(3) unsigned
+ternak_populasi	kelompok	enum('besar','kecil','unggas')
+ternak_populasi	jenis	varchar(40)
+ternak_populasi	tahun	smallint(5) unsigned
+ternak_populasi	jumlah_ekor	decimal(14,3)
+ternak_populasi	sumber	enum('csv','ckan','manual')
+ternak_susu_kulit	id	int(10) unsigned
+ternak_susu_kulit	kecamatan_id	tinyint(3) unsigned
+ternak_susu_kulit	jenis	varchar(60)
+ternak_susu_kulit	tahun	smallint(5) unsigned
+ternak_susu_kulit	nilai	decimal(14,3)
+ternak_susu_kulit	catatan	varchar(120)
+ternak_susu_kulit	sumber	enum('csv','ckan','manual')
+ternak_telur	id	int(10) unsigned
+ternak_telur	kecamatan_id	tinyint(3) unsigned
+ternak_telur	jenis	varchar(40)
+ternak_telur	tahun	smallint(5) unsigned
+ternak_telur	produksi_kg	decimal(14,3)
+ternak_telur	sumber	enum('csv','ckan','manual')

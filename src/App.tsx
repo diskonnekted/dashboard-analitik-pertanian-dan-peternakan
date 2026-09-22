@@ -26,6 +26,7 @@ const GovernmentAssistancePage = lazy(() => import("@/pages/government-assistanc
 const ManualPage = lazy(() => import("@/pages/manual"));
 const ComingSoonPage = lazy(() => import("@/pages/coming-soon"));
 const DesaDetailPage = lazy(() => import("@/pages/desa/[kec]-[nama]"));
+const PeternakanSusuKulitPage = lazy(() => import("@/pages/peternakan-susu-kulit"));
 
 function PageLoading() {
   return <LoadingSpinner height="min-h-[60vh]" label="Memuat halaman..." />;
@@ -44,6 +45,7 @@ function App() {
           <Route element={<SupplyChainPage />} path="/supply-chain" />
           <Route element={<LivestockPage />} path="/livestock" />
           <Route element={<LivestockFlowPage />} path="/livestock-flow" />
+<Route element={<PeternakanSusuKulitPage />} path="/peternakan/susu-kulit" />
           <Route element={<FisheriesPage />} path="/fisheries" />
           <Route element={<EconomicValuePage />} path="/economic-value" />
           <Route element={<PlantationPage />} path="/plantation" />

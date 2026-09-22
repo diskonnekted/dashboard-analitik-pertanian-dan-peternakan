@@ -1,0 +1,5384 @@
+[
+ {
+  "kecamatan": "Banjarmangu",
+  "desas": [
+   {
+    "name": "JENGGAWUR",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 728293,
+     "bukan_sawah": 26064,
+     "padang_sementara": 10000,
+     "padang_permanen": 2179,
+     "fallow": 0,
+     "tanaman_tahunan": 127671,
+     "kandang_ternak": 2764,
+     "kehutanan": 31170,
+     "perikanan": 3085,
+     "non_pertanian": 4789,
+     "jumlah": 936015
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "BANJARKULON",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 704598,
+     "bukan_sawah": 16736,
+     "padang_sementara": 0,
+     "padang_permanen": 0,
+     "fallow": 1550,
+     "tanaman_tahunan": 237418,
+     "kandang_ternak": 1771,
+     "kehutanan": 38846,
+     "perikanan": 5707,
+     "non_pertanian": 136,
+     "jumlah": 1006762
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "BANJARMANGU",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 400240,
+     "bukan_sawah": 77802,
+     "padang_sementara": 20,
+     "padang_permanen": 303,
+     "fallow": 13941,
+     "tanaman_tahunan": 479386,
+     "kandang_ternak": 7992,
+     "kehutanan": 90708,
+     "perikanan": 7688,
+     "non_pertanian": 9478,
+     "jumlah": 1087558
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "REJASARI",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 180274,
+     "bukan_sawah": 35088,
+     "padang_sementara": 3142,
+     "padang_permanen": 21055,
+     "fallow": 13848,
+     "tanaman_tahunan": 461057,
+     "kandang_ternak": 12855,
+     "kehutanan": 52625,
+     "perikanan": 1945,
+     "non_pertanian": 233,
+     "jumlah": 782122
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KESENET",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 61323,
+     "bukan_sawah": 7497,
+     "padang_sementara": 4170,
+     "padang_permanen": 0,
+     "fallow": 14931,
+     "tanaman_tahunan": 1378482,
+     "kandang_ternak": 5996,
+     "kehutanan": 66400,
+     "perikanan": 4650,
+     "non_pertanian": 8,
+     "jumlah": 1543457
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "GRIPIT",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 2500,
+     "bukan_sawah": 2687,
+     "padang_sementara": 3,
+     "padang_permanen": 695,
+     "fallow": 0,
+     "tanaman_tahunan": 324349,
+     "kandang_ternak": 62706,
+     "kehutanan": 20159,
+     "perikanan": 3223,
+     "non_pertanian": 40,
+     "jumlah": 416362
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "SIGEBLOG",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 21469,
+     "bukan_sawah": 14660,
+     "padang_sementara": 0,
+     "padang_permanen": 14849,
+     "fallow": 18589,
+     "tanaman_tahunan": 3087886,
+     "kandang_ternak": 41208,
+     "kehutanan": 84603,
+     "perikanan": 14255,
+     "non_pertanian": 562,
+     "jumlah": 3298081
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PASEH",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 128011,
+     "bukan_sawah": 23682,
+     "padang_sementara": 297,
+     "padang_permanen": 70,
+     "fallow": 7136,
+     "tanaman_tahunan": 1385866,
+     "kandang_ternak": 17803,
+     "kehutanan": 110284,
+     "perikanan": 12736,
+     "non_pertanian": 727,
+     "jumlah": 1686612
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "SIPEDANG",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 153857,
+     "bukan_sawah": 22958,
+     "padang_sementara": 10957,
+     "padang_permanen": 2314,
+     "fallow": 11350,
+     "tanaman_tahunan": 2469759,
+     "kandang_ternak": 13523,
+     "kehutanan": 68385,
+     "perikanan": 11751,
+     "non_pertanian": 8726,
+     "jumlah": 2773580
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PEKANDANGAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 13000,
+     "bukan_sawah": 4141,
+     "padang_sementara": 0,
+     "padang_permanen": 0,
+     "fallow": 3823,
+     "tanaman_tahunan": 1629773,
+     "kandang_ternak": 5595,
+     "kehutanan": 88158,
+     "perikanan": 8848,
+     "non_pertanian": 1557,
+     "jumlah": 1754895
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KENDAGA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 70161,
+     "bukan_sawah": 2606,
+     "padang_sementara": 647,
+     "padang_permanen": 20,
+     "fallow": 4877,
+     "tanaman_tahunan": 1764462,
+     "kandang_ternak": 4354,
+     "kehutanan": 23755,
+     "perikanan": 6655,
+     "non_pertanian": 70,
+     "jumlah": 1877607
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KALILUNJAR",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 30982,
+     "bukan_sawah": 0,
+     "padang_sementara": 1591,
+     "padang_permanen": 0,
+     "fallow": 20341,
+     "tanaman_tahunan": 1612949,
+     "kandang_ternak": 17342,
+     "kehutanan": 34243,
+     "perikanan": 3398,
+     "non_pertanian": 11,
+     "jumlah": 1720857
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "SIJERUK",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 150758,
+     "bukan_sawah": 41823,
+     "padang_sementara": 777,
+     "padang_permanen": 0,
+     "fallow": 750,
+     "tanaman_tahunan": 790776,
+     "kandang_ternak": 3830,
+     "kehutanan": 60932,
+     "perikanan": 2302,
+     "non_pertanian": 127,
+     "jumlah": 1052075
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PRENDENGAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 426265,
+     "bukan_sawah": 9005,
+     "padang_sementara": 750,
+     "padang_permanen": 60,
+     "fallow": 11910,
+     "tanaman_tahunan": 1434830,
+     "kandang_ternak": 3122,
+     "kehutanan": 36358,
+     "perikanan": 1486,
+     "non_pertanian": 177,
+     "jumlah": 1923963
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "MAJATENGAH",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 53734,
+     "bukan_sawah": 800,
+     "padang_sementara": 0,
+     "padang_permanen": 2485,
+     "fallow": 1563,
+     "tanaman_tahunan": 1332524,
+     "kandang_ternak": 25644,
+     "kehutanan": 19979,
+     "perikanan": 1487,
+     "non_pertanian": 518,
+     "jumlah": 1438734
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "BEJI",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 120421,
+     "bukan_sawah": 670,
+     "padang_sementara": 380,
+     "padang_permanen": 920,
+     "fallow": 0,
+     "tanaman_tahunan": 1771396,
+     "kandang_ternak": 14905,
+     "kehutanan": 29307,
+     "perikanan": 2174,
+     "non_pertanian": 1345,
+     "jumlah": 1941518
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "SIJENGGUNG",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 47491,
+     "bukan_sawah": 3163,
+     "padang_sementara": 0,
+     "padang_permanen": 2100,
+     "fallow": 15560,
+     "tanaman_tahunan": 1554535,
+     "kandang_ternak": 6576,
+     "kehutanan": 14180,
+     "perikanan": 5088,
+     "non_pertanian": 15,
+     "jumlah": 1648708
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   }
+  ]
+ },
+ {
+  "kecamatan": "Banjarnegara",
+  "desas": [
+   {
+    "name": "ARGASOKA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 345916,
+     "bukan_sawah": 77071,
+     "padang_sementara": 5217,
+     "padang_permanen": 1260,
+     "fallow": 11736,
+     "tanaman_tahunan": 590860,
+     "kandang_ternak": 5308,
+     "kehutanan": 231231,
+     "perikanan": 25923,
+     "non_pertanian": 94,
+     "jumlah": 1294616
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "AMPELSARI",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 140188,
+     "bukan_sawah": 132325,
+     "padang_sementara": 1980,
+     "padang_permanen": 14865,
+     "fallow": 6040,
+     "tanaman_tahunan": 522768,
+     "kandang_ternak": 3675,
+     "kehutanan": 157577,
+     "perikanan": 22978,
+     "non_pertanian": 0,
+     "jumlah": 1002396
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "TLAGAWERA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 151329,
+     "bukan_sawah": 58891,
+     "padang_sementara": 2730,
+     "padang_permanen": 0,
+     "fallow": 12710,
+     "tanaman_tahunan": 1477284,
+     "kandang_ternak": 2047,
+     "kehutanan": 229265,
+     "perikanan": 16022,
+     "non_pertanian": 6037,
+     "jumlah": 1956315
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "CENDANA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 34086,
+     "bukan_sawah": 58395,
+     "padang_sementara": 6250,
+     "padang_permanen": 100,
+     "fallow": 34139,
+     "tanaman_tahunan": 1593133,
+     "kandang_ternak": 8491,
+     "kehutanan": 187510,
+     "perikanan": 13656,
+     "non_pertanian": 500,
+     "jumlah": 1936260
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "SOKAYASA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 229041,
+     "bukan_sawah": 74855,
+     "padang_sementara": 3738,
+     "padang_permanen": 0,
+     "fallow": 10661,
+     "tanaman_tahunan": 390576,
+     "kandang_ternak": 8579.5,
+     "kehutanan": 61465,
+     "perikanan": 25956,
+     "non_pertanian": 5400,
+     "jumlah": 810271.5
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "SOKANANDI",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 274413,
+     "bukan_sawah": 40736,
+     "padang_sementara": 437,
+     "padang_permanen": 344,
+     "fallow": 4300,
+     "tanaman_tahunan": 143846,
+     "kandang_ternak": 3305,
+     "kehutanan": 64949,
+     "perikanan": 12108,
+     "non_pertanian": 0,
+     "jumlah": 544438
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PARAKANCANGGAH",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 49983,
+     "bukan_sawah": 46249,
+     "padang_sementara": 3093,
+     "padang_permanen": 5294,
+     "fallow": 300,
+     "tanaman_tahunan": 110713,
+     "kandang_ternak": 2295,
+     "kehutanan": 40647,
+     "perikanan": 12406,
+     "non_pertanian": 2613,
+     "jumlah": 273593
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "SEMARANG",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 60452,
+     "bukan_sawah": 22304,
+     "padang_sementara": 0,
+     "padang_permanen": 850,
+     "fallow": 1300,
+     "tanaman_tahunan": 51469,
+     "kandang_ternak": 3251,
+     "kehutanan": 32047,
+     "perikanan": 24424,
+     "non_pertanian": 200,
+     "jumlah": 196297
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KRANDEGAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 8264,
+     "bukan_sawah": 6407,
+     "padang_sementara": 0,
+     "padang_permanen": 0,
+     "fallow": 2178,
+     "tanaman_tahunan": 10591,
+     "kandang_ternak": 1418,
+     "kehutanan": 6259,
+     "perikanan": 10179,
+     "non_pertanian": 829,
+     "jumlah": 46125
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KUTABANJARNEGARA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 16350,
+     "bukan_sawah": 20426,
+     "padang_sementara": 0,
+     "padang_permanen": 0,
+     "fallow": 0,
+     "tanaman_tahunan": 17555,
+     "kandang_ternak": 646,
+     "kehutanan": 12205,
+     "perikanan": 3565,
+     "non_pertanian": 0,
+     "jumlah": 70747
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KARANGTENGAH",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 276520,
+     "bukan_sawah": 47286,
+     "padang_sementara": 7835,
+     "padang_permanen": 3000,
+     "fallow": 200,
+     "tanaman_tahunan": 61391,
+     "kandang_ternak": 2773.75,
+     "kehutanan": 54339,
+     "perikanan": 19003,
+     "non_pertanian": 5838,
+     "jumlah": 478185.75
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "WANGON",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 258177,
+     "bukan_sawah": 4840,
+     "padang_sementara": 636,
+     "padang_permanen": 0,
+     "fallow": 17588,
+     "tanaman_tahunan": 57009,
+     "kandang_ternak": 1134,
+     "kehutanan": 30174,
+     "perikanan": 9751,
+     "non_pertanian": 9906,
+     "jumlah": 389215
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "SEMAMPIR",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 344680,
+     "bukan_sawah": 7892,
+     "padang_sementara": 0,
+     "padang_permanen": 0,
+     "fallow": 21811,
+     "tanaman_tahunan": 63321,
+     "kandang_ternak": 3070,
+     "kehutanan": 29600,
+     "perikanan": 20008,
+     "non_pertanian": 1781,
+     "jumlah": 492163
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   }
+  ]
+ },
+ {
+  "kecamatan": "Batur",
+  "desas": [
+   {
+    "name": "BATUR",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 10198,
+     "bukan_sawah": 7372235,
+     "padang_sementara": 20040,
+     "padang_permanen": 1300,
+     "fallow": 57694,
+     "tanaman_tahunan": 15267,
+     "kandang_ternak": 12664,
+     "kehutanan": 51564,
+     "perikanan": 295,
+     "non_pertanian": 3388,
+     "jumlah": 7544645
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "SUMBEREJO",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 0,
+     "bukan_sawah": 4880181,
+     "padang_sementara": 0,
+     "padang_permanen": 0,
+     "fallow": 11640,
+     "tanaman_tahunan": 1020,
+     "kandang_ternak": 1903,
+     "kehutanan": 259,
+     "perikanan": 0,
+     "non_pertanian": 113,
+     "jumlah": 4895116
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PESURENAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 300,
+     "bukan_sawah": 1236097,
+     "padang_sementara": 4430,
+     "padang_permanen": 0,
+     "fallow": 0,
+     "tanaman_tahunan": 3950,
+     "kandang_ternak": 381,
+     "kehutanan": 731,
+     "perikanan": 0,
+     "non_pertanian": 0,
+     "jumlah": 1245889
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "BAKAL",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 17700,
+     "bukan_sawah": 2529619,
+     "padang_sementara": 24055,
+     "padang_permanen": 21670,
+     "fallow": 13015,
+     "tanaman_tahunan": 36911,
+     "kandang_ternak": 721,
+     "kehutanan": 2450,
+     "perikanan": 0,
+     "non_pertanian": 675,
+     "jumlah": 2646816
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "DIENG KULON",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 0,
+     "bukan_sawah": 1741591,
+     "padang_sementara": 10250,
+     "padang_permanen": 125,
+     "fallow": 29750,
+     "tanaman_tahunan": 1000,
+     "kandang_ternak": 857,
+     "kehutanan": 0,
+     "perikanan": 250,
+     "non_pertanian": 13349,
+     "jumlah": 1797172
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KARANGTENGAH",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 3250,
+     "bukan_sawah": 2917171,
+     "padang_sementara": 2000,
+     "padang_permanen": 0,
+     "fallow": 18375,
+     "tanaman_tahunan": 2700,
+     "kandang_ternak": 496,
+     "kehutanan": 120,
+     "perikanan": 0,
+     "non_pertanian": 108,
+     "jumlah": 2944220
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KEPAKISAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 0,
+     "bukan_sawah": 2048667,
+     "padang_sementara": 960,
+     "padang_permanen": 0,
+     "fallow": 64310,
+     "tanaman_tahunan": 27320,
+     "kandang_ternak": 444,
+     "kehutanan": 10,
+     "perikanan": 0,
+     "non_pertanian": 80.8,
+     "jumlah": 2141791.8
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PEKASIRAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 14890,
+     "bukan_sawah": 3037196,
+     "padang_sementara": 0,
+     "padang_permanen": 0,
+     "fallow": 0,
+     "tanaman_tahunan": 85,
+     "kandang_ternak": 2042.75,
+     "kehutanan": 4,
+     "perikanan": 0,
+     "non_pertanian": 150,
+     "jumlah": 3054367.75
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   }
+  ]
+ },
+ {
+  "kecamatan": "Bawang",
+  "desas": [
+   {
+    "name": "WANADRI",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 28630,
+     "bukan_sawah": 3415118,
+     "padang_sementara": 33704,
+     "padang_permanen": 53228,
+     "fallow": 35465,
+     "tanaman_tahunan": 298056,
+     "kandang_ternak": 9740,
+     "kehutanan": 197992,
+     "perikanan": 1840,
+     "non_pertanian": 1096,
+     "jumlah": 4074869
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KEBONDALEM",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 7000,
+     "bukan_sawah": 2698326,
+     "padang_sementara": 86448,
+     "padang_permanen": 95620,
+     "fallow": 47640,
+     "tanaman_tahunan": 645483,
+     "kandang_ternak": 18472,
+     "kehutanan": 477506,
+     "perikanan": 2713,
+     "non_pertanian": 2400,
+     "jumlah": 4081608
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "MAJALENGKA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 267070,
+     "bukan_sawah": 899575,
+     "padang_sementara": 83780,
+     "padang_permanen": 55619,
+     "fallow": 33614,
+     "tanaman_tahunan": 899822,
+     "kandang_ternak": 9574,
+     "kehutanan": 667601,
+     "perikanan": 25883,
+     "non_pertanian": 2982,
+     "jumlah": 2945520
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "WIRAMASTRA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 11438,
+     "bukan_sawah": 1228963,
+     "padang_sementara": 5887,
+     "padang_permanen": 8249,
+     "fallow": 31150,
+     "tanaman_tahunan": 434179,
+     "kandang_ternak": 7921,
+     "kehutanan": 89045,
+     "perikanan": 3247,
+     "non_pertanian": 45,
+     "jumlah": 1820124
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "WINONG",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 387789,
+     "bukan_sawah": 630650,
+     "padang_sementara": 7562,
+     "padang_permanen": 8296,
+     "fallow": 12377,
+     "tanaman_tahunan": 202920,
+     "kandang_ternak": 5835,
+     "kehutanan": 102818,
+     "perikanan": 20071,
+     "non_pertanian": 20949,
+     "jumlah": 1399267
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KUTAYASA",
+    "typoFixed": true,
+    "m2": {
+     "sawah": 600821,
+     "bukan_sawah": 156645,
+     "padang_sementara": 16381,
+     "padang_permanen": 8301,
+     "fallow": 14260,
+     "tanaman_tahunan": 444763,
+     "kandang_ternak": 7581,
+     "kehutanan": 54065,
+     "perikanan": 27531,
+     "non_pertanian": 2946,
+     "jumlah": 1333294
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "DEPOK",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 179016,
+     "bukan_sawah": 395491,
+     "padang_sementara": 14092,
+     "padang_permanen": 7417,
+     "fallow": 45119,
+     "tanaman_tahunan": 200714,
+     "kandang_ternak": 5888,
+     "kehutanan": 119143,
+     "perikanan": 12377,
+     "non_pertanian": 3160,
+     "jumlah": 982417
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "WATUURIP",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 213017,
+     "bukan_sawah": 415600,
+     "padang_sementara": 7633,
+     "padang_permanen": 11004,
+     "fallow": 3040,
+     "tanaman_tahunan": 252325,
+     "kandang_ternak": 5829,
+     "kehutanan": 79181,
+     "perikanan": 5199,
+     "non_pertanian": 146,
+     "jumlah": 992974
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "MASARAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 683248,
+     "bukan_sawah": 222830,
+     "padang_sementara": 4974,
+     "padang_permanen": 11390,
+     "fallow": 3523,
+     "tanaman_tahunan": 446870,
+     "kandang_ternak": 15691,
+     "kehutanan": 221707,
+     "perikanan": 7774,
+     "non_pertanian": 390,
+     "jumlah": 1618397
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "SERANG",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 218518,
+     "bukan_sawah": 181883,
+     "padang_sementara": 4135,
+     "padang_permanen": 2042,
+     "fallow": 4825,
+     "tanaman_tahunan": 197272,
+     "kandang_ternak": 7511,
+     "kehutanan": 58360,
+     "perikanan": 9619,
+     "non_pertanian": 1281,
+     "jumlah": 685446
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "MANTRIANOM",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 416263,
+     "bukan_sawah": 58585,
+     "padang_sementara": 35875,
+     "padang_permanen": 7056,
+     "fallow": 5575,
+     "tanaman_tahunan": 288300,
+     "kandang_ternak": 4875,
+     "kehutanan": 71395,
+     "perikanan": 12813,
+     "non_pertanian": 3152,
+     "jumlah": 903889
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "BINORONG",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 287799,
+     "bukan_sawah": 98475,
+     "padang_sementara": 5483,
+     "padang_permanen": 3892,
+     "fallow": 2772,
+     "tanaman_tahunan": 152402,
+     "kandang_ternak": 4924,
+     "kehutanan": 28798,
+     "perikanan": 20078,
+     "non_pertanian": 6643,
+     "jumlah": 611266
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "JOHO",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 312950,
+     "bukan_sawah": 9366,
+     "padang_sementara": 2576,
+     "padang_permanen": 1000,
+     "fallow": 438,
+     "tanaman_tahunan": 46296,
+     "kandang_ternak": 5252,
+     "kehutanan": 14926,
+     "perikanan": 9992,
+     "non_pertanian": 0,
+     "jumlah": 402796
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "BAWANG",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 189559,
+     "bukan_sawah": 206323,
+     "padang_sementara": 0,
+     "padang_permanen": 4626,
+     "fallow": 4820,
+     "tanaman_tahunan": 112356,
+     "kandang_ternak": 7960,
+     "kehutanan": 11421,
+     "perikanan": 27477,
+     "non_pertanian": 352,
+     "jumlah": 564894
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "BANDINGAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 230034,
+     "bukan_sawah": 30942,
+     "padang_sementara": 1643,
+     "padang_permanen": 0,
+     "fallow": 0,
+     "tanaman_tahunan": 19907,
+     "kandang_ternak": 1128,
+     "kehutanan": 3100,
+     "perikanan": 5748,
+     "non_pertanian": 1286,
+     "jumlah": 293788
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "BLAMBANGAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 938056,
+     "bukan_sawah": 15861,
+     "padang_sementara": 1071,
+     "padang_permanen": 680,
+     "fallow": 0,
+     "tanaman_tahunan": 140938,
+     "kandang_ternak": 6333,
+     "kehutanan": 49986,
+     "perikanan": 55624.5,
+     "non_pertanian": 18,
+     "jumlah": 1208567.5
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "GEMURUH",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 812088,
+     "bukan_sawah": 19302,
+     "padang_sementara": 1750,
+     "padang_permanen": 2000,
+     "fallow": 56,
+     "tanaman_tahunan": 256947,
+     "kandang_ternak": 6968,
+     "kehutanan": 105774,
+     "perikanan": 23396,
+     "non_pertanian": 1820,
+     "jumlah": 1230101
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PUCANG",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 795006,
+     "bukan_sawah": 112643,
+     "padang_sementara": 1183,
+     "padang_permanen": 1428,
+     "fallow": 2111,
+     "tanaman_tahunan": 85223,
+     "kandang_ternak": 9154.75,
+     "kehutanan": 48981,
+     "perikanan": 22745,
+     "non_pertanian": 10075,
+     "jumlah": 1088549.75
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   }
+  ]
+ },
+ {
+  "kecamatan": "Kalibening",
+  "desas": [
+   {
+    "name": "ASINAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 216282,
+     "bukan_sawah": 101579,
+     "padang_sementara": 12870,
+     "padang_permanen": 27239,
+     "fallow": 70087,
+     "tanaman_tahunan": 2159767,
+     "kandang_ternak": 9010,
+     "kehutanan": 185237,
+     "perikanan": 8627,
+     "non_pertanian": 5288,
+     "jumlah": 2795986
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "SEMBAWA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 254516,
+     "bukan_sawah": 15901,
+     "padang_sementara": 13819,
+     "padang_permanen": 20361,
+     "fallow": 55938,
+     "tanaman_tahunan": 2328299,
+     "kandang_ternak": 9297,
+     "kehutanan": 92087,
+     "perikanan": 3407,
+     "non_pertanian": 11015,
+     "jumlah": 2804640
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KALIBOMBONG",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 786886,
+     "bukan_sawah": 564881,
+     "padang_sementara": 100470,
+     "padang_permanen": 118079,
+     "fallow": 363103,
+     "tanaman_tahunan": 1676038,
+     "kandang_ternak": 20956,
+     "kehutanan": 235856,
+     "perikanan": 3636,
+     "non_pertanian": 2062,
+     "jumlah": 3871967
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KALISAT KIDUL",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 16315,
+     "bukan_sawah": 2469757,
+     "padang_sementara": 408391,
+     "padang_permanen": 161584,
+     "fallow": 284192,
+     "tanaman_tahunan": 703793,
+     "kandang_ternak": 24512,
+     "kehutanan": 401009,
+     "perikanan": 13355,
+     "non_pertanian": 5505,
+     "jumlah": 4488413
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "SIRUKEM",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 15510,
+     "bukan_sawah": 1165228,
+     "padang_sementara": 93258,
+     "padang_permanen": 27935,
+     "fallow": 37731,
+     "tanaman_tahunan": 256658,
+     "kandang_ternak": 6808,
+     "kehutanan": 118457,
+     "perikanan": 623,
+     "non_pertanian": 1663,
+     "jumlah": 1723871
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KERTOSARI",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 17980,
+     "bukan_sawah": 1722646,
+     "padang_sementara": 61842,
+     "padang_permanen": 141647,
+     "fallow": 68817,
+     "tanaman_tahunan": 508662,
+     "kandang_ternak": 9786,
+     "kehutanan": 115326,
+     "perikanan": 479,
+     "non_pertanian": 3538,
+     "jumlah": 2650723
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "SIDAKANGEN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 408061,
+     "bukan_sawah": 491265,
+     "padang_sementara": 122045,
+     "padang_permanen": 27741,
+     "fallow": 39840,
+     "tanaman_tahunan": 310804,
+     "kandang_ternak": 8027,
+     "kehutanan": 267573,
+     "perikanan": 5590,
+     "non_pertanian": 9254,
+     "jumlah": 1690200
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "MAJATENGAH",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 134027,
+     "bukan_sawah": 77243,
+     "padang_sementara": 10630,
+     "padang_permanen": 5442,
+     "fallow": 22781,
+     "tanaman_tahunan": 535768,
+     "kandang_ternak": 3732,
+     "kehutanan": 115446,
+     "perikanan": 2561,
+     "non_pertanian": 13,
+     "jumlah": 907643
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KALIBENING",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 230331,
+     "bukan_sawah": 172567,
+     "padang_sementara": 26371,
+     "padang_permanen": 13411,
+     "fallow": 22028,
+     "tanaman_tahunan": 638426,
+     "kandang_ternak": 5070,
+     "kehutanan": 377275,
+     "perikanan": 3196,
+     "non_pertanian": 4247,
+     "jumlah": 1492922
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "SIKUMPUL",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 539030,
+     "bukan_sawah": 64289,
+     "padang_sementara": 11678,
+     "padang_permanen": 5632,
+     "fallow": 17748,
+     "tanaman_tahunan": 664713,
+     "kandang_ternak": 10185,
+     "kehutanan": 134240,
+     "perikanan": 143,
+     "non_pertanian": 5274.5,
+     "jumlah": 1452932.5
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "GUNUNGLANGIT",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 765208,
+     "bukan_sawah": 71961,
+     "padang_sementara": 17861,
+     "padang_permanen": 6508,
+     "fallow": 15977,
+     "tanaman_tahunan": 914216,
+     "kandang_ternak": 7245,
+     "kehutanan": 122599,
+     "perikanan": 4729,
+     "non_pertanian": 13978,
+     "jumlah": 1940282
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "BEDANA",
+    "typoFixed": true,
+    "m2": {
+     "sawah": 911766,
+     "bukan_sawah": 120201,
+     "padang_sementara": 11755,
+     "padang_permanen": 15414,
+     "fallow": 3560,
+     "tanaman_tahunan": 367156,
+     "kandang_ternak": 3278,
+     "kehutanan": 151260,
+     "perikanan": 2559,
+     "non_pertanian": 16965,
+     "jumlah": 1603914
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "SIRUKUN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 770356,
+     "bukan_sawah": 37331,
+     "padang_sementara": 3895,
+     "padang_permanen": 1983,
+     "fallow": 13889,
+     "tanaman_tahunan": 822048,
+     "kandang_ternak": 18377,
+     "kehutanan": 134997,
+     "perikanan": 4438,
+     "non_pertanian": 22586,
+     "jumlah": 1829900
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KARANGANYAR",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 581749,
+     "bukan_sawah": 130175,
+     "padang_sementara": 18701,
+     "padang_permanen": 3357,
+     "fallow": 9889,
+     "tanaman_tahunan": 571169,
+     "kandang_ternak": 8464,
+     "kehutanan": 144047,
+     "perikanan": 6108,
+     "non_pertanian": 10772,
+     "jumlah": 1484431
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PLORENGAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 110518,
+     "bukan_sawah": 1388805,
+     "padang_sementara": 92317,
+     "padang_permanen": 130756,
+     "fallow": 108452,
+     "tanaman_tahunan": 855315,
+     "kandang_ternak": 16611,
+     "kehutanan": 392658,
+     "perikanan": 3231.5,
+     "non_pertanian": 100069,
+     "jumlah": 3198732.5
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KASINOMAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 6027,
+     "bukan_sawah": 3012611,
+     "padang_sementara": 122825,
+     "padang_permanen": 118981,
+     "fallow": 137821,
+     "tanaman_tahunan": 280495,
+     "kandang_ternak": 10114,
+     "kehutanan": 127849,
+     "perikanan": 1297,
+     "non_pertanian": 4151,
+     "jumlah": 3822171
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   }
+  ]
+ },
+ {
+  "kecamatan": "Karangkobar",
+  "desas": [
+   {
+    "name": "SLATRI",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 78312,
+     "bukan_sawah": 287246,
+     "padang_sementara": 30002,
+     "padang_permanen": 7696,
+     "fallow": 25832,
+     "tanaman_tahunan": 1640222,
+     "kandang_ternak": 12342,
+     "kehutanan": 152700,
+     "perikanan": 1800,
+     "non_pertanian": 2238,
+     "jumlah": 2238390
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PAWEDEN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 2405,
+     "bukan_sawah": 124760,
+     "padang_sementara": 9937,
+     "padang_permanen": 0,
+     "fallow": 30290,
+     "tanaman_tahunan": 1328311,
+     "kandang_ternak": 7793,
+     "kehutanan": 116115,
+     "perikanan": 2452,
+     "non_pertanian": 72,
+     "jumlah": 1622135
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "GUMELAR",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 1000,
+     "bukan_sawah": 62020,
+     "padang_sementara": 9323,
+     "padang_permanen": 145143,
+     "fallow": 2451,
+     "tanaman_tahunan": 609326,
+     "kandang_ternak": 4448,
+     "kehutanan": 36961,
+     "perikanan": 140,
+     "non_pertanian": 0,
+     "jumlah": 870812
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PURWODADI",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 9576,
+     "bukan_sawah": 263162,
+     "padang_sementara": 62354,
+     "padang_permanen": 85527,
+     "fallow": 20522,
+     "tanaman_tahunan": 618131,
+     "kandang_ternak": 10836,
+     "kehutanan": 406212,
+     "perikanan": 10548,
+     "non_pertanian": 8195,
+     "jumlah": 1495063
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "SAMPANG",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 5934,
+     "bukan_sawah": 526776,
+     "padang_sementara": 103749,
+     "padang_permanen": 28304,
+     "fallow": 37239,
+     "tanaman_tahunan": 425365,
+     "kandang_ternak": 12384,
+     "kehutanan": 411152,
+     "perikanan": 10052,
+     "non_pertanian": 1518,
+     "jumlah": 1562473
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "AMBAL",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 106304,
+     "bukan_sawah": 378000,
+     "padang_sementara": 100475,
+     "padang_permanen": 20291,
+     "fallow": 34317,
+     "tanaman_tahunan": 670612,
+     "kandang_ternak": 11472,
+     "kehutanan": 322887,
+     "perikanan": 11519,
+     "non_pertanian": 7482,
+     "jumlah": 1663359
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PAGERPELAH",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 243695,
+     "bukan_sawah": 80462,
+     "padang_sementara": 65329,
+     "padang_permanen": 5010,
+     "fallow": 21573,
+     "tanaman_tahunan": 1991656,
+     "kandang_ternak": 19390,
+     "kehutanan": 37673,
+     "perikanan": 2589,
+     "non_pertanian": 5888,
+     "jumlah": 2473265
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PASURUHAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 254319,
+     "bukan_sawah": 89527,
+     "padang_sementara": 4047,
+     "padang_permanen": 21242,
+     "fallow": 19390,
+     "tanaman_tahunan": 1099713,
+     "kandang_ternak": 3011,
+     "kehutanan": 42307,
+     "perikanan": 668,
+     "non_pertanian": 1356,
+     "jumlah": 1535580
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KARANGGONDANG",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 10151,
+     "bukan_sawah": 1039042,
+     "padang_sementara": 253920,
+     "padang_permanen": 58593,
+     "fallow": 24900,
+     "tanaman_tahunan": 455868,
+     "kandang_ternak": 12226,
+     "kehutanan": 273595,
+     "perikanan": 1985,
+     "non_pertanian": 2860,
+     "jumlah": 2133140
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "JLEGONG",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 158133,
+     "bukan_sawah": 281294,
+     "padang_sementara": 22151,
+     "padang_permanen": 2935,
+     "fallow": 2110,
+     "tanaman_tahunan": 495731,
+     "kandang_ternak": 7980,
+     "kehutanan": 100436,
+     "perikanan": 975,
+     "non_pertanian": 2171,
+     "jumlah": 1073916
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "BINANGUN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 1500,
+     "bukan_sawah": 888447,
+     "padang_sementara": 203356,
+     "padang_permanen": 217096,
+     "fallow": 23853,
+     "tanaman_tahunan": 591164.5,
+     "kandang_ternak": 13912,
+     "kehutanan": 215687.5,
+     "perikanan": 4885,
+     "non_pertanian": 10515,
+     "jumlah": 2170416
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KARANGKOBAR",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 8500,
+     "bukan_sawah": 669136,
+     "padang_sementara": 48267,
+     "padang_permanen": 75419,
+     "fallow": 24741,
+     "tanaman_tahunan": 264175,
+     "kandang_ternak": 6971.5,
+     "kehutanan": 282130,
+     "perikanan": 7381,
+     "non_pertanian": 683,
+     "jumlah": 1387403.5
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "LEKSANA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 1000,
+     "bukan_sawah": 399299,
+     "padang_sementara": 38737,
+     "padang_permanen": 35978,
+     "fallow": 30187,
+     "tanaman_tahunan": 165065,
+     "kandang_ternak": 20090.5,
+     "kehutanan": 165380,
+     "perikanan": 36959,
+     "non_pertanian": 249,
+     "jumlah": 892944.5
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   }
+  ]
+ },
+ {
+  "kecamatan": "Madukara",
+  "desas": [
+   {
+    "name": "REJASA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 137427,
+     "bukan_sawah": 47132,
+     "padang_sementara": 1340,
+     "padang_permanen": 1440,
+     "fallow": 11450,
+     "tanaman_tahunan": 155066,
+     "kandang_ternak": 2092,
+     "kehutanan": 65878,
+     "perikanan": 6568,
+     "non_pertanian": 0,
+     "jumlah": 428393
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KENTENG",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 228913,
+     "bukan_sawah": 33004,
+     "padang_sementara": 0,
+     "padang_permanen": 915,
+     "fallow": 1851,
+     "tanaman_tahunan": 138538,
+     "kandang_ternak": 3250,
+     "kehutanan": 25793,
+     "perikanan": 24564,
+     "non_pertanian": 1476,
+     "jumlah": 458304
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "BANTARWARU",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 350361,
+     "bukan_sawah": 23143,
+     "padang_sementara": 800,
+     "padang_permanen": 0,
+     "fallow": 5144,
+     "tanaman_tahunan": 441517,
+     "kandang_ternak": 4298,
+     "kehutanan": 45234,
+     "perikanan": 4935,
+     "non_pertanian": 280,
+     "jumlah": 875712
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "DAWUHAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 249044,
+     "bukan_sawah": 30604,
+     "padang_sementara": 0,
+     "padang_permanen": 819,
+     "fallow": 2758,
+     "tanaman_tahunan": 987311,
+     "kandang_ternak": 8344,
+     "kehutanan": 105176,
+     "perikanan": 11730,
+     "non_pertanian": 0,
+     "jumlah": 1395786
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PAGELAK",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 201098,
+     "bukan_sawah": 14857,
+     "padang_sementara": 2530,
+     "padang_permanen": 2576,
+     "fallow": 4910,
+     "tanaman_tahunan": 366070,
+     "kandang_ternak": 24317,
+     "kehutanan": 21396,
+     "perikanan": 25386,
+     "non_pertanian": 1576,
+     "jumlah": 664716
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KUTAYASA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 179321,
+     "bukan_sawah": 24715,
+     "padang_sementara": 0,
+     "padang_permanen": 8014,
+     "fallow": 4690,
+     "tanaman_tahunan": 333602,
+     "kandang_ternak": 5342,
+     "kehutanan": 38528,
+     "perikanan": 3286,
+     "non_pertanian": 0,
+     "jumlah": 597498
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PEKAUMAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 83768,
+     "bukan_sawah": 11194,
+     "padang_sementara": 3367,
+     "padang_permanen": 733,
+     "fallow": 18756,
+     "tanaman_tahunan": 708625,
+     "kandang_ternak": 1775,
+     "kehutanan": 20472,
+     "perikanan": 4630,
+     "non_pertanian": 9500,
+     "jumlah": 862820
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "TALUNAMBA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 63097,
+     "bukan_sawah": 20244,
+     "padang_sementara": 5509,
+     "padang_permanen": 700,
+     "fallow": 2343,
+     "tanaman_tahunan": 1009494,
+     "kandang_ternak": 5399,
+     "kehutanan": 24022,
+     "perikanan": 2026,
+     "non_pertanian": 5431,
+     "jumlah": 1138265
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PENAWANGAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 16100,
+     "bukan_sawah": 36834,
+     "padang_sementara": 0,
+     "padang_permanen": 214,
+     "fallow": 6080,
+     "tanaman_tahunan": 703012,
+     "kandang_ternak": 6040,
+     "kehutanan": 34352,
+     "perikanan": 2192,
+     "non_pertanian": 1419,
+     "jumlah": 806243
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "LIMBANGAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 95422,
+     "bukan_sawah": 18432,
+     "padang_sementara": 9879,
+     "padang_permanen": 3440,
+     "fallow": 1705,
+     "tanaman_tahunan": 1090567,
+     "kandang_ternak": 10479,
+     "kehutanan": 19166,
+     "perikanan": 4334,
+     "non_pertanian": 216,
+     "jumlah": 1253640
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "CLAPAR",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 2540,
+     "bukan_sawah": 0,
+     "padang_sementara": 15963,
+     "padang_permanen": 17541,
+     "fallow": 12760,
+     "tanaman_tahunan": 1577112,
+     "kandang_ternak": 5504,
+     "kehutanan": 25880,
+     "perikanan": 4648,
+     "non_pertanian": 1493,
+     "jumlah": 1663441
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "MADUKARA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 40669,
+     "bukan_sawah": 8105,
+     "padang_sementara": 4815,
+     "padang_permanen": 5900,
+     "fallow": 5170,
+     "tanaman_tahunan": 1397067,
+     "kandang_ternak": 17863,
+     "kehutanan": 60542,
+     "perikanan": 2154,
+     "non_pertanian": 1455,
+     "jumlah": 1543740
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KARANGANYAR",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 4063,
+     "bukan_sawah": 1002,
+     "padang_sementara": 20,
+     "padang_permanen": 0,
+     "fallow": 11567,
+     "tanaman_tahunan": 887395,
+     "kandang_ternak": 2111,
+     "kehutanan": 48830,
+     "perikanan": 308,
+     "non_pertanian": 14,
+     "jumlah": 955310
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "SERED",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 55669,
+     "bukan_sawah": 9090,
+     "padang_sementara": 200,
+     "padang_permanen": 0,
+     "fallow": 1030,
+     "tanaman_tahunan": 686833,
+     "kandang_ternak": 8776,
+     "kehutanan": 22312,
+     "perikanan": 15233,
+     "non_pertanian": 162,
+     "jumlah": 799305
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "BLITAR",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 71462,
+     "bukan_sawah": 44385,
+     "padang_sementara": 8100,
+     "padang_permanen": 2700,
+     "fallow": 10153,
+     "tanaman_tahunan": 525213,
+     "kandang_ternak": 3127,
+     "kehutanan": 41031,
+     "perikanan": 6123,
+     "non_pertanian": 3210,
+     "jumlah": 715504
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PETAMBAKAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 293149,
+     "bukan_sawah": 53679,
+     "padang_sementara": 10110,
+     "padang_permanen": 0,
+     "fallow": 7500,
+     "tanaman_tahunan": 210366,
+     "kandang_ternak": 2119,
+     "kehutanan": 56547,
+     "perikanan": 2890,
+     "non_pertanian": 5787,
+     "jumlah": 642147
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "RAKITAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 28090,
+     "bukan_sawah": 16916,
+     "padang_sementara": 2683,
+     "padang_permanen": 1080,
+     "fallow": 324,
+     "tanaman_tahunan": 1043825,
+     "kandang_ternak": 13768,
+     "kehutanan": 58549,
+     "perikanan": 3597,
+     "non_pertanian": 194,
+     "jumlah": 1169026
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KALIURIP",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 0,
+     "bukan_sawah": 10820,
+     "padang_sementara": 31415,
+     "padang_permanen": 0,
+     "fallow": 19820,
+     "tanaman_tahunan": 2702443,
+     "kandang_ternak": 5827,
+     "kehutanan": 53831,
+     "perikanan": 13652,
+     "non_pertanian": 1295,
+     "jumlah": 2839103
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "GUNUNGGIANA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 0,
+     "bukan_sawah": 1082,
+     "padang_sementara": 0,
+     "padang_permanen": 0,
+     "fallow": 345,
+     "tanaman_tahunan": 1920012,
+     "kandang_ternak": 10137,
+     "kehutanan": 51025,
+     "perikanan": 8620,
+     "non_pertanian": 52,
+     "jumlah": 1991273
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PAKELEN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 0,
+     "bukan_sawah": 717,
+     "padang_sementara": 0,
+     "padang_permanen": 0,
+     "fallow": 0,
+     "tanaman_tahunan": 1188205,
+     "kandang_ternak": 740,
+     "kehutanan": 33363,
+     "perikanan": 2610,
+     "non_pertanian": 450,
+     "jumlah": 1226085
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   }
+  ]
+ },
+ {
+  "kecamatan": "Mandiraja",
+  "desas": [
+   {
+    "name": "SALAMERTA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 430492,
+     "bukan_sawah": 167729,
+     "padang_sementara": 2715,
+     "padang_permanen": 1049,
+     "fallow": 2405,
+     "tanaman_tahunan": 278860,
+     "kandang_ternak": 6214,
+     "kehutanan": 99834,
+     "perikanan": 3423,
+     "non_pertanian": 3378,
+     "jumlah": 996099
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "GLEMPANG",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 690740,
+     "bukan_sawah": 360547,
+     "padang_sementara": 11630,
+     "padang_permanen": 87721,
+     "fallow": 33766,
+     "tanaman_tahunan": 383945,
+     "kandang_ternak": 11023.5,
+     "kehutanan": 185059,
+     "perikanan": 10910,
+     "non_pertanian": 34232,
+     "jumlah": 1809573.5
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KEBANARAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 890811,
+     "bukan_sawah": 87424,
+     "padang_sementara": 3818,
+     "padang_permanen": 2610,
+     "fallow": 1926,
+     "tanaman_tahunan": 222787,
+     "kandang_ternak": 6471,
+     "kehutanan": 225915,
+     "perikanan": 8979,
+     "non_pertanian": 13211,
+     "jumlah": 1463952
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KALIWUNGU",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 503769,
+     "bukan_sawah": 440296,
+     "padang_sementara": 2935,
+     "padang_permanen": 76788,
+     "fallow": 23321,
+     "tanaman_tahunan": 284755,
+     "kandang_ternak": 13609.25,
+     "kehutanan": 349188,
+     "perikanan": 5605,
+     "non_pertanian": 9375,
+     "jumlah": 1709641.25
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "SOMAWANGI",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 1051896,
+     "bukan_sawah": 536718,
+     "padang_sementara": 72861,
+     "padang_permanen": 97354,
+     "fallow": 26821,
+     "tanaman_tahunan": 405177,
+     "kandang_ternak": 21199,
+     "kehutanan": 294933,
+     "perikanan": 13640,
+     "non_pertanian": 5790,
+     "jumlah": 2526389
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "JALATUNDA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 324364,
+     "bukan_sawah": 1243334,
+     "padang_sementara": 30358,
+     "padang_permanen": 15254,
+     "fallow": 32529,
+     "tanaman_tahunan": 73089,
+     "kandang_ternak": 7390,
+     "kehutanan": 152982,
+     "perikanan": 619,
+     "non_pertanian": 4,
+     "jumlah": 1879923
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KEBAKALAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 360155,
+     "bukan_sawah": 13464,
+     "padang_sementara": 0,
+     "padang_permanen": 0,
+     "fallow": 0,
+     "tanaman_tahunan": 31714,
+     "kandang_ternak": 1506,
+     "kehutanan": 9537,
+     "perikanan": 3570,
+     "non_pertanian": 114,
+     "jumlah": 420060
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "MANDIRAJA WETAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 364139,
+     "bukan_sawah": 6527,
+     "padang_sementara": 0,
+     "padang_permanen": 5520,
+     "fallow": 500,
+     "tanaman_tahunan": 50124,
+     "kandang_ternak": 4597,
+     "kehutanan": 13690,
+     "perikanan": 18511.5,
+     "non_pertanian": 3325,
+     "jumlah": 466933.5
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "MANDIRAJA KULON",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 460600,
+     "bukan_sawah": 21828,
+     "padang_sementara": 5158,
+     "padang_permanen": 1990,
+     "fallow": 4251,
+     "tanaman_tahunan": 46493,
+     "kandang_ternak": 4253.5,
+     "kehutanan": 24087,
+     "perikanan": 18154,
+     "non_pertanian": 1960,
+     "jumlah": 588774.5
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "BANJENGAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 532279,
+     "bukan_sawah": 14374,
+     "padang_sementara": 870,
+     "padang_permanen": 0,
+     "fallow": 0,
+     "tanaman_tahunan": 46677,
+     "kandang_ternak": 3993,
+     "kehutanan": 23823,
+     "perikanan": 19615,
+     "non_pertanian": 0,
+     "jumlah": 641631
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KERTAYASA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 1527402,
+     "bukan_sawah": 41764,
+     "padang_sementara": 2189,
+     "padang_permanen": 1806,
+     "fallow": 2241,
+     "tanaman_tahunan": 83397,
+     "kandang_ternak": 6832,
+     "kehutanan": 16461,
+     "perikanan": 55867,
+     "non_pertanian": 26375,
+     "jumlah": 1764334
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "CANDIWULAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 438098,
+     "bukan_sawah": 2446,
+     "padang_sementara": 0,
+     "padang_permanen": 0,
+     "fallow": 248,
+     "tanaman_tahunan": 29772,
+     "kandang_ternak": 980,
+     "kehutanan": 7153,
+     "perikanan": 27984,
+     "non_pertanian": 460,
+     "jumlah": 507141
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "SIMBANG",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 710958,
+     "bukan_sawah": 19193,
+     "padang_sementara": 2151,
+     "padang_permanen": 19215,
+     "fallow": 4161,
+     "tanaman_tahunan": 55267,
+     "kandang_ternak": 2140,
+     "kehutanan": 46797,
+     "perikanan": 6472,
+     "non_pertanian": 4280,
+     "jumlah": 870634
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PURWASABA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 1251939,
+     "bukan_sawah": 19397,
+     "padang_sementara": 2322,
+     "padang_permanen": 2372,
+     "fallow": 296,
+     "tanaman_tahunan": 100305,
+     "kandang_ternak": 13145.5,
+     "kehutanan": 58581,
+     "perikanan": 18683,
+     "non_pertanian": 10140,
+     "jumlah": 1477180.5
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "BLIMBING",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 522559,
+     "bukan_sawah": 3900,
+     "padang_sementara": 2366,
+     "padang_permanen": 3155,
+     "fallow": 2925,
+     "tanaman_tahunan": 43047,
+     "kandang_ternak": 8966,
+     "kehutanan": 6148,
+     "perikanan": 14017,
+     "non_pertanian": 6725,
+     "jumlah": 613808
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PANGGISARI",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 891781,
+     "bukan_sawah": 11436,
+     "padang_sementara": 687,
+     "padang_permanen": 500,
+     "fallow": 0,
+     "tanaman_tahunan": 45401,
+     "kandang_ternak": 3651,
+     "kehutanan": 22172,
+     "perikanan": 11330,
+     "non_pertanian": 432,
+     "jumlah": 987390
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   }
+  ]
+ },
+ {
+  "kecamatan": "Pagedongan",
+  "desas": [
+   {
+    "name": "DUREN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 8437,
+     "bukan_sawah": 1310336,
+     "padang_sementara": 4588,
+     "padang_permanen": 80005,
+     "fallow": 225979,
+     "tanaman_tahunan": 546341,
+     "kandang_ternak": 3141,
+     "kehutanan": 491325,
+     "perikanan": 210,
+     "non_pertanian": 3233,
+     "jumlah": 2673595
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KEBUTUHJURANG",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 750,
+     "bukan_sawah": 59514,
+     "padang_sementara": 21685,
+     "padang_permanen": 19210,
+     "fallow": 66050,
+     "tanaman_tahunan": 2452767,
+     "kandang_ternak": 17248,
+     "kehutanan": 542620,
+     "perikanan": 3195,
+     "non_pertanian": 861,
+     "jumlah": 3183900
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KEBUTUHDUWUR",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 0,
+     "bukan_sawah": 59204,
+     "padang_sementara": 39164,
+     "padang_permanen": 108992,
+     "fallow": 32885,
+     "tanaman_tahunan": 5025654,
+     "kandang_ternak": 36323,
+     "kehutanan": 922620,
+     "perikanan": 4247,
+     "non_pertanian": 10100,
+     "jumlah": 6239189
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PESANGKALAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 4222,
+     "bukan_sawah": 19250,
+     "padang_sementara": 600,
+     "padang_permanen": 0,
+     "fallow": 13823,
+     "tanaman_tahunan": 4511382,
+     "kandang_ternak": 9951.5,
+     "kehutanan": 231848,
+     "perikanan": 3821,
+     "non_pertanian": 2074,
+     "jumlah": 4796971.5
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PAGEDONGAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 6480,
+     "bukan_sawah": 87254,
+     "padang_sementara": 9044,
+     "padang_permanen": 77875,
+     "fallow": 70520,
+     "tanaman_tahunan": 2080917,
+     "kandang_ternak": 25356,
+     "kehutanan": 803599.5,
+     "perikanan": 12260,
+     "non_pertanian": 8008.5,
+     "jumlah": 3181314
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "GUNUNGJATI",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 3000,
+     "bukan_sawah": 25963,
+     "padang_sementara": 2350,
+     "padang_permanen": 1000,
+     "fallow": 5303,
+     "tanaman_tahunan": 1523714,
+     "kandang_ternak": 4325,
+     "kehutanan": 731302,
+     "perikanan": 7346,
+     "non_pertanian": 807,
+     "jumlah": 2305110
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "LEBAKWANGI",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 86750,
+     "bukan_sawah": 1617622,
+     "padang_sementara": 32307,
+     "padang_permanen": 38403,
+     "fallow": 159601,
+     "tanaman_tahunan": 2037128,
+     "kandang_ternak": 37034,
+     "kehutanan": 783045,
+     "perikanan": 8842,
+     "non_pertanian": 240,
+     "jumlah": 4800972
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "GENTANSARI",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 582873,
+     "bukan_sawah": 553933,
+     "padang_sementara": 80506,
+     "padang_permanen": 251128,
+     "fallow": 67008,
+     "tanaman_tahunan": 2107120,
+     "kandang_ternak": 12895,
+     "kehutanan": 403581,
+     "perikanan": 26367,
+     "non_pertanian": 23088,
+     "jumlah": 4108499
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "TWELAGIRI",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 12840,
+     "bukan_sawah": 78560,
+     "padang_sementara": 40483,
+     "padang_permanen": 15547,
+     "fallow": 53748,
+     "tanaman_tahunan": 1254211,
+     "kandang_ternak": 14368,
+     "kehutanan": 458481,
+     "perikanan": 13785,
+     "non_pertanian": 7946,
+     "jumlah": 1949969
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   }
+  ]
+ },
+ {
+  "kecamatan": "Pagentan",
+  "desas": [
+   {
+    "name": "NAGASARI",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 398157,
+     "bukan_sawah": 5017,
+     "padang_sementara": 3380,
+     "padang_permanen": 14819,
+     "fallow": 13411,
+     "tanaman_tahunan": 1838443,
+     "kandang_ternak": 7888,
+     "kehutanan": 43757,
+     "perikanan": 2899,
+     "non_pertanian": 742,
+     "jumlah": 2328513
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "ARIBAYA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 20824,
+     "bukan_sawah": 13627,
+     "padang_sementara": 14921,
+     "padang_permanen": 15022,
+     "fallow": 13020,
+     "tanaman_tahunan": 2519628,
+     "kandang_ternak": 15470,
+     "kehutanan": 19115,
+     "perikanan": 1273,
+     "non_pertanian": 11091,
+     "jumlah": 2643991
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "LARANGAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 52706,
+     "bukan_sawah": 5955,
+     "padang_sementara": 14842,
+     "padang_permanen": 5991,
+     "fallow": 70,
+     "tanaman_tahunan": 1132757,
+     "kandang_ternak": 2816,
+     "kehutanan": 25951,
+     "perikanan": 1602,
+     "non_pertanian": 468,
+     "jumlah": 1243158
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KARANGNANGKA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 375,
+     "bukan_sawah": 16854,
+     "padang_sementara": 3709,
+     "padang_permanen": 6275,
+     "fallow": 7819,
+     "tanaman_tahunan": 1658899,
+     "kandang_ternak": 8750,
+     "kehutanan": 31015,
+     "perikanan": 227,
+     "non_pertanian": 1124,
+     "jumlah": 1735047
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "SOKARAJA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 9900,
+     "bukan_sawah": 5765,
+     "padang_sementara": 2245,
+     "padang_permanen": 7342,
+     "fallow": 20684,
+     "tanaman_tahunan": 1589994,
+     "kandang_ternak": 23763,
+     "kehutanan": 34649,
+     "perikanan": 1851,
+     "non_pertanian": 900,
+     "jumlah": 1697093
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "METAWANA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 5011,
+     "bukan_sawah": 1050,
+     "padang_sementara": 6421,
+     "padang_permanen": 63303,
+     "fallow": 2165,
+     "tanaman_tahunan": 1496581,
+     "kandang_ternak": 14620,
+     "kehutanan": 38536,
+     "perikanan": 216,
+     "non_pertanian": 1782,
+     "jumlah": 1629685
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "GUMINGSIR",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 220682,
+     "bukan_sawah": 54038,
+     "padang_sementara": 850,
+     "padang_permanen": 36401,
+     "fallow": 11198,
+     "tanaman_tahunan": 2180917,
+     "kandang_ternak": 12520,
+     "kehutanan": 90564,
+     "perikanan": 505,
+     "non_pertanian": 7242,
+     "jumlah": 2614917
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KAYUARES",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 55952,
+     "bukan_sawah": 21835,
+     "padang_sementara": 36038,
+     "padang_permanen": 9140,
+     "fallow": 20985,
+     "tanaman_tahunan": 1132514,
+     "kandang_ternak": 9449,
+     "kehutanan": 13808,
+     "perikanan": 2035,
+     "non_pertanian": 1831,
+     "jumlah": 1303587
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KALITLAGA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 15416,
+     "bukan_sawah": 38059,
+     "padang_sementara": 121850,
+     "padang_permanen": 13485,
+     "fallow": 635,
+     "tanaman_tahunan": 1289144,
+     "kandang_ternak": 10238,
+     "kehutanan": 24349,
+     "perikanan": 563,
+     "non_pertanian": 175,
+     "jumlah": 1513914
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PLUMBUNGAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 53552,
+     "bukan_sawah": 487680,
+     "padang_sementara": 75513,
+     "padang_permanen": 46858,
+     "fallow": 13014,
+     "tanaman_tahunan": 741356,
+     "kandang_ternak": 10714,
+     "kehutanan": 104509,
+     "perikanan": 3863,
+     "non_pertanian": 0,
+     "jumlah": 1537059
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KAREKAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 474714,
+     "bukan_sawah": 807647,
+     "padang_sementara": 75405,
+     "padang_permanen": 49325,
+     "fallow": 88078,
+     "tanaman_tahunan": 250297,
+     "kandang_ternak": 7585,
+     "kehutanan": 214880,
+     "perikanan": 6374,
+     "non_pertanian": 2352,
+     "jumlah": 1976657
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KASMARAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 1200,
+     "bukan_sawah": 840239,
+     "padang_sementara": 20775,
+     "padang_permanen": 33507,
+     "fallow": 31763,
+     "tanaman_tahunan": 699381,
+     "kandang_ternak": 8039,
+     "kehutanan": 44394,
+     "perikanan": 3220,
+     "non_pertanian": 5573,
+     "jumlah": 1688091
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PAGENTAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 0,
+     "bukan_sawah": 271264,
+     "padang_sementara": 17094,
+     "padang_permanen": 48712,
+     "fallow": 19178,
+     "tanaman_tahunan": 2158996,
+     "kandang_ternak": 26029.5,
+     "kehutanan": 62255,
+     "perikanan": 4608,
+     "non_pertanian": 9553,
+     "jumlah": 2617689.5
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "MAJASARI",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 0,
+     "bukan_sawah": 2682906,
+     "padang_sementara": 55902,
+     "padang_permanen": 106093,
+     "fallow": 58187,
+     "tanaman_tahunan": 211770,
+     "kandang_ternak": 8841,
+     "kehutanan": 109025,
+     "perikanan": 861,
+     "non_pertanian": 1457,
+     "jumlah": 3235042
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "BABADAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 2700,
+     "bukan_sawah": 1838992,
+     "padang_sementara": 168469,
+     "padang_permanen": 355081,
+     "fallow": 153449,
+     "tanaman_tahunan": 179591,
+     "kandang_ternak": 18165,
+     "kehutanan": 108661,
+     "perikanan": 30,
+     "non_pertanian": 748,
+     "jumlah": 2825886
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "TEGALJERUK",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 3268,
+     "bukan_sawah": 1386983,
+     "padang_sementara": 35756,
+     "padang_permanen": 8970,
+     "fallow": 1832,
+     "tanaman_tahunan": 9737,
+     "kandang_ternak": 5271,
+     "kehutanan": 6596,
+     "perikanan": 76,
+     "non_pertanian": 0,
+     "jumlah": 1458489
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   }
+  ]
+ },
+ {
+  "kecamatan": "Pandanarum",
+  "desas": [
+   {
+    "name": "SINDUAJI",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 125264,
+     "bukan_sawah": 43470,
+     "padang_sementara": 72047,
+     "padang_permanen": 48541,
+     "fallow": 36076,
+     "tanaman_tahunan": 1127033,
+     "kandang_ternak": 6864,
+     "kehutanan": 229920,
+     "perikanan": 346,
+     "non_pertanian": 9099,
+     "jumlah": 1698660
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PANDANARUM",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 527675,
+     "bukan_sawah": 107727,
+     "padang_sementara": 39665,
+     "padang_permanen": 14147,
+     "fallow": 27259,
+     "tanaman_tahunan": 1523042,
+     "kandang_ternak": 10529,
+     "kehutanan": 287985,
+     "perikanan": 5292,
+     "non_pertanian": 20649.5,
+     "jumlah": 2563970.5
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "BEJI",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 367542,
+     "bukan_sawah": 40306,
+     "padang_sementara": 139604,
+     "padang_permanen": 127982,
+     "fallow": 62328,
+     "tanaman_tahunan": 1314124,
+     "kandang_ternak": 39266,
+     "kehutanan": 972242,
+     "perikanan": 3576,
+     "non_pertanian": 13200,
+     "jumlah": 3080170
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PRINGAMBA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 237398,
+     "bukan_sawah": 227875,
+     "padang_sementara": 79863,
+     "padang_permanen": 222661,
+     "fallow": 60241,
+     "tanaman_tahunan": 720935,
+     "kandang_ternak": 14167,
+     "kehutanan": 581111,
+     "perikanan": 3367,
+     "non_pertanian": 4634,
+     "jumlah": 2152252
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PASEGERAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 583062,
+     "bukan_sawah": 199546,
+     "padang_sementara": 135821,
+     "padang_permanen": 445931,
+     "fallow": 60480,
+     "tanaman_tahunan": 791758,
+     "kandang_ternak": 10801,
+     "kehutanan": 528057,
+     "perikanan": 1364,
+     "non_pertanian": 2716,
+     "jumlah": 2759536
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PINGIT LOR",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 1010217,
+     "bukan_sawah": 84495,
+     "padang_sementara": 279702,
+     "padang_permanen": 509773,
+     "fallow": 64424,
+     "tanaman_tahunan": 914926,
+     "kandang_ternak": 13944,
+     "kehutanan": 532275,
+     "perikanan": 1362,
+     "non_pertanian": 17782,
+     "jumlah": 3428900
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "LAWEN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 994908,
+     "bukan_sawah": 185752,
+     "padang_sementara": 490524,
+     "padang_permanen": 363046,
+     "fallow": 122096,
+     "tanaman_tahunan": 1120715,
+     "kandang_ternak": 20754,
+     "kehutanan": 603221,
+     "perikanan": 6737,
+     "non_pertanian": 15695,
+     "jumlah": 3923448
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "SIRONGGE",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 445521,
+     "bukan_sawah": 98437,
+     "padang_sementara": 460215,
+     "padang_permanen": 103273,
+     "fallow": 21541,
+     "tanaman_tahunan": 308235,
+     "kandang_ternak": 14210,
+     "kehutanan": 528375,
+     "perikanan": 4519,
+     "non_pertanian": 4428,
+     "jumlah": 1988754
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   }
+  ]
+ },
+ {
+  "kecamatan": "Pejawaran",
+  "desas": [
+   {
+    "name": "KALILUNJAR",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 136170,
+     "bukan_sawah": 363426,
+     "padang_sementara": 12585,
+     "padang_permanen": 3300,
+     "fallow": 11382,
+     "tanaman_tahunan": 121009,
+     "kandang_ternak": 13675,
+     "kehutanan": 244475,
+     "perikanan": 49245,
+     "non_pertanian": 2409,
+     "jumlah": 957676
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "BITING",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 0,
+     "bukan_sawah": 606959,
+     "padang_sementara": 7515,
+     "padang_permanen": 1990,
+     "fallow": 32910,
+     "tanaman_tahunan": 45426,
+     "kandang_ternak": 3504,
+     "kehutanan": 43499,
+     "perikanan": 4626,
+     "non_pertanian": 730,
+     "jumlah": 747159
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "TLAHAB",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 795,
+     "bukan_sawah": 663737,
+     "padang_sementara": 8278,
+     "padang_permanen": 23293,
+     "fallow": 16156,
+     "tanaman_tahunan": 37397,
+     "kandang_ternak": 3949,
+     "kehutanan": 146596,
+     "perikanan": 1691,
+     "non_pertanian": 1294,
+     "jumlah": 903186
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "DARMAYASA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 22352,
+     "bukan_sawah": 3072571,
+     "padang_sementara": 90978,
+     "padang_permanen": 67270,
+     "fallow": 190095,
+     "tanaman_tahunan": 189887,
+     "kandang_ternak": 13220,
+     "kehutanan": 466800,
+     "perikanan": 2330,
+     "non_pertanian": 7360,
+     "jumlah": 4122863
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PEJAWARAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 9080,
+     "bukan_sawah": 2920103,
+     "padang_sementara": 80089,
+     "padang_permanen": 18807,
+     "fallow": 107069,
+     "tanaman_tahunan": 80251,
+     "kandang_ternak": 9920,
+     "kehutanan": 69277,
+     "perikanan": 540,
+     "non_pertanian": 8874,
+     "jumlah": 3304010
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PEGUNDUNGAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 9350,
+     "bukan_sawah": 2318134,
+     "padang_sementara": 25178,
+     "padang_permanen": 2812,
+     "fallow": 56980,
+     "tanaman_tahunan": 165962,
+     "kandang_ternak": 4692,
+     "kehutanan": 12721,
+     "perikanan": 80,
+     "non_pertanian": 2134,
+     "jumlah": 2598043
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "BEJI",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 0,
+     "bukan_sawah": 1696288,
+     "padang_sementara": 8905,
+     "padang_permanen": 1980,
+     "fallow": 1600,
+     "tanaman_tahunan": 2760,
+     "kandang_ternak": 63,
+     "kehutanan": 1809,
+     "perikanan": 0,
+     "non_pertanian": 105,
+     "jumlah": 1713510
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "SEMANGKUNG",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 0,
+     "bukan_sawah": 1624800,
+     "padang_sementara": 14212,
+     "padang_permanen": 23560,
+     "fallow": 31625,
+     "tanaman_tahunan": 10688,
+     "kandang_ternak": 1424,
+     "kehutanan": 31700,
+     "perikanan": 0,
+     "non_pertanian": 394,
+     "jumlah": 1738403
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "CONDONGCAMPUR",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 0,
+     "bukan_sawah": 2839057,
+     "padang_sementara": 5026,
+     "padang_permanen": 0,
+     "fallow": 20660,
+     "tanaman_tahunan": 3330,
+     "kandang_ternak": 2358,
+     "kehutanan": 110,
+     "perikanan": 54,
+     "non_pertanian": 390,
+     "jumlah": 2870985
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "GEMBOL",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 290,
+     "bukan_sawah": 2035976,
+     "padang_sementara": 1500,
+     "padang_permanen": 1400,
+     "fallow": 0,
+     "tanaman_tahunan": 11450,
+     "kandang_ternak": 838,
+     "kehutanan": 2007,
+     "perikanan": 0,
+     "non_pertanian": 3995,
+     "jumlah": 2057456
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "SIDENGOK",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 2800,
+     "bukan_sawah": 3325759,
+     "padang_sementara": 3450,
+     "padang_permanen": 7000,
+     "fallow": 56465,
+     "tanaman_tahunan": 7500,
+     "kandang_ternak": 3061,
+     "kehutanan": 8760,
+     "perikanan": 25,
+     "non_pertanian": 364,
+     "jumlah": 3415184
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "RATAMBA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 6000,
+     "bukan_sawah": 1891660,
+     "padang_sementara": 54000,
+     "padang_permanen": 20475,
+     "fallow": 21572,
+     "tanaman_tahunan": 48374,
+     "kandang_ternak": 5088,
+     "kehutanan": 48507,
+     "perikanan": 520,
+     "non_pertanian": 2346,
+     "jumlah": 2098542
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PENUSUPAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 800,
+     "bukan_sawah": 2107704,
+     "padang_sementara": 25863,
+     "padang_permanen": 15034,
+     "fallow": 78906,
+     "tanaman_tahunan": 140103,
+     "kandang_ternak": 11318,
+     "kehutanan": 126620,
+     "perikanan": 5034,
+     "non_pertanian": 3384,
+     "jumlah": 2514766
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "GIRITIRTA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 8500,
+     "bukan_sawah": 2298806,
+     "padang_sementara": 53285,
+     "padang_permanen": 5722,
+     "fallow": 112301,
+     "tanaman_tahunan": 49033,
+     "kandang_ternak": 4900,
+     "kehutanan": 152165,
+     "perikanan": 8281,
+     "non_pertanian": 660,
+     "jumlah": 2693653
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KARANGSARI",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 416142,
+     "bukan_sawah": 953223,
+     "padang_sementara": 42333,
+     "padang_permanen": 1300,
+     "fallow": 23861,
+     "tanaman_tahunan": 110330,
+     "kandang_ternak": 5135,
+     "kehutanan": 123681,
+     "perikanan": 24105,
+     "non_pertanian": 1798,
+     "jumlah": 1701908
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "SARWODADI",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 141325,
+     "bukan_sawah": 1430518,
+     "padang_sementara": 18566,
+     "padang_permanen": 58779,
+     "fallow": 76603,
+     "tanaman_tahunan": 290718,
+     "kandang_ternak": 10135,
+     "kehutanan": 292054,
+     "perikanan": 1700,
+     "non_pertanian": 705,
+     "jumlah": 2321103
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "GROGOL",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 0,
+     "bukan_sawah": 3515682,
+     "padang_sementara": 28130,
+     "padang_permanen": 5180,
+     "fallow": 30120,
+     "tanaman_tahunan": 7834,
+     "kandang_ternak": 3898,
+     "kehutanan": 21525,
+     "perikanan": 6,
+     "non_pertanian": 0,
+     "jumlah": 3612375
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   }
+  ]
+ },
+ {
+  "kecamatan": "Punggelan",
+  "desas": [
+   {
+    "name": "SAMBONG",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 105520,
+     "bukan_sawah": 882266,
+     "padang_sementara": 16956,
+     "padang_permanen": 21374,
+     "fallow": 31505,
+     "tanaman_tahunan": 858500,
+     "kandang_ternak": 25987,
+     "kehutanan": 238204,
+     "perikanan": 7515,
+     "non_pertanian": 3605,
+     "jumlah": 2191432
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "TRIBUANA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 146539,
+     "bukan_sawah": 143836,
+     "padang_sementara": 2731,
+     "padang_permanen": 700,
+     "fallow": 11947,
+     "tanaman_tahunan": 859870,
+     "kandang_ternak": 12971,
+     "kehutanan": 190985,
+     "perikanan": 10531,
+     "non_pertanian": 4203,
+     "jumlah": 1384313
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "SAWANGAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 26926,
+     "bukan_sawah": 100063,
+     "padang_sementara": 16707,
+     "padang_permanen": 7248,
+     "fallow": 24590,
+     "tanaman_tahunan": 705632,
+     "kandang_ternak": 11689,
+     "kehutanan": 422326,
+     "perikanan": 4398,
+     "non_pertanian": 70,
+     "jumlah": 1319649
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "SIDARATA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 273845,
+     "bukan_sawah": 158147,
+     "padang_sementara": 4490,
+     "padang_permanen": 5472,
+     "fallow": 17982,
+     "tanaman_tahunan": 740817,
+     "kandang_ternak": 27100,
+     "kehutanan": 284256,
+     "perikanan": 26921,
+     "non_pertanian": 4210,
+     "jumlah": 1543240
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "BADAKARYA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 338995,
+     "bukan_sawah": 70422,
+     "padang_sementara": 550,
+     "padang_permanen": 7840,
+     "fallow": 51877,
+     "tanaman_tahunan": 853790,
+     "kandang_ternak": 29504,
+     "kehutanan": 322279.5,
+     "perikanan": 35645,
+     "non_pertanian": 1259,
+     "jumlah": 1712161.5
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "BONDOLHARJO",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 259785,
+     "bukan_sawah": 61680,
+     "padang_sementara": 0,
+     "padang_permanen": 1000,
+     "fallow": 48562,
+     "tanaman_tahunan": 1837739,
+     "kandang_ternak": 20836,
+     "kehutanan": 535904,
+     "perikanan": 43244,
+     "non_pertanian": 51578,
+     "jumlah": 2860328
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PUNGGELAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 88568,
+     "bukan_sawah": 196943,
+     "padang_sementara": 7493,
+     "padang_permanen": 25208,
+     "fallow": 26807,
+     "tanaman_tahunan": 2803723,
+     "kandang_ternak": 36872,
+     "kehutanan": 630690,
+     "perikanan": 12908,
+     "non_pertanian": 9953,
+     "jumlah": 3839165
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KARANGSARI",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 161042,
+     "bukan_sawah": 534536,
+     "padang_sementara": 31391,
+     "padang_permanen": 1474,
+     "fallow": 43973,
+     "tanaman_tahunan": 1488337,
+     "kandang_ternak": 29215,
+     "kehutanan": 352044,
+     "perikanan": 2250,
+     "non_pertanian": 6279,
+     "jumlah": 2650541
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KECEPIT",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 6074,
+     "bukan_sawah": 523706,
+     "padang_sementara": 22020,
+     "padang_permanen": 14620,
+     "fallow": 28885,
+     "tanaman_tahunan": 1658663,
+     "kandang_ternak": 37062,
+     "kehutanan": 511720,
+     "perikanan": 8703,
+     "non_pertanian": 14931,
+     "jumlah": 2826384
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "DANAKERTA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 131073,
+     "bukan_sawah": 906800,
+     "padang_sementara": 37120,
+     "padang_permanen": 9350,
+     "fallow": 33395,
+     "tanaman_tahunan": 981355,
+     "kandang_ternak": 12487,
+     "kehutanan": 396924,
+     "perikanan": 10463,
+     "non_pertanian": 4442,
+     "jumlah": 2523409
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KLAPA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 54733,
+     "bukan_sawah": 639332,
+     "padang_sementara": 15868,
+     "padang_permanen": 74725,
+     "fallow": 29381,
+     "tanaman_tahunan": 722343,
+     "kandang_ternak": 8300,
+     "kehutanan": 320002,
+     "perikanan": 1391,
+     "non_pertanian": 622,
+     "jumlah": 1866697
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "JEMBANGAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 610851,
+     "bukan_sawah": 118643,
+     "padang_sementara": 15596,
+     "padang_permanen": 7951,
+     "fallow": 77538,
+     "tanaman_tahunan": 2061294,
+     "kandang_ternak": 21028,
+     "kehutanan": 421736,
+     "perikanan": 11055,
+     "non_pertanian": 7580,
+     "jumlah": 3353272
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PURWASANA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 459494,
+     "bukan_sawah": 137565,
+     "padang_sementara": 13635,
+     "padang_permanen": 1540,
+     "fallow": 10435,
+     "tanaman_tahunan": 1705887,
+     "kandang_ternak": 21408,
+     "kehutanan": 161790,
+     "perikanan": 5426,
+     "non_pertanian": 5400,
+     "jumlah": 2522580
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PETUGURAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 160006,
+     "bukan_sawah": 100640,
+     "padang_sementara": 19645,
+     "padang_permanen": 48416,
+     "fallow": 73228,
+     "tanaman_tahunan": 3716354,
+     "kandang_ternak": 39239,
+     "kehutanan": 243812,
+     "perikanan": 14513,
+     "non_pertanian": 32457,
+     "jumlah": 4448310
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "TANJUNGTIRTA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 228006,
+     "bukan_sawah": 75190,
+     "padang_sementara": 0,
+     "padang_permanen": 14800,
+     "fallow": 9907,
+     "tanaman_tahunan": 3032578,
+     "kandang_ternak": 47156,
+     "kehutanan": 302890,
+     "perikanan": 10376,
+     "non_pertanian": 1264,
+     "jumlah": 3722167
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "MLAYA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 270524,
+     "bukan_sawah": 89275,
+     "padang_sementara": 9698,
+     "padang_permanen": 99118,
+     "fallow": 15155,
+     "tanaman_tahunan": 1674051.5,
+     "kandang_ternak": 14437,
+     "kehutanan": 404838.5,
+     "perikanan": 4349,
+     "non_pertanian": 20779,
+     "jumlah": 2602225
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "TLAGA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 406845,
+     "bukan_sawah": 199052,
+     "padang_sementara": 15218,
+     "padang_permanen": 49813,
+     "fallow": 21667,
+     "tanaman_tahunan": 3826573,
+     "kandang_ternak": 30932,
+     "kehutanan": 271835,
+     "perikanan": 17844,
+     "non_pertanian": 919,
+     "jumlah": 4840698
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   }
+  ]
+ },
+ {
+  "kecamatan": "Purwanegara",
+  "desas": [
+   {
+    "name": "KALITENGAH",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 173481,
+     "bukan_sawah": 1046722,
+     "padang_sementara": 117141,
+     "padang_permanen": 81738,
+     "fallow": 86031,
+     "tanaman_tahunan": 848968,
+     "kandang_ternak": 32311,
+     "kehutanan": 1611201,
+     "perikanan": 25164,
+     "non_pertanian": 4046,
+     "jumlah": 4026803
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PETIR",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 22587,
+     "bukan_sawah": 5818081,
+     "padang_sementara": 114916,
+     "padang_permanen": 60450,
+     "fallow": 459296,
+     "tanaman_tahunan": 696872,
+     "kandang_ternak": 18285,
+     "kehutanan": 622485,
+     "perikanan": 4903,
+     "non_pertanian": 24003,
+     "jumlah": 7841878
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KALIAJIR",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 12972,
+     "bukan_sawah": 2890446,
+     "padang_sementara": 81582,
+     "padang_permanen": 276992,
+     "fallow": 68747,
+     "tanaman_tahunan": 402052,
+     "kandang_ternak": 12402,
+     "kehutanan": 328819,
+     "perikanan": 4230,
+     "non_pertanian": 1233,
+     "jumlah": 4079475
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KARANGANYAR",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 28829,
+     "bukan_sawah": 2336938,
+     "padang_sementara": 176613,
+     "padang_permanen": 28358,
+     "fallow": 6865,
+     "tanaman_tahunan": 464359,
+     "kandang_ternak": 14938,
+     "kehutanan": 425337,
+     "perikanan": 12478,
+     "non_pertanian": 21922,
+     "jumlah": 3516637
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "MERDEN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 1308851,
+     "bukan_sawah": 658849,
+     "padang_sementara": 26118,
+     "padang_permanen": 32165,
+     "fallow": 52755,
+     "tanaman_tahunan": 648986,
+     "kandang_ternak": 25790,
+     "kehutanan": 385173,
+     "perikanan": 25113,
+     "non_pertanian": 20290,
+     "jumlah": 3184090
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "MERTASARI",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 966395,
+     "bukan_sawah": 644684,
+     "padang_sementara": 35363,
+     "padang_permanen": 2730,
+     "fallow": 14760,
+     "tanaman_tahunan": 213608,
+     "kandang_ternak": 21163,
+     "kehutanan": 84023,
+     "perikanan": 71897,
+     "non_pertanian": 12170,
+     "jumlah": 2066793
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PARAKAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 89676,
+     "bukan_sawah": 2519282,
+     "padang_sementara": 32082,
+     "padang_permanen": 14777,
+     "fallow": 12732,
+     "tanaman_tahunan": 350702,
+     "kandang_ternak": 9615,
+     "kehutanan": 54154,
+     "perikanan": 7729,
+     "non_pertanian": 9323,
+     "jumlah": 3100072
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PUCUNGBEDUG",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 18158,
+     "bukan_sawah": 2800000,
+     "padang_sementara": 35564,
+     "padang_permanen": 26193,
+     "fallow": 37693,
+     "tanaman_tahunan": 280032,
+     "kandang_ternak": 16780,
+     "kehutanan": 126955,
+     "perikanan": 4783,
+     "non_pertanian": 1790,
+     "jumlah": 3347948
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KUTAWULUH",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 774990,
+     "bukan_sawah": 365480,
+     "padang_sementara": 9149,
+     "padang_permanen": 10824,
+     "fallow": 21064,
+     "tanaman_tahunan": 240787,
+     "kandang_ternak": 12470,
+     "kehutanan": 33888,
+     "perikanan": 94165,
+     "non_pertanian": 947,
+     "jumlah": 1563764
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "GUMIWANG",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 679959,
+     "bukan_sawah": 159416,
+     "padang_sementara": 4284,
+     "padang_permanen": 28050,
+     "fallow": 30025,
+     "tanaman_tahunan": 310813,
+     "kandang_ternak": 5807,
+     "kehutanan": 76464,
+     "perikanan": 295320,
+     "non_pertanian": 555,
+     "jumlah": 1590693
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KALIPELUS",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 458194,
+     "bukan_sawah": 142490,
+     "padang_sementara": 4293,
+     "padang_permanen": 5837,
+     "fallow": 3743,
+     "tanaman_tahunan": 152000,
+     "kandang_ternak": 2912,
+     "kehutanan": 56501,
+     "perikanan": 126143,
+     "non_pertanian": 1688,
+     "jumlah": 953801
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PURWONEGORO",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 976300,
+     "bukan_sawah": 151650,
+     "padang_sementara": 228,
+     "padang_permanen": 2210,
+     "fallow": 4312,
+     "tanaman_tahunan": 161043,
+     "kandang_ternak": 7667,
+     "kehutanan": 68814,
+     "perikanan": 53281,
+     "non_pertanian": 5360,
+     "jumlah": 1430865
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "DANARAJA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 1526009,
+     "bukan_sawah": 22295,
+     "padang_sementara": 2910,
+     "padang_permanen": 36138,
+     "fallow": 2297,
+     "tanaman_tahunan": 78231,
+     "kandang_ternak": 4784,
+     "kehutanan": 42796,
+     "perikanan": 47670,
+     "non_pertanian": 7616,
+     "jumlah": 1770746
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   }
+  ]
+ },
+ {
+  "kecamatan": "Purwareja Klampok",
+  "desas": [
+   {
+    "name": "PURWAREJA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 418452,
+     "bukan_sawah": 43432,
+     "padang_sementara": 1722,
+     "padang_permanen": 516,
+     "fallow": 1281,
+     "tanaman_tahunan": 89620,
+     "kandang_ternak": 6366,
+     "kehutanan": 29020,
+     "perikanan": 4312,
+     "non_pertanian": 811,
+     "jumlah": 595532
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KECITRAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 708082,
+     "bukan_sawah": 61708,
+     "padang_sementara": 870,
+     "padang_permanen": 0,
+     "fallow": 0,
+     "tanaman_tahunan": 122366,
+     "kandang_ternak": 7803,
+     "kehutanan": 42051,
+     "perikanan": 7281,
+     "non_pertanian": 1976,
+     "jumlah": 952137
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "SIRKANDI",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 430290,
+     "bukan_sawah": 189288,
+     "padang_sementara": 5996,
+     "padang_permanen": 5519,
+     "fallow": 37760,
+     "tanaman_tahunan": 716374.5,
+     "kandang_ternak": 22680,
+     "kehutanan": 702084.5,
+     "perikanan": 6533,
+     "non_pertanian": 37444,
+     "jumlah": 2153969
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PAGAK",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 734630,
+     "bukan_sawah": 11165,
+     "padang_sementara": 716,
+     "padang_permanen": 104,
+     "fallow": 2899,
+     "tanaman_tahunan": 83689,
+     "kandang_ternak": 6575,
+     "kehutanan": 71651,
+     "perikanan": 6188,
+     "non_pertanian": 9102,
+     "jumlah": 926719
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KALILANDAK",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 808476,
+     "bukan_sawah": 12208,
+     "padang_sementara": 0,
+     "padang_permanen": 0,
+     "fallow": 65,
+     "tanaman_tahunan": 90930,
+     "kandang_ternak": 4038,
+     "kehutanan": 23594,
+     "perikanan": 8344,
+     "non_pertanian": 5029,
+     "jumlah": 952684
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KLAMPOK",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 487192,
+     "bukan_sawah": 39417,
+     "padang_sementara": 18710,
+     "padang_permanen": 350,
+     "fallow": 7707,
+     "tanaman_tahunan": 178114,
+     "kandang_ternak": 10858,
+     "kehutanan": 48378,
+     "perikanan": 3293,
+     "non_pertanian": 6364,
+     "jumlah": 800383
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KALIMANDI",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 725981,
+     "bukan_sawah": 47817,
+     "padang_sementara": 2800,
+     "padang_permanen": 0,
+     "fallow": 16192,
+     "tanaman_tahunan": 180336,
+     "kandang_ternak": 9582,
+     "kehutanan": 47619,
+     "perikanan": 19892,
+     "non_pertanian": 5195,
+     "jumlah": 1055414
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KALIWINASUH",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 678806,
+     "bukan_sawah": 15590,
+     "padang_sementara": 700,
+     "padang_permanen": 12,
+     "fallow": 144,
+     "tanaman_tahunan": 98415,
+     "kandang_ternak": 4708.25,
+     "kehutanan": 16601,
+     "perikanan": 2651,
+     "non_pertanian": 1661,
+     "jumlah": 819288.25
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   }
+  ]
+ },
+ {
+  "kecamatan": "Rakit",
+  "desas": [
+   {
+    "name": "SITUWANGI",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 251527,
+     "bukan_sawah": 261682,
+     "padang_sementara": 2764,
+     "padang_permanen": 850,
+     "fallow": 4631,
+     "tanaman_tahunan": 294000.5,
+     "kandang_ternak": 5634,
+     "kehutanan": 30562,
+     "perikanan": 17978,
+     "non_pertanian": 0,
+     "jumlah": 869628.5
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "GELANG",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 433092,
+     "bukan_sawah": 175366,
+     "padang_sementara": 7276,
+     "padang_permanen": 1448,
+     "fallow": 950,
+     "tanaman_tahunan": 116829,
+     "kandang_ternak": 12030.5,
+     "kehutanan": 11413,
+     "perikanan": 11189.5,
+     "non_pertanian": 1252,
+     "jumlah": 770846
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "RAKIT",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 508054,
+     "bukan_sawah": 97147,
+     "padang_sementara": 965,
+     "padang_permanen": 100,
+     "fallow": 550,
+     "tanaman_tahunan": 147047,
+     "kandang_ternak": 7382,
+     "kehutanan": 12044,
+     "perikanan": 33690,
+     "non_pertanian": 349,
+     "jumlah": 807328
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "ADIPASIR",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 516484,
+     "bukan_sawah": 189075,
+     "padang_sementara": 1623,
+     "padang_permanen": 19837,
+     "fallow": 4364,
+     "tanaman_tahunan": 342662,
+     "kandang_ternak": 15965,
+     "kehutanan": 77111,
+     "perikanan": 176131.5,
+     "non_pertanian": 4557,
+     "jumlah": 1347809.5
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KINCANG",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 376305,
+     "bukan_sawah": 191456,
+     "padang_sementara": 2410,
+     "padang_permanen": 2910,
+     "fallow": 26762,
+     "tanaman_tahunan": 246884,
+     "kandang_ternak": 7310,
+     "kehutanan": 71776,
+     "perikanan": 218213,
+     "non_pertanian": 3946,
+     "jumlah": 1147972
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "TANJUNGANOM",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 533423,
+     "bukan_sawah": 86027,
+     "padang_sementara": 3730,
+     "padang_permanen": 10765,
+     "fallow": 7461,
+     "tanaman_tahunan": 147437,
+     "kandang_ternak": 3543,
+     "kehutanan": 37841,
+     "perikanan": 346118,
+     "non_pertanian": 1332,
+     "jumlah": 1177677
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "LUWUNG",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 262470,
+     "bukan_sawah": 20020,
+     "padang_sementara": 1272,
+     "padang_permanen": 18258,
+     "fallow": 2532,
+     "tanaman_tahunan": 186938,
+     "kandang_ternak": 2929,
+     "kehutanan": 80069,
+     "perikanan": 192619,
+     "non_pertanian": 1714,
+     "jumlah": 768821
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "LENGKONG",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 1130796,
+     "bukan_sawah": 169871,
+     "padang_sementara": 25608,
+     "padang_permanen": 3896,
+     "fallow": 19117,
+     "tanaman_tahunan": 380822,
+     "kandang_ternak": 23678,
+     "kehutanan": 98609,
+     "perikanan": 203870,
+     "non_pertanian": 13803,
+     "jumlah": 2070070
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "BADAMITA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 696212,
+     "bukan_sawah": 459976,
+     "padang_sementara": 12844,
+     "padang_permanen": 22490,
+     "fallow": 3978,
+     "tanaman_tahunan": 464907,
+     "kandang_ternak": 17184,
+     "kehutanan": 159460,
+     "perikanan": 24356,
+     "non_pertanian": 2766,
+     "jumlah": 1864173
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "BANDINGAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 185319,
+     "bukan_sawah": 839501,
+     "padang_sementara": 5159,
+     "padang_permanen": 12436,
+     "fallow": 12945,
+     "tanaman_tahunan": 938988,
+     "kandang_ternak": 22067,
+     "kehutanan": 199594,
+     "perikanan": 40756,
+     "non_pertanian": 4331,
+     "jumlah": 2261096
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PINGIT",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 43583,
+     "bukan_sawah": 361755,
+     "padang_sementara": 31373,
+     "padang_permanen": 17461,
+     "fallow": 21088,
+     "tanaman_tahunan": 741929,
+     "kandang_ternak": 19518,
+     "kehutanan": 85643,
+     "perikanan": 34312,
+     "non_pertanian": 9053,
+     "jumlah": 1365715
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   }
+  ]
+ },
+ {
+  "kecamatan": "Sigaluh",
+  "desas": [
+   {
+    "name": "PRINGAMBA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 0,
+     "bukan_sawah": 20886,
+     "padang_sementara": 7679,
+     "padang_permanen": 2971,
+     "fallow": 55094,
+     "tanaman_tahunan": 2777971,
+     "kandang_ternak": 29806,
+     "kehutanan": 110790,
+     "perikanan": 1484,
+     "non_pertanian": 3059,
+     "jumlah": 3009740
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "SAWAL",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 5920,
+     "bukan_sawah": 9100,
+     "padang_sementara": 500,
+     "padang_permanen": 8040,
+     "fallow": 8090,
+     "tanaman_tahunan": 2457586,
+     "kandang_ternak": 26394,
+     "kehutanan": 97588,
+     "perikanan": 6492,
+     "non_pertanian": 2458,
+     "jumlah": 2622168
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PANAWAREN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 4202,
+     "bukan_sawah": 46778,
+     "padang_sementara": 9300,
+     "padang_permanen": 41326,
+     "fallow": 5441,
+     "tanaman_tahunan": 1960253,
+     "kandang_ternak": 15456,
+     "kehutanan": 320306,
+     "perikanan": 1724,
+     "non_pertanian": 0,
+     "jumlah": 2404786
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "TUNGGARA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 29241,
+     "bukan_sawah": 34705,
+     "padang_sementara": 9260,
+     "padang_permanen": 133,
+     "fallow": 7448,
+     "tanaman_tahunan": 628183,
+     "kandang_ternak": 2143,
+     "kehutanan": 103219,
+     "perikanan": 1509,
+     "non_pertanian": 15252,
+     "jumlah": 831093
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "RANDEGAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 5907,
+     "bukan_sawah": 5269,
+     "padang_sementara": 0,
+     "padang_permanen": 0,
+     "fallow": 0,
+     "tanaman_tahunan": 488584,
+     "kandang_ternak": 2490,
+     "kehutanan": 52213,
+     "perikanan": 658,
+     "non_pertanian": 1861,
+     "jumlah": 556982
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "BOJANEGARA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 280085,
+     "bukan_sawah": 12119,
+     "padang_sementara": 2370,
+     "padang_permanen": 820,
+     "fallow": 18902,
+     "tanaman_tahunan": 1126797,
+     "kandang_ternak": 5929,
+     "kehutanan": 139532,
+     "perikanan": 4787,
+     "non_pertanian": 2835,
+     "jumlah": 1594176
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "BANDINGAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 91667,
+     "bukan_sawah": 12391,
+     "padang_sementara": 0,
+     "padang_permanen": 4553,
+     "fallow": 3324,
+     "tanaman_tahunan": 552793,
+     "kandang_ternak": 2037,
+     "kehutanan": 68829,
+     "perikanan": 3483,
+     "non_pertanian": 665,
+     "jumlah": 739742
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PRIGI",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 118944,
+     "bukan_sawah": 126788,
+     "padang_sementara": 9279,
+     "padang_permanen": 1717,
+     "fallow": 22838,
+     "tanaman_tahunan": 2232558,
+     "kandang_ternak": 9012,
+     "kehutanan": 216363,
+     "perikanan": 6081,
+     "non_pertanian": 4140,
+     "jumlah": 2747720
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "GEMBONGAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 73160,
+     "bukan_sawah": 30902,
+     "padang_sementara": 5773,
+     "padang_permanen": 4694,
+     "fallow": 22048,
+     "tanaman_tahunan": 1960125,
+     "kandang_ternak": 18911,
+     "kehutanan": 119642,
+     "perikanan": 1535,
+     "non_pertanian": 3805,
+     "jumlah": 2240595
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KEMIRI",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 1000,
+     "bukan_sawah": 5485,
+     "padang_sementara": 4306,
+     "padang_permanen": 1260,
+     "fallow": 27517,
+     "tanaman_tahunan": 707480,
+     "kandang_ternak": 7209,
+     "kehutanan": 51338,
+     "perikanan": 490,
+     "non_pertanian": 262,
+     "jumlah": 806347
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KARANGMANGU",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 0,
+     "bukan_sawah": 6832,
+     "padang_sementara": 3500,
+     "padang_permanen": 0,
+     "fallow": 1890,
+     "tanaman_tahunan": 766273,
+     "kandang_ternak": 7400,
+     "kehutanan": 76041,
+     "perikanan": 1548,
+     "non_pertanian": 578,
+     "jumlah": 864062
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "WANACIPTA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 39831,
+     "bukan_sawah": 7875,
+     "padang_sementara": 230,
+     "padang_permanen": 0,
+     "fallow": 0,
+     "tanaman_tahunan": 158946,
+     "kandang_ternak": 698,
+     "kehutanan": 12013,
+     "perikanan": 524,
+     "non_pertanian": 20,
+     "jumlah": 220137
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "SIGALUH",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 31700,
+     "bukan_sawah": 14812,
+     "padang_sementara": 0,
+     "padang_permanen": 0,
+     "fallow": 11059,
+     "tanaman_tahunan": 388207,
+     "kandang_ternak": 7750,
+     "kehutanan": 34786,
+     "perikanan": 1603,
+     "non_pertanian": 359,
+     "jumlah": 490276
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "SINGAMERTA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 4536,
+     "bukan_sawah": 23620,
+     "padang_sementara": 15680,
+     "padang_permanen": 14324,
+     "fallow": 32279,
+     "tanaman_tahunan": 751205,
+     "kandang_ternak": 8523,
+     "kehutanan": 160408,
+     "perikanan": 5269,
+     "non_pertanian": 4696,
+     "jumlah": 1020540
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KALIBENDA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 107979,
+     "bukan_sawah": 9070,
+     "padang_sementara": 0,
+     "padang_permanen": 0,
+     "fallow": 3419,
+     "tanaman_tahunan": 271037,
+     "kandang_ternak": 925,
+     "kehutanan": 23162,
+     "perikanan": 2332,
+     "non_pertanian": 5032,
+     "jumlah": 422956
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   }
+  ]
+ },
+ {
+  "kecamatan": "Susukan",
+  "desas": [
+   {
+    "name": "PIASA WETAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 317316,
+     "bukan_sawah": 1078,
+     "padang_sementara": 3406,
+     "padang_permanen": 630,
+     "fallow": 0,
+     "tanaman_tahunan": 121627,
+     "kandang_ternak": 2425,
+     "kehutanan": 76689,
+     "perikanan": 673,
+     "non_pertanian": 1400,
+     "jumlah": 525244
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PEKIKIRAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 262293,
+     "bukan_sawah": 8482,
+     "padang_sementara": 532,
+     "padang_permanen": 224,
+     "fallow": 4219,
+     "tanaman_tahunan": 302174,
+     "kandang_ternak": 6258,
+     "kehutanan": 104752,
+     "perikanan": 622,
+     "non_pertanian": 231,
+     "jumlah": 689787
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "BRENGKOK",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 589105,
+     "bukan_sawah": 7861,
+     "padang_sementara": 64,
+     "padang_permanen": 0,
+     "fallow": 0,
+     "tanaman_tahunan": 82948,
+     "kandang_ternak": 4625,
+     "kehutanan": 47685,
+     "perikanan": 2556,
+     "non_pertanian": 25,
+     "jumlah": 734869
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PANERUSAN KULON",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 408266,
+     "bukan_sawah": 1899,
+     "padang_sementara": 6800,
+     "padang_permanen": 0,
+     "fallow": 11334,
+     "tanaman_tahunan": 206457,
+     "kandang_ternak": 4541,
+     "kehutanan": 41241,
+     "perikanan": 1758,
+     "non_pertanian": 20298,
+     "jumlah": 702594
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PANERUSAN WETAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 443401,
+     "bukan_sawah": 11711,
+     "padang_sementara": 1750,
+     "padang_permanen": 1788,
+     "fallow": 6824,
+     "tanaman_tahunan": 321814,
+     "kandang_ternak": 3489,
+     "kehutanan": 99321,
+     "perikanan": 799,
+     "non_pertanian": 98450,
+     "jumlah": 989347
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "GUMELEM KULON",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 711031,
+     "bukan_sawah": 81842,
+     "padang_sementara": 700,
+     "padang_permanen": 840,
+     "fallow": 18528,
+     "tanaman_tahunan": 848727,
+     "kandang_ternak": 13323,
+     "kehutanan": 161001,
+     "perikanan": 5515,
+     "non_pertanian": 32769,
+     "jumlah": 1874276
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "GUMELEM WETAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 1096042,
+     "bukan_sawah": 17744,
+     "padang_sementara": 1722,
+     "padang_permanen": 19998,
+     "fallow": 27563,
+     "tanaman_tahunan": 1503658,
+     "kandang_ternak": 20921,
+     "kehutanan": 361624,
+     "perikanan": 1679,
+     "non_pertanian": 29399,
+     "jumlah": 3080350
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "DERIK",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 628400,
+     "bukan_sawah": 67480,
+     "padang_sementara": 0,
+     "padang_permanen": 0,
+     "fallow": 8442,
+     "tanaman_tahunan": 326036,
+     "kandang_ternak": 15831,
+     "kehutanan": 213129,
+     "perikanan": 1859,
+     "non_pertanian": 800,
+     "jumlah": 1261977
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "BERTA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 652629,
+     "bukan_sawah": 42040,
+     "padang_sementara": 0,
+     "padang_permanen": 0,
+     "fallow": 7651,
+     "tanaman_tahunan": 274642,
+     "kandang_ternak": 25551,
+     "kehutanan": 201180,
+     "perikanan": 5658,
+     "non_pertanian": 2640,
+     "jumlah": 1211991
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KARANGJATI",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 248980,
+     "bukan_sawah": 59652,
+     "padang_sementara": 4130,
+     "padang_permanen": 0,
+     "fallow": 1822,
+     "tanaman_tahunan": 108272,
+     "kandang_ternak": 2796,
+     "kehutanan": 180290.5,
+     "perikanan": 2294.5,
+     "non_pertanian": 904,
+     "jumlah": 609141
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KEDAWUNG",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 649458,
+     "bukan_sawah": 18613,
+     "padang_sementara": 140,
+     "padang_permanen": 0,
+     "fallow": 1984,
+     "tanaman_tahunan": 101793,
+     "kandang_ternak": 6087,
+     "kehutanan": 21026,
+     "perikanan": 2291,
+     "non_pertanian": 5534,
+     "jumlah": 806926
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "DERMASARI",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 573707,
+     "bukan_sawah": 6169,
+     "padang_sementara": 4200,
+     "padang_permanen": 0,
+     "fallow": 0,
+     "tanaman_tahunan": 39782,
+     "kandang_ternak": 1564,
+     "kehutanan": 14676,
+     "perikanan": 872,
+     "non_pertanian": 0,
+     "jumlah": 640970
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "SUSUKAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 1098013,
+     "bukan_sawah": 3221,
+     "padang_sementara": 40,
+     "padang_permanen": 510,
+     "fallow": 4019,
+     "tanaman_tahunan": 86301,
+     "kandang_ternak": 5544,
+     "kehutanan": 29812,
+     "perikanan": 901,
+     "non_pertanian": 36707,
+     "jumlah": 1265068
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KEMRANGGON",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 756540,
+     "bukan_sawah": 13497,
+     "padang_sementara": 294,
+     "padang_permanen": 616,
+     "fallow": 280,
+     "tanaman_tahunan": 114347,
+     "kandang_ternak": 8214,
+     "kehutanan": 113071,
+     "perikanan": 2509,
+     "non_pertanian": 467,
+     "jumlah": 1009835
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KARANGSALAM",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 768428,
+     "bukan_sawah": 4445,
+     "padang_sementara": 880,
+     "padang_permanen": 1400,
+     "fallow": 38292,
+     "tanaman_tahunan": 161355,
+     "kandang_ternak": 11921,
+     "kehutanan": 116531,
+     "perikanan": 5176,
+     "non_pertanian": 6105,
+     "jumlah": 1114533
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   }
+  ]
+ },
+ {
+  "kecamatan": "Wanadadi",
+  "desas": [
+   {
+    "name": "TAPEN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 263896,
+     "bukan_sawah": 19385,
+     "padang_sementara": 0,
+     "padang_permanen": 1800,
+     "fallow": 3822,
+     "tanaman_tahunan": 103461,
+     "kandang_ternak": 2075,
+     "kehutanan": 62972,
+     "perikanan": 24225,
+     "non_pertanian": 205,
+     "jumlah": 481841
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KASILIB",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 973833,
+     "bukan_sawah": 27972,
+     "padang_sementara": 4189,
+     "padang_permanen": 0,
+     "fallow": 7824,
+     "tanaman_tahunan": 128144,
+     "kandang_ternak": 5544,
+     "kehutanan": 71133,
+     "perikanan": 21320,
+     "non_pertanian": 1000,
+     "jumlah": 1240959
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KARANGJAMBE",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 163901,
+     "bukan_sawah": 8200,
+     "padang_sementara": 0,
+     "padang_permanen": 0,
+     "fallow": 10840,
+     "tanaman_tahunan": 92795,
+     "kandang_ternak": 3188,
+     "kehutanan": 22468,
+     "perikanan": 13823,
+     "non_pertanian": 0,
+     "jumlah": 315215
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "WANADADI",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 113993,
+     "bukan_sawah": 17413,
+     "padang_sementara": 1500,
+     "padang_permanen": 113,
+     "fallow": 30517,
+     "tanaman_tahunan": 104228,
+     "kandang_ternak": 3151,
+     "kehutanan": 43031,
+     "perikanan": 26413,
+     "non_pertanian": 0,
+     "jumlah": 340359
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "WANAKARSA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 53475,
+     "bukan_sawah": 29475,
+     "padang_sementara": 0,
+     "padang_permanen": 0,
+     "fallow": 7149,
+     "tanaman_tahunan": 61634,
+     "kandang_ternak": 2165,
+     "kehutanan": 39561,
+     "perikanan": 3013,
+     "non_pertanian": 420,
+     "jumlah": 196892
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KARANGKEMIRI",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 507356,
+     "bukan_sawah": 41388,
+     "padang_sementara": 8800,
+     "padang_permanen": 4190,
+     "fallow": 10374,
+     "tanaman_tahunan": 141567,
+     "kandang_ternak": 5066,
+     "kehutanan": 32994,
+     "perikanan": 13174,
+     "non_pertanian": 3163,
+     "jumlah": 768072
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "GUMINGSIR",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 694773,
+     "bukan_sawah": 12811,
+     "padang_sementara": 58,
+     "padang_permanen": 8729,
+     "fallow": 17197,
+     "tanaman_tahunan": 64457,
+     "kandang_ternak": 1558,
+     "kehutanan": 23988,
+     "perikanan": 5671,
+     "non_pertanian": 3099,
+     "jumlah": 832341
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "LINGGASARI",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 984941,
+     "bukan_sawah": 53813,
+     "padang_sementara": 0,
+     "padang_permanen": 1340,
+     "fallow": 15998,
+     "tanaman_tahunan": 232200,
+     "kandang_ternak": 2122,
+     "kehutanan": 51015,
+     "perikanan": 22960,
+     "non_pertanian": 2768,
+     "jumlah": 1367157
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "MEDAYU",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 530298,
+     "bukan_sawah": 32878,
+     "padang_sementara": 12880,
+     "padang_permanen": 7233,
+     "fallow": 101219,
+     "tanaman_tahunan": 539487,
+     "kandang_ternak": 28958,
+     "kehutanan": 52817,
+     "perikanan": 14187,
+     "non_pertanian": 3858,
+     "jumlah": 1323815
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KANDANGWANGI",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 530533,
+     "bukan_sawah": 130395,
+     "padang_sementara": 2940,
+     "padang_permanen": 2413,
+     "fallow": 116023,
+     "tanaman_tahunan": 692443,
+     "kandang_ternak": 7824,
+     "kehutanan": 159801,
+     "perikanan": 8105,
+     "non_pertanian": 1573,
+     "jumlah": 1652050
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "LEMAHJAYA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 24605,
+     "bukan_sawah": 146001,
+     "padang_sementara": 3325,
+     "padang_permanen": 1736,
+     "fallow": 174560,
+     "tanaman_tahunan": 1903706,
+     "kandang_ternak": 21905.5,
+     "kehutanan": 321681,
+     "perikanan": 10429,
+     "non_pertanian": 4690,
+     "jumlah": 2612638.5
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   }
+  ]
+ },
+ {
+  "kecamatan": "Wanayasa",
+  "desas": [
+   {
+    "name": "SUWIDAK",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 519869,
+     "bukan_sawah": 64297,
+     "padang_sementara": 27040,
+     "padang_permanen": 44686,
+     "fallow": 10241,
+     "tanaman_tahunan": 1701596,
+     "kandang_ternak": 9139,
+     "kehutanan": 53490,
+     "perikanan": 905,
+     "non_pertanian": 18,
+     "jumlah": 2431281
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KARANGTENGAH",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 381320,
+     "bukan_sawah": 109086,
+     "padang_sementara": 46492,
+     "padang_permanen": 48542,
+     "fallow": 17719,
+     "tanaman_tahunan": 1317082,
+     "kandang_ternak": 4380.25,
+     "kehutanan": 70620,
+     "perikanan": 4649,
+     "non_pertanian": 862,
+     "jumlah": 2000752.25
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "BANTAR",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 41013,
+     "bukan_sawah": 119935,
+     "padang_sementara": 800,
+     "padang_permanen": 16752,
+     "fallow": 6579,
+     "tanaman_tahunan": 1474479,
+     "kandang_ternak": 25933.25,
+     "kehutanan": 94066,
+     "perikanan": 8148,
+     "non_pertanian": 7583,
+     "jumlah": 1795288.25
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PANDANSARI",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 267377,
+     "bukan_sawah": 119937,
+     "padang_sementara": 41346,
+     "padang_permanen": 7285,
+     "fallow": 22256,
+     "tanaman_tahunan": 2070409,
+     "kandang_ternak": 17317,
+     "kehutanan": 204335,
+     "perikanan": 3177,
+     "non_pertanian": 31438,
+     "jumlah": 2784877
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PAGERGUNUNG",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 49964,
+     "bukan_sawah": 189512,
+     "padang_sementara": 870,
+     "padang_permanen": 134536,
+     "fallow": 14897,
+     "tanaman_tahunan": 1584927,
+     "kandang_ternak": 8159,
+     "kehutanan": 168504,
+     "perikanan": 866,
+     "non_pertanian": 4656,
+     "jumlah": 2156891
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "DAWUHAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 39317,
+     "bukan_sawah": 453672,
+     "padang_sementara": 29926,
+     "padang_permanen": 1194,
+     "fallow": 14059,
+     "tanaman_tahunan": 534798,
+     "kandang_ternak": 9749,
+     "kehutanan": 167235,
+     "perikanan": 5741,
+     "non_pertanian": 11943,
+     "jumlah": 1267634
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KUBANG",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 10128,
+     "bukan_sawah": 774351,
+     "padang_sementara": 69552,
+     "padang_permanen": 50143,
+     "fallow": 24240,
+     "tanaman_tahunan": 347776,
+     "kandang_ternak": 12165,
+     "kehutanan": 154535,
+     "perikanan": 32170,
+     "non_pertanian": 2694,
+     "jumlah": 1477754
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "SUSUKAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 68538,
+     "bukan_sawah": 1191453,
+     "padang_sementara": 141220,
+     "padang_permanen": 65200,
+     "fallow": 18521,
+     "tanaman_tahunan": 369950,
+     "kandang_ternak": 29176,
+     "kehutanan": 494008,
+     "perikanan": 21707,
+     "non_pertanian": 8638,
+     "jumlah": 2408411
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "WANAYASA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 0,
+     "bukan_sawah": 2521763,
+     "padang_sementara": 280069,
+     "padang_permanen": 53426,
+     "fallow": 193053,
+     "tanaman_tahunan": 324195,
+     "kandang_ternak": 12992,
+     "kehutanan": 214390,
+     "perikanan": 8931,
+     "non_pertanian": 3652,
+     "jumlah": 3612471
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PESANTREN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 0,
+     "bukan_sawah": 1805658,
+     "padang_sementara": 142635,
+     "padang_permanen": 37798,
+     "fallow": 45021,
+     "tanaman_tahunan": 63093,
+     "kandang_ternak": 11184,
+     "kehutanan": 166850,
+     "perikanan": 1684,
+     "non_pertanian": 3533,
+     "jumlah": 2277456
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "BALUN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 5877,
+     "bukan_sawah": 2915597,
+     "padang_sementara": 259935,
+     "padang_permanen": 61478,
+     "fallow": 56289,
+     "tanaman_tahunan": 127891,
+     "kandang_ternak": 8650,
+     "kehutanan": 102235,
+     "perikanan": 3480,
+     "non_pertanian": 7777,
+     "jumlah": 3549209
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "TEMPURAN",
+    "typoFixed": true,
+    "m2": {
+     "sawah": 1029,
+     "bukan_sawah": 2309814,
+     "padang_sementara": 145555,
+     "padang_permanen": 26637,
+     "fallow": 50318,
+     "tanaman_tahunan": 50030,
+     "kandang_ternak": 10837,
+     "kehutanan": 41299,
+     "perikanan": 1880,
+     "non_pertanian": 1535,
+     "jumlah": 2638934
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "WANARAJA",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 13750,
+     "bukan_sawah": 5636441,
+     "padang_sementara": 64387,
+     "padang_permanen": 2943,
+     "fallow": 30982,
+     "tanaman_tahunan": 27778,
+     "kandang_ternak": 3921,
+     "kehutanan": 60552,
+     "perikanan": 649,
+     "non_pertanian": 1083,
+     "jumlah": 5842486
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "JATILAWANG",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 0,
+     "bukan_sawah": 4283834,
+     "padang_sementara": 31751,
+     "padang_permanen": 625,
+     "fallow": 24860,
+     "tanaman_tahunan": 96423,
+     "kandang_ternak": 4384,
+     "kehutanan": 126,
+     "perikanan": 0,
+     "non_pertanian": 2500,
+     "jumlah": 4444503
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "LEGOKSAYEM",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 700,
+     "bukan_sawah": 872586,
+     "padang_sementara": 13148,
+     "padang_permanen": 26099,
+     "fallow": 3022,
+     "tanaman_tahunan": 6723,
+     "kandang_ternak": 734,
+     "kehutanan": 4223,
+     "perikanan": 0,
+     "non_pertanian": 0,
+     "jumlah": 927235
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "KASIMPAR",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 4500,
+     "bukan_sawah": 2227850,
+     "padang_sementara": 20032,
+     "padang_permanen": 1600,
+     "fallow": 7875,
+     "tanaman_tahunan": 0,
+     "kandang_ternak": 721,
+     "kehutanan": 0,
+     "perikanan": 0,
+     "non_pertanian": 0,
+     "jumlah": 2262578
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   },
+   {
+    "name": "PENANGGUNGAN",
+    "typoFixed": false,
+    "m2": {
+     "sawah": 7580,
+     "bukan_sawah": 4013232,
+     "padang_sementara": 9107,
+     "padang_permanen": 3800,
+     "fallow": 7420,
+     "tanaman_tahunan": 20443,
+     "kandang_ternak": 575,
+     "kehutanan": 6346,
+     "perikanan": 16,
+     "non_pertanian": 120,
+     "jumlah": 4068639
+    },
+    "reconstructed": {},
+    "nullCols": 0
+   }
+  ]
+ }
+]

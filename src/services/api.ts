@@ -2461,6 +2461,75 @@ export const fetchPengeluaranTernak = apiFirst<TernakFlow[]>("/v1/peternakan/pen
 export const fetchLuarRPH = apiFirst<TernakFlow[]>("/v1/peternakan/luar-rph", fetchLuarRPHCsv);
 export const fetchDagingUnggas = apiFirst<TernakFlow[]>("/v1/peternakan/daging-unggas", fetchDagingUnggasCsv);
 export const fetchPerikananBudidaya = apiFirst<PerikananBudidaya[]>("/v1/perikanan/budidaya", fetchPerikananBudidayaCsv);
+
+export interface TernakSusuKulit {
+  kecamatan: string;
+  jenis: string; // "Sapi/Kerbau" atau "Kambing/Domba"
+  periode: string; // tahun, mis. "2024"
+  jumlah_unit: number; // ekuivalen "lembar kulit" / "liter susu" (nilai gabungan per grup)
+  satuan: string; // "lembar" | "liter" | "gabungan"
+}
+
+/**
+ * GET /api/v1/peternakan/susu-kulit
+ * Produksi susu & kulit per grup ternak (Sapi/Kerbau, Kambing/Domba) per kecamatan/tahun.
+ * Σ data live == 121.087 unit (verif backend: 120 baris).
+ * Auth: tidak perlu (public read-only backend MySQL read-only).
+ */
+const fetchTernakSusuKulitCsv = async (): Promise<TernakSusuKulit[]> => {
+  // Fallback: snapshot lokal (regenerasi dari xlsx _tmp jika ada).
+  // Jika belum ada snapshot, kirim array kosong → UI akan menampilkan empty state.
+  try {
+    const res = await fetch("/data/susu-kulit-fallback.json");
+    if (!res.ok) return [];
+    return (await res.json()) as TernakSusuKulit[];
+  } catch {
+    return [];
+  }
+};
+export const fetchTernakSusuKulit = apiFirst<TernakSusuKulit[]>("/v1/peternakan/susu-kulit", fetchTernakSusuKulitCsv);
+
+export interface SyncLogRow {
+  id: number;
+  dataset: string;
+  sumber: string;
+  aksi: string; // "import"
+  baris: number;
+  status: string; // "ok" | "error" | "skipped"
+  pesan: string | null;
+  created_at: string;
+}
+
+export interface SyncLogResponse {
+  total: number;
+  limit: number;
+  data: SyncLogRow[];
+}
+
+/**
+ * GET /api/v1/admin/sync-log
+ * Riwayat import/sync (audit log). Membutuhkan auth Bearer token (requireAdmin).
+ * Jika backend down / token tidak ada → return array kosong (UI kosong).
+ * Query: ?limit=N (default 50, range 1-200).
+ */
+export const fetchSyncLog = async (token: string, limit = 50): Promise<SyncLogResponse | null> => {
+  if (!token) return null;
+  try {
+    const res = await fetch(`${API_BASE}/v1/admin/sync-log?limit=${Math.min(Math.max(limit, 1), 200)}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return null;
+    const j = (await res.json()) as Partial<SyncLogResponse>;
+    if (!Array.isArray(j.data)) return null;
+    return {
+      total: j.total ?? j.data.length,
+      limit: j.limit ?? limit,
+      data: j.data,
+    };
+  } catch {
+    return null;
+  }
+};
 export const fetchPerikananTangkap = apiFirst<PerikananTangkap[]>("/v1/perikanan/tangkap", fetchPerikananTangkapCsv);
 export const fetchPerikananBenih = apiFirst<PerikananBenih[]>("/v1/perikanan/benih", fetchPerikananBenihCsv);
 export const fetchNilaiProduksiBudidaya = apiFirst<NilaiProduksiRow[]>("/v1/perikanan/nilai-budidaya", fetchNilaiProduksiBudidayaCsv);

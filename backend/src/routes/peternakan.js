@@ -114,3 +114,20 @@ peternakanRouter.get(
   "/daging-unggas",
   route(() => ternakFlow({ table: "ternak_daging", where: "WHERE t.kelompok = ?", params: ["unggas"], labels: UNGGAS_LABELS, valueCol: "produksi_kg", unit: "kg" })),
 );
+
+/** GET /api/v1/peternakan/susu-kulit -> TernakFlow[] (produksi kulit & susu per grup ternak).
+ *  Sumber BPS memakai 1 kolom per grup ternak tanpa memisahkan satuan kulit (lembar) vs
+ *  susu (liter) — unit dilabeli "gabungan" dan catatan tersimpan per baris di tabel. */
+peternakanRouter.get(
+  "/susu-kulit",
+  route(() =>
+    ternakFlow({
+      table: "ternak_susu_kulit",
+      where: "",
+      params: [],
+      labels: ["Sapi/Kerbau", "Kambing/Domba"],
+      valueCol: "nilai",
+      unit: "gabungan (kulit lembar / susu liter)",
+    }),
+  ),
+);

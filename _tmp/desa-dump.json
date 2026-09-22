@@ -1,0 +1,1948 @@
+[
+ {
+  "id": 1,
+  "kecamatan_id": 1,
+  "kecamatan": "Banjarmangu",
+  "nama": "Banjarkulon",
+  "nama_norm": "BANJARKULON"
+ },
+ {
+  "id": 2,
+  "kecamatan_id": 1,
+  "kecamatan": "Banjarmangu",
+  "nama": "Banjarmangu",
+  "nama_norm": "BANJARMANGU"
+ },
+ {
+  "id": 3,
+  "kecamatan_id": 1,
+  "kecamatan": "Banjarmangu",
+  "nama": "Beji",
+  "nama_norm": "BEJI"
+ },
+ {
+  "id": 4,
+  "kecamatan_id": 1,
+  "kecamatan": "Banjarmangu",
+  "nama": "Gripit",
+  "nama_norm": "GRIPIT"
+ },
+ {
+  "id": 5,
+  "kecamatan_id": 1,
+  "kecamatan": "Banjarmangu",
+  "nama": "Jenggawur",
+  "nama_norm": "JENGGAWUR"
+ },
+ {
+  "id": 6,
+  "kecamatan_id": 1,
+  "kecamatan": "Banjarmangu",
+  "nama": "Kalilunjar",
+  "nama_norm": "KALILUNJAR"
+ },
+ {
+  "id": 7,
+  "kecamatan_id": 1,
+  "kecamatan": "Banjarmangu",
+  "nama": "Kendaga",
+  "nama_norm": "KENDAGA"
+ },
+ {
+  "id": 8,
+  "kecamatan_id": 1,
+  "kecamatan": "Banjarmangu",
+  "nama": "Kesenet",
+  "nama_norm": "KESENET"
+ },
+ {
+  "id": 9,
+  "kecamatan_id": 1,
+  "kecamatan": "Banjarmangu",
+  "nama": "Majatengah",
+  "nama_norm": "MAJATENGAH"
+ },
+ {
+  "id": 10,
+  "kecamatan_id": 1,
+  "kecamatan": "Banjarmangu",
+  "nama": "Paseh",
+  "nama_norm": "PASEH"
+ },
+ {
+  "id": 11,
+  "kecamatan_id": 1,
+  "kecamatan": "Banjarmangu",
+  "nama": "Pekandangan",
+  "nama_norm": "PEKANDANGAN"
+ },
+ {
+  "id": 12,
+  "kecamatan_id": 1,
+  "kecamatan": "Banjarmangu",
+  "nama": "Prendengan",
+  "nama_norm": "PRENDENGAN"
+ },
+ {
+  "id": 13,
+  "kecamatan_id": 1,
+  "kecamatan": "Banjarmangu",
+  "nama": "Rejasari",
+  "nama_norm": "REJASARI"
+ },
+ {
+  "id": 14,
+  "kecamatan_id": 1,
+  "kecamatan": "Banjarmangu",
+  "nama": "Sigeblog",
+  "nama_norm": "SIGEBLOG"
+ },
+ {
+  "id": 15,
+  "kecamatan_id": 1,
+  "kecamatan": "Banjarmangu",
+  "nama": "Sijenggung",
+  "nama_norm": "SIJENGGUNG"
+ },
+ {
+  "id": 16,
+  "kecamatan_id": 1,
+  "kecamatan": "Banjarmangu",
+  "nama": "Sijeruk",
+  "nama_norm": "SIJERUK"
+ },
+ {
+  "id": 17,
+  "kecamatan_id": 1,
+  "kecamatan": "Banjarmangu",
+  "nama": "Sipedang",
+  "nama_norm": "SIPEDANG"
+ },
+ {
+  "id": 18,
+  "kecamatan_id": 2,
+  "kecamatan": "Banjarnegara",
+  "nama": "Ampelsari",
+  "nama_norm": "AMPELSARI"
+ },
+ {
+  "id": 19,
+  "kecamatan_id": 2,
+  "kecamatan": "Banjarnegara",
+  "nama": "Cendana",
+  "nama_norm": "CENDANA"
+ },
+ {
+  "id": 20,
+  "kecamatan_id": 2,
+  "kecamatan": "Banjarnegara",
+  "nama": "Kel. Argasoka",
+  "nama_norm": "KEL. ARGASOKA"
+ },
+ {
+  "id": 21,
+  "kecamatan_id": 2,
+  "kecamatan": "Banjarnegara",
+  "nama": "Kel.Karangtengah",
+  "nama_norm": "KEL.KARANGTENGAH"
+ },
+ {
+  "id": 22,
+  "kecamatan_id": 2,
+  "kecamatan": "Banjarnegara",
+  "nama": "Kel.Krandegan",
+  "nama_norm": "KEL.KRANDEGAN"
+ },
+ {
+  "id": 23,
+  "kecamatan_id": 2,
+  "kecamatan": "Banjarnegara",
+  "nama": "Kel.Kutabanjarnegara",
+  "nama_norm": "KEL.KUTABANJARNEGARA"
+ },
+ {
+  "id": 24,
+  "kecamatan_id": 2,
+  "kecamatan": "Banjarnegara",
+  "nama": "Kel.Parakancanggah",
+  "nama_norm": "KEL.PARAKANCANGGAH"
+ },
+ {
+  "id": 25,
+  "kecamatan_id": 2,
+  "kecamatan": "Banjarnegara",
+  "nama": "Kel.Semampir",
+  "nama_norm": "KEL.SEMAMPIR"
+ },
+ {
+  "id": 26,
+  "kecamatan_id": 2,
+  "kecamatan": "Banjarnegara",
+  "nama": "Kel.Semarang",
+  "nama_norm": "KEL.SEMARANG"
+ },
+ {
+  "id": 27,
+  "kecamatan_id": 2,
+  "kecamatan": "Banjarnegara",
+  "nama": "Kel.Sokanandi",
+  "nama_norm": "KEL.SOKANANDI"
+ },
+ {
+  "id": 28,
+  "kecamatan_id": 2,
+  "kecamatan": "Banjarnegara",
+  "nama": "Kel.Wangon",
+  "nama_norm": "KEL.WANGON"
+ },
+ {
+  "id": 29,
+  "kecamatan_id": 2,
+  "kecamatan": "Banjarnegara",
+  "nama": "Sokayasa",
+  "nama_norm": "SOKAYASA"
+ },
+ {
+  "id": 30,
+  "kecamatan_id": 2,
+  "kecamatan": "Banjarnegara",
+  "nama": "Tlagawera",
+  "nama_norm": "TLAGAWERA"
+ },
+ {
+  "id": 31,
+  "kecamatan_id": 3,
+  "kecamatan": "Batur",
+  "nama": "Bakal",
+  "nama_norm": "BAKAL"
+ },
+ {
+  "id": 32,
+  "kecamatan_id": 3,
+  "kecamatan": "Batur",
+  "nama": "Batur",
+  "nama_norm": "BATUR"
+ },
+ {
+  "id": 33,
+  "kecamatan_id": 3,
+  "kecamatan": "Batur",
+  "nama": "Diengkulon",
+  "nama_norm": "DIENGKULON"
+ },
+ {
+  "id": 34,
+  "kecamatan_id": 3,
+  "kecamatan": "Batur",
+  "nama": "Karangtengah",
+  "nama_norm": "KARANGTENGAH"
+ },
+ {
+  "id": 35,
+  "kecamatan_id": 3,
+  "kecamatan": "Batur",
+  "nama": "Kepakisan",
+  "nama_norm": "KEPAKISAN"
+ },
+ {
+  "id": 36,
+  "kecamatan_id": 3,
+  "kecamatan": "Batur",
+  "nama": "Pekasiran",
+  "nama_norm": "PEKASIRAN"
+ },
+ {
+  "id": 37,
+  "kecamatan_id": 3,
+  "kecamatan": "Batur",
+  "nama": "Pesurenan",
+  "nama_norm": "PESURENAN"
+ },
+ {
+  "id": 38,
+  "kecamatan_id": 3,
+  "kecamatan": "Batur",
+  "nama": "Sumberejo",
+  "nama_norm": "SUMBEREJO"
+ },
+ {
+  "id": 39,
+  "kecamatan_id": 4,
+  "kecamatan": "Bawang",
+  "nama": "Bandingan",
+  "nama_norm": "BANDINGAN"
+ },
+ {
+  "id": 40,
+  "kecamatan_id": 4,
+  "kecamatan": "Bawang",
+  "nama": "Bawang",
+  "nama_norm": "BAWANG"
+ },
+ {
+  "id": 41,
+  "kecamatan_id": 4,
+  "kecamatan": "Bawang",
+  "nama": "Binorong",
+  "nama_norm": "BINORONG"
+ },
+ {
+  "id": 42,
+  "kecamatan_id": 4,
+  "kecamatan": "Bawang",
+  "nama": "Blambangan",
+  "nama_norm": "BLAMBANGAN"
+ },
+ {
+  "id": 43,
+  "kecamatan_id": 4,
+  "kecamatan": "Bawang",
+  "nama": "Depok",
+  "nama_norm": "DEPOK"
+ },
+ {
+  "id": 44,
+  "kecamatan_id": 4,
+  "kecamatan": "Bawang",
+  "nama": "Gemuruh",
+  "nama_norm": "GEMURUH"
+ },
+ {
+  "id": 45,
+  "kecamatan_id": 4,
+  "kecamatan": "Bawang",
+  "nama": "Joho",
+  "nama_norm": "JOHO"
+ },
+ {
+  "id": 46,
+  "kecamatan_id": 4,
+  "kecamatan": "Bawang",
+  "nama": "Kebondalem",
+  "nama_norm": "KEBONDALEM"
+ },
+ {
+  "id": 47,
+  "kecamatan_id": 4,
+  "kecamatan": "Bawang",
+  "nama": "Kutayasa",
+  "nama_norm": "KUTAYASA"
+ },
+ {
+  "id": 48,
+  "kecamatan_id": 4,
+  "kecamatan": "Bawang",
+  "nama": "Majalengka",
+  "nama_norm": "MAJALENGKA"
+ },
+ {
+  "id": 49,
+  "kecamatan_id": 4,
+  "kecamatan": "Bawang",
+  "nama": "Mantrianom",
+  "nama_norm": "MANTRIANOM"
+ },
+ {
+  "id": 50,
+  "kecamatan_id": 4,
+  "kecamatan": "Bawang",
+  "nama": "Masaran",
+  "nama_norm": "MASARAN"
+ },
+ {
+  "id": 51,
+  "kecamatan_id": 4,
+  "kecamatan": "Bawang",
+  "nama": "Pucang",
+  "nama_norm": "PUCANG"
+ },
+ {
+  "id": 52,
+  "kecamatan_id": 4,
+  "kecamatan": "Bawang",
+  "nama": "Serang",
+  "nama_norm": "SERANG"
+ },
+ {
+  "id": 53,
+  "kecamatan_id": 4,
+  "kecamatan": "Bawang",
+  "nama": "Wanadri",
+  "nama_norm": "WANADRI"
+ },
+ {
+  "id": 54,
+  "kecamatan_id": 4,
+  "kecamatan": "Bawang",
+  "nama": "Watuurip",
+  "nama_norm": "WATUURIP"
+ },
+ {
+  "id": 55,
+  "kecamatan_id": 4,
+  "kecamatan": "Bawang",
+  "nama": "Winong",
+  "nama_norm": "WINONG"
+ },
+ {
+  "id": 56,
+  "kecamatan_id": 4,
+  "kecamatan": "Bawang",
+  "nama": "Wiramastra",
+  "nama_norm": "WIRAMASTRA"
+ },
+ {
+  "id": 57,
+  "kecamatan_id": 5,
+  "kecamatan": "Kalibening",
+  "nama": "Asinan",
+  "nama_norm": "ASINAN"
+ },
+ {
+  "id": 58,
+  "kecamatan_id": 5,
+  "kecamatan": "Kalibening",
+  "nama": "Bedana",
+  "nama_norm": "BEDANA"
+ },
+ {
+  "id": 59,
+  "kecamatan_id": 5,
+  "kecamatan": "Kalibening",
+  "nama": "Gununglangit",
+  "nama_norm": "GUNUNGLANGIT"
+ },
+ {
+  "id": 60,
+  "kecamatan_id": 5,
+  "kecamatan": "Kalibening",
+  "nama": "Kalibening",
+  "nama_norm": "KALIBENING"
+ },
+ {
+  "id": 61,
+  "kecamatan_id": 5,
+  "kecamatan": "Kalibening",
+  "nama": "Kalibombong",
+  "nama_norm": "KALIBOMBONG"
+ },
+ {
+  "id": 62,
+  "kecamatan_id": 5,
+  "kecamatan": "Kalibening",
+  "nama": "Kalisatkidul",
+  "nama_norm": "KALISATKIDUL"
+ },
+ {
+  "id": 63,
+  "kecamatan_id": 5,
+  "kecamatan": "Kalibening",
+  "nama": "Karanganyar.",
+  "nama_norm": "KARANGANYAR."
+ },
+ {
+  "id": 64,
+  "kecamatan_id": 5,
+  "kecamatan": "Kalibening",
+  "nama": "Kasinoman",
+  "nama_norm": "KASINOMAN"
+ },
+ {
+  "id": 65,
+  "kecamatan_id": 5,
+  "kecamatan": "Kalibening",
+  "nama": "Kertosari",
+  "nama_norm": "KERTOSARI"
+ },
+ {
+  "id": 66,
+  "kecamatan_id": 5,
+  "kecamatan": "Kalibening",
+  "nama": "Majatengah",
+  "nama_norm": "MAJATENGAH"
+ },
+ {
+  "id": 67,
+  "kecamatan_id": 5,
+  "kecamatan": "Kalibening",
+  "nama": "Plorengan",
+  "nama_norm": "PLORENGAN"
+ },
+ {
+  "id": 68,
+  "kecamatan_id": 5,
+  "kecamatan": "Kalibening",
+  "nama": "Sembawa",
+  "nama_norm": "SEMBAWA"
+ },
+ {
+  "id": 69,
+  "kecamatan_id": 5,
+  "kecamatan": "Kalibening",
+  "nama": "Sidakangen",
+  "nama_norm": "SIDAKANGEN"
+ },
+ {
+  "id": 70,
+  "kecamatan_id": 5,
+  "kecamatan": "Kalibening",
+  "nama": "Sikumpul",
+  "nama_norm": "SIKUMPUL"
+ },
+ {
+  "id": 71,
+  "kecamatan_id": 5,
+  "kecamatan": "Kalibening",
+  "nama": "Sirukem",
+  "nama_norm": "SIRUKEM"
+ },
+ {
+  "id": 72,
+  "kecamatan_id": 5,
+  "kecamatan": "Kalibening",
+  "nama": "Sirukun",
+  "nama_norm": "SIRUKUN"
+ },
+ {
+  "id": 73,
+  "kecamatan_id": 6,
+  "kecamatan": "Karangkobar",
+  "nama": "Ambal",
+  "nama_norm": "AMBAL"
+ },
+ {
+  "id": 74,
+  "kecamatan_id": 6,
+  "kecamatan": "Karangkobar",
+  "nama": "Binangun",
+  "nama_norm": "BINANGUN"
+ },
+ {
+  "id": 75,
+  "kecamatan_id": 6,
+  "kecamatan": "Karangkobar",
+  "nama": "Gumelar",
+  "nama_norm": "GUMELAR"
+ },
+ {
+  "id": 76,
+  "kecamatan_id": 6,
+  "kecamatan": "Karangkobar",
+  "nama": "Jlegong",
+  "nama_norm": "JLEGONG"
+ },
+ {
+  "id": 77,
+  "kecamatan_id": 6,
+  "kecamatan": "Karangkobar",
+  "nama": "Karanggondang",
+  "nama_norm": "KARANGGONDANG"
+ },
+ {
+  "id": 78,
+  "kecamatan_id": 6,
+  "kecamatan": "Karangkobar",
+  "nama": "Karangkobar",
+  "nama_norm": "KARANGKOBAR"
+ },
+ {
+  "id": 79,
+  "kecamatan_id": 6,
+  "kecamatan": "Karangkobar",
+  "nama": "Leksana",
+  "nama_norm": "LEKSANA"
+ },
+ {
+  "id": 80,
+  "kecamatan_id": 6,
+  "kecamatan": "Karangkobar",
+  "nama": "Pagerpelah",
+  "nama_norm": "PAGERPELAH"
+ },
+ {
+  "id": 81,
+  "kecamatan_id": 6,
+  "kecamatan": "Karangkobar",
+  "nama": "Pasuruhan",
+  "nama_norm": "PASURUHAN"
+ },
+ {
+  "id": 82,
+  "kecamatan_id": 6,
+  "kecamatan": "Karangkobar",
+  "nama": "Paweden",
+  "nama_norm": "PAWEDEN"
+ },
+ {
+  "id": 83,
+  "kecamatan_id": 6,
+  "kecamatan": "Karangkobar",
+  "nama": "Purwadadi",
+  "nama_norm": "PURWADADI"
+ },
+ {
+  "id": 84,
+  "kecamatan_id": 6,
+  "kecamatan": "Karangkobar",
+  "nama": "Sampang",
+  "nama_norm": "SAMPANG"
+ },
+ {
+  "id": 85,
+  "kecamatan_id": 6,
+  "kecamatan": "Karangkobar",
+  "nama": "Slatri",
+  "nama_norm": "SLATRI"
+ },
+ {
+  "id": 86,
+  "kecamatan_id": 7,
+  "kecamatan": "Madukara",
+  "nama": "Bantarwaru",
+  "nama_norm": "BANTARWARU"
+ },
+ {
+  "id": 87,
+  "kecamatan_id": 7,
+  "kecamatan": "Madukara",
+  "nama": "Blitar",
+  "nama_norm": "BLITAR"
+ },
+ {
+  "id": 88,
+  "kecamatan_id": 7,
+  "kecamatan": "Madukara",
+  "nama": "Clapar",
+  "nama_norm": "CLAPAR"
+ },
+ {
+  "id": 89,
+  "kecamatan_id": 7,
+  "kecamatan": "Madukara",
+  "nama": "Dawuhan",
+  "nama_norm": "DAWUHAN"
+ },
+ {
+  "id": 90,
+  "kecamatan_id": 7,
+  "kecamatan": "Madukara",
+  "nama": "Gununggiana",
+  "nama_norm": "GUNUNGGIANA"
+ },
+ {
+  "id": 91,
+  "kecamatan_id": 7,
+  "kecamatan": "Madukara",
+  "nama": "Kaliurip",
+  "nama_norm": "KALIURIP"
+ },
+ {
+  "id": 92,
+  "kecamatan_id": 7,
+  "kecamatan": "Madukara",
+  "nama": "Karanganyar",
+  "nama_norm": "KARANGANYAR"
+ },
+ {
+  "id": 93,
+  "kecamatan_id": 7,
+  "kecamatan": "Madukara",
+  "nama": "Kel.Kenteng",
+  "nama_norm": "KEL.KENTENG"
+ },
+ {
+  "id": 94,
+  "kecamatan_id": 7,
+  "kecamatan": "Madukara",
+  "nama": "Kel.Rejasa",
+  "nama_norm": "KEL.REJASA"
+ },
+ {
+  "id": 95,
+  "kecamatan_id": 7,
+  "kecamatan": "Madukara",
+  "nama": "Kutayasa",
+  "nama_norm": "KUTAYASA"
+ },
+ {
+  "id": 96,
+  "kecamatan_id": 7,
+  "kecamatan": "Madukara",
+  "nama": "Limbangan",
+  "nama_norm": "LIMBANGAN"
+ },
+ {
+  "id": 97,
+  "kecamatan_id": 7,
+  "kecamatan": "Madukara",
+  "nama": "Madukara",
+  "nama_norm": "MADUKARA"
+ },
+ {
+  "id": 98,
+  "kecamatan_id": 7,
+  "kecamatan": "Madukara",
+  "nama": "Pagelak",
+  "nama_norm": "PAGELAK"
+ },
+ {
+  "id": 99,
+  "kecamatan_id": 7,
+  "kecamatan": "Madukara",
+  "nama": "Pakelen",
+  "nama_norm": "PAKELEN"
+ },
+ {
+  "id": 100,
+  "kecamatan_id": 7,
+  "kecamatan": "Madukara",
+  "nama": "Pekauman",
+  "nama_norm": "PEKAUMAN"
+ },
+ {
+  "id": 101,
+  "kecamatan_id": 7,
+  "kecamatan": "Madukara",
+  "nama": "Penawangan",
+  "nama_norm": "PENAWANGAN"
+ },
+ {
+  "id": 102,
+  "kecamatan_id": 7,
+  "kecamatan": "Madukara",
+  "nama": "Petambakan",
+  "nama_norm": "PETAMBAKAN"
+ },
+ {
+  "id": 103,
+  "kecamatan_id": 7,
+  "kecamatan": "Madukara",
+  "nama": "Rakitan",
+  "nama_norm": "RAKITAN"
+ },
+ {
+  "id": 104,
+  "kecamatan_id": 7,
+  "kecamatan": "Madukara",
+  "nama": "Sered",
+  "nama_norm": "SERED"
+ },
+ {
+  "id": 105,
+  "kecamatan_id": 7,
+  "kecamatan": "Madukara",
+  "nama": "Talunamba",
+  "nama_norm": "TALUNAMBA"
+ },
+ {
+  "id": 106,
+  "kecamatan_id": 8,
+  "kecamatan": "Mandiraja",
+  "nama": "Banjengan",
+  "nama_norm": "BANJENGAN"
+ },
+ {
+  "id": 107,
+  "kecamatan_id": 8,
+  "kecamatan": "Mandiraja",
+  "nama": "Blimbing",
+  "nama_norm": "BLIMBING"
+ },
+ {
+  "id": 108,
+  "kecamatan_id": 8,
+  "kecamatan": "Mandiraja",
+  "nama": "Candiwulan",
+  "nama_norm": "CANDIWULAN"
+ },
+ {
+  "id": 109,
+  "kecamatan_id": 8,
+  "kecamatan": "Mandiraja",
+  "nama": "Glempang",
+  "nama_norm": "GLEMPANG"
+ },
+ {
+  "id": 110,
+  "kecamatan_id": 8,
+  "kecamatan": "Mandiraja",
+  "nama": "Jalatunda",
+  "nama_norm": "JALATUNDA"
+ },
+ {
+  "id": 111,
+  "kecamatan_id": 8,
+  "kecamatan": "Mandiraja",
+  "nama": "Kaliwungu",
+  "nama_norm": "KALIWUNGU"
+ },
+ {
+  "id": 112,
+  "kecamatan_id": 8,
+  "kecamatan": "Mandiraja",
+  "nama": "Kebakalan",
+  "nama_norm": "KEBAKALAN"
+ },
+ {
+  "id": 113,
+  "kecamatan_id": 8,
+  "kecamatan": "Mandiraja",
+  "nama": "Kebanaran",
+  "nama_norm": "KEBANARAN"
+ },
+ {
+  "id": 114,
+  "kecamatan_id": 8,
+  "kecamatan": "Mandiraja",
+  "nama": "Kertayasa",
+  "nama_norm": "KERTAYASA"
+ },
+ {
+  "id": 115,
+  "kecamatan_id": 8,
+  "kecamatan": "Mandiraja",
+  "nama": "Mandirajakulon",
+  "nama_norm": "MANDIRAJAKULON"
+ },
+ {
+  "id": 116,
+  "kecamatan_id": 8,
+  "kecamatan": "Mandiraja",
+  "nama": "Mandirajawetan",
+  "nama_norm": "MANDIRAJAWETAN"
+ },
+ {
+  "id": 117,
+  "kecamatan_id": 8,
+  "kecamatan": "Mandiraja",
+  "nama": "Panggisari",
+  "nama_norm": "PANGGISARI"
+ },
+ {
+  "id": 118,
+  "kecamatan_id": 8,
+  "kecamatan": "Mandiraja",
+  "nama": "Purwasaba",
+  "nama_norm": "PURWASABA"
+ },
+ {
+  "id": 119,
+  "kecamatan_id": 8,
+  "kecamatan": "Mandiraja",
+  "nama": "Salamerta",
+  "nama_norm": "SALAMERTA"
+ },
+ {
+  "id": 120,
+  "kecamatan_id": 8,
+  "kecamatan": "Mandiraja",
+  "nama": "Simbang",
+  "nama_norm": "SIMBANG"
+ },
+ {
+  "id": 121,
+  "kecamatan_id": 8,
+  "kecamatan": "Mandiraja",
+  "nama": "Somawangi",
+  "nama_norm": "SOMAWANGI"
+ },
+ {
+  "id": 122,
+  "kecamatan_id": 9,
+  "kecamatan": "Pagedongan",
+  "nama": "Duren",
+  "nama_norm": "DUREN"
+ },
+ {
+  "id": 123,
+  "kecamatan_id": 9,
+  "kecamatan": "Pagedongan",
+  "nama": "Gentansari",
+  "nama_norm": "GENTANSARI"
+ },
+ {
+  "id": 124,
+  "kecamatan_id": 9,
+  "kecamatan": "Pagedongan",
+  "nama": "Gunungjati",
+  "nama_norm": "GUNUNGJATI"
+ },
+ {
+  "id": 125,
+  "kecamatan_id": 9,
+  "kecamatan": "Pagedongan",
+  "nama": "Kebutuhduwur",
+  "nama_norm": "KEBUTUHDUWUR"
+ },
+ {
+  "id": 126,
+  "kecamatan_id": 9,
+  "kecamatan": "Pagedongan",
+  "nama": "Kebutuhjurang",
+  "nama_norm": "KEBUTUHJURANG"
+ },
+ {
+  "id": 127,
+  "kecamatan_id": 9,
+  "kecamatan": "Pagedongan",
+  "nama": "Lebakwangi",
+  "nama_norm": "LEBAKWANGI"
+ },
+ {
+  "id": 128,
+  "kecamatan_id": 9,
+  "kecamatan": "Pagedongan",
+  "nama": "Pagedongan",
+  "nama_norm": "PAGEDONGAN"
+ },
+ {
+  "id": 129,
+  "kecamatan_id": 9,
+  "kecamatan": "Pagedongan",
+  "nama": "Pesangkalan",
+  "nama_norm": "PESANGKALAN"
+ },
+ {
+  "id": 130,
+  "kecamatan_id": 9,
+  "kecamatan": "Pagedongan",
+  "nama": "Twelagiri",
+  "nama_norm": "TWELAGIRI"
+ },
+ {
+  "id": 131,
+  "kecamatan_id": 10,
+  "kecamatan": "Pagentan",
+  "nama": "Aribaya",
+  "nama_norm": "ARIBAYA"
+ },
+ {
+  "id": 132,
+  "kecamatan_id": 10,
+  "kecamatan": "Pagentan",
+  "nama": "Babadan",
+  "nama_norm": "BABADAN"
+ },
+ {
+  "id": 133,
+  "kecamatan_id": 10,
+  "kecamatan": "Pagentan",
+  "nama": "Gumingsir",
+  "nama_norm": "GUMINGSIR"
+ },
+ {
+  "id": 134,
+  "kecamatan_id": 10,
+  "kecamatan": "Pagentan",
+  "nama": "Kalitlaga",
+  "nama_norm": "KALITLAGA"
+ },
+ {
+  "id": 135,
+  "kecamatan_id": 10,
+  "kecamatan": "Pagentan",
+  "nama": "Karangnangka",
+  "nama_norm": "KARANGNANGKA"
+ },
+ {
+  "id": 136,
+  "kecamatan_id": 10,
+  "kecamatan": "Pagentan",
+  "nama": "Karekan",
+  "nama_norm": "KAREKAN"
+ },
+ {
+  "id": 137,
+  "kecamatan_id": 10,
+  "kecamatan": "Pagentan",
+  "nama": "Kasmaran",
+  "nama_norm": "KASMARAN"
+ },
+ {
+  "id": 138,
+  "kecamatan_id": 10,
+  "kecamatan": "Pagentan",
+  "nama": "Kayuares",
+  "nama_norm": "KAYUARES"
+ },
+ {
+  "id": 139,
+  "kecamatan_id": 10,
+  "kecamatan": "Pagentan",
+  "nama": "Larangan",
+  "nama_norm": "LARANGAN"
+ },
+ {
+  "id": 140,
+  "kecamatan_id": 10,
+  "kecamatan": "Pagentan",
+  "nama": "Majasari",
+  "nama_norm": "MAJASARI"
+ },
+ {
+  "id": 141,
+  "kecamatan_id": 10,
+  "kecamatan": "Pagentan",
+  "nama": "Metawana",
+  "nama_norm": "METAWANA"
+ },
+ {
+  "id": 142,
+  "kecamatan_id": 10,
+  "kecamatan": "Pagentan",
+  "nama": "Nagasari",
+  "nama_norm": "NAGASARI"
+ },
+ {
+  "id": 143,
+  "kecamatan_id": 10,
+  "kecamatan": "Pagentan",
+  "nama": "Pagentan",
+  "nama_norm": "PAGENTAN"
+ },
+ {
+  "id": 144,
+  "kecamatan_id": 10,
+  "kecamatan": "Pagentan",
+  "nama": "Plumbungan",
+  "nama_norm": "PLUMBUNGAN"
+ },
+ {
+  "id": 145,
+  "kecamatan_id": 10,
+  "kecamatan": "Pagentan",
+  "nama": "Sokaraja",
+  "nama_norm": "SOKARAJA"
+ },
+ {
+  "id": 146,
+  "kecamatan_id": 10,
+  "kecamatan": "Pagentan",
+  "nama": "Tegaljeruk",
+  "nama_norm": "TEGALJERUK"
+ },
+ {
+  "id": 147,
+  "kecamatan_id": 11,
+  "kecamatan": "Pandanarum",
+  "nama": "Beji",
+  "nama_norm": "BEJI"
+ },
+ {
+  "id": 148,
+  "kecamatan_id": 11,
+  "kecamatan": "Pandanarum",
+  "nama": "Lawen",
+  "nama_norm": "LAWEN"
+ },
+ {
+  "id": 149,
+  "kecamatan_id": 11,
+  "kecamatan": "Pandanarum",
+  "nama": "Pandanarum",
+  "nama_norm": "PANDANARUM"
+ },
+ {
+  "id": 150,
+  "kecamatan_id": 11,
+  "kecamatan": "Pandanarum",
+  "nama": "Pasegeran",
+  "nama_norm": "PASEGERAN"
+ },
+ {
+  "id": 151,
+  "kecamatan_id": 11,
+  "kecamatan": "Pandanarum",
+  "nama": "Pingit Lor",
+  "nama_norm": "PINGIT LOR"
+ },
+ {
+  "id": 152,
+  "kecamatan_id": 11,
+  "kecamatan": "Pandanarum",
+  "nama": "Pringamba",
+  "nama_norm": "PRINGAMBA"
+ },
+ {
+  "id": 153,
+  "kecamatan_id": 11,
+  "kecamatan": "Pandanarum",
+  "nama": "Sinduaji",
+  "nama_norm": "SINDUAJI"
+ },
+ {
+  "id": 154,
+  "kecamatan_id": 11,
+  "kecamatan": "Pandanarum",
+  "nama": "Sirongge",
+  "nama_norm": "SIRONGGE"
+ },
+ {
+  "id": 155,
+  "kecamatan_id": 12,
+  "kecamatan": "Pejawaran",
+  "nama": "Beji",
+  "nama_norm": "BEJI"
+ },
+ {
+  "id": 156,
+  "kecamatan_id": 12,
+  "kecamatan": "Pejawaran",
+  "nama": "Biting",
+  "nama_norm": "BITING"
+ },
+ {
+  "id": 157,
+  "kecamatan_id": 12,
+  "kecamatan": "Pejawaran",
+  "nama": "Condongcampur",
+  "nama_norm": "CONDONGCAMPUR"
+ },
+ {
+  "id": 158,
+  "kecamatan_id": 12,
+  "kecamatan": "Pejawaran",
+  "nama": "Darmayasa",
+  "nama_norm": "DARMAYASA"
+ },
+ {
+  "id": 159,
+  "kecamatan_id": 12,
+  "kecamatan": "Pejawaran",
+  "nama": "Gembol",
+  "nama_norm": "GEMBOL"
+ },
+ {
+  "id": 160,
+  "kecamatan_id": 12,
+  "kecamatan": "Pejawaran",
+  "nama": "Giritirta",
+  "nama_norm": "GIRITIRTA"
+ },
+ {
+  "id": 161,
+  "kecamatan_id": 12,
+  "kecamatan": "Pejawaran",
+  "nama": "Grogol",
+  "nama_norm": "GROGOL"
+ },
+ {
+  "id": 162,
+  "kecamatan_id": 12,
+  "kecamatan": "Pejawaran",
+  "nama": "Kalilunjar",
+  "nama_norm": "KALILUNJAR"
+ },
+ {
+  "id": 163,
+  "kecamatan_id": 12,
+  "kecamatan": "Pejawaran",
+  "nama": "Karangsari",
+  "nama_norm": "KARANGSARI"
+ },
+ {
+  "id": 164,
+  "kecamatan_id": 12,
+  "kecamatan": "Pejawaran",
+  "nama": "Pagundungan",
+  "nama_norm": "PAGUNDUNGAN"
+ },
+ {
+  "id": 165,
+  "kecamatan_id": 12,
+  "kecamatan": "Pejawaran",
+  "nama": "Pejawaran",
+  "nama_norm": "PEJAWARAN"
+ },
+ {
+  "id": 166,
+  "kecamatan_id": 12,
+  "kecamatan": "Pejawaran",
+  "nama": "Penusupan",
+  "nama_norm": "PENUSUPAN"
+ },
+ {
+  "id": 167,
+  "kecamatan_id": 12,
+  "kecamatan": "Pejawaran",
+  "nama": "Ratamba",
+  "nama_norm": "RATAMBA"
+ },
+ {
+  "id": 168,
+  "kecamatan_id": 12,
+  "kecamatan": "Pejawaran",
+  "nama": "Sarwadadi",
+  "nama_norm": "SARWADADI"
+ },
+ {
+  "id": 169,
+  "kecamatan_id": 12,
+  "kecamatan": "Pejawaran",
+  "nama": "Semangkung",
+  "nama_norm": "SEMANGKUNG"
+ },
+ {
+  "id": 170,
+  "kecamatan_id": 12,
+  "kecamatan": "Pejawaran",
+  "nama": "Sidengok",
+  "nama_norm": "SIDENGOK"
+ },
+ {
+  "id": 171,
+  "kecamatan_id": 12,
+  "kecamatan": "Pejawaran",
+  "nama": "Tlahab",
+  "nama_norm": "TLAHAB"
+ },
+ {
+  "id": 172,
+  "kecamatan_id": 13,
+  "kecamatan": "Punggelan",
+  "nama": "Badakarya",
+  "nama_norm": "BADAKARYA"
+ },
+ {
+  "id": 173,
+  "kecamatan_id": 13,
+  "kecamatan": "Punggelan",
+  "nama": "Bondolharjo",
+  "nama_norm": "BONDOLHARJO"
+ },
+ {
+  "id": 174,
+  "kecamatan_id": 13,
+  "kecamatan": "Punggelan",
+  "nama": "Danakerta",
+  "nama_norm": "DANAKERTA"
+ },
+ {
+  "id": 175,
+  "kecamatan_id": 13,
+  "kecamatan": "Punggelan",
+  "nama": "Jembangan",
+  "nama_norm": "JEMBANGAN"
+ },
+ {
+  "id": 176,
+  "kecamatan_id": 13,
+  "kecamatan": "Punggelan",
+  "nama": "Karangsari",
+  "nama_norm": "KARANGSARI"
+ },
+ {
+  "id": 177,
+  "kecamatan_id": 13,
+  "kecamatan": "Punggelan",
+  "nama": "Kecepit",
+  "nama_norm": "KECEPIT"
+ },
+ {
+  "id": 178,
+  "kecamatan_id": 13,
+  "kecamatan": "Punggelan",
+  "nama": "Klapa",
+  "nama_norm": "KLAPA"
+ },
+ {
+  "id": 179,
+  "kecamatan_id": 13,
+  "kecamatan": "Punggelan",
+  "nama": "Mlaya",
+  "nama_norm": "MLAYA"
+ },
+ {
+  "id": 180,
+  "kecamatan_id": 13,
+  "kecamatan": "Punggelan",
+  "nama": "Petuguran",
+  "nama_norm": "PETUGURAN"
+ },
+ {
+  "id": 181,
+  "kecamatan_id": 13,
+  "kecamatan": "Punggelan",
+  "nama": "Punggelan",
+  "nama_norm": "PUNGGELAN"
+ },
+ {
+  "id": 182,
+  "kecamatan_id": 13,
+  "kecamatan": "Punggelan",
+  "nama": "Purwasana",
+  "nama_norm": "PURWASANA"
+ },
+ {
+  "id": 183,
+  "kecamatan_id": 13,
+  "kecamatan": "Punggelan",
+  "nama": "Sambong",
+  "nama_norm": "SAMBONG"
+ },
+ {
+  "id": 184,
+  "kecamatan_id": 13,
+  "kecamatan": "Punggelan",
+  "nama": "Sawangan",
+  "nama_norm": "SAWANGAN"
+ },
+ {
+  "id": 185,
+  "kecamatan_id": 13,
+  "kecamatan": "Punggelan",
+  "nama": "Sidarata",
+  "nama_norm": "SIDARATA"
+ },
+ {
+  "id": 186,
+  "kecamatan_id": 13,
+  "kecamatan": "Punggelan",
+  "nama": "Tanjungtirta",
+  "nama_norm": "TANJUNGTIRTA"
+ },
+ {
+  "id": 187,
+  "kecamatan_id": 13,
+  "kecamatan": "Punggelan",
+  "nama": "Tlaga",
+  "nama_norm": "TLAGA"
+ },
+ {
+  "id": 188,
+  "kecamatan_id": 13,
+  "kecamatan": "Punggelan",
+  "nama": "Tribuana",
+  "nama_norm": "TRIBUANA"
+ },
+ {
+  "id": 189,
+  "kecamatan_id": 14,
+  "kecamatan": "Purwanegara",
+  "nama": "Danaraja",
+  "nama_norm": "DANARAJA"
+ },
+ {
+  "id": 190,
+  "kecamatan_id": 14,
+  "kecamatan": "Purwanegara",
+  "nama": "Gumiwang",
+  "nama_norm": "GUMIWANG"
+ },
+ {
+  "id": 191,
+  "kecamatan_id": 14,
+  "kecamatan": "Purwanegara",
+  "nama": "Kaliajir",
+  "nama_norm": "KALIAJIR"
+ },
+ {
+  "id": 192,
+  "kecamatan_id": 14,
+  "kecamatan": "Purwanegara",
+  "nama": "Kalipelus",
+  "nama_norm": "KALIPELUS"
+ },
+ {
+  "id": 193,
+  "kecamatan_id": 14,
+  "kecamatan": "Purwanegara",
+  "nama": "Kalitengah",
+  "nama_norm": "KALITENGAH"
+ },
+ {
+  "id": 194,
+  "kecamatan_id": 14,
+  "kecamatan": "Purwanegara",
+  "nama": "Karanganyar",
+  "nama_norm": "KARANGANYAR"
+ },
+ {
+  "id": 195,
+  "kecamatan_id": 14,
+  "kecamatan": "Purwanegara",
+  "nama": "Kutawuluh",
+  "nama_norm": "KUTAWULUH"
+ },
+ {
+  "id": 196,
+  "kecamatan_id": 14,
+  "kecamatan": "Purwanegara",
+  "nama": "Merden",
+  "nama_norm": "MERDEN"
+ },
+ {
+  "id": 197,
+  "kecamatan_id": 14,
+  "kecamatan": "Purwanegara",
+  "nama": "Mertasari",
+  "nama_norm": "MERTASARI"
+ },
+ {
+  "id": 198,
+  "kecamatan_id": 14,
+  "kecamatan": "Purwanegara",
+  "nama": "Parakan",
+  "nama_norm": "PARAKAN"
+ },
+ {
+  "id": 199,
+  "kecamatan_id": 14,
+  "kecamatan": "Purwanegara",
+  "nama": "Petir",
+  "nama_norm": "PETIR"
+ },
+ {
+  "id": 200,
+  "kecamatan_id": 14,
+  "kecamatan": "Purwanegara",
+  "nama": "Pucungbeduk",
+  "nama_norm": "PUCUNGBEDUK"
+ },
+ {
+  "id": 201,
+  "kecamatan_id": 14,
+  "kecamatan": "Purwanegara",
+  "nama": "Purwonegoro",
+  "nama_norm": "PURWONEGORO"
+ },
+ {
+  "id": 202,
+  "kecamatan_id": 15,
+  "kecamatan": "Purwareja Klampok",
+  "nama": "Kalilandak",
+  "nama_norm": "KALILANDAK"
+ },
+ {
+  "id": 203,
+  "kecamatan_id": 15,
+  "kecamatan": "Purwareja Klampok",
+  "nama": "Kalimandi",
+  "nama_norm": "KALIMANDI"
+ },
+ {
+  "id": 204,
+  "kecamatan_id": 15,
+  "kecamatan": "Purwareja Klampok",
+  "nama": "Kaliwinasuh",
+  "nama_norm": "KALIWINASUH"
+ },
+ {
+  "id": 205,
+  "kecamatan_id": 15,
+  "kecamatan": "Purwareja Klampok",
+  "nama": "Kecitran",
+  "nama_norm": "KECITRAN"
+ },
+ {
+  "id": 206,
+  "kecamatan_id": 15,
+  "kecamatan": "Purwareja Klampok",
+  "nama": "Klampok",
+  "nama_norm": "KLAMPOK"
+ },
+ {
+  "id": 207,
+  "kecamatan_id": 15,
+  "kecamatan": "Purwareja Klampok",
+  "nama": "Pagak",
+  "nama_norm": "PAGAK"
+ },
+ {
+  "id": 208,
+  "kecamatan_id": 15,
+  "kecamatan": "Purwareja Klampok",
+  "nama": "Purwareja",
+  "nama_norm": "PURWAREJA"
+ },
+ {
+  "id": 209,
+  "kecamatan_id": 15,
+  "kecamatan": "Purwareja Klampok",
+  "nama": "Sirkandi",
+  "nama_norm": "SIRKANDI"
+ },
+ {
+  "id": 210,
+  "kecamatan_id": 16,
+  "kecamatan": "Rakit",
+  "nama": "Adipasir",
+  "nama_norm": "ADIPASIR"
+ },
+ {
+  "id": 211,
+  "kecamatan_id": 16,
+  "kecamatan": "Rakit",
+  "nama": "Badamita",
+  "nama_norm": "BADAMITA"
+ },
+ {
+  "id": 212,
+  "kecamatan_id": 16,
+  "kecamatan": "Rakit",
+  "nama": "Bandingan",
+  "nama_norm": "BANDINGAN"
+ },
+ {
+  "id": 213,
+  "kecamatan_id": 16,
+  "kecamatan": "Rakit",
+  "nama": "Gelang",
+  "nama_norm": "GELANG"
+ },
+ {
+  "id": 214,
+  "kecamatan_id": 16,
+  "kecamatan": "Rakit",
+  "nama": "Kincang",
+  "nama_norm": "KINCANG"
+ },
+ {
+  "id": 215,
+  "kecamatan_id": 16,
+  "kecamatan": "Rakit",
+  "nama": "Lengkong",
+  "nama_norm": "LENGKONG"
+ },
+ {
+  "id": 216,
+  "kecamatan_id": 16,
+  "kecamatan": "Rakit",
+  "nama": "Luwung",
+  "nama_norm": "LUWUNG"
+ },
+ {
+  "id": 217,
+  "kecamatan_id": 16,
+  "kecamatan": "Rakit",
+  "nama": "Pingit",
+  "nama_norm": "PINGIT"
+ },
+ {
+  "id": 218,
+  "kecamatan_id": 16,
+  "kecamatan": "Rakit",
+  "nama": "Rakit",
+  "nama_norm": "RAKIT"
+ },
+ {
+  "id": 219,
+  "kecamatan_id": 16,
+  "kecamatan": "Rakit",
+  "nama": "Situwangi",
+  "nama_norm": "SITUWANGI"
+ },
+ {
+  "id": 220,
+  "kecamatan_id": 16,
+  "kecamatan": "Rakit",
+  "nama": "Tanjunganom",
+  "nama_norm": "TANJUNGANOM"
+ },
+ {
+  "id": 221,
+  "kecamatan_id": 17,
+  "kecamatan": "Sigaluh",
+  "nama": "Bandingan",
+  "nama_norm": "BANDINGAN"
+ },
+ {
+  "id": 222,
+  "kecamatan_id": 17,
+  "kecamatan": "Sigaluh",
+  "nama": "Bojanegara",
+  "nama_norm": "BOJANEGARA"
+ },
+ {
+  "id": 223,
+  "kecamatan_id": 17,
+  "kecamatan": "Sigaluh",
+  "nama": "Gembongan",
+  "nama_norm": "GEMBONGAN"
+ },
+ {
+  "id": 224,
+  "kecamatan_id": 17,
+  "kecamatan": "Sigaluh",
+  "nama": "Karangmangu",
+  "nama_norm": "KARANGMANGU"
+ },
+ {
+  "id": 225,
+  "kecamatan_id": 17,
+  "kecamatan": "Sigaluh",
+  "nama": "Kel.Kalibenda",
+  "nama_norm": "KEL.KALIBENDA"
+ },
+ {
+  "id": 226,
+  "kecamatan_id": 17,
+  "kecamatan": "Sigaluh",
+  "nama": "Kemiri",
+  "nama_norm": "KEMIRI"
+ },
+ {
+  "id": 227,
+  "kecamatan_id": 17,
+  "kecamatan": "Sigaluh",
+  "nama": "Panawaren",
+  "nama_norm": "PANAWAREN"
+ },
+ {
+  "id": 228,
+  "kecamatan_id": 17,
+  "kecamatan": "Sigaluh",
+  "nama": "Prigi",
+  "nama_norm": "PRIGI"
+ },
+ {
+  "id": 229,
+  "kecamatan_id": 17,
+  "kecamatan": "Sigaluh",
+  "nama": "Pringamba",
+  "nama_norm": "PRINGAMBA"
+ },
+ {
+  "id": 230,
+  "kecamatan_id": 17,
+  "kecamatan": "Sigaluh",
+  "nama": "Randegan",
+  "nama_norm": "RANDEGAN"
+ },
+ {
+  "id": 231,
+  "kecamatan_id": 17,
+  "kecamatan": "Sigaluh",
+  "nama": "Sawal",
+  "nama_norm": "SAWAL"
+ },
+ {
+  "id": 232,
+  "kecamatan_id": 17,
+  "kecamatan": "Sigaluh",
+  "nama": "Sigaluh",
+  "nama_norm": "SIGALUH"
+ },
+ {
+  "id": 233,
+  "kecamatan_id": 17,
+  "kecamatan": "Sigaluh",
+  "nama": "Singomerto",
+  "nama_norm": "SINGOMERTO"
+ },
+ {
+  "id": 234,
+  "kecamatan_id": 17,
+  "kecamatan": "Sigaluh",
+  "nama": "Tunggoro",
+  "nama_norm": "TUNGGORO"
+ },
+ {
+  "id": 235,
+  "kecamatan_id": 17,
+  "kecamatan": "Sigaluh",
+  "nama": "Wanacipta",
+  "nama_norm": "WANACIPTA"
+ },
+ {
+  "id": 236,
+  "kecamatan_id": 18,
+  "kecamatan": "Susukan",
+  "nama": "Berta",
+  "nama_norm": "BERTA"
+ },
+ {
+  "id": 237,
+  "kecamatan_id": 18,
+  "kecamatan": "Susukan",
+  "nama": "Brengkok",
+  "nama_norm": "BRENGKOK"
+ },
+ {
+  "id": 238,
+  "kecamatan_id": 18,
+  "kecamatan": "Susukan",
+  "nama": "Derik",
+  "nama_norm": "DERIK"
+ },
+ {
+  "id": 239,
+  "kecamatan_id": 18,
+  "kecamatan": "Susukan",
+  "nama": "Dermasari",
+  "nama_norm": "DERMASARI"
+ },
+ {
+  "id": 240,
+  "kecamatan_id": 18,
+  "kecamatan": "Susukan",
+  "nama": "Gumelemkulon",
+  "nama_norm": "GUMELEMKULON"
+ },
+ {
+  "id": 241,
+  "kecamatan_id": 18,
+  "kecamatan": "Susukan",
+  "nama": "Gumelemwetan",
+  "nama_norm": "GUMELEMWETAN"
+ },
+ {
+  "id": 242,
+  "kecamatan_id": 18,
+  "kecamatan": "Susukan",
+  "nama": "Karangjati",
+  "nama_norm": "KARANGJATI"
+ },
+ {
+  "id": 243,
+  "kecamatan_id": 18,
+  "kecamatan": "Susukan",
+  "nama": "Karangsalam",
+  "nama_norm": "KARANGSALAM"
+ },
+ {
+  "id": 244,
+  "kecamatan_id": 18,
+  "kecamatan": "Susukan",
+  "nama": "Kedawung",
+  "nama_norm": "KEDAWUNG"
+ },
+ {
+  "id": 245,
+  "kecamatan_id": 18,
+  "kecamatan": "Susukan",
+  "nama": "Kemranggon",
+  "nama_norm": "KEMRANGGON"
+ },
+ {
+  "id": 246,
+  "kecamatan_id": 18,
+  "kecamatan": "Susukan",
+  "nama": "Pakikiran",
+  "nama_norm": "PAKIKIRAN"
+ },
+ {
+  "id": 247,
+  "kecamatan_id": 18,
+  "kecamatan": "Susukan",
+  "nama": "Panarusankulon",
+  "nama_norm": "PANARUSANKULON"
+ },
+ {
+  "id": 248,
+  "kecamatan_id": 18,
+  "kecamatan": "Susukan",
+  "nama": "Panarusanwetan",
+  "nama_norm": "PANARUSANWETAN"
+ },
+ {
+  "id": 249,
+  "kecamatan_id": 18,
+  "kecamatan": "Susukan",
+  "nama": "Piasawetan",
+  "nama_norm": "PIASAWETAN"
+ },
+ {
+  "id": 250,
+  "kecamatan_id": 18,
+  "kecamatan": "Susukan",
+  "nama": "Susukan",
+  "nama_norm": "SUSUKAN"
+ },
+ {
+  "id": 251,
+  "kecamatan_id": 19,
+  "kecamatan": "Wanadadi",
+  "nama": "Gumingsir.",
+  "nama_norm": "GUMINGSIR."
+ },
+ {
+  "id": 252,
+  "kecamatan_id": 19,
+  "kecamatan": "Wanadadi",
+  "nama": "Kandangwangi",
+  "nama_norm": "KANDANGWANGI"
+ },
+ {
+  "id": 253,
+  "kecamatan_id": 19,
+  "kecamatan": "Wanadadi",
+  "nama": "Karangjambe",
+  "nama_norm": "KARANGJAMBE"
+ },
+ {
+  "id": 254,
+  "kecamatan_id": 19,
+  "kecamatan": "Wanadadi",
+  "nama": "Karangkemiri",
+  "nama_norm": "KARANGKEMIRI"
+ },
+ {
+  "id": 255,
+  "kecamatan_id": 19,
+  "kecamatan": "Wanadadi",
+  "nama": "Kasilib",
+  "nama_norm": "KASILIB"
+ },
+ {
+  "id": 256,
+  "kecamatan_id": 19,
+  "kecamatan": "Wanadadi",
+  "nama": "Lemahjaya",
+  "nama_norm": "LEMAHJAYA"
+ },
+ {
+  "id": 257,
+  "kecamatan_id": 19,
+  "kecamatan": "Wanadadi",
+  "nama": "Linggasari",
+  "nama_norm": "LINGGASARI"
+ },
+ {
+  "id": 258,
+  "kecamatan_id": 19,
+  "kecamatan": "Wanadadi",
+  "nama": "Medayu",
+  "nama_norm": "MEDAYU"
+ },
+ {
+  "id": 259,
+  "kecamatan_id": 19,
+  "kecamatan": "Wanadadi",
+  "nama": "Tapen",
+  "nama_norm": "TAPEN"
+ },
+ {
+  "id": 260,
+  "kecamatan_id": 19,
+  "kecamatan": "Wanadadi",
+  "nama": "Wanadadi",
+  "nama_norm": "WANADADI"
+ },
+ {
+  "id": 261,
+  "kecamatan_id": 19,
+  "kecamatan": "Wanadadi",
+  "nama": "Wanakarsa",
+  "nama_norm": "WANAKARSA"
+ },
+ {
+  "id": 262,
+  "kecamatan_id": 20,
+  "kecamatan": "Wanayasa",
+  "nama": "Balun",
+  "nama_norm": "BALUN"
+ },
+ {
+  "id": 263,
+  "kecamatan_id": 20,
+  "kecamatan": "Wanayasa",
+  "nama": "Bantar",
+  "nama_norm": "BANTAR"
+ },
+ {
+  "id": 264,
+  "kecamatan_id": 20,
+  "kecamatan": "Wanayasa",
+  "nama": "Dawuhan",
+  "nama_norm": "DAWUHAN"
+ },
+ {
+  "id": 265,
+  "kecamatan_id": 20,
+  "kecamatan": "Wanayasa",
+  "nama": "Jatilawang",
+  "nama_norm": "JATILAWANG"
+ },
+ {
+  "id": 266,
+  "kecamatan_id": 20,
+  "kecamatan": "Wanayasa",
+  "nama": "Karangtengah",
+  "nama_norm": "KARANGTENGAH"
+ },
+ {
+  "id": 267,
+  "kecamatan_id": 20,
+  "kecamatan": "Wanayasa",
+  "nama": "Kasimpar",
+  "nama_norm": "KASIMPAR"
+ },
+ {
+  "id": 268,
+  "kecamatan_id": 20,
+  "kecamatan": "Wanayasa",
+  "nama": "Kubang",
+  "nama_norm": "KUBANG"
+ },
+ {
+  "id": 269,
+  "kecamatan_id": 20,
+  "kecamatan": "Wanayasa",
+  "nama": "Legoksayem",
+  "nama_norm": "LEGOKSAYEM"
+ },
+ {
+  "id": 270,
+  "kecamatan_id": 20,
+  "kecamatan": "Wanayasa",
+  "nama": "Pandansari",
+  "nama_norm": "PANDANSARI"
+ },
+ {
+  "id": 271,
+  "kecamatan_id": 20,
+  "kecamatan": "Wanayasa",
+  "nama": "Pegergunung",
+  "nama_norm": "PEGERGUNUNG"
+ },
+ {
+  "id": 272,
+  "kecamatan_id": 20,
+  "kecamatan": "Wanayasa",
+  "nama": "Penanggungan",
+  "nama_norm": "PENANGGUNGAN"
+ },
+ {
+  "id": 273,
+  "kecamatan_id": 20,
+  "kecamatan": "Wanayasa",
+  "nama": "Pesantren",
+  "nama_norm": "PESANTREN"
+ },
+ {
+  "id": 274,
+  "kecamatan_id": 20,
+  "kecamatan": "Wanayasa",
+  "nama": "Susukan",
+  "nama_norm": "SUSUKAN"
+ },
+ {
+  "id": 275,
+  "kecamatan_id": 20,
+  "kecamatan": "Wanayasa",
+  "nama": "Suwidak",
+  "nama_norm": "SUWIDAK"
+ },
+ {
+  "id": 276,
+  "kecamatan_id": 20,
+  "kecamatan": "Wanayasa",
+  "nama": "Tempuran",
+  "nama_norm": "TEMPURAN"
+ },
+ {
+  "id": 277,
+  "kecamatan_id": 20,
+  "kecamatan": "Wanayasa",
+  "nama": "Wanaraja",
+  "nama_norm": "WANARAJA"
+ },
+ {
+  "id": 278,
+  "kecamatan_id": 20,
+  "kecamatan": "Wanayasa",
+  "nama": "Wanayasa",
+  "nama_norm": "WANAYASA"
+ }
+]

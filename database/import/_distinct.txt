@@ -1,0 +1,425 @@
++-----------+----+-------------------+
+| t         | k  | v                 |
++-----------+----+-------------------+
+| kecamatan | 1  | Banjarmangu       |
+| kecamatan | 2  | Banjarnegara      |
+| kecamatan | 3  | Batur             |
+| kecamatan | 4  | Bawang            |
+| kecamatan | 5  | Kalibening        |
+| kecamatan | 6  | Karangkobar       |
+| kecamatan | 7  | Madukara          |
+| kecamatan | 8  | Mandiraja         |
+| kecamatan | 9  | Pagedongan        |
+| kecamatan | 10 | Pagentan          |
+| kecamatan | 11 | Pandanarum        |
+| kecamatan | 12 | Pejawaran         |
+| kecamatan | 13 | Punggelan         |
+| kecamatan | 14 | Purwanegara       |
+| kecamatan | 15 | Purwareja Klampok |
+| kecamatan | 16 | Rakit             |
+| kecamatan | 17 | Sigaluh           |
+| kecamatan | 18 | Susukan           |
+| kecamatan | 19 | Wanadadi          |
+| kecamatan | 20 | Wanayasa          |
++-----------+----+-------------------+
++---------------------------+---+------------------------------------+
+| t                         | k | v                                  |
++---------------------------+---+------------------------------------+
+| lahan_penggunaan.kategori |   | a. Lahan irigasi                   |
+| lahan_penggunaan.kategori |   | a. Tegal/kebun                     |
+| lahan_penggunaan.kategori |   | b. Lahan tadah hujan               |
+| lahan_penggunaan.kategori |   | b. Perkebunan                      |
+| lahan_penggunaan.kategori |   | c. Hutan rakyat                    |
+| lahan_penggunaan.kategori |   | c. Lahan pasang surut              |
+| lahan_penggunaan.kategori |   | d. lainnya                         |
+| lahan_penggunaan.kategori |   | e. Lahan yang tidak diusahakan     |
+| lahan_penggunaan.kategori |   | I. Lahan sawah                     |
+| lahan_penggunaan.kategori |   | II. Bukan lahan sawah              |
+| lahan_penggunaan.kategori |   | III. Lahan bukan pertanian lainnya |
++---------------------------+---+------------------------------------+
++------------------------+---+------+
+| t                      | k | v    |
++------------------------+---+------+
+| lahan_penggunaan.tahun |   | 2014 |
+| lahan_penggunaan.tahun |   | 2015 |
+| lahan_penggunaan.tahun |   | 2016 |
+| lahan_penggunaan.tahun |   | 2017 |
+| lahan_penggunaan.tahun |   | 2018 |
+| lahan_penggunaan.tahun |   | 2019 |
+| lahan_penggunaan.tahun |   | 2020 |
+| lahan_penggunaan.tahun |   | 2021 |
+| lahan_penggunaan.tahun |   | 2022 |
+| lahan_penggunaan.tahun |   | 2023 |
+| lahan_penggunaan.tahun |   | 2024 |
++------------------------+---+------+
++-------------+---+-------+
+| t           | k | v     |
++-------------+---+-------+
+| pasar.jenis |   | Buah  |
+| pasar.jenis |   | Hewan |
+| pasar.jenis |   | Ikan  |
+| pasar.jenis |   | Umum  |
++-------------+---+-------+
++-----------------+---+--------------+
+| t               | k | v            |
++-----------------+---+--------------+
+| inflasi.wilayah |   | Banjarnegara |
+| inflasi.wilayah |   | Banyumas     |
+| inflasi.wilayah |   | Cilacap      |
+| inflasi.wilayah |   | Jawa Tengah  |
+| inflasi.wilayah |   | Nasional     |
+| inflasi.wilayah |   | Purbalingga  |
+| inflasi.wilayah |   | Wonosobo     |
++-----------------+---+--------------+
++-----------------+--------+----------------+
+| t               | k      | v              |
++-----------------+--------+----------------+
+| ternak_populasi | besar  | Kerbau         |
+| ternak_populasi | besar  | Kuda           |
+| ternak_populasi | besar  | Sapi           |
+| ternak_populasi | besar  | Sapi Perah     |
+| ternak_populasi | kecil  | Babi           |
+| ternak_populasi | kecil  | Domba          |
+| ternak_populasi | kecil  | Kambing        |
+| ternak_populasi | kecil  | Kelinci        |
+| ternak_populasi | unggas | Ayam Broiler   |
+| ternak_populasi | unggas | Ayam Kampung   |
+| ternak_populasi | unggas | Ayam Ras Layer |
+| ternak_populasi | unggas | Itik Biasa     |
+| ternak_populasi | unggas | Itik Manila    |
++-----------------+--------+----------------+
++-------------+-------------+------------+
+| t           | k           | v          |
++-------------+-------------+------------+
+| ternak_flow | pemasukan   | Domba      |
+| ternak_flow | pemasukan   | Kambing    |
+| ternak_flow | pemasukan   | Kerbau     |
+| ternak_flow | pemasukan   | Kuda       |
+| ternak_flow | pemasukan   | Sapi       |
+| ternak_flow | pemasukan   | Sapi Perah |
+| ternak_flow | pengeluaran | Domba      |
+| ternak_flow | pengeluaran | Kambing    |
+| ternak_flow | pengeluaran | Kerbau     |
+| ternak_flow | pengeluaran | Sapi       |
++-------------+-------------+------------+
++---------------+--------+----------------+
+| t             | k      | v              |
++---------------+--------+----------------+
+| ternak_daging | ternak | Babi           |
+| ternak_daging | ternak | Domba          |
+| ternak_daging | ternak | Kambing        |
+| ternak_daging | ternak | Kerbau         |
+| ternak_daging | ternak | Sapi           |
+| ternak_daging | unggas | Ayam Kampung   |
+| ternak_daging | unggas | Ayam Ras Layer |
++---------------+--------+----------------+
++-------------------+----------------+---------+
+| t                 | k              | v       |
++-------------------+----------------+---------+
+| ternak_pemotongan | rph_pemerintah | Babi    |
+| ternak_pemotongan | rph_pemerintah | Domba   |
+| ternak_pemotongan | rph_pemerintah | Kambing |
+| ternak_pemotongan | rph_pemerintah | Kerbau  |
+| ternak_pemotongan | rph_pemerintah | Kuda    |
+| ternak_pemotongan | rph_pemerintah | Sapi    |
+| ternak_pemotongan | luar_rph       | Babi    |
+| ternak_pemotongan | luar_rph       | Domba   |
+| ternak_pemotongan | luar_rph       | Kambing |
+| ternak_pemotongan | luar_rph       | Kerbau  |
+| ternak_pemotongan | luar_rph       | Sapi    |
++-------------------+----------------+---------+
++-------------------------+---+----------------+
+| t                       | k | v              |
++-------------------------+---+----------------+
+| ikan_tangkap.jenis_alat |   | Jala Tebar     |
+| ikan_tangkap.jenis_alat |   | Jaring Ingsang |
+| ikan_tangkap.jenis_alat |   | Lainnya        |
+| ikan_tangkap.jenis_alat |   | Pancing        |
++-------------------------+---+----------------+
++---------------------+---+-----------------------+
+| t                   | k | v                     |
++---------------------+---+-----------------------+
+| ikan_budidaya.jenis |   | Karamba Jaring Apung  |
+| ikan_budidaya.jenis |   | Minapadi Tumpang Sari |
+| ikan_budidaya.jenis |   | Pembesaran            |
++---------------------+---+-----------------------+
++--------------------------+---+------------------------+
+| t                        | k | v                      |
++--------------------------+---+------------------------+
+| ikan_pemeliharaan.tempat |   | Jaring Karamba Apung   |
+| ikan_pemeliharaan.tempat |   | Kolam Pembesaran Ikan  |
+| ikan_pemeliharaan.tempat |   | Mina Padi Penyelang    |
+| ikan_pemeliharaan.tempat |   | Mina Padi Tumpang sari |
++--------------------------+---+------------------------+
++-----------------+---+-------------+
+| t               | k | v           |
++-----------------+---+-------------+
+| ikan_benih.arah |   | sendiri     |
+| ikan_benih.arah |   | lain_daerah |
++-----------------+---+-------------+
++------------+----------------------+-------------+
+| t          | k                    | v           |
++------------+----------------------+-------------+
+| ikan_obyek | Perairan Umum Sungai | total       |
+| ikan_obyek | Perairan Umum Sungai | sendiri     |
+| ikan_obyek | Perairan Umum Sungai | lain_daerah |
+| ikan_obyek | Perairan Umum Waduk  | total       |
++------------+----------------------+-------------+
++----------------+--------------+--------------+
+| t              | k            | v            |
++----------------+--------------+--------------+
+| horti_produksi | sayuran      | Bawang Merah |
+| horti_produksi | sayuran      | Bawang Putih |
+| horti_produksi | sayuran      | Cabai Besar  |
+| horti_produksi | sayuran      | Cabai Rawit  |
+| horti_produksi | sayuran      | Kentang      |
+| horti_produksi | sayuran      | Kubis        |
+| horti_produksi | sayuran      | Petsai       |
+| horti_produksi | sayuran      | Tomat        |
+| horti_produksi | buah_tahunan | Durian       |
+| horti_produksi | buah_tahunan | Jeruk Besar  |
+| horti_produksi | buah_tahunan | Jeruk Siam   |
+| horti_produksi | buah_tahunan | Mangga       |
+| horti_produksi | buah_tahunan | Pepaya       |
+| horti_produksi | buah_tahunan | Pisang       |
+| horti_produksi | buah_tahunan | Salak        |
+| horti_produksi | tanaman_hias | Agloenema    |
+| horti_produksi | tanaman_hias | Krisan       |
+| horti_produksi | tanaman_hias | Mawar        |
+| horti_produksi | tanaman_hias | Soka         |
+| horti_produksi | biofarmaka   | Jahe         |
+| horti_produksi | biofarmaka   | Kencur       |
+| horti_produksi | biofarmaka   | Kunyit       |
+| horti_produksi | biofarmaka   | Laos         |
++----------------+--------------+--------------+
++------------+--------------+--------------+
+| t          | k            | v            |
++------------+--------------+--------------+
+| horti_luas | sayuran      | Bawang Merah |
+| horti_luas | sayuran      | Bawang Putih |
+| horti_luas | sayuran      | Cabai Besar  |
+| horti_luas | sayuran      | Cabai Rawit  |
+| horti_luas | sayuran      | Kentang      |
+| horti_luas | sayuran      | Kubis        |
+| horti_luas | sayuran      | Petsai       |
+| horti_luas | sayuran      | Tomat        |
+| horti_luas | tanaman_hias | Agloenema    |
+| horti_luas | tanaman_hias | Krisan       |
+| horti_luas | tanaman_hias | Mawar        |
+| horti_luas | tanaman_hias | Soka         |
+| horti_luas | biofarmaka   | Jahe         |
+| horti_luas | biofarmaka   | Kencur       |
+| horti_luas | biofarmaka   | Kunyit       |
+| horti_luas | biofarmaka   | Laos         |
++------------+--------------+--------------+
++----------------+----------------------+----------------------------+
+| t              | k                    | v                          |
++----------------+----------------------+----------------------------+
+| horti_prod_kab | sayuran_buah_semusim | Bawang Daun                |
+| horti_prod_kab | sayuran_buah_semusim | Bawang Merah               |
+| horti_prod_kab | sayuran_buah_semusim | Bawang Putih               |
+| horti_prod_kab | sayuran_buah_semusim | Bayam                      |
+| horti_prod_kab | sayuran_buah_semusim | Blewah                     |
+| horti_prod_kab | sayuran_buah_semusim | Buah-buahan                |
+| horti_prod_kab | sayuran_buah_semusim | Buncis                     |
+| horti_prod_kab | sayuran_buah_semusim | Cabai                      |
+| horti_prod_kab | sayuran_buah_semusim | Cabai Besar                |
+| horti_prod_kab | sayuran_buah_semusim | Cabai Rawit                |
+| horti_prod_kab | sayuran_buah_semusim | Jamur                      |
+| horti_prod_kab | sayuran_buah_semusim | Kacang Merah               |
+| horti_prod_kab | sayuran_buah_semusim | Kacang Panjang             |
+| horti_prod_kab | sayuran_buah_semusim | Kangkung                   |
+| horti_prod_kab | sayuran_buah_semusim | Kembang Kol                |
+| horti_prod_kab | sayuran_buah_semusim | Kentang                    |
+| horti_prod_kab | sayuran_buah_semusim | Ketimun                    |
+| horti_prod_kab | sayuran_buah_semusim | Kubis                      |
+| horti_prod_kab | sayuran_buah_semusim | Labu Siam                  |
+| horti_prod_kab | sayuran_buah_semusim | Lobak                      |
+| horti_prod_kab | sayuran_buah_semusim | Melon                      |
+| horti_prod_kab | sayuran_buah_semusim | Petsai                     |
+| horti_prod_kab | sayuran_buah_semusim | Sawi                       |
+| horti_prod_kab | sayuran_buah_semusim | Semangka                   |
+| horti_prod_kab | sayuran_buah_semusim | Terung                     |
+| horti_prod_kab | sayuran_buah_semusim | Tomat                      |
+| horti_prod_kab | sayuran_buah_semusim | Wortel                     |
+| horti_prod_kab | buah_sayuran_tahunan | Alpukat                    |
+| horti_prod_kab | buah_sayuran_tahunan | Belimbing                  |
+| horti_prod_kab | buah_sayuran_tahunan | Duku                       |
+| horti_prod_kab | buah_sayuran_tahunan | Durian                     |
+| horti_prod_kab | buah_sayuran_tahunan | Jambu Air                  |
+| horti_prod_kab | buah_sayuran_tahunan | Jambu Biji                 |
+| horti_prod_kab | buah_sayuran_tahunan | Jeruk (Tangerine + Pomelo) |
+| horti_prod_kab | buah_sayuran_tahunan | Jeruk Besa (Pomelo)        |
+| horti_prod_kab | buah_sayuran_tahunan | Jeruk Siam                 |
+| horti_prod_kab | buah_sayuran_tahunan | Mangga                     |
+| horti_prod_kab | buah_sayuran_tahunan | Manggis                    |
+| horti_prod_kab | buah_sayuran_tahunan | Markisa                    |
+| horti_prod_kab | buah_sayuran_tahunan | Melinjo                    |
+| horti_prod_kab | buah_sayuran_tahunan | Nangka                     |
+| horti_prod_kab | buah_sayuran_tahunan | Nenas                      |
+| horti_prod_kab | buah_sayuran_tahunan | Pepaya                     |
+| horti_prod_kab | buah_sayuran_tahunan | Petai                      |
+| horti_prod_kab | buah_sayuran_tahunan | Pisang                     |
+| horti_prod_kab | buah_sayuran_tahunan | Rambutan                   |
+| horti_prod_kab | buah_sayuran_tahunan | Salak                      |
+| horti_prod_kab | buah_sayuran_tahunan | Sawo                       |
+| horti_prod_kab | buah_sayuran_tahunan | Sirsak                     |
+| horti_prod_kab | buah_sayuran_tahunan | Sukun                      |
+| horti_prod_kab | tanaman_hias         | Agloenema                  |
+| horti_prod_kab | tanaman_hias         | Anthurium Daun             |
+| horti_prod_kab | tanaman_hias         | Caladium                   |
+| horti_prod_kab | tanaman_hias         | Krisan                     |
+| horti_prod_kab | tanaman_hias         | Mawar                      |
+| horti_prod_kab | tanaman_hias         | Melati                     |
+| horti_prod_kab | tanaman_hias         | Pakis                      |
+| horti_prod_kab | tanaman_hias         | Palem                      |
+| horti_prod_kab | tanaman_hias         | Pisang-pisangan            |
+| horti_prod_kab | tanaman_hias         | Sansievera Pedang-Pedangan |
+| horti_prod_kab | tanaman_hias         | Sedap Malam                |
+| horti_prod_kab | tanaman_hias         | Soka                       |
+| horti_prod_kab | biofarmaka           | Dringo                     |
+| horti_prod_kab | biofarmaka           | Jahe                       |
+| horti_prod_kab | biofarmaka           | Kapulaga                   |
+| horti_prod_kab | biofarmaka           | Kencur                     |
+| horti_prod_kab | biofarmaka           | Kunyit                     |
+| horti_prod_kab | biofarmaka           | Laos                       |
+| horti_prod_kab | biofarmaka           | Lempuyang                  |
+| horti_prod_kab | biofarmaka           | Lidah Buaya                |
+| horti_prod_kab | biofarmaka           | Mengkudu                   |
+| horti_prod_kab | biofarmaka           | Sambiloto                  |
+| horti_prod_kab | biofarmaka           | Temuireng                  |
+| horti_prod_kab | biofarmaka           | Temukunci                  |
+| horti_prod_kab | biofarmaka           | Temulawak                  |
++----------------+----------------------+----------------------------+
++----------+---+--------------+
+| t        | k | v            |
++----------+---+--------------+
+| palawija |   | Jagung       |
+| palawija |   | Kacang Hijau |
+| palawija |   | Kacang Tanah |
+| palawija |   | Kedelai      |
+| palawija |   | Ubi Jalar    |
+| palawija |   | Ubi Kayu     |
++----------+---+--------------+
++------------------+---+--------------+
+| t                | k | v            |
++------------------+---+--------------+
+| perkebunan_areal |   | Kakao        |
+| perkebunan_areal |   | Karet        |
+| perkebunan_areal |   | Kelapa Dalam |
+| perkebunan_areal |   | Kelapa Sawit |
+| perkebunan_areal |   | Kopi Arabica |
+| perkebunan_areal |   | Kopi Robusta |
+| perkebunan_areal |   | Tebu         |
+| perkebunan_areal |   | Teh          |
+| perkebunan_areal |   | Tembakau     |
++------------------+---+--------------+
++---------------------+---+--------------+
+| t                   | k | v            |
++---------------------+---+--------------+
+| perkebunan_produksi |   | Kakao        |
+| perkebunan_produksi |   | Karet        |
+| perkebunan_produksi |   | Kelapa Dalam |
+| perkebunan_produksi |   | Kelapa Sawit |
+| perkebunan_produksi |   | Kopi Robusta |
+| perkebunan_produksi |   | Tebu         |
+| perkebunan_produksi |   | Teh          |
+| perkebunan_produksi |   | Tembakau     |
++---------------------+---+--------------+
++------------+---+------+
+| t          | k | v    |
++------------+---+------+
+| padi.tahun |   | 2018 |
+| padi.tahun |   | 2019 |
+| padi.tahun |   | 2020 |
+| padi.tahun |   | 2021 |
+| padi.tahun |   | 2022 |
+| padi.tahun |   | 2023 |
+| padi.tahun |   | 2024 |
++------------+---+------+
++---------------+---+------+
+| t             | k | v    |
++---------------+---+------+
+| lumbung.tahun |   | 2018 |
+| lumbung.tahun |   | 2019 |
+| lumbung.tahun |   | 2020 |
+| lumbung.tahun |   | 2021 |
+| lumbung.tahun |   | 2022 |
+| lumbung.tahun |   | 2023 |
+| lumbung.tahun |   | 2024 |
++---------------+---+------+
++---------------------+---+------+
+| t                   | k | v    |
++---------------------+---+------+
+| kelompok_tani.tahun |   | 2022 |
+| kelompok_tani.tahun |   | 2023 |
+| kelompok_tani.tahun |   | 2024 |
+| kelompok_tani.tahun |   | 2025 |
+| kelompok_tani.tahun |   | 2026 |
++---------------------+---+------+
++-----------+---+------+
+| t         | k | v    |
++-----------+---+------+
+| kth.tahun |   | 2026 |
++-----------+---+------+
++------------------+---+------+
+| t                | k | v    |
++------------------+---+------+
+| lahan_desa.tahun |   | 2023 |
+| lahan_desa.tahun |   | 2025 |
++------------------+---+------+
++-------------+---+------+
+| t           | k | v    |
++-------------+---+------+
+| pasar.tahun |   | 2016 |
+| pasar.tahun |   | 2017 |
+| pasar.tahun |   | 2018 |
+| pasar.tahun |   | 2019 |
+| pasar.tahun |   | 2020 |
+| pasar.tahun |   | 2021 |
+| pasar.tahun |   | 2022 |
+| pasar.tahun |   | 2023 |
+| pasar.tahun |   | 2024 |
+| pasar.tahun |   | 2025 |
++-------------+---+------+
++---------------+---+------+
+| t             | k | v    |
++---------------+---+------+
+| inflasi.tahun |   | 2018 |
+| inflasi.tahun |   | 2019 |
+| inflasi.tahun |   | 2020 |
+| inflasi.tahun |   | 2021 |
+| inflasi.tahun |   | 2022 |
+| inflasi.tahun |   | 2023 |
+| inflasi.tahun |   | 2024 |
++---------------+---+------+
++----------+---------------+-----+
+| t        | k             | v   |
++----------+---------------+-----+
+| rowcount | kelompok_tani | 834 |
++----------+---------------+-----+
++----------+---------------------+-----+
+| t        | k                   | v   |
++----------+---------------------+-----+
+| rowcount | kelompok_tani_hutan | 188 |
++----------+---------------------+-----+
++----------+------------+-----+
+| t        | k          | v   |
++----------+------------+-----+
+| rowcount | kth_detail | 357 |
++----------+------------+-----+
++----------+-------------+-----+
+| t        | k           | v   |
++----------+-------------+-----+
+| rowcount | st2023_desa | 278 |
++----------+-------------+-----+
++----------+------+-----+
+| t        | k    | v   |
++----------+------+-----+
+| rowcount | desa | 278 |
++----------+------+-----+
++----------+------------+-----+
+| t        | k          | v   |
++----------+------------+-----+
+| rowcount | lahan_desa | 326 |
++----------+------------+-----+

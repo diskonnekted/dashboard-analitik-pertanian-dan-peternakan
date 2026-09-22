@@ -82,6 +82,22 @@ router.get("/domains", requireAdmin, async (_req, res) => {
   }
 });
 
+/** GET /api/v1/admin/sync-log -> riwayat import/ETL (terbaru dulu).
+ *  ?limit=N (default 50, jangkau 1-200). Untuk tab "Riwayat Import" dasbor admin. */
+router.get("/sync-log", requireAdmin, async (req, res) => {
+  try {
+    const limit = Math.min(Math.max(Number(req.query.limit) || 50, 1), 200);
+    const data = await q(
+      `SELECT id, dataset, sumber, aksi, baris, status, pesan, created_at
+       FROM sync_log ORDER BY id DESC LIMIT ${limit}`,
+    );
+    const [{ total }] = await q("SELECT COUNT(*) AS total FROM sync_log");
+    res.json({ total, limit, data });
+  } catch (e) {
+    res.status(500).json({ error: String(e?.message ?? e) });
+  }
+});
+
 async function sendWorkbook(res, domain, mode) {
   const buffer = await buildWorkbook(domain, mode);
   const stamp = new Date().toISOString().slice(0, 10);
