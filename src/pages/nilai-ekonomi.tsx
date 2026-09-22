@@ -5,6 +5,7 @@
  */
 import { useEffect, useMemo, useState } from "react";
 import { KpiCard, SectionCard, PageHeader } from "@/components/ui";
+import DefaultLayout from "@/layouts/default";
 import type { NilaiEkonomiRow } from "@/services/api";
 import { fetchNilaiEkonomi } from "@/services/api";
 
@@ -32,9 +33,10 @@ export default function NilaiEkonomiPage() {
   }, [rows]);
 
   return (
-    <>
+    <DefaultLayout>
+      <section className="flex flex-col gap-8">
       <PageHeader title="Nilai Ekonomi Pertanian" subtitle="Nilai ekonomi agregat per bidang, tahun, dan triwulan (dalam Rupiah)." />
-      <div className="container mx-auto py-6 px-4 lg:px-8">
+      <div>
         {error && <p className="text-sm text-red-600">Gagal memuat data: {error.message}</p>}
         {!rows && !error && <p className="mt-4 text-sm text-slate-500 animate-pulse">Memuat nilai ekonomi…</p>}
         {rows && rows.length === 0 && (
@@ -73,6 +75,7 @@ export default function NilaiEkonomiPage() {
           </>
         )}
       </div>
-    </>
+      </section>
+    </DefaultLayout>
   );
 }

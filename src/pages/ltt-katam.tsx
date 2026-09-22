@@ -6,6 +6,7 @@
  */
 import { useEffect, useMemo, useState } from "react";
 import { KpiCard, SectionCard, PageHeader } from "@/components/ui";
+import DefaultLayout from "@/layouts/default";
 import type { LttKatamRow } from "@/services/api";
 import { fetchLttKatam } from "@/services/api";
 
@@ -30,13 +31,14 @@ export default function LttKatamPage() {
   }, [rows]);
 
   return (
-    <>
+    <DefaultLayout>
+      <section className="flex flex-col gap-8">
       <PageHeader
         title="LTT & Kalender Tanam"
         subtitle="Laporan Tanam-Tanam (LTT) dan Kalender tanam per komoditas/kecamatan."
       />
 
-      <div className="container mx-auto py-6 px-4 lg:px-8">
+      <div>
         {error && <p className="text-sm text-red-600">Gagal memuat data: {error.message}</p>}
         {!rows && !error && (
           <p className="mt-4 text-sm text-slate-500 animate-pulse">Memuat data LTT & kalender tanam…</p>
@@ -92,6 +94,7 @@ export default function LttKatamPage() {
           </>
         )}
       </div>
-    </>
+      </section>
+    </DefaultLayout>
   );
 }
