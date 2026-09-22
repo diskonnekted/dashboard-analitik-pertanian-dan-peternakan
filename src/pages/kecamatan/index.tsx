@@ -1,11 +1,11 @@
 /**
  * /kecamatan — index 20 kecamatan Kabupaten Banjarnegara.
  * Identitas (jumlah desa, Σ luas wilayah) dari geoindex desa peta_desa_v3.geojson
- * (cached). Kartu menaut ke /kecamatan/:slug.
+ * (cached). Dropdown menaut ke /kecamatan/:slug.
  */
 import { useEffect, useState } from "react";
-import { ArrowRight, MapPin, Ruler, Users } from "lucide-react";
-import { Link } from "react-router-dom";
+import { MapPin, Ruler, Users } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import DefaultLayout from "@/layouts/default";
 import { KpiCard, LoadingSpinner, PageHeader } from "@/components/ui";
 import { fetchKecamatanIndex, type KecamatanIndex } from "@/services/kecamatan";
@@ -15,6 +15,7 @@ const fmt = new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 });
 export default function KecamatanIndexPage() {
   const [rows, setRows] = useState<KecamatanIndex[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     let alive = true;
@@ -100,27 +101,35 @@ export default function KecamatanIndexPage() {
           />
         </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {rows?.map((k) => (
-            <Link
-              key={k.slug}
-              to={`/kecamatan/${k.slug}`}
-              className="group flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-emerald-300 hover:shadow-md"
-            >
-              <div>
-                <p className="text-sm font-semibold text-slate-800 group-hover:text-emerald-700">
-                  {k.namaTampil}
-                </p>
-                <p className="mt-1 text-xs text-slate-500">
-                  {k.jumlahDesa} desa/kelurahan · {fmt.format(k.luasWilayahHa)} Ha
-                </p>
-              </div>
-              <span className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-emerald-700">
-                Lihat profil
-                <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-              </span>
-            </Link>
-          ))}
+        <div className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:gap-4">
+          <label
+            className="text-sm font-semibold whitespace-nowrap text-slate-700"
+            htmlFor="pilih-kecamatan"
+          >
+            Pilih kecamatan
+          </label>
+          <select
+            id="pilih-kecamatan"
+            value=""
+            onChange={(e) => {
+              const slug = e.currentTarget.value;
+              if (slug) navigate(`/kecamatan/${slug}`);
+            }}
+            className="h-10 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-800 focus:border-emerald-500 focus:outline-none sm:max-w-md"
+          >
+            <option value="" disabled>
+              — Pilih kecamatan untuk membuka profilnya —
+            </option>
+            {rows?.map((k) => (
+              <option key={k.slug} value={k.slug}>
+                {k.namaTampil} — {k.jumlahDesa} desa/kelurahan ·{" "}
+                {fmt.format(k.luasWilayahHa)} Ha
+              </option>
+            ))}
+          </select>
+          <p className="text-xs text-slate-500">
+            {rows?.length ?? 0} kecamatan tersedia
+          </p>
         </div>
 
         <p className="text-xs leading-relaxed text-slate-500">
