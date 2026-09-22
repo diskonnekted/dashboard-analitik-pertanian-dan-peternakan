@@ -454,6 +454,13 @@ export default function KecamatanDetailPage() {
   const pb = d.budidaya;
   const pt = d.tangkap;
   const lb = d.lumbung;
+  /** Kecamatan tanpa lumbung/gudang sama sekali → catatan jujur, bukan 4 tile "0". */
+  const lbAllZero =
+    !!lb &&
+    (lb.lumbungUnit ?? 0) === 0 &&
+    (lb.lumbungKapasitas ?? 0) === 0 &&
+    (lb.gudangLuas ?? 0) === 0 &&
+    (lb.gudangKapasitas ?? 0) === 0;
 
   /* ---------- baris grup ternak / perikanan ---------- */
   const tbRows = tb
@@ -889,7 +896,13 @@ export default function KecamatanDetailPage() {
               subtitle="Prasarana penyimpanan pangan — Distankan."
               actions={<Badge tone="slate">{lb.tahun}</Badge>}
             >
-              <div className="grid grid-cols-2 gap-2.5">
+              {lbAllZero ? (
+                <p className="rounded-lg border border-dashed border-slate-200 bg-slate-50/60 px-3 py-4 text-center text-xs text-slate-500">
+                  Tidak ada lumbung/gudang pangan yang tercatat di kecamatan
+                  ini (tahun {lb.tahun}).
+                </p>
+              ) : (
+                <div className="grid grid-cols-2 gap-2.5">
                 <TileStat
                   icon={Warehouse}
                   iconClass="text-orange-600"
@@ -918,7 +931,8 @@ export default function KecamatanDetailPage() {
                   value={`${num1(lb.gudangKapasitas)} ton`}
                   sub="Penyimpanan per tahun"
                 />
-              </div>
+                </div>
+              )}
             </PanelCard>
           )}
 

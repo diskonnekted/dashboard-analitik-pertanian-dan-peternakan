@@ -2452,7 +2452,35 @@ export const fetchFruitProduction = apiFirst<FruitProduction[]>("/v1/hortikultur
 export const fetchAnnualHorticultureProduction = apiFirst<AnnualHorticultureProduction[]>("/v1/hortikultura/produksi-tahunan", fetchAnnualHorticultureProductionCsv);
 export const fetchInflationData = apiFirst<InflationData[]>("/v1/ekonomi/inflasi", fetchInflationDataCsv);
 export const fetchMarketData = apiFirst<MarketData[]>("/v1/ekonomi/pasar", fetchMarketDataCsv);
-export const fetchLumbungPangan = apiFirst<LumbungPangan[]>("/v1/lumbung", fetchLumbungPanganCsv);
+/**
+ * Lumbung pangan — kontrak frontend memakai lumbungUnit/lumbungKapasitas/
+ * gudangLuas/gudangKapasitas (nama warisan parser CSV), sedangkan backend
+ * /v1/lumbung mengembalikan alias kolom MySQL (lumbungPangan/kapasitasLumbung/
+ * luasGudang/kapasitasGudang). Tanpa normalisasi, data MySQL "sampai" tapi
+ * semua nilai terbaca undefined → panel tampil "—" (tahun/kecamatan kebetulan
+ * cocok sehingga badge tahun tetap muncul). Normalisasi menerima kedua set
+ * nama, jadi jalur CSV maupun backend sama-sama sah.
+ */
+/** Alias kolom MySQL yang dikembalikan backend /v1/lumbung. */
+interface LumbungBackendAlias {
+  lumbungPangan?: number | null;
+  kapasitasLumbung?: number | null;
+  luasGudang?: number | null;
+  kapasitasGudang?: number | null;
+}
+const normalizeLumbungRow = (
+  r: LumbungPangan & LumbungBackendAlias,
+): LumbungPangan => ({
+  kecamatan: String(r.kecamatan ?? ""),
+  lumbungUnit: r.lumbungUnit ?? r.lumbungPangan ?? null,
+  lumbungKapasitas: r.lumbungKapasitas ?? r.kapasitasLumbung ?? null,
+  gudangLuas: r.gudangLuas ?? r.luasGudang ?? null,
+  gudangKapasitas: r.gudangKapasitas ?? r.kapasitasGudang ?? null,
+  tahun: Number(r.tahun) || 0,
+});
+const fetchLumbungPanganApiFirst = apiFirst<LumbungPangan[]>("/v1/lumbung", fetchLumbungPanganCsv);
+export const fetchLumbungPangan = async (): Promise<LumbungPangan[]> =>
+  (await fetchLumbungPanganApiFirst()).map(normalizeLumbungRow);
 export const fetchTernakKecil = apiFirst<TernakKecil[]>("/v1/peternakan/kecil", fetchTernakKecilCsv);
 export const fetchTernakBesar = apiFirst<TernakBesar[]>("/v1/peternakan/besar", fetchTernakBesarCsv);
 export const fetchUnggas = apiFirst<Unggas[]>("/v1/peternakan/unggas", fetchUnggasCsv);
