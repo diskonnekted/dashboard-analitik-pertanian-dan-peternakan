@@ -165,6 +165,6 @@ app.use((req, res, next) => {
 app.use((_req, res) => res.status(404).json({ error: "not_found" }));
 
 const port = Number(process.env.PORT || 4100);
-app.listen(port, () => {
+app.listen(port, process.env.BIND_HOST || "0.0.0.0", () => {
   console.log(`[sispertani-api] API listening on http://127.0.0.1:${port} (statistik+bantuan read, admin write; dist=${DIST_DIR})`);
 });
