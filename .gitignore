@@ -42,6 +42,7 @@ __pycache__/
 .env
 .env.local
 .env.*.local
+backend/.env.prod
 deploy.env
 
 # Scripts debugging / audit (not shipped to repo)
