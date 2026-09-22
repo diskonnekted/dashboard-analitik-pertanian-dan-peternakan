@@ -689,10 +689,10 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
     const desaData = getDesaData(feature);
     const desaName = (feature.properties?.Nama_Desa_ || feature.properties?.Name || "").toUpperCase();
     
-    // Default style — polygon sudah besar, garis cukup proporsional saja
+    // Default style — polygon sudah besar, garis batas dibuat tipis (0.7)
     let fillColor = "#cccccc";
     let fillOpacity = 0.4;
-    let weight = 1.5;
+    let weight = 0.7;
     let opacity = 1;
     let borderColor = "#1f2937";
 
@@ -725,7 +725,7 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
 
       if (matchesSearch && matchesLegend) {
         fillOpacity = 0.7;
-        weight = 2;
+        weight = 0.7;
         opacity = 1;
       } else {
         // Mute if not matching search or legend — tetap
@@ -764,7 +764,7 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
   const kecStyle = {
     fill: false,
     color: "#9f1239",
-    weight: 1.5,
+    weight: 0.7,
     opacity: 0.85,
     dashArray: "6 4",
   };
