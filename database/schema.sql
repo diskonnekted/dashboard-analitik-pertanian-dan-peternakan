@@ -471,6 +471,10 @@ CREATE TABLE lahan_penggunaan (
 ) ENGINE=InnoDB COMMENT='Penggunaan lahan tingkat kabupaten (2014+)';
 
 DROP TABLE IF EXISTS lahan_desa;
+-- Regen 12-kolom Tabel 4.10 ST2023 (2026-09-22): sawah=kol2, bukan_sawah=kol3,
+-- padang_sementara=kol4, padang_permanen=kol5, fallow=kol6, tanaman_tahunan=kol7,
+-- kandang_ternak=kol8, kehutanan=kol9, perikanan=kol10, non_pertanian=kol11,
+-- total_dikuasai=kol12 = jumlah seluruh jenis lahan usaha tani perorangan (m2/10000).
 CREATE TABLE lahan_desa (
   id               INT UNSIGNED NOT NULL AUTO_INCREMENT,
   kecamatan_id     TINYINT UNSIGNED NOT NULL,
@@ -479,6 +483,15 @@ CREATE TABLE lahan_desa (
   tahun            SMALLINT UNSIGNED NOT NULL,
   sawah_ha         DECIMAL(10,3) NULL,
   bukan_sawah_ha   DECIMAL(10,3) NULL,
+  padang_sementara_ha DECIMAL(10,3) NULL,
+  padang_permanen_ha  DECIMAL(10,3) NULL,
+  fallow_ha        DECIMAL(10,3) NULL,
+  tanaman_tahunan_ha DECIMAL(10,3) NULL,
+  kandang_ternak_ha  DECIMAL(10,3) NULL,
+  kehutanan_ha     DECIMAL(10,3) NULL,
+  perikanan_ha     DECIMAL(10,3) NULL,
+  non_pertanian_ha DECIMAL(10,3) NULL,
+  total_dikuasai_ha DECIMAL(10,3) NULL,
   total_ha         DECIMAL(10,3) NULL,
   sumber_json      VARCHAR(60)  NULL COMMENT 'Field "sumber" dari JSON fallback (mis. fallback-manual)',
   confidence       VARCHAR(20)  NULL,

@@ -10,14 +10,16 @@ export const WarningTable = ({ data }: WarningTableProps) => {
 
   const analyzedData = worst5.map((row, idx) => {
     let status = "Aman";
-    let isu = "Ketersediaan lahan ideal";
+    let isu = "Lahan usaha tani memadai (≥ 100 Ha)";
 
-    if (row.jumlah < 50) {
+    // Kalibrasi terhadap distribusi total_dikuasai ST2023 (n=278 desa):
+    // min 4,6 | p10 59,6 | p25 93,6 | median 162,2 | p90 342,9 | max 784,2 Ha
+    if (row.jumlah < 60) {
       status = "Bahaya";
-      isu = "Total lahan pertanian sangat minim";
-    } else if (row.jumlah < 150) {
+      isu = "Lahan usaha tani sangat sempit (< 60 Ha)";
+    } else if (row.jumlah < 100) {
       status = "Waspada";
-      isu = "Potensi penyempitan lahan";
+      isu = "Lahan usaha tani terbatas (60–100 Ha)";
     }
 
     return {
@@ -58,7 +60,7 @@ export const WarningTable = ({ data }: WarningTableProps) => {
           <thead>
             <tr className="border-b-2 border-[#e2e8f0] text-xs font-mono font-bold text-neutral-700">
               <th className="pb-3 px-2">DESA</th>
-              <th className="pb-3 px-2 text-right">TOTAL LAHAN (Ha)</th>
+              <th className="pb-3 px-2 text-right">LAHAN USAHA TANI (Ha)</th>
               <th className="pb-3 px-6 text-center">STATUS</th>
               <th className="pb-3 px-2">ISU UTAMA</th>
             </tr>
@@ -102,6 +104,12 @@ export const WarningTable = ({ data }: WarningTableProps) => {
           </tbody>
         </table>
       </div>
+
+      <p className="mt-4 text-[10px] leading-relaxed text-neutral-400">
+        Sumber: BPS ST2023 Tabel 4.10 — luas lahan yang dikuasai usaha pertanian
+        perorangan per desa (termasuk sawah, bukan sawah, tanaman tahunan, dan
+        lahan usaha tani lainnya); bukan total luas wilayah desa.
+      </p>
     </div>
   );
 };

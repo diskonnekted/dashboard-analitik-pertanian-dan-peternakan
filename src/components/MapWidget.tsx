@@ -393,23 +393,26 @@ const PopupContent = ({ desaName, kecName, data, taniData, st2023 }: { desaName:
       <div className="grid grid-cols-2 gap-x-4 gap-y-2 pt-3">
         {/* ===== KOLOM KIRI: LAHAN ===== */}
         <div>
-          <SectionHeader icon="🌾" label="Lahan Pertanian" color="text-emerald-700" />
+          <SectionHeader icon="🌾" label="Lahan Usaha Tani" color="text-emerald-700" />
           {data ? (
             rincianTersedia ? (
               <>
                 <MetricRow label="Sawah" value={`${data.lahanSawah.toLocaleString('id-ID')}`} sub="Ha" dot="bg-emerald-400" />
                 <MetricRow label="Ladang / Lain" value={`${data.lahanBukanSawah.toLocaleString('id-ID')}`} sub="Ha" dot="bg-teal-400" />
+                {data.tanamanTahunan != null && data.tanamanTahunan > 0 && (
+                  <MetricRow label="Tanaman Tahunan" value={`${data.tanamanTahunan.toLocaleString('id-ID')}`} sub="Ha" dot="bg-lime-600" />
+                )}
                 <div className="mt-2">
-                  <HeroStat label="Total Lahan" value={data.jumlah.toLocaleString('id-ID')} unit="Ha" />
+                  <HeroStat label="Total Dikuasai" value={data.jumlah.toLocaleString('id-ID')} unit="Ha" />
                 </div>
               </>
             ) : (
               <>
                 <div className="mt-0.5">
-                  <HeroStat label="Total Lahan" value={data.jumlah.toLocaleString('id-ID')} unit="Ha" />
+                  <HeroStat label="Total Dikuasai" value={data.jumlah.toLocaleString('id-ID')} unit="Ha" />
                 </div>
                 <p className="text-[9px] italic text-slate-400 leading-snug mt-1">
-                  Rincian sawah/ladang belum tersedia (Opendata Banjarnegara)
+                  Rincian per jenis lahan belum tersedia
                 </p>
               </>
             )
@@ -419,7 +422,7 @@ const PopupContent = ({ desaName, kecName, data, taniData, st2023 }: { desaName:
           {data?.tahun && (
             <p className="mt-1.5 flex items-center gap-1.5 text-[9px] text-slate-400">
               <span className="w-1 h-1 rounded-full bg-slate-300" />
-              Sumber: Opendata {data.tahun}
+              Sumber: BPS ST2023 T4.10 {data.tahun}
             </p>
           )}
         </div>
@@ -713,7 +716,7 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
       } else { 
         if (metricValue > 300) { fillColor = "#047857"; category = 3; }
         else if (metricValue > 150) { fillColor = "#059669"; category = 2; }
-        else if (metricValue > 50) { fillColor = "#34d399"; category = 1; }
+        else if (metricValue > 60) { fillColor = "#34d399"; category = 1; }
         else { fillColor = "#6ee7b7"; category = 0; }
       }
 
@@ -877,8 +880,8 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
     return [
       { label: "> 300 Ha", color: "#047857", cat: 3 },
       { label: "150 - 300 Ha", color: "#059669", cat: 2 },
-      { label: "50 - 150 Ha", color: "#34d399", cat: 1 },
-      { label: "< 50 Ha", color: "#6ee7b7", cat: 0 },
+      { label: "60 - 150 Ha", color: "#34d399", cat: 1 },
+      { label: "< 60 Ha", color: "#6ee7b7", cat: 0 },
     ];
   }, [activeMetric]);
 
@@ -915,7 +918,7 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
           >
             <option value="lahanSawah">Lahan Sawah (Padi)</option>
             <option value="lahanBukanSawah">Ladang (Palawija)</option>
-            <option value="jumlah">Total Keseluruhan</option>
+            <option value="jumlah">Total Lahan Dikuasai (ST2023)</option>
           </select>
           <span className="text-[9px] font-mono text-neutral-500 mt-0.5">
             <kbd className="px-1 py-0.5 bg-neutral-100 border border-slate-300 rounded text-[9px] font-bold">CTRL</kbd>

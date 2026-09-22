@@ -11,14 +11,16 @@ export const lahanRouter = Router();
  * Satu baris per desa — meniru isi lahan-fallback.json yang dipakai frontend:
  * baris dengan rincian sawah/bukan sawah diprioritaskan di atas entri parsial
  * (total saja) dari file koreksi manual; tie-break tahun terbaru.
+ * Regen 12-kolom T4.10 ST2023: menambah tanamanTahunan + totalDikuasai (kolom 7 & 12);
+ * jumlah kini = total lahan yang dikuasai usaha pertanian perorangan.
  */
 lahanRouter.get(
   "/desa",
   route(async () => {
     const rows = await q(
-      `SELECT x.desa, x.kecamatan, x.sawah_ha, x.bukan_sawah_ha, x.total_ha, x.tahun
+      `SELECT x.desa, x.kecamatan, x.sawah_ha, x.bukan_sawah_ha, x.tanaman_tahunan_ha, x.total_dikuasai_ha, x.total_ha, x.tahun
        FROM (
-         SELECT l.desa, k.nama AS kecamatan, l.sawah_ha, l.bukan_sawah_ha, l.total_ha, l.tahun,
+         SELECT l.desa, k.nama AS kecamatan, l.sawah_ha, l.bukan_sawah_ha, l.tanaman_tahunan_ha, l.total_dikuasai_ha, l.total_ha, l.tahun,
                 ROW_NUMBER() OVER (
                   PARTITION BY l.kecamatan_id, l.desa_norm
                   ORDER BY (l.sawah_ha + l.bukan_sawah_ha) = 0, l.tahun DESC, l.id DESC
@@ -34,7 +36,17 @@ lahanRouter.get(
       kecamatan: r.kecamatan,
       lahanSawah: Number(r.sawah_ha),
       lahanBukanSawah: Number(r.bukan_sawah_ha),
-      jumlah: Number(r.total_ha),
+      // BPS ST2023 Tabel 4.10 (12 kolom): tanaman_tahunan = komponen terbesar,
+      // total_dikuasai = kolom 12 (jumlah seluruh jenis lahan usaha tani).
+      // jumlah diprioritaskan total_dikuasai agar scope jujur (bukan sekadar sawah+bukan_sawah).
+      tanamanTahunan: r.tanaman_tahunan_ha === null ? null : Number(r.tanaman_tahunan_ha),
+      totalDikuasai: r.total_dikuasai_ha === null ? null : Number(r.total_dikuasai_ha),
+      jumlah:
+        r.total_dikuasai_ha !== null
+          ? Number(r.total_dikuasai_ha)
+          : r.total_ha !== null
+            ? Number(r.total_ha)
+            : Number(r.sawah_ha) + Number(r.bukan_sawah_ha),
       tahun: String(r.tahun),
     }));
   }),

@@ -24,12 +24,15 @@ export function DesaLahan({ data }: Props) {
   }
 
   // Akumulasikan (kalau ada > 1 row per desa per tahun — biasanya hanya 1, tapi defensive)
-  const totals: { tahun: string; sawah: number; bukanSawah: number; total: number }[] = [];
+  const totals: { tahun: string; sawah: number; bukanSawah: number; tanamanTahunan: number; total: number }[] = [];
   for (const [tahun, rows] of [...byTahun.entries()].sort()) {
     const sawah = rows.reduce((a, r) => a + (r.lahanSawah || 0), 0);
     const bs = rows.reduce((a, r) => a + (r.lahanBukanSawah || 0), 0);
+    const tt = rows.reduce((a, r) => a + (r.tanamanTahunan || 0), 0);
     const allJumlah = rows.reduce((a, r) => a + (r.jumlah || 0), 0);
-    totals.push({ tahun, sawah, bukanSawah: bs, total: allJumlah || sawah + bs });
+    // jumlah = total lahan dikuasai usaha tani (kolom 12 T4.10 ST2023);
+    // bisa lebih besar dari sawah+bukan_sawah karena mencakup tanaman tahunan dll.
+    totals.push({ tahun, sawah, bukanSawah: bs, tanamanTahunan: tt, total: allJumlah || sawah + bs + tt });
   }
 
   const unit = (n: number): string =>
@@ -40,7 +43,7 @@ export function DesaLahan({ data }: Props) {
       <SectionHeader
         icon={<Sprout className="w-4 h-4 text-emerald-600" />}
         title="Penggunaan Lahan"
-        subtitle="Luas lahan sawah & bukan sawah (Ha) per tahun."
+        subtitle="Luas lahan usaha tani per tahun (Ha) — BPS ST2023 T4.10."
       />
 
       <div className="space-y-3">
@@ -61,7 +64,7 @@ export function DesaLahan({ data }: Props) {
                 Total {unit(t.total)} Ha
               </span>
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className={`grid gap-3 ${t.tanamanTahunan > 0 ? 'grid-cols-3' : 'grid-cols-2'}`}>
               <Tile
                 icon={<Sprout className="w-4 h-4 text-emerald-600" />}
                 label="Lahan Sawah"
@@ -76,6 +79,15 @@ export function DesaLahan({ data }: Props) {
                 ratio={t.total ? t.bukanSawah / t.total : 0}
                 accent="amber"
               />
+              {t.tanamanTahunan > 0 && (
+                <Tile
+                  icon={<Sprout className="w-4 h-4 text-lime-700" />}
+                  label="Tanaman Tahunan"
+                  value={`${unit(t.tanamanTahunan)} Ha`}
+                  ratio={t.total ? t.tanamanTahunan / t.total : 0}
+                  accent="lime"
+                />
+              )}
             </div>
           </div>
         ))}
@@ -124,11 +136,13 @@ function Tile({
   label: string;
   value: string;
   ratio: number;
-  accent: "emerald" | "amber";
+  accent: "emerald" | "amber" | "lime";
 }) {
   const barColor =
     accent === "emerald"
       ? "from-emerald-400 to-emerald-600"
+      : accent === "lime"
+      ? "from-lime-400 to-lime-600"
       : "from-amber-400 to-amber-600";
 
   return (

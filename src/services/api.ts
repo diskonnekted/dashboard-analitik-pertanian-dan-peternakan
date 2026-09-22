@@ -306,6 +306,10 @@ export interface LahanDesa {
   kecamatan: string;
   lahanSawah: number;
   lahanBukanSawah: number;
+  /** BPS ST2023 T4.10 kolom 7 — komponen terbesar (Ha) */
+  tanamanTahunan?: number | null;
+  /** BPS ST2023 T4.10 kolom 12 — total lahan yang dikuasai usaha tani perorangan (Ha) */
+  totalDikuasai?: number | null;
   jumlah: number;
   tahun: string;
 }
@@ -402,7 +406,9 @@ export const fetchOpenDataCatalog = async (): Promise<CkanCatalog> => {
 };
 
 const fetchLahanBanjarnegaraCsv = async (): Promise<LahanDesa[]> => {
-  const cacheKey = "banjarnegara_lahan_cache_v6";
+  // v7: regen 12-kolom Tabel 4.10 ST2023 — jumlah kini = total_dikuasai (kolom 12),
+  // ditambah field tanamanTahunan & totalDikuasai.
+  const cacheKey = "banjarnegara_lahan_cache_v7";
   const cached = getCachedData<LahanDesa[]>(cacheKey);
 
   // Fetch-first: file lokal kecil (~50KB), selalu ambil yang terbaru.
@@ -2432,7 +2438,7 @@ const fetchSt2023DesaExtraCsv = async (): Promise<St2023DesaExtra[]> =>
 // keduanya katalog CKAN live, bukan data numerik yang dimigrasi.
 // ============================================================
 
-export const fetchLahanBanjarnegara = apiFirst<LahanDesa[]>("/v1/lahan/desa?koreksi=20260922", fetchLahanBanjarnegaraCsv);
+export const fetchLahanBanjarnegara = apiFirst<LahanDesa[]>("/v1/lahan/desa?regen=t410", fetchLahanBanjarnegaraCsv);
 export const fetchLahanResmiKabupaten = apiFirst<LahanResmiKabupaten | null>("/v1/lahan/kabupaten", fetchLahanResmiKabupatenCsv);
 export const fetchPadiProduction = apiFirst<PadiProduction[]>("/v1/padi/production", fetchPadiProductionCsv);
 export const fetchPadiHistory = apiFirst<PadiHistoryPoint[]>("/v1/padi/history", fetchPadiHistoryCsv);
