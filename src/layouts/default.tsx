@@ -160,7 +160,11 @@ export default function DefaultLayout({
   // Render grouped nav items
   const renderNavGroups = (onLinkClick?: () => void) => (
     <>
-      {siteConfig.navGroups.map((group, groupIndex) => (
+      {siteConfig.navGroups.map((group, groupIndex) => {
+        // Menu inaktif (hidden) tidak dirender; grup tanpa item aktif → dilewati
+        const visibleItems = group.items.filter((it) => !it.hidden);
+        if (!visibleItems.length) return null;
+        return (
         <div key={groupIndex} className={group.title ? "mt-4 first:mt-0" : ""}>
           {group.title && (
             <p className="px-4 mb-1.5 text-[9px] font-mono font-bold text-slate-500 uppercase tracking-wider">
@@ -168,7 +172,7 @@ export default function DefaultLayout({
             </p>
           )}
           <div className="space-y-1">
-            {group.items.map((item) => {
+            {visibleItems.map((item) => {
               const isActive = location.pathname === item.href;
               const isDisabled = item.disabled;
               
@@ -204,7 +208,8 @@ export default function DefaultLayout({
             })}
           </div>
         </div>
-      ))}
+        );
+      })}
     </>
   );
 

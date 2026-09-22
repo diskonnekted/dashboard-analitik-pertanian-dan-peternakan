@@ -1,6 +1,16 @@
 export type SiteConfig = typeof siteConfig;
 
-export type NavItem = { label: string; href: string; disabled?: boolean };
+export type NavItem = {
+  label: string;
+  href: string;
+  disabled?: boolean;
+  /**
+   * true = item TIDAK dirender di navigasi (fitur belum aktif / menunggu data).
+   * Hanya menyembunyikan — route & halaman tetap ada, aktifkan lagi dengan
+   * menghapus flag ini. Berbeda dari `disabled` (tampil abu-abu "SOON").
+   */
+  hidden?: boolean;
+};
 export type NavGroup = { title: string; items: NavItem[] };
 
 export const siteConfig = {
@@ -81,10 +91,12 @@ export const siteConfig = {
         {
           label: "Komoditas Unggulan",
           href: "/komoditas-unggulan",
+          hidden: true, // placeholder data contoh — aktifkan saat endpoint resmi (23 Sep)
         },
         {
           label: "LTT & Kalender Tanam",
           href: "/ltt-katam",
+          hidden: true, // placeholder data contoh — aktifkan saat endpoint resmi (23 Sep)
         },
         {
           label: "Nilai Ekonomi Perkebunan",
@@ -158,6 +170,7 @@ export const siteConfig = {
         {
           label: "Kewirausahaan KWT",
           href: "/kewirausahaan/kwt",
+          hidden: true, // placeholder data contoh — aktifkan saat endpoint resmi (23 Sep)
         },
       ],
     },
@@ -201,96 +214,115 @@ export const siteConfig = {
           label: "Peta Sebaran & Alert",
           href: "/early-warning",
           disabled: true,
+          hidden: true, // sembunyikan fase pengembangan — aktifkan: hapus baris ini
         },
         {
           label: "Data Petani & NPP",
           href: "/master-petani",
           disabled: true,
+          hidden: true, // sembunyikan fase pengembangan — aktifkan: hapus baris ini
         },
         {
           label: "Data Lahan & Peta Digital",
           href: "/master-lahan",
           disabled: true,
+          hidden: true, // sembunyikan fase pengembangan — aktifkan: hapus baris ini
         },
         {
           label: "Data Alsintan",
           href: "/master-alsintan",
           disabled: true,
+          hidden: true, // sembunyikan fase pengembangan — aktifkan: hapus baris ini
         },
         {
           label: "Luas Tambah Tanam & Luas Panen",
           href: "/ltt",
           disabled: true,
+          hidden: true, // sembunyikan fase pengembangan — aktifkan: hapus baris ini
         },
         {
           label: "OPT / Hama & Penyakit",
           href: "/opt",
           disabled: true,
+          hidden: true, // sembunyikan fase pengembangan — aktifkan: hapus baris ini
         },
         {
           label: "Irigasi & Tata Air",
           href: "/irigasi",
           disabled: true,
+          hidden: true, // sembunyikan fase pengembangan — aktifkan: hapus baris ini
         },
         {
           label: "Kawasan Hortikultura",
           href: "/kawasan-hortikultura",
           disabled: true,
+          hidden: true, // sembunyikan fase pengembangan — aktifkan: hapus baris ini
         },
         {
           label: "Sertifikasi & Mutu Hasil",
           href: "/sertifikasi-mutu",
           disabled: true,
+          hidden: true, // sembunyikan fase pengembangan — aktifkan: hapus baris ini
         },
         {
           label: "Kemitraan & Hilirisasi",
           href: "/kemitraan",
           disabled: true,
+          hidden: true, // sembunyikan fase pengembangan — aktifkan: hapus baris ini
         },
         {
           label: "Kesehatan Hewan & Zoonosis",
           href: "/kesehatan-hewan",
           disabled: true,
+          hidden: true, // sembunyikan fase pengembangan — aktifkan: hapus baris ini
         },
         {
           label: "Pakan Ternak & Hijauan",
           href: "/pakan-ternak",
           disabled: true,
+          hidden: true, // sembunyikan fase pengembangan — aktifkan: hapus baris ini
         },
         {
           label: "Kesehatan Ikan & Lingkungan Perairan",
           href: "/kesehatan-ikan",
           disabled: true,
+          hidden: true, // sembunyikan fase pengembangan — aktifkan: hapus baris ini
         },
         {
           label: "Cadangan Pangan Daerah",
           href: "/cpd",
           disabled: true,
+          hidden: true, // sembunyikan fase pengembangan — aktifkan: hapus baris ini
         },
         {
           label: "Jadwal & Materi Penyuluhan",
           href: "/penyuluhan",
           disabled: true,
+          hidden: true, // sembunyikan fase pengembangan — aktifkan: hapus baris ini
         },
         {
           label: "Penilaian Kinerja Penyuluh",
           href: "/kinerja-penyuluh",
           disabled: true,
+          hidden: true, // sembunyikan fase pengembangan — aktifkan: hapus baris ini
         },
         {
           label: "Monitoring & Evaluasi",
           href: "/monev",
           disabled: true,
+          hidden: true, // sembunyikan fase pengembangan — aktifkan: hapus baris ini
         },
         {
           label: "Manajemen User & Hak Akses",
           href: "/user-management",
           disabled: true,
+          hidden: true, // sembunyikan fase pengembangan — aktifkan: hapus baris ini
         },
         {
           label: "Pengaturan Sistem",
           href: "/settings",
           disabled: true,
+          hidden: true, // sembunyikan fase pengembangan — aktifkan: hapus baris ini
         },
       ],
     },
