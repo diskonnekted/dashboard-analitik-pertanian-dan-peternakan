@@ -1,4 +1,5 @@
-import { Beef, Rabbit, Bird } from "lucide-react";
+import { Beef, Rabbit, Bird, Egg } from "lucide-react";
+import { HARGA_TELUR } from "@/data/harga-referensi";
 import { EmptyBlock } from "./EmptyBlock";
 
 interface Props {
@@ -104,6 +105,44 @@ export function DesaTernak({ data }: Props) {
 
   const unit = (n: number) => n.toLocaleString("id-ID");
 
+  // ===== P1-4: Estimasi telur per desa — populasi ST2023 × faktor konversi indikatif =====
+  // Key ternak bisa camelCase mentah ("ayamRasPetelur") maupun label ("Ayam Ras Petelur")
+  // — samakan via normalisasi. Faktor konversi indikatif (petelur 250 butir/ekor/thn,
+  // kampung 60, puyuh 250; berat butir 60/45/12 g); harga telur ras & kampung dari
+  // harga-referensi.ts (indikatif), puyuh indikatif lokal — bukan angka resmi BPS.
+  const norm = (s: string) => s.toLowerCase().replace(/[^a-z]/g, "");
+  const pick = (target: string) =>
+    Number(
+      Object.entries(data).find(([k]) => norm(k) === norm(target))?.[1] ?? 0,
+    ) || 0;
+  const hargaTelurRas = HARGA_TELUR["Ayam Ras Layer"]?.hargaRp ?? 28_000;
+  const hargaTelurKampung = HARGA_TELUR["Ayam Kampung"]?.hargaRp ?? 45_000;
+  const FAKTOR_TELUR = [
+    { key: "ayamRasPetelur", label: "Ayam Ras Petelur", butirPerEkor: 250, gramPerButir: 60, hargaPerKg: hargaTelurRas },
+    { key: "ayamKampung", label: "Ayam Kampung", butirPerEkor: 60, gramPerButir: 45, hargaPerKg: hargaTelurKampung },
+    { key: "puyuh", label: "Puyuh", butirPerEkor: 250, gramPerButir: 12, hargaPerKg: 30_000 },
+  ];
+  const telur = FAKTOR_TELUR.map((f) => {
+    const populasi = pick(f.key);
+    const butir = populasi * f.butirPerEkor;
+    const kg = (butir * f.gramPerButir) / 1000;
+    return { ...f, populasi, butir, kg, nilai: kg * f.hargaPerKg };
+  }).filter((t) => t.populasi > 0);
+  const telurTotal = telur.reduce(
+    (a, t) => ({
+      butir: a.butir + t.butir,
+      kg: a.kg + t.kg,
+      nilai: a.nilai + t.nilai,
+    }),
+    { butir: 0, kg: 0, nilai: 0 },
+  );
+  const fmtRp = (v: number) =>
+    v >= 1e9
+      ? `Rp ${(v / 1e9).toFixed(2)} M`
+      : v >= 1e6
+        ? `Rp ${(v / 1e6).toFixed(1)} jt`
+        : `Rp ${Math.round(v).toLocaleString("id-ID")}`;
+
   return (
     <section className="bg-white border border-slate-200 rounded-xl p-4">
       <header className="mb-2.5 flex items-start gap-2.5">
@@ -177,6 +216,57 @@ export function DesaTernak({ data }: Props) {
           );
         })}
       </div>
+
+      {telur.length > 0 && (
+        <div className="mt-3 rounded-lg bg-gradient-to-br from-yellow-50/70 to-white ring-1 ring-yellow-100 p-3">
+          <div className="flex items-center gap-2 mb-2">
+            <div
+              className="
+                flex h-6 w-6 items-center justify-center
+                rounded-md bg-white ring-1 ring-slate-200 shadow-sm
+              "
+            >
+              <Egg className="w-3.5 h-3.5 text-yellow-600" />
+            </div>
+            <div className="flex-1">
+              <div className="text-sm font-bold text-slate-800 leading-tight">
+                Estimasi Produksi Telur (per tahun)
+              </div>
+              <div className="text-[10px] text-slate-500">
+                Populasi ST2023 × faktor konversi indikatif
+              </div>
+            </div>
+          </div>
+          <div className="space-y-1.5">
+            {telur.map((t) => (
+              <div key={t.key} className="text-xs">
+                <div className="flex items-center justify-between mb-0.5">
+                  <span className="font-medium text-slate-700">{t.label}</span>
+                  <span className="font-bold text-slate-800 tabular-nums ml-2">
+                    {unit(Math.round(t.kg))} kg · {fmtRp(t.nilai)}
+                  </span>
+                </div>
+                <div className="text-[10px] text-slate-500 tabular-nums">
+                  {unit(t.populasi)} ekor × {unit(t.butirPerEkor)} butir/ekor/thn ·{" "}
+                  {t.gramPerButir} g/butir · Rp {unit(t.hargaPerKg)}/kg
+                </div>
+              </div>
+            ))}
+            <div className="flex items-center justify-between border-t border-yellow-200 pt-1.5 text-xs font-bold text-slate-800">
+              <span>Jumlah estimasi</span>
+              <span className="tabular-nums">
+                {unit(telurTotal.butir)} butir · {unit(Math.round(telurTotal.kg))}{" "}
+                kg · {fmtRp(telurTotal.nilai)}
+              </span>
+            </div>
+          </div>
+          <p className="mt-2 text-[10px] text-slate-500 leading-relaxed">
+            Estimasi indikatif — VERIFIKASI (harga ras &amp; kampung dari
+            harga-referensi.ts, puyuh indikatif lokal); data telur resmi 3 jenis
+            menyusul dari Distankan KP.
+          </p>
+        </div>
+      )}
     </section>
   );
 }

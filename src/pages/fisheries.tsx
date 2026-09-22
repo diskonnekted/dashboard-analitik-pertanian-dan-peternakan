@@ -686,9 +686,13 @@ export default function FisheriesPage() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Air Tawar — produksi lokal */}
                 <div className="text-left">
-                  <h5 className="flex items-center gap-2 text-xs font-mono font-bold uppercase text-sky-700 mb-3">
+                  <h5 className="flex items-center gap-2 text-xs font-mono font-bold uppercase text-sky-700 mb-1">
                     <Fish size={14} /> Ikan Air Tawar — Produksi Lokal
                   </h5>
+                  <p className="mb-3 text-[10px] font-mono uppercase leading-relaxed text-slate-500">
+                    Minapadi (penyelang &amp; tumpangsari) — sentra: Singomerto ·
+                    Bawang · Madukara
+                  </p>
                   <div className="flex flex-col gap-3">
                     {PRODUK_IKAN_TAWAR.map((p) => (
                       <div
@@ -706,6 +710,11 @@ export default function FisheriesPage() {
                         <p className="text-xs text-slate-600 leading-relaxed">
                           {p.deskripsi}
                         </p>
+                        {p.sentra && (
+                          <p className="text-[10px] font-mono uppercase leading-relaxed text-sky-700">
+                            Sentra: {p.sentra.join(" · ")}
+                          </p>
+                        )}
                         <div className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-2">
                           <span className="font-mono font-bold text-xs text-slate-800">
                             Rp {formatNum(p.hargaMin)}–{formatNum(p.hargaMax)}/kg
@@ -828,6 +837,11 @@ export default function FisheriesPage() {
                                       style={{ width: `${pct}%` }}
                                     />
                                   </div>
+                                  {r.produk.sentra && (
+                                    <span className="text-[9px] font-mono uppercase text-slate-400">
+                                      {r.produk.sentra.join(" · ")}
+                                    </span>
+                                  )}
                                 </div>
                               </td>
                               <td className="p-3 border-r border-slate-200 text-right">
@@ -918,7 +932,8 @@ export default function FisheriesPage() {
                   (hanya per tempat pemeliharaan budidaya dan per alat tangkap),
                   sehingga rincian per jenis di atas adalah{" "}
                   <b>estimasi komposisi</b> (pangsa indikatif) — bukan angka
-                  resmi BPS.
+                  resmi BPS. Daftar jenis &amp; sentra kecamatan mengikuti
+                  kebutuhan Distankan KP (gap-analysis-master §3.2).
                 </li>
                 <li>
                   Harga referensi bersifat <b>indikatif</b> ({PRODUK_IKAN_SUMBER}{" "}
