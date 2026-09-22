@@ -9,6 +9,8 @@ import {
   Building2,
   Target,
   AlertCircle,
+  Banknote,
+  TrendingUp,
 } from "lucide-react";
 import {
   fetchPadiProduction,
@@ -20,6 +22,8 @@ import {
   fetchNilaiProduksiTangkap,
   fetchLahanBanjarnegara,
   fetchOpenDataCatalog,
+  fetchAnomaliHargaPangan,
+  fetchHargaPanganJateng,
   type PadiProduction,
   type PadiHistoryPoint,
   type TernakBesar,
@@ -28,6 +32,8 @@ import {
   type NilaiProduksiRow,
   type LahanDesa,
   type CkanCatalog,
+  type AnomaliHargaRow,
+  type HargaPanganJateng,
 } from "@/services/api";
 import ChatBot from "@/components/ChatBot";
 import {
@@ -349,18 +355,134 @@ export default function RecommendationsPage() {
     );
   }, [padiHistory]);
 
+  /* Konteks Pasar Terkini - Bapanas via apiindonesia.id (harga bulanan Jateng
+     konsumen/produsen + indeks anomali harga nasional). Mandiri: bila fetch
+     gagal tersedia fallback snapshot lokal; rekomendasi tetap tampil tanpa
+     angka pasar. Semua angka murni data resmi - tidak ada angka kebijakan
+     (mis. HPP) yang dikutip tanpa verifikasi sumber resmi. */
+  const [hargaJateng, setHargaJateng] = useState<HargaPanganJateng | null>(null);
+  const [anomaliHarga, setAnomaliHarga] = useState<AnomaliHargaRow[]>([]);
+
+  useEffect(() => {
+    let live = true;
+    fetchHargaPanganJateng()
+      .then((d) => {
+        if (live) setHargaJateng(d);
+      })
+      .catch((e) => console.warn("Konteks pasar: data harga Jateng gagal:", e));
+    fetchAnomaliHargaPangan()
+      .then((d) => {
+        if (live) setAnomaliHarga(d);
+      })
+      .catch((e) => console.warn("Konteks pasar: indeks anomali gagal:", e));
+    return () => {
+      live = false;
+    };
+  }, []);
+
+  const pasarMemo = useMemo(() => {
+    const pick = (tingkat: "konsumen" | "produsen", komoditas: string) => {
+      const rows = (hargaJateng?.[tingkat] ?? [])
+        .filter((r) => r.komoditas === komoditas && r.harga != null)
+        .sort((a, b) => (a.tanggal < b.tanggal ? 1 : -1));
+      const cur = rows[0];
+      const prev = rows[1];
+      if (!cur) return null;
+      const mom =
+        prev?.harga != null && prev.harga > 0
+          ? ((cur.harga! - prev.harga) / prev.harga) * 100
+          : null;
+      return { komoditas, harga: cur.harga as number, edisi: cur.tanggal, mom };
+    };
+    const petaniList = [
+      pick("produsen", "GKP Tk. Petani"),
+      pick("produsen", "GKG Tk. Penggilingan"),
+      pick("produsen", "Telur Ayam Ras"),
+      pick("produsen", "Bawang Merah Tingkat Petani"),
+      pick("produsen", "Ayam Ras Pedaging"),
+      pick("produsen", "Sapi Hidup (Tingkat Peternak/RPH)"),
+      pick("produsen", "Jagung Pipilan Kering Tingkat Petani"),
+    ].filter((x): x is NonNullable<typeof x> => x !== null);
+    const konsumenList = [
+      pick("konsumen", "Beras Medium"),
+      pick("konsumen", "Telur Ayam Ras"),
+      pick("konsumen", "Daging Ayam Ras"),
+      pick("konsumen", "Cabai Rawit Merah"),
+      pick("konsumen", "Jagung Tingkat Peternak"),
+      pick("konsumen", "Ikan Bandeng"),
+      pick("konsumen", "Ikan Kembung"),
+    ].filter((x): x is NonNullable<typeof x> => x !== null);
+    const edisiAnomali = anomaliHarga.map((r) => r.tanggal).sort().pop() ?? "";
+    const anomaliList = edisiAnomali
+      ? anomaliHarga
+          .filter((r) => r.tanggal === edisiAnomali)
+          .sort((a, b) => Math.abs(b.ifpa) - Math.abs(a.ifpa))
+      : [];
+    const gkg = petaniList.find((p) => p.komoditas === "GKG Tk. Penggilingan");
+    const beras = konsumenList.find((p) => p.komoditas === "Beras Medium");
+    const marginBeras =
+      gkg && beras
+        ? {
+            gkg: gkg.harga,
+            beras: beras.harga,
+            selisih: beras.harga - gkg.harga,
+            pct: (beras.harga / gkg.harga - 1) * 100,
+          }
+        : null;
+    const gkp = petaniList.find((p) => p.komoditas === "GKP Tk. Petani") ?? null;
+    const anomaliBeras = anomaliList.find((r) => r.komoditas === "Beras Medium") ?? null;
+    const anomaliTelur = anomaliList.find((r) => r.komoditas === "Telur Ayam Ras") ?? null;
+    const anomaliDagingAyam = anomaliList.find((r) => r.komoditas === "Daging Ayam Ras") ?? null;
+    if (petaniList.length === 0 && konsumenList.length === 0 && anomaliList.length === 0) {
+      return null;
+    }
+    return {
+      petaniList,
+      konsumenList,
+      edisiAnomali,
+      anomaliList,
+      marginBeras,
+      gkp,
+      anomaliBeras,
+      anomaliTelur,
+      anomaliDagingAyam,
+    };
+  }, [hargaJateng, anomaliHarga]);
+
+  // Kalimat konteks pasar (dinamis, hanya bila data Bapanas tersedia)
+  const telurPetani = pasarMemo?.petaniList.find((p) => p.komoditas === "Telur Ayam Ras");
+  const jagungPakan = pasarMemo?.konsumenList.find((p) => p.komoditas === "Jagung Tingkat Peternak");
+  const bawangPetani = pasarMemo?.petaniList.find((p) => p.komoditas === "Bawang Merah Tingkat Petani");
+  const bandeng = pasarMemo?.konsumenList.find((p) => p.komoditas === "Ikan Bandeng");
+  const kembung = pasarMemo?.konsumenList.find((p) => p.komoditas === "Ikan Kembung");
+  const anomaliIkan = pasarMemo?.anomaliList.find((r) => r.komoditas === "Ikan Bandeng");
+  const fmtMom = (m: number | null | undefined) =>
+    m == null ? "MoM n/a" : `${m >= 0 ? "+" : ""}${m.toFixed(1)}% MoM`;
+  const fmtIfpa = (v: number) => `${v >= 0 ? "+" : ""}${v.toFixed(3)}`;
+
+  const pasarCtxPadi =
+    pasarMemo?.gkp && pasarMemo.anomaliBeras
+      ? ` Konteks pasar (Bapanas): harga gabah kering panen tingkat petani Jateng edisi ${pasarMemo.gkp.edisi} Rp ${pasarMemo.gkp.harga.toLocaleString("id-ID")}/kg, sementara sinyal anomali harga beras nasional edisi ${pasarMemo.edisiAnomali} berstatus ${pasarMemo.anomaliBeras.status} (IFPA ${fmtIfpa(pasarMemo.anomaliBeras.ifpa)}) - perlindungan harga petani menjadi konteks mendesak.`
+      : "";
+  const pasarCtxTernak = telurPetani
+    ? ` Konteks pasar (Bapanas): telur ayam ras tingkat peternak Jateng edisi ${telurPetani.edisi} Rp ${telurPetani.harga.toLocaleString("id-ID")}/kg (${fmtMom(telurPetani.mom)})${pasarMemo?.anomaliTelur ? `, sinyal anomali nasional ${pasarMemo.anomaliTelur.status} (IFPA ${fmtIfpa(pasarMemo.anomaliTelur.ifpa)})` : ""}${jagungPakan ? `; jagung pakan tingkat peternak Rp ${jagungPakan.harga.toLocaleString("id-ID")}/kg (${fmtMom(jagungPakan.mom)})` : ""}.`
+    : "";
+  const pasarCtxIkan =
+    bandeng && kembung
+      ? ` Konteks pasar (Bapanas): harga ikan konsumsi Jateng edisi ${bandeng.edisi} - bandeng Rp ${bandeng.harga.toLocaleString("id-ID")}/kg, kembung Rp ${kembung.harga.toLocaleString("id-ID")}/kg${anomaliIkan ? `, sinyal anomali ikan nasional ${anomaliIkan.status} (IFPA ${fmtIfpa(anomaliIkan.ifpa)})` : ""}. Catatan: pemantauan harga Bapanas mencakup ikan konsumsi pasar umum (bandeng/kembung/tongkol), bukan komoditas kolam khas Banjarnegara (lele/nila/gurame).`
+      : "";
+
   const sektor: Sektor[] = useMemo(() => [
     {
       id: "pertanian",
       nama: "Pertanian",
       icon: <Sprout size={20} />,
       warna: "bg-emerald-100",
-      ringkasan: `Produksi padi (sawah + ladang) Kabupaten Banjarnegara tahun ${stats.tahunPadi} mencapai total ${new Intl.NumberFormat("id-ID").format(Math.round(stats.totalPadiProd))} Ton dari total luas panen ${new Intl.NumberFormat("id-ID").format(Math.round(stats.totalPadiLuas))} Ha (produktivitas agregat ${stats.padiProductivity !== undefined ? stats.padiProductivity.toFixed(2) : "—"} Ton/Ha). Produksi terkonsentrasi di wilayah sentra utama yaitu Kecamatan ${stats.topPadiKec} (${new Intl.NumberFormat("id-ID").format(Math.round(stats.maxPadiProd))} Ton), sementara alih fungsi lahan sawah dan ketergantungan pangan menjadi isu kritis.`,
+      ringkasan: `Produksi padi (sawah + ladang) Kabupaten Banjarnegara tahun ${stats.tahunPadi} mencapai total ${new Intl.NumberFormat("id-ID").format(Math.round(stats.totalPadiProd))} Ton dari total luas panen ${new Intl.NumberFormat("id-ID").format(Math.round(stats.totalPadiLuas))} Ha (produktivitas agregat ${stats.padiProductivity !== undefined ? stats.padiProductivity.toFixed(2) : "—"} Ton/Ha). Produksi terkonsentrasi di wilayah sentra utama yaitu Kecamatan ${stats.topPadiKec} (${new Intl.NumberFormat("id-ID").format(Math.round(stats.maxPadiProd))} Ton), sementara alih fungsi lahan sawah dan ketergantungan pangan menjadi isu kritis.${pasarCtxPadi}`,
       items: [
         {
           judul: "Diversifikasi Tanaman Pangan Selain Padi",
-          masalah:
-            "Ketergantungan tinggi pada padi membuat daerah rentan terhadap gagal panen dan fluktuasi harga tunggal.",
+          masalah: `Ketergantungan tinggi pada padi membuat daerah rentan terhadap gagal panen dan fluktuasi harga tunggal.${bawangPetani && bawangPetani.mom != null ? ` Fluktuasi harga hortikultura nyata terjadi: harga bawang merah tingkat petani Jateng edisi ${bawangPetani.edisi} (Bapanas) berubah ${fmtMom(bawangPetani.mom)} ke Rp ${bawangPetani.harga.toLocaleString("id-ID")}/kg - kepastian offtaker menjadi kunci.` : ""}`,
           aksi: [
             "Dorong penanaman jagung, kedelai, dan ubi pada lahan tegalan/bukan sawah melalui program bantuan benih terarah.",
             "Fasilitasi kemitraan pasar (offtaker) untuk komoditas non-padi agar petani mendapatkan kepastian harga jual.",
@@ -393,6 +515,22 @@ export default function RecommendationsPage() {
           dampak: "Pemerataan hasil panen daerah dan peningkatan total surplus beras kabupaten.",
           prioritas: "Sedang",
         },
+        ...(pasarMemo?.gkp
+          ? [
+              {
+                judul: "Stabilisasi Harga Gabah & Serapan Pemerintah",
+                masalah: `Harga gabah kering panen tingkat petani Jateng edisi ${pasarMemo.gkp.edisi} tercatat Rp ${pasarMemo.gkp.harga.toLocaleString("id-ID")}/kg (Bapanas)${pasarMemo.anomaliBeras ? `, sinyal anomali harga beras nasional edisi ${pasarMemo.edisiAnomali} berstatus ${pasarMemo.anomaliBeras.status} (IFPA ${fmtIfpa(pasarMemo.anomaliBeras.ifpa)}) - tekanan harga rendah berisiko menghantam petani saat panen raya` : ""}.${pasarMemo.marginBeras ? ` Margin rantai pasok beras Jateng: selisih GKG penggilingan vs beras medium konsumen Rp ${pasarMemo.marginBeras.selisih.toLocaleString("id-ID")}/kg (${pasarMemo.marginBeras.pct.toFixed(1)}%) menunjukkan ruang efisiensi pasca-penggilingan.` : ""}`,
+                aksi: [
+                  "Aktifkan Unit Pelayanan Pengadaan Pangan (UPPH)/kemitraan penggilingan untuk menyerap gabah petani pada panen raya dengan harga wajar.",
+                  "Sinkronkan operasional serapan dengan ketentuan Harga Pembelian Pemerintah (HPP) yang berlaku - angka resmi terkini rujuk Bapanas/Bulog.",
+                  "Dorong transparansi rantai pasok (gabah - GKG - beras konsumen) agar margin pasca-penggilingan lebih adil bagi petani.",
+                ],
+                dampak:
+                  "Menjaga pendapatan rumah tangga tani padi pada episode tekanan harga rendah dan mengurangi kerugian panen raya.",
+                prioritas: "Tinggi" as const,
+              },
+            ]
+          : []),
       ],
     },
     {
@@ -400,7 +538,7 @@ export default function RecommendationsPage() {
       nama: "Peternakan",
       icon: <Beef size={20} />,
       warna: "bg-orange-100",
-      ringkasan: `Populasi ternak utama tahun ${stats.tahunTernak}: sapi ${new Intl.NumberFormat("id-ID").format(stats.totalSapi)} ekor serta kambing & domba ${new Intl.NumberFormat("id-ID").format(stats.totalKambing)} ekor (total ${new Intl.NumberFormat("id-ID").format(Math.round(stats.totalTernakPop))} ekor), dengan populasi terpadat di Kecamatan ${stats.topTernakKec}. Rantai distribusi pasokan daging dan optimalisasi kesehatan hewan diperlukan untuk swasembada protein.`,
+      ringkasan: `Populasi ternak utama tahun ${stats.tahunTernak}: sapi ${new Intl.NumberFormat("id-ID").format(stats.totalSapi)} ekor serta kambing & domba ${new Intl.NumberFormat("id-ID").format(stats.totalKambing)} ekor (total ${new Intl.NumberFormat("id-ID").format(Math.round(stats.totalTernakPop))} ekor), dengan populasi terpadat di Kecamatan ${stats.topTernakKec}. Rantai distribusi pasokan daging dan optimalisasi kesehatan hewan diperlukan untuk swasembada protein.${pasarCtxTernak}`,
       items: [
         {
           judul: "Penguatan Sentra Ternak Berbasis Kepadatan Populasi",
@@ -443,7 +581,7 @@ export default function RecommendationsPage() {
       nama: "Perikanan",
       icon: <Fish size={20} />,
       warna: "bg-sky-100",
-      ringkasan: `Perikanan budidaya tahun ${stats.tahunIkan} mencatat produksi total ${new Intl.NumberFormat("id-ID").format(Math.round(stats.totalIkanProd))} Ton — kolam pembesaran ${new Intl.NumberFormat("id-ID").format(Math.round(stats.kolamTon))} Ton, KJA ${new Intl.NumberFormat("id-ID").format(Math.round(stats.kjaTon))} Ton, mina padi ${new Intl.NumberFormat("id-ID").format(Math.round(stats.minapadiTon))} Ton — didominasi Kecamatan ${stats.topIkanKec}. Pemanfaatan mina padi dan karamba jaring apung masih memerlukan dorongan investasi.`,
+      ringkasan: `Perikanan budidaya tahun ${stats.tahunIkan} mencatat produksi total ${new Intl.NumberFormat("id-ID").format(Math.round(stats.totalIkanProd))} Ton — kolam pembesaran ${new Intl.NumberFormat("id-ID").format(Math.round(stats.kolamTon))} Ton, KJA ${new Intl.NumberFormat("id-ID").format(Math.round(stats.kjaTon))} Ton, mina padi ${new Intl.NumberFormat("id-ID").format(Math.round(stats.minapadiTon))} Ton — didominasi Kecamatan ${stats.topIkanKec}. Pemanfaatan mina padi dan karamba jaring apung masih memerlukan dorongan investasi.${pasarCtxIkan}`,
       items: [
         {
           judul: "Ekspansi Budidaya Kolam ke Wilayah Potensial",
@@ -479,7 +617,7 @@ export default function RecommendationsPage() {
         },
       ],
     },
-  ], [stats]);
+  ], [stats, pasarMemo]);
 
   const strategisDinas = [
     "Integrasikan database SISPERTANI dengan sistem perizinan dan bantuan dinas agar penyaluran pupuk, benih, dan alsintan 100% tepat sasaran berbasis spasial.",
@@ -710,6 +848,151 @@ ${catalogSection}`;
           </div>
         </div>
 
+        {/* Konteks Pasar Terkini (Bapanas) - harga aktual & sinyal anomali */}
+        {pasarMemo && (
+          <div className="print-block bg-white border border-slate-200 p-6 shadow-sm text-left transition-all duration-300 hover:shadow-md">
+            <div className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-200 pb-4 mb-4">
+              <div>
+                <p className="text-[10px] font-mono font-bold uppercase text-slate-500 tracking-widest">
+                  Konteks Pasar Terkini
+                </p>
+                <h2 className="text-lg font-semibold text-slate-900 mt-1">
+                  Harga Pangan Jateng &amp; Sinyal Anomali Nasional
+                </h2>
+                <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                  Angka aktual terbaru dari Badan Pangan Nasional (Bapanas) via layanan API Indonesia - pembanding pasar bagi rekomendasi pada dokumen ini.
+                </p>
+              </div>
+              <span className="inline-flex items-center gap-1.5 text-[9px] font-mono font-bold uppercase text-slate-600 bg-slate-100 border border-slate-200 px-2.5 py-1.5 rounded-full whitespace-nowrap">
+                <Banknote size={11} /> Sumber Resmi Bapanas
+              </span>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-6">
+              {/* Harga tingkat petani */}
+              <div>
+                <p className="text-[10px] font-mono font-bold uppercase text-slate-500 tracking-widest mb-3">
+                  Harga Tingkat Petani - Jateng (edisi {pasarMemo.petaniList[0]?.edisi})
+                </p>
+                <div className="space-y-2.5">
+                  {pasarMemo.petaniList.map((p) => (
+                    <div key={p.komoditas} className="flex items-baseline justify-between gap-2 border-b border-dashed border-slate-200 pb-1.5">
+                      <span className="text-xs text-slate-700 leading-tight">{p.komoditas}</span>
+                      <span className="text-xs font-semibold text-slate-900 tabular-nums whitespace-nowrap">
+                        Rp {p.harga.toLocaleString("id-ID")}
+                        <span
+                          className={`ml-1.5 text-[10px] ${
+                            p.mom == null
+                              ? "text-slate-400"
+                              : p.mom >= 0.05
+                                ? "text-red-600"
+                                : p.mom <= -0.05
+                                  ? "text-emerald-600"
+                                  : "text-slate-500"
+                          }`}
+                        >
+                          {p.mom == null ? "—" : `${p.mom >= 0 ? "+" : ""}${p.mom.toFixed(1)}%`}
+                        </span>
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-[10px] text-slate-400 mt-2 leading-snug">
+                  Rp/kg - perubahan vs edisi sebelumnya (MoM). Naik merah, turun hijau.
+                </p>
+              </div>
+
+              {/* Harga konsumen */}
+              <div>
+                <p className="text-[10px] font-mono font-bold uppercase text-slate-500 tracking-widest mb-3">
+                  Harga Konsumen - Jateng (edisi {pasarMemo.konsumenList[0]?.edisi})
+                </p>
+                <div className="space-y-2.5">
+                  {pasarMemo.konsumenList.map((p) => (
+                    <div key={p.komoditas} className="flex items-baseline justify-between gap-2 border-b border-dashed border-slate-200 pb-1.5">
+                      <span className="text-xs text-slate-700 leading-tight">{p.komoditas}</span>
+                      <span className="text-xs font-semibold text-slate-900 tabular-nums whitespace-nowrap">
+                        Rp {p.harga.toLocaleString("id-ID")}
+                        <span
+                          className={`ml-1.5 text-[10px] ${
+                            p.mom == null
+                              ? "text-slate-400"
+                              : p.mom >= 0.05
+                                ? "text-red-600"
+                                : p.mom <= -0.05
+                                  ? "text-emerald-600"
+                                  : "text-slate-500"
+                          }`}
+                        >
+                          {p.mom == null ? "—" : `${p.mom >= 0 ? "+" : ""}${p.mom.toFixed(1)}%`}
+                        </span>
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-[10px] text-slate-400 mt-2 leading-snug">
+                  Rp/kg (eceran) - perubahan vs edisi sebelumnya (MoM).
+                </p>
+              </div>
+
+              {/* Sinyal anomali nasional */}
+              <div>
+                <p className="text-[10px] font-mono font-bold uppercase text-slate-500 tracking-widest mb-3">
+                  Sinyal Anomali Nasional (edisi {pasarMemo.edisiAnomali})
+                </p>
+                <div className="space-y-2">
+                  {pasarMemo.anomaliList.slice(0, 8).map((r) => {
+                    const sev = r.status.startsWith("Alert")
+                      ? "bg-red-100 text-red-800 border-red-200"
+                      : r.status.startsWith("Warning")
+                        ? "bg-amber-100 text-amber-800 border-amber-200"
+                        : "bg-emerald-100 text-emerald-800 border-emerald-200";
+                    const arah = r.status.includes("High") ? "▲" : r.status.includes("Low") ? "▼" : "•";
+                    return (
+                      <div key={r.komoditas} className="flex items-center justify-between gap-2">
+                        <span className="text-xs text-slate-700 leading-tight">{r.komoditas}</span>
+                        <span className={`inline-flex items-center gap-1 text-[10px] font-semibold border rounded-full px-2 py-0.5 whitespace-nowrap ${sev}`}>
+                          {arah}{" "}
+                          {r.status.startsWith("Alert") ? "Waspada" : r.status.startsWith("Warning") ? "Perhatian" : "Normal"}
+                          <span className="tabular-nums opacity-70">
+                            {r.ifpa >= 0 ? "+" : ""}
+                            {r.ifpa.toFixed(2)}
+                          </span>
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+                <p className="text-[10px] text-slate-400 mt-2 leading-snug">
+                  IFPA = indikator gabungan (kualitas + akurasi anomali); ▲ tekanan harga tinggi, ▼ rendah. Diurutkan kekuatan sinyal.
+                </p>
+              </div>
+            </div>
+
+            {/* Margin rantai pasok beras */}
+            {pasarMemo.marginBeras && (
+              <div className="mt-5 bg-amber-50 border border-amber-200 rounded-lg p-4">
+                <p className="text-[10px] font-mono font-bold uppercase text-amber-800 tracking-widest mb-1.5 flex items-center gap-1.5">
+                  <TrendingUp size={11} /> Estimasi Margin Rantai Pasok Beras
+                </p>
+                <p className="text-xs text-amber-900 leading-relaxed">
+                  GKG tingkat penggilingan <b>Rp {pasarMemo.marginBeras.gkg.toLocaleString("id-ID")}</b> → beras medium konsumen{" "}
+                  <b>Rp {pasarMemo.marginBeras.beras.toLocaleString("id-ID")}</b> = selisih{" "}
+                  <b>
+                    Rp {pasarMemo.marginBeras.selisih.toLocaleString("id-ID")}/kg ({pasarMemo.marginBeras.pct.toFixed(1)}%)
+                  </b>{" "}
+                  terserap pada rantai pasca-penggilingan. Estimasi dihitung dari data pasar Bapanas (harga edisi terbaru), bukan angka resmi biaya rantai pasok.
+                </p>
+              </div>
+            )}
+
+            {/* Catatan integritas data */}
+            <p className="text-[10px] text-slate-400 leading-relaxed mt-4">
+              Catatan: harga = edisi bulanan Bapanas untuk Provinsi Jawa Tengah (tingkat kabupaten/kota tidak tersedia dari sumber); sinyal anomali = skala nasional; tanggal akses {tanggalCetak}. Angka kebijakan Harga Pembelian Pemerintah (HPP) sengaja tidak dikutip karena belum terverifikasi dari sumber resmi - rujuk bapanas.go.id / bulog.co.id untuk ketentuan serapan yang berlaku.
+            </p>
+          </div>
+        )}
+
         {/* Panel Analisis Ilmiah (Statistik Deskriptif, Konsentrasi, Proyeksi, Nilai Ekonomi) */}
         <div className="print-block bg-white border border-slate-200 p-6 shadow-sm text-left transition-all duration-300 hover:shadow-md">
           <div className="flex items-center justify-between mb-4">
@@ -826,6 +1109,17 @@ ${catalogSection}`;
                 <p className="text-[9px] font-mono text-slate-500 mt-2 italic leading-relaxed">
                   * Asumsi: Gabah Kering Panen Rp 6.000/kg, Sapi Rp 18 jt/ekor, Kambing Rp 3 jt/ekor. Nilai ikan = nilai produksi aktual {stats.tahunNilai} (Distankan KP, terkoreksi): {formatRupiah(stats.totalNilaiProduksi2024 * 1000)}. Nilai indikatif untuk analisis kebijakan, bukan nilai transaksi riil.
                 </p>
+                {pasarMemo &&
+                  (() => {
+                    const gkg = pasarMemo.petaniList.find((p) => p.komoditas === "GKG Tk. Penggilingan");
+                    if (!gkg) return null;
+                    const nilaiAktual = stats.totalPadiProd * 1000 * gkg.harga;
+                    return (
+                      <p className="text-[9px] font-mono text-emerald-700 mt-1.5 leading-relaxed">
+                        * Pembanding harga pasar aktual: produksi padi {stats.tahunPadi} ({new Intl.NumberFormat("id-ID").format(Math.round(stats.totalPadiProd))} Ton) × harga GKG tingkat penggilingan Bapanas Jateng edisi {gkg.edisi} (Rp {gkg.harga.toLocaleString("id-ID")}/kg) ≈ {formatRupiah(nilaiAktual)} — estimasi nilai gabah pada harga pasar berlaku (Bapanas via apiindonesia.id).
+                      </p>
+                    );
+                  })()}
               </div>
         </div>
 
