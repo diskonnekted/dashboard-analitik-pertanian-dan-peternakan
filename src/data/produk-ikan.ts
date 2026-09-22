@@ -9,10 +9,12 @@
  *     perairan umum (Waduk Mrica / Serayu) Banjarnegara. Volume produksi resmi BPS
  *     hanya dipublikasikan per tempat pemeliharaan / alat tangkap — TIDAK per jenis
  *     ikan — sehingga rincian per jenis di halaman /fisheries adalah ESTIMASI
- *     komposisi (pangsa % indikatif), bukan angka BPS. Daftar jenis & sentra
- *     kecamatan mengikuti kebutuhan klien (gap-analysis-master.md §3.2):
- *     Lele, Nila, Mujair, Gurame, Ikan Mas, Tawes, Patin (+ Gabus & Belut dari
- *     konteks pasar lokal). Mina padi sentra: Singomerto, Bawang, Madukara.
+ *     komposisi (pangsa % indikatif), bukan angka BPS. Penyajian katalog memakai
+ *     5 GRUP PRODUK sesuai daftar klien (refinemen 22 Sep 2026): Lele, Gurame,
+ *     Patin, Nila / Mujair (grup gabungan master §3.2 No. 2–3), Ikan Gabus &
+ *     Belut. Kebutuhan data statistik per jenis (7 jenis + minapadi + pembenihan)
+ *     tetap mengikuti gap-analysis-master.md §3.2 — katalog grup ini dipecah
+ *     ulang begitu data resmi per jenis tersedia (endpoint/admin).
  *  2. "laut" — ikan laut yang BEREDAR di pasar lokal (mis. Pasar Ikan Purwanegara),
  *     didatangkan dari wilayah pesisir; Banjarnegara BUKAN penghasil ikan laut,
  *     sehingga produk laut hanya dikatalogkan harga & ketersediaannya (tanpa volume).
@@ -50,9 +52,11 @@ export const PRODUK_IKAN_TANGGAL = "per 2025-2026";
 
 /* ===================== AIR TAWAR (produksi lokal) ===================== */
 /* Pangsa komposisi estimasi — Σ = 100. Didominasi lele (kolam pekarangan &
- * minapadi), disusul nila; tangkap Waduk Mrica/Serayu menambah nila, mujair,
- * tawes, gabus & belut. Jenis & sentra kecamatan per gap-analysis-master.md §3.2.
- * Bukan angka BPS — hanya basis estimasi rincian per jenis. */
+ * minapadi), disusul grup nila/mujair; tangkap Waduk Mrica/Serayu menambah
+ * nila, mujair, gabus & belut. 5 grup produk per daftar klien 22 Sep 2026
+ * (grup gabungan: §3.2 No. 2–3 jadi "Nila / Mujair"; pangsa No. 5 Ikan Mas &
+ * No. 6 Tawes — 11% — didistribusikan ke grup lain). Mina padi sentra:
+ * Singomerto, Bawang, Madukara. Bukan angka BPS — hanya basis estimasi. */
 export const PRODUK_IKAN_TAWAR: ProdukIkan[] = [
   {
     nama: "Lele",
@@ -61,31 +65,9 @@ export const PRODUK_IKAN_TAWAR: ProdukIkan[] = [
       "Tersedia dalam kondisi hidup atau segar, sangat populer untuk konsumsi harian.",
     hargaMin: 22_000,
     hargaMax: 28_000,
-    pangsa: 40,
+    pangsa: 42,
     sentra: ["Purwareja Klampok", "Susukan", "Mandiraja"],
     catatan: "Komoditas budidaya dominan (kolam pekarangan & minapadi).",
-  },
-  {
-    nama: "Nila",
-    kelompok: "tawar",
-    deskripsi:
-      "Ikan air tawar lokal yang sangat stabil ketersediaannya dari kolam, minapadi, dan Waduk Mrica — digemari untuk digoreng atau dibakar.",
-    hargaMin: 28_000,
-    hargaMax: 38_000,
-    pangsa: 18,
-    sentra: ["Bawang", "Madukara", "Wanadadi", "Batur"],
-    catatan: "Budidaya kolam/karamba serta hasil tangkap Waduk Mrica.",
-  },
-  {
-    nama: "Mujair",
-    kelompok: "tawar",
-    deskripsi:
-      "Ikan air tawar lokal dari kolam tanah, rawa, dan waduk — pilihan ekonomis untuk konsumsi harian.",
-    hargaMin: 25_000,
-    hargaMax: 33_000,
-    pangsa: 9,
-    sentra: ["Wanadadi", "Banjarmangu", "Rakit"],
-    catatan: "Budidaya kolam tanah serta hasil tangkap perairan umum.",
   },
   {
     nama: "Gurame",
@@ -94,20 +76,9 @@ export const PRODUK_IKAN_TAWAR: ProdukIkan[] = [
       "Ukuran bervariasi dari sedang hingga besar, banyak dicari untuk restoran atau acara keluarga.",
     hargaMin: 45_000,
     hargaMax: 55_000,
-    pangsa: 8,
+    pangsa: 10,
     sentra: ["Bawang", "Rakit", "Madukara", "Purwanegara"],
     catatan: "Ikan premium — harga di atas rata-rata ikan tawar lain.",
-  },
-  {
-    nama: "Ikan Mas",
-    kelompok: "tawar",
-    deskripsi:
-      "Ikan konsumsi sekaligus benih/ikan hias; dibudidayakan di kolam air deras dan minapadi.",
-    hargaMin: 30_000,
-    hargaMax: 40_000,
-    pangsa: 7,
-    sentra: ["Bawang", "Banjarmangu", "Karangkobar"],
-    catatan: "Ukuran konsumsi; ukuran kecil sebagian dijual sebagai benih.",
   },
   {
     nama: "Patin",
@@ -116,29 +87,30 @@ export const PRODUK_IKAN_TAWAR: ProdukIkan[] = [
       "Daging tebal dan lembut, sering diolah menjadi sop atau gulai.",
     hargaMin: 22_000,
     hargaMax: 28_000,
-    pangsa: 6,
+    pangsa: 9,
     sentra: ["Mandiraja", "Purwanegara"],
     catatan: "Umumnya dibudidayakan di kolam/karamba.",
   },
   {
-    nama: "Tawes",
+    nama: "Nila / Mujair",
     kelompok: "tawar",
     deskripsi:
-      "Ikan konsumsi lokal dari kolam tanah serta hasil tangkap Sungai Serayu dan Waduk Mrica.",
+      "Ikan air tawar lokal yang sangat stabil ketersediaannya dan digemari untuk digoreng atau dibakar.",
     hargaMin: 25_000,
-    hargaMax: 35_000,
-    pangsa: 4,
-    sentra: ["Purwareja Klampok", "Susukan"],
-    catatan: "Umumnya hasil tangkap perairan umum & kolam tanah.",
+    hargaMax: 38_000,
+    pangsa: 30,
+    sentra: ["Bawang", "Madukara", "Wanadadi", "Batur", "Banjarmangu", "Rakit"],
+    catatan:
+      "Grup gabungan nila & mujair (master §3.2 No. 2–3): mujair di kisaran harga bawah, nila di kisaran atas. Termasuk hasil tangkap Waduk Mrica/Serayu.",
   },
   {
-    nama: "Gabus & Belut",
+    nama: "Ikan Gabus & Belut",
     kelompok: "tawar",
     deskripsi:
       "Sering ditemukan di pasar tradisional seperti Pasar Ikan Purwanegara untuk kebutuhan konsumsi khusus atau olahan tradisional.",
     hargaMin: 50_000,
     hargaMax: 65_000,
-    pangsa: 8,
+    pangsa: 9,
     catatan: "Umumnya hasil tangkap perairan umum/sawah, bukan budidaya.",
   },
 ];
@@ -157,7 +129,7 @@ export const PRODUK_IKAN_LAUT: ProdukIkan[] = [
     catatan: "Ikan laut ekonomis paling banyak beredar harian.",
   },
   {
-    nama: "Kurisi & Kembung",
+    nama: "Kurisi & Ikan Kembung",
     kelompok: "laut",
     deskripsi:
       "Sering dijual sebagai pilihan ikan laut segar harian.",
@@ -166,7 +138,7 @@ export const PRODUK_IKAN_LAUT: ProdukIkan[] = [
     catatan: "Duo ikan laut segar andalan pedagang pasar tradisional.",
   },
   {
-    nama: "Bandeng",
+    nama: "Ikan Bandeng",
     kelompok: "laut",
     deskripsi:
       "Tersedia dalam berbagai ukuran berat per kilogram.",

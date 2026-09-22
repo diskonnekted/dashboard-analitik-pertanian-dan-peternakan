@@ -73,6 +73,8 @@ Berikut adalah penjabaran detail teknis dari setiap butir wajib yang belum ada:
 | 10 | **Pembenihan: Benih Ikan** | Produksi Benih | Kolam Pendederan, Wadah Terpal | Balai Benih Ikan & Pokdakan | Ekor (Bukan Ton) | Triwulan & Semester |
 | 11 | **Ikan Hias Dinamis** | Ikan Hias (Entry Dinamis) | Akuarium, Bak Semen, Fiber | Bawang, Banjarnegara Kota | Ekor & Jenis (Koi, Cupang, dll) | Triwulan & Semester |
 
+> **Refinemen penyajian katalog produk (22 Sep 2026, konfirmasi klien):** halaman `/fisheries` (kategori "Jenis Ikan") menyajikan katalog produk sebagai **5 grup air tawar** — Lele, Gurame, Patin, **Nila / Mujair** (gabungan No. 2–3), **Ikan Gabus & Belut** (tangkap perairan umum, Pasar Ikan Purwanegara) — serta **4 grup ikan laut beredar pasar** (Selar Kuning/Ciu, Kurisi & Ikan Kembung, Bandeng, Cumi-cumi & Udang Putih Besar). Kebutuhan pengumpulan data statistik per jenis (tabel di atas, No. 1–7) **tidak berubah**; katalog grup akan dipecah ulang per jenis begitu data resmi per jenis tersedia (endpoint/admin).
+
 ---
 
 ### 3.3. Rincian Komoditas Peternakan & Hilirisasi (`/livestock`)

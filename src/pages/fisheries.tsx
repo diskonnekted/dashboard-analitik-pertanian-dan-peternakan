@@ -932,8 +932,10 @@ export default function FisheriesPage() {
                   (hanya per tempat pemeliharaan budidaya dan per alat tangkap),
                   sehingga rincian per jenis di atas adalah{" "}
                   <b>estimasi komposisi</b> (pangsa indikatif) — bukan angka
-                  resmi BPS. Daftar jenis &amp; sentra kecamatan mengikuti
-                  kebutuhan Distankan KP (gap-analysis-master §3.2).
+                  resmi BPS. Daftar 5 grup produk &amp; sentra kecamatan
+                  mengikuti daftar klien Distankan KP (gap-analysis-master
+                  §3.2 — Nila &amp; Mujair digabung satu grup; Ikan Mas &amp;
+                  Tawes tidak ditampilkan terpisah).
                 </li>
                 <li>
                   Harga referensi bersifat <b>indikatif</b> ({PRODUK_IKAN_SUMBER}{" "}
