@@ -212,6 +212,7 @@ export default function ChatBot({ dataContext }: ChatBotProps) {
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isStreaming, setIsStreaming] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -235,6 +236,7 @@ export default function ChatBot({ dataContext }: ChatBotProps) {
     setMessages(newMessages);
     setInput("");
     setIsLoading(true);
+    setIsStreaming(false);
 
     try {
       const systemPrompt = buildSystemPrompt(dataContext);
@@ -254,20 +256,90 @@ export default function ChatBot({ dataContext }: ChatBotProps) {
           messages: apiMessages,
           temperature: 0.6,
           max_tokens: 8192,
-          stream: false,
+          stream: true,
         }),
       });
 
       if (!response.ok) {
         throw new Error(`API error: ${response.status}`);
       }
+      if (!response.body) {
+        throw new Error("Streaming tidak didukung browser ini");
+      }
 
-      const data = await response.json();
-      const reply =
-        data.choices?.[0]?.message?.content ||
-        "Maaf, saya tidak dapat memproses jawaban saat ini. Silakan coba lagi.";
+      /* ── Streaming SSE: jawaban tampil progresif ────────────
+         Format: baris "data: {JSON}" diakhiri "data: [DONE]".
+         glm-5.3 (model reasoning) mengirim delta.reasoning_content
+         lebih dulu -- fase berpikir, diabaikan; hanya delta.content
+         yang ditampilkan. Baris keep-alive (awalan ":") diabaikan. */
+      let acc = "";
+      let streamStarted = false;
+      let lastPaint = 0;
 
-      setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
+      const paintBubble = (text: string) =>
+        setMessages((prev) => {
+          if (prev.length === 0 || prev[prev.length - 1].role !== "assistant") {
+            return [...prev, { role: "assistant", content: text }];
+          }
+          const next = prev.slice();
+          next[next.length - 1] = { role: "assistant", content: text };
+          return next;
+        });
+
+      const handleLine = (raw: string) => {
+        const t = raw.trim();
+        if (!t.startsWith("data:")) return;
+        const payload = t.slice(5).trim();
+        if (!payload || payload === "[DONE]") return;
+        let piece: string | undefined;
+        try {
+          piece = (JSON.parse(payload) as {
+            choices?: { delta?: { content?: string } }[];
+          }).choices?.[0]?.delta?.content;
+        } catch {
+          return; // JSON parsial antar chunk jaringan -- abaikan
+        }
+        if (!piece) return;
+        acc += piece;
+        const now = Date.now();
+        if (!streamStarted) {
+          streamStarted = true;
+          setIsStreaming(true);
+          lastPaint = now;
+          paintBubble(acc);
+        } else if (now - lastPaint > 80) {
+          lastPaint = now;
+          paintBubble(acc);
+        }
+      };
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() ?? ""; // baris terakhir bisa parsial
+        for (const line of lines) handleLine(line);
+      }
+      buffer += decoder.decode(); // flush byte UTF-8 sisa
+      for (const line of buffer.split("\n")) handleLine(line);
+
+      if (streamStarted) {
+        paintBubble(acc); // flush teks final di bawah ambang throttle
+      } else {
+        // Anggaran token bisa habis semua di fase reasoning -- jawaban kosong
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: "assistant",
+            content:
+              "Maaf, saya tidak dapat memproses jawaban saat ini. Silakan coba lagi.",
+          },
+        ]);
+      }
     } catch (error) {
       console.error("ChatBot API error:", error);
       setMessages((prev) => [
@@ -280,6 +352,7 @@ export default function ChatBot({ dataContext }: ChatBotProps) {
       ]);
     } finally {
       setIsLoading(false);
+      setIsStreaming(false);
     }
   };
 
@@ -393,8 +466,8 @@ export default function ChatBot({ dataContext }: ChatBotProps) {
               </div>
             ))}
 
-            {/* Loading indicator */}
-            {isLoading && (
+            {/* Indikator berpikir (sebelum token pertama tampil) */}
+            {isLoading && !isStreaming && (
               <div className="flex gap-2.5 flex-row">
                 <div className="shrink-0 w-8 h-8 rounded-lg overflow-hidden">
                   <img
