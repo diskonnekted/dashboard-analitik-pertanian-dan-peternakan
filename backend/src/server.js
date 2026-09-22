@@ -76,6 +76,7 @@ app.get("/api/v1", (_req, res) => {
       "/api/v1/admin/login", "/api/v1/admin/domains", "/api/v1/admin/sync-log",
       "/api/v1/admin/template/:domain", "/api/v1/admin/export/:domain",
       "/api/v1/admin/import/:domain",
+      "/api/v1/admin/paket", "/api/v1/admin/paket/:tipe/:file",
     ],
   });
 });

@@ -27,6 +27,10 @@ const ManualPage = lazy(() => import("@/pages/manual"));
 const ComingSoonPage = lazy(() => import("@/pages/coming-soon"));
 const DesaDetailPage = lazy(() => import("@/pages/desa/[kec]-[nama]"));
 const PeternakanSusuKulitPage = lazy(() => import("@/pages/peternakan-susu-kulit"));
+const KewirausahaanKwtPage = lazy(() => import("@/pages/kewirausahaan-kwt"));
+const KomoditasUnggulanPage = lazy(() => import("@/pages/komoditas-unggulan"));
+const NilaiEkonomiPage = lazy(() => import("@/pages/nilai-ekonomi"));
+const LttKatamPage = lazy(() => import("@/pages/ltt-katam"));
 
 function PageLoading() {
   return <LoadingSpinner height="min-h-[60vh]" label="Memuat halaman..." />;
@@ -60,6 +64,10 @@ function App() {
           <Route element={<InfoPage />} path="/info" />
           {/* Area internal — TIDAK ada di menu publik, akses langsung via URL */}
           <Route element={<AdminPage />} path="/admin" />
+<Route element={<KewirausahaanKwtPage />} path="/kewirausahaan/kwt" />
+<Route element={<KomoditasUnggulanPage />} path="/komoditas-unggulan" />
+<Route element={<NilaiEkonomiPage />} path="/nilai-ekonomi" />
+<Route element={<LttKatamPage />} path="/ltt-katam" />
           <Route element={<DesaDetailPage />} path="/desa/:kec/:nama" />
           {/* Routes for modules in development */}
           <Route element={<ComingSoonPage />} path="/early-warning" />

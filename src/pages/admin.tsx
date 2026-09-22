@@ -46,6 +46,28 @@ interface ImportReport {
   errors: { sheet?: string; row: number; message: string }[];
 }
 
+interface PaketFile {
+  file: string;
+  bytes: number;
+}
+interface PaketGroup {
+  id: string;
+  dir: string;
+  files: PaketFile[];
+}
+interface PaketIndex {
+  snapshot: string | null;
+  groups: PaketGroup[];
+}
+const PAKET_LABELS: Record<string, string> = {
+  "template-xlsx": "Template Excel — 16 domain (siap isi)",
+  "template-csv": "Template CSV — 37 tabel (header + baris contoh)",
+  "export-xlsx": "Export Excel — snapshot data live",
+  "export-csv": "Export CSV — 37 tabel (data penuh)",
+};
+const formatBytes = (n: number): string =>
+  n >= 1024 * 1024 ? `${(n / (1024 * 1024)).toFixed(1)} MB` : `${Math.max(1, Math.round(n / 1024))} KB`;
+
 const TOKEN_KEY = "sispertani:admin-token";
 const AUTH_HEADERS = (token: string) => ({ Authorization: `Bearer ${token}` });
 const errMsg = (e: unknown): string => (e instanceof Error ? e.message : String(e));
@@ -59,6 +81,7 @@ export default function AdminPage() {
   const [health, setHealth] = useState<{ ok?: boolean; db?: string } | null>(null);
   const [bantuan, setBantuan] = useState<BantuanData | null>(null);
   const [syncLog, setSyncLog] = useState<{ total: number; rows: SyncLogRow[] } | null>(null);
+  const [paket, setPaket] = useState<PaketIndex | null>(null);
   const [busy, setBusy] = useState<string | null>(null); // `${domain}:${aksi}`
   const [msg, setMsg] = useState<string | null>(null);
   const [report, setReport] = useState<(ImportReport & { label: string }) | null>(null);
@@ -90,6 +113,13 @@ export default function AdminPage() {
         } catch {
           /* sync-log gagal — kosongkan saja di UI */
         }
+        // --- fetch paket template/export statis (best-effort; abaikan error) ---
+        try {
+          const p = await fetch(`${API_BASE}/v1/admin/paket`, { headers: AUTH_HEADERS(token) }).then((r) => r.json());
+          if (alive && p && Array.isArray(p.groups)) setPaket(p);
+        } catch {
+          /* backend lama tanpa endpoint paket — panel disembunyikan */
+        }
       } catch (e) {
         if (!alive) return;
         if (errMsg(e) === "sesi berakhir") doLogout();
@@ -107,6 +137,7 @@ export default function AdminPage() {
     setDomains(null);
     setReport(null);
     setBantuan(null);
+    setPaket(null);
   }
 
   async function doLogin(e: React.FormEvent) {
@@ -143,6 +174,28 @@ export default function AdminPage() {
       URL.revokeObjectURL(a.href);
    } catch (e) {
       setMsg(`Gagal mengunduh ${mode} ${domain}: ${errMsg(e)}`);
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  async function downloadPaket(groupId: string, file: string) {
+    if (!token) return;
+    setBusy(`paket:${groupId}:${file}`);
+    setMsg(null);
+    try {
+      const res = await fetch(`${API_BASE}/v1/admin/paket/${groupId}/${encodeURIComponent(file)}`, {
+        headers: AUTH_HEADERS(token),
+      });
+      if (!res.ok) throw new Error((await res.json().catch(() => null))?.error ?? `HTTP ${res.status}`);
+      const blob = await res.blob();
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = file;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    } catch (e) {
+      setMsg(`Gagal mengunduh ${file}: ${errMsg(e)}`);
     } finally {
       setBusy(null);
     }
@@ -402,6 +455,48 @@ export default function AdminPage() {
                 <div className="rounded-xl border border-slate-200 bg-white p-5 text-sm text-slate-500">Memuat daftar domain…</div>
               )}
             </div>
+
+            {/* ------------------------------------ Paket template & export (Excel+CSV) */}
+            {paket && paket.groups.some((g) => g.files.length > 0) && (
+              <div className="mt-8">
+                <h2 className="text-xl font-bold text-slate-800">Paket Template & Export (Excel + CSV)</h2>
+                <p className="mt-1 max-w-3xl text-sm text-slate-600">
+                  Berkas siap unduh dari paket generator <code>database/template-import-export</code> — melengkapi
+                  tombol per domain di atas dengan versi <b>CSV per tabel</b> dan domain <b>Referensi</b> (kecamatan
+                  dan desa; hanya dokumentasi/audit — tidak untuk impor).
+                  {paket.snapshot ? ` Snapshot export: ${paket.snapshot}.` : ""} Regenerasi paket:{" "}
+                  <code>npm run generate</code> di folder tersebut.
+                </p>
+                <div className="mt-4 grid gap-4 lg:grid-cols-2">
+                  {paket.groups
+                    .filter((g) => g.files.length > 0)
+                    .map((g) => (
+                      <div key={g.id} className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+                        <div className="flex items-baseline justify-between gap-2">
+                          <h3 className="font-semibold text-slate-800">{PAKET_LABELS[g.id] ?? g.id}</h3>
+                          <span className="text-xs font-medium text-slate-400">{g.files.length} berkas</span>
+                        </div>
+                        <div className="mt-3 flex max-h-56 flex-wrap gap-2 overflow-y-auto pr-1">
+                          {g.files.map((f) => {
+                            const fBusy = busy === `paket:${g.id}:${f.file}`;
+                            return (
+                              <button
+                                key={f.file}
+                                onClick={() => downloadPaket(g.id, f.file)}
+                                disabled={fBusy}
+                                title={`Unduh ${f.file}`}
+                                className="rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs font-medium text-slate-700 transition hover:border-emerald-600 hover:bg-emerald-50 hover:text-emerald-700 disabled:opacity-50"
+                              >
+                                {fBusy ? "Mengunduh…" : `${f.file.replace(/\.(xlsx|csv)$/i, "")} · ${formatBytes(f.bytes)}`}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            )}
 
             {/* -------------------------------------------------------- Petunjuk */}
             <div className="mt-8 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">

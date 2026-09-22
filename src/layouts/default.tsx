@@ -98,6 +98,8 @@ export default function DefaultLayout({
         return <HeartPulse className={cls} />;
       case "Pakan Ternak & Hijauan":
         return <Bone className={cls} />;
+      case "Susu & Kulit Ternak":
+        return <Droplets className={cls} />;
       case "Produksi Perikanan":
         return <Fish className={cls} />;
       case "Nilai Ekonomi & Pasar":

@@ -692,3 +692,92 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- SEED: varian nama kecamatan (untuk dokumentasi; resolver ada di lib.mjs)
 -- 20 kecamatan diisi oleh import/ref.mjs dari GeoJSON (urut alfabetis agar id stabil)
 -- ============================================================================
+
+-- ============================================================================
+-- TABEL BARU (gap-analysis-master.md - placeholder untuk data 23 Sep 2026)
+-- ============================================================================
+
+-- 1. Kewirausahaan: KWT, Pokdakan, Poklahsar, Pokmamas (bidang 7)
+DROP TABLE IF EXISTS kwt_kelompok_wanita_tani;
+CREATE TABLE kwt_kelompok_wanita_tani (
+  id           INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  nama_kelompok VARCHAR(150) NOT NULL,
+  kecamatan    VARCHAR(50)  NOT NULL,
+  desa         VARCHAR(50)  NOT NULL,
+  jenis        ENUM('KWT','Pokdakan','Poklahsar','Pokmamas') NOT NULL,
+  jumlah_anggota SMALLINT UNSIGNED,
+  produk_andalan VARCHAR(100),
+  tahun_registrasi SMALLINT UNSIGNED,
+  latitude     DECIMAL(10,8),
+  longitude    DECIMAL(11,8),
+  created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_kwt (nama_kelompok, kecamatan, desa),
+  KEY idx_kwt_jenis (jenis),
+  KEY idx_kwt_kec (kecamatan)
+) ENGINE=InnoDB COMMENT='Kelompok Wanita Tani (KWT/Pokdakan/Poklahsar/Pokmamas)';
+
+-- 2. Komoditas unggulan (bidang 1.1)
+DROP TABLE IF EXISTS komoditas_unggulan;
+CREATE TABLE komoditas_unggulan (
+  id            INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  bidang        ENUM('Tanaman Pangan','Hortikultura','Perkebunan','Peternakan','Perikanan') NOT NULL,
+  komoditas     VARCHAR(100) NOT NULL,
+  varietas      VARCHAR(150) NOT NULL,
+  kecamatan     VARCHAR(50),
+  luas_lahan    DECIMAL(8,2),
+  produktivitas DECIMAL(9,2),
+  produksi      DECIMAL(10,2),
+  ketersediaan_benih ENUM('Tersedia','Terbatas','Kurang','Tidak ada'),
+  tahun         SMALLINT UNSIGNED,
+  updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  KEY idx_komoditas_bidang (bidang, komoditas),
+  KEY idx_komoditas_kec (kecamatan)
+) ENGINE=InnoDB COMMENT='Komoditas unggulan dan varietas per kecamatan';
+
+-- 3. Nilai ekonomi (bidang 2.2)
+DROP TABLE IF EXISTS nilai_ekonomi_tahunan;
+CREATE TABLE nilai_ekonomi_tahunan (
+  id           INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  bidang       ENUM('Tanaman Pangan','Hortikultura','Perkebunan','Peternakan','Perikanan') NOT NULL,
+  komoditas    VARCHAR(100),
+  satuan       VARCHAR(20) NOT NULL,
+  tahun        SMALLINT UNSIGNED,
+  triwulan     TINYINT UNSIGNED,
+  volume       DECIMAL(12,3),
+  nilai_rupiah DECIMAL(15,2) UNSIGNED,
+  harga_per_unit DECIMAL(12,2),
+  updated_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  KEY idx_ekonomi_bidang (bidang, tahun),
+  KEY idx_ekonomi_tahun (tahun)
+) ENGINE=InnoDB COMMENT='Nilai ekonomi agregat per bidang/tahun/triwulan';
+
+-- 4. LTT + Kalender tanam (bidang 1.3/6.4)
+DROP TABLE IF EXISTS ltt_katam;
+CREATE TABLE ltt_katam (
+  id          INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  komoditas   VARCHAR(100) NOT NULL,
+  kecamatan   VARCHAR(50) NOT NULL,
+  jenis       ENUM('LTT','Katam') NOT NULL,
+  luas_rencana DECIMAL(8,2),
+  luas_tanam   DECIMAL(8,2),
+  luas_panen   DECIMAL(8,2),
+  produksi_rencana DECIMAL(10,2),
+  produksi_aktual DECIMAL(10,2),
+  bulan_mulai  TINYINT UNSIGNED,
+  bulan_panen  TINYINT UNSIGNED,
+  tahun        SMALLINT UNSIGNED,
+  source       VARCHAR(30),
+  updated_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  KEY idx_ltt_komoditas (komoditas, tahun),
+  KEY idx_ltt_kec (kecamatan)
+) ENGINE=InnoDB COMMENT='LTT dan Kalender tanam';
+
+-- ============================================================================
+-- VIEW: lahan_pertahanan (gabungan lahan_desa + ltt_katam)
+-- ============================================================================
+DROP VIEW IF EXISTS v_lahan_pertahanan;
+CREATE VIEW v_lahan_pertahanan AS
+SELECT l.desa_norm AS desa, l.kecamatan, l.total_luas AS luas_ha, 'lhpb' AS sumber
+FROM lahan_desa l
+WHERE l.tahun = YEAR(NOW());

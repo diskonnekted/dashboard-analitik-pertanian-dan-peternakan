@@ -8,11 +8,13 @@
  * UI mengikuti pola /livestock (chart line + bar, KPI, tabel + thead/tfoot, empty state).
  */
 import { useEffect, useMemo, useState } from "react";
+import DefaultLayout from "@/layouts/default";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   BarChart, Bar, Legend,
 } from "recharts";
-import { KpiCard, SectionCard, Toolbar, ToolbarField, LoadingSpinner, Badge } from "@/components/ui";
+import { Droplets } from "lucide-react";
+import { KpiCard, SectionCard, Toolbar, ToolbarField, LoadingSpinner, Badge, PageHeader } from "@/components/ui";
 import type { TernakSusuKulit } from "@/services/api";
 import { fetchTernakSusuKulit } from "@/services/api";
 
@@ -104,24 +106,18 @@ export default function PeternakanSusuKulitPage() {
   }, [kecRows]);
 
   return (
-    <section className="bg-slate-50 py-10">
-      <div className="container mx-auto px-4 lg:px-8">
-        <header className="border-b border-slate-200 pb-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-emerald-800 text-white">
-              🐄
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold leading-tight text-slate-800">
-                Produksi Susu &amp; Kulit
-              </h1>
-              <p className="mt-0.5 max-w-2xl text-sm text-slate-500">
-                Produksi susu (liter) dari sapi/kerbau dan kulit (lembar) dari kambing/domba per
-                kecamatan. Data backend MySQL (Σ {fmt(kpiTotal)} {unitLabel} — diverifikasi backend).
-              </p>
-            </div>
-          </div>
-        </header>
+    <DefaultLayout>
+      <section className="py-8">
+        <div className="container mx-auto px-4 lg:px-8">
+        <PageHeader
+          icon={<Droplets className="h-6 w-6" />}
+          title="Produksi Susu &amp; Kulit"
+          subtitle={
+            rows && rows.length > 0
+              ? `Produksi susu (liter) dari sapi/kerbau dan kulit (lembar) dari kambing/domba per kecamatan. Σ ${fmt(kpiTotal)} ${unitLabel} — diverifikasi backend.`
+              : "Memuat data produksi susu & kulit..."
+          }
+        />
 
         {/* --- Toolbar filter --- */}
         <Toolbar className="mt-6">
@@ -291,5 +287,6 @@ export default function PeternakanSusuKulitPage() {
         )}
       </div>
     </section>
+  </DefaultLayout>
   );
 }

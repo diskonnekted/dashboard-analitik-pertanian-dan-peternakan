@@ -1,116 +1,98 @@
-# TODO Pengembangan SISPERTANI — Pantauan Sistematik
-> Last update: 2026-09-22 — Ground truth: `git show HEAD` = commit `4d82412` (security). Kode P1-1/P1-2 sudah ada tapi belum di-commit (3 files modified).
+# Checklist Pengembangan SISPERTANI — Status 22 Sep 2026 (commit HEAD = 4d82412)
 
-Legenda status: ✅ selesai · 🔄 progres · 🟡 terlaploskan/belum mulai · 🔴 blocker
+> **Source of truth**: `public/pengembangan.md` (roadmap P1-P4, 17 item). Cross-check tiap item dengan kode (`git log`) + memory. Auto-update tiap ada perubahan commit.
 
----
-
-## P1 — Backend & Deploy (API live ke produksi)  **Prioritas utama**
-
-### P1-1 🔄 Endpoint `ternak_susu_kulit` (selesai backend, belum UI)
-| No | Task | Status | Catatan |
-|----|------|--------|---------|
-| 1.1 | Endpoint `GET /api/v1/peternakan/susu-kulit` | ✅ | Backend (peternakan.js:118-130) — Σ121.087 == DB |
-| 1.2 | Commit 3 file modified | 🟡 | `peternakan.js`, `admin.js`, `server.js` — belum di-commit |
-| 1.3 | Route fetcher di api.ts | 🟡 | Frontend `services/` belum ada fetcher peternakan |
-| 1.4 | Halaman UI React (susu-kulit.tsx) | 🟡 | Ikut pola livestock.tsx (chart line, tooltip) |
-| 1.5 | Route di App.tsx (`/peternakan/susu-kulit`) | 🟡 | Lazy import + Route baru |
-| 1.6 | Deploy pscp + verifikasi MD5 | 🔴 | Tergantung commit 1.2 + build dist |
-
-### P1-2 🔄 Endpoint `sync_log` (selesai backend, belum UI)
-| No | Task | Status | Catatan |
-|----|------|--------|---------|
-| 2.1 | Endpoint `GET /api/v1/admin/sync-log` | ✅ | Backend (admin.js) — limit clamp 1-200, requireAdmin |
-| 2.2 | Commit 3 file modified (gabungan 1.2) | 🟡 | Belum di-commit |
-| 2.3 | Panel di halaman admin.tsx | 🟡 | Tabel sync-log di dasbor admin |
-| 2.4 | Deploy + verifikasi | 🔴 | Tergantung commit |
-
-### P1-3 🔴 Deploy API + MySQL ke produksi (KRITIS — P4-1 gap-analysis)
-| No | Task | Status | Catat |
-|----|------|--------|-------|
-| 3.1 | Install XAMPP MariaDB di dev machine | 🔴 | Belum terpasang di mesin (Fase A catatan) |
-| 3.2 | `database/schema.sql` (37 tabel) di produksi | 🔴 | Belum deploy DB ke server |
-| 3.3 | Backend Express 4100 di produksi | 🔴 | Backend dev 4100 hidup, produksi belum |
-| 3.4 | Kredensial di backend/.env (untracked) | ✅ | Sudah di-.gitignore:45 |
-| 3.5 | deploy.ps1 baca env (bukan hardcode) | ✅ | commit `4d82412` fixed |
-| 3.6 | `tsc` lolos + build dist/ bersih | 🔴 | Release build |
-| 3.7 | deploy.ps1 (pscp) + bump bundle | 🔴 | ASCII-only path (jebakan en-dash dilarang) |
-| 3.8 | Verifikasi MD5 local == live + curl endpoint | 🔴 | Pastikan bundle baru dimuat |
-| 3.9 | Rollback plan (bundle lama masih ada) | 🔴 | Catat nama bundle sebelum ganti |
+Legenda: ✅ selesai · 🟡 sebagian · ❌ belum mulai · 🔴 blocker
 
 ---
 
-## P2 — Frontend & UX (React 19 + Vite 8)
+## P1 — Quick wins (data ada di MySQL, tinggal endpoint + UI)
+| # | Item | Est | Status | Evidence / File |
+|---|------|-----|--------|-----------------|
+| P1-1 | **Susu & kulit ternak** | S | ✅ **DONE** | `backend/src/routes/peternakan.js:118-130` (Σ=121.087); `src/pages/peternakan-susu-kulit.tsx`; route + menu di `App.tsx`/`config/site.ts`; commit `9ef39ab` |
+| P1-2 | **Audit log admin** | S | ✅ | `backend/src/routes/admin.js` `/admin/sync-log` (requireAdmin); panel tabel di `src/pages/admin.tsx` |
+| P1-3 | **Profil kelompok tani (detail)** | M | ❌ | Butuh `kth_detail` JSON + SIMLUH; route/fetcher belum ada |
+| P1-4 | **Rasionalisasi telur & unggas** | S | ❌ | Butuh integrasi `st2023_desa.ternak` JSON; belum ada fetcher |
+| P1-5 | **Peta kolam per desa** | M | 🟡 | `fisheries` ada, tapi layer kolam per-desa (`ikan_kolam`) belum |
 
-### P2-1 🔄 Dasbor admin Excel 15 domain
-| No | Task | Status | Catatan |
-|----|------|--------|---------|
-| 4.1 | Template Excel export (15 domain) | ✅ | Sudah jalan |
-| 4.2 | Import → upsert (tidak timpa manual) | ✅ | Pola dipertahankan |
-| 4.3 | Sync-log panel di UI | 🟡 | Tergantung P1-2 |
+## P2 — Data publik BPS/CKAN
+| # | Item | Est | Status | Evidence |
+|---|------|-----|--------|----------|
+| P2-1 | Breakdown perikanan per jenis ikan | M | 🟡 | `fetchFisheriesBudidaya` ada, tapi breakdown lele/nila/mujair belum (cek 39 folder) |
+| P2-2 | Nilai ekonomi multi-bidang | L | ❌ | Hanya perikanan di `/economic-value`; butuh pangan/hortikul/perkebunan |
+| P2-3 | Komoditas unggulan per bidang | M | ❌ | Butuh data varietas padi/jagung |
+| P2-4 | Restructure perkebunan | M | 🟡 | `/plantation` ada, belum kelapa deres/porang terpisah |
+| P2-5 | Kawasan hortikultura | M | ❌ | `/kawasan-hortikultura` masih ComingSoon |
+| P2-6 | KWT, Pokdakan, dll | M | ❌ | Butuh data DKPP dinas (blokir); hanya Poktan+KTH |
 
-### P2-2 🟡 Map & visual desa
-| No | Task | Status | Catatan |
-|----|------|--------|---------|
-| 5.1 | MapLibre OpenFreeMap (selesai) | ✅ | Bundle `BDT6zcw-` live |
-| 5.2 | /desa/:kec/:nama polish | ✅ | 20 Sep 2026 |
-| 5.3 | /desa/:kec/:nama map widget | 🟡 | MapWidget dashboard masih Leaflet (vs MapLibre) |
+## P3 — Analitik baru
+| # | Item | Est | Status | Evidence |
+|---|------|-----|--------|----------|
+| P3-1 | Ketahanan pangan 3 pilar Bapanas | L | ❌ | Butuh populasi+kalori |
+| P3-2 | RMU (rice milling unit) | M | ❌ | Butuh data perizinan |
+| P3-3 | Katam + LTT bulanan | L | ❌ | `/ltt` masih ComingSoon |
+| P3-4 | Nilai ekonomi triwulan | L | ❌ | Butuh rilis kwaran BPS |
+| P3-5 | Domba Batur vs lokal | M | ❌ | Butuh DPKet/Disetnakvan |
+| P3-6 | Poultry shop, ikan hias | M | ❌ | Butuh direktori |
+| P3-7 | Modul bantuan level detail | L | 🟡 | 3 tabel bantuan ada, level detail belum |
 
-### P2-3 🟡 Endpoint statistik hilang
-| No | Task | Status |
-|----|------|--------|
-| 6.1 | Endpoint `/peternakan/susu-kulit` UI | 🟡 | P1-1 |
-| 6.2 | Endpoint `/admin/sync-log` UI | 🟡 | P1-2 |
-
----
-
-## P3 — Data & ETL (Node import/, 37 tabel schema)
-
-### P3-1 🔄 Fase A migrasi MySQL
-| No | Task | Status |
-|----|------|--------|
-| 7.1 | `schema.sql` (37 tabel) — selesai | ✅ |
-| 7.2 | ETL Node di `database/import/` | ✅ | Dry-run 0 warning ~19.500 baris |
-| 7.3 | Installer `ternak_susu_kulit` di ETL | ✅ | Tabel ada di schema (git show HEAD) |
-| 7.4 | Importer upsert tidak timpa manual | ✅ | Aturan kolom sumber |
-| 7.5 | `lahan_desa` ST2023 regen (278 desa) | ✅ | commit `0bc1775` (belum di-main, tapi verified) |
-| 7.6 | Analisa lahan kritis T4.10 | ✅ | commit `231273e` |
-| 7.7 | MySQL belum terpasang di mesin dev | 🔴 | Blocker Fase A/Fase B |
-
-### P3-2 🟡 Kualitas data
-| No | Task | Status | Catatan |
-|----|------|--------|---------|
-| 8.1 | perumahan/sentra pasar (geojson 36 titik) | ✅ | supply-chain sudah benar |
-| 8.2 | supply-chain koridor hardcoded | 🟡 | TAPI data sudah benar (CKAN byte-identik) |
+## P4 — Infrastruktur & tata kelola
+| # | Item | Est | Status | Evidence |
+|---|------|-----|--------|----------|
+| P4-1 | **Deploy API + MySQL ke produksi** | L | 🔴 **BLOCKER** | Backend :4100 dev; prod belum. MariaDB belum terpasang. |
+| P4-2 | RBAC multi-admin | M | 🟡 | `requireAdmin` ada, tapi belum users/roles table |
+| P4-3 | Master data petani/lahan digital | L | ❌ | `/master-*` semua ComingSoon |
+| P4-4 | Monitoring & early-warning | L | ❌ | Butuh integrasi lapangan |
 
 ---
 
-## P4 — Produksi & Keamanan (roadmap P4-1 prioritas tertinggi)
+## Prioritas Selanjutnya (urut roadmap pengembangan.md)
+> 1. **P1-1 → P1-2 → P1-4** → ✅ selesai (P1-1/P1-2 sudah commit `9ef39ab`)
+> 2. **P4-1 deploy produksi** → 🔴 **SASEGOR — blocker utama seluruh roadmap**
+> 3. P1-3, P1-5, lalu P2 sesuai ketersediaan data
+> 4. P3/P4 sisanya mengikuti ketersediaan data dinas
 
-### P4-1 🔴 **Deploy API + MySQL ke produksi (KRITIS)**
-→ Duplikat dari P1-3 di atas. Ini adalah **prio-1** dari keseluruhan roadmap.
-
-### P4-2 🟡 Keamanan
-| No | Task | Status |
-|----|------|--------|
-| 10.1 | Password SSH tidak hardcode di git | ✅ | commit `4d82412` |
-| 10.2 | Rotasi password oleh user | 🟡 | PENDING |
-| 10.3 | Restore WinDefend / pasang AV | 🔴 | Setelah malware cleanup 21 Sep |
-| 10.4 | Full scan + ganti password semua | 🔴 |  |
-
-### P4-3 🟡 Dokumen & gap
-| No | Task | Status |
-|----|------|--------|
-| 11.1 | gap-analysis v4.0 sinkron kode | ✅ | 13 selesai / 7 parsial / 20 gap |
-| 11.2 | `public/pengembangan.md` roadmap P1-P4 | ✅ | Updated 22 Sep |
-| 11.3 | Sinkronkan TODO.md ↔ gap-analysis 2 arah | 🔄 | Ini file ini |
+<!-- AUTO-SYNC dari public/gap-analysis-master.md + pengembangan.md (22 Sep 2026) -->
 
 ---
 
-## Ringkasan Eksekutif (2026-09-22)
-- **Status kode**: 32 endpoint statistik + backend p1-1/p1-2 **selesai tapi belum commit**; frontend belum ada UI peternakan/susu-kulit & sync-log.
-- **Blocker utama**: deploy API+MySQL ke produksi (P4-1) — **prioritas #1 seluruh roadmap**.
-- **Bug terbaru**: pscp en-dash folder (horticulture dropdown) sudah diperbaiki via rename ASCII (commit e765d99).
-- **Catatan penting**: frontend `src/`, bukan `frontend/src/`; MapWidget dashboard masih Leaflet.
+## Gap Analysis Master Checklist (dari `gap-analysis-master.md`)
+> Matrix 5 Bidang pertanian × 4 Submenu — cross-check kode (`git log`) + tsc.
 
-<!-- Generated 2026-09-22 — auto-update oleh assistant -->
+### ✅ Selesai (prioritas selanjutnya setelah P1-1/P1-2)
+| Bidang.Submenu | Fitur | Status | File |
+|----------------|-------|--------|------|
+| 4.Peternakan.SusuKulit | Produksi susu & kulit per kelompok ternak | ✅ **DONE** | `peternakan.js:118`, `peternakan-susu-kulit.tsx`, route di `App.tsx`, menu di `site.ts` (commit `9ef39ab`) |
+| 4.Peternakan.AuditLog | Endpoint `/admin/sync-log` + panel admin | ✅ **DONE** | `admin.js` + `admin.tsx` |
+| 4.Peternakan.ArusTernak | `/livestock-flow` (lalu lintas + pemotongan) | ✅ | `livestock-flow.tsx` |
+
+### 🟡 Sebagian (ada data dasar, butuh hilirisasi)
+| Bidang.Submenu | Fitur | Status | Catatan |
+|----------------|-------|--------|---------|
+| 1.TanamanPangan.Komoditas | Komoditas unggulan (varietas padi/jagung) | 🟡 | Butuh data varietas — belum ada fetcher |
+| 1.TanamanPangan.NilaiEkonomi | Nilai ekonomi (triwulan/TP) | ❌ | Hanya produksi; butuh rilis kwaran BPS |
+| 1.TanamanPangan.Kalender | Kalender tanam (Katam/LTT) | 🟡 | Katam data belum; LTT masih ComingSoon |
+| 3.Perkebunan.KelapaDeres | Kelapa sawit & kelapa deres | 🟡 | `/plantation` ada, belum dipisah deres/porang |
+| 5.Perikanan.BreakdownIkan | Lele/Nila/Bandeng/Mujair/Tongkol | 🟡 | `fetchFisheriesBudidaya` ada, belum breakdown ikan |
+| 6.KetahananPangan.TigaPilar | Ketersediaan, akses, nutriensi (Bapanas) | ❌ | Hanya neraca beras + lumbung |
+| 8.BantuanSarpras.Detail | Detail barang (merk/tipe/harga/APBD) | 🟡 | 3 tabel bantuan ada, detail relasional belum |
+| 9.AdminUpload.RBAC | Multi-role users/admin | 🟡 | `requireAdmin` ada, belum users/roles table |
+
+### ❌ Belum mulai (butuh data dinas/BPS)
+| Bidang.Submenu | Fitur | Blocker |
+|----------------|-------|---------|
+| 2.Hortikultura.Dieng | 8 komoditas sayur Dieng (kentang/kubis/wortel/tomat/cabai) | Butuh data BPS folder Hortikultura |
+| 5.Perikanan.MinaPadi | Kolam + lahan pertanian | Butuh layer geojson `ikan_kolam` + data |
+| 5.Perikanan.IkanHias | Pemetaan kolam ikan hias dinamis | Butuh direktori/layer khusus |
+| 6.KetahananPangan.FSVA | Fluktuasi harga, Supply/Volume/Area | Butuh data harian BPS |
+| 7.Penyuluhan.KWT | Kelompok Wanita Tani | Butuh data DKPP dinas |
+| 9.AdminUpload.Template | Template Excel/CSV per bidang | Butuh generate 5 template + import mapping |
+| 9.AdminUpload.FormUpload | Form upload file interactive | Butuh validasi + schema mapping |
+
+---
+
+### Ringkasan (cross-check kode HEAD `4d82412` + `9ef39ab`):
+- **Bidang sudah ada (≥70%)**: Tanaman Pangan, Livestock (data populasi — minus hilirisasi)
+- **Bidang sebagian ada (20-60%)**: Hortikultura, Perkebunan, Perikanan, Ketahanan, Kelembagaan
+- **Bidang minim/belum**: Bantuan & Sarpras, Admin & Upload (RBAC/template)
+- **Yang baru selesai hari ini**: P1-1 Susu & Kulit Ternak ✅, P1-2 Audit Log ✅ (commit `9ef39ab`)

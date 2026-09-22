@@ -66,6 +66,18 @@ export const siteConfig = {
           label: "Komoditas Unggulan",
           href: "/plantation",
         },
+        {
+          label: "Komoditas Unggulan",
+          href: "/komoditas-unggulan",
+        },
+        {
+          label: "Nilai Ekonomi",
+          href: "/nilai-ekonomi",
+        },
+        {
+          label: "LTT & Kalender Tanam",
+          href: "/ltt-katam",
+        },
       ],
     },
     // 6. Bidang Peternakan
@@ -79,6 +91,21 @@ export const siteConfig = {
         {
           label: "Lalu Lintas & Pemotongan Ternak",
           href: "/livestock-flow",
+        },
+        {
+          label: "Susu & Kulit Ternak",
+          href: "/peternakan/susu-kulit",
+        },
+      ],
+    },
+
+    // 6b. Bidang Kewirausahaan (KWT)
+    {
+      title: "Kewirausahaan",
+      items: [
+        {
+          label: "Kelompok Wanita Tani",
+          href: "/kewirausahaan/kwt",
         },
       ],
     },

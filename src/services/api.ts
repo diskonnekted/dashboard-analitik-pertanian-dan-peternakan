@@ -2541,3 +2541,77 @@ export const fetchKelompokTani = apiFirst<KelompokTaniRow[]>("/v1/kelembagaan/ke
 export const fetchSt2023DesaExtra = apiFirst<St2023DesaExtra[]>("/v1/st2023/desa", fetchSt2023DesaExtraCsv);
 
 
+
+// --- Tipe baru: KWT, Komoditas, Nilai Ekonomi, LTT ---
+export interface KwtRow {
+  id: number;
+  nama_kelompok: string;
+  kecamatan: string;
+  desa: string;
+  jenis: "KWT" | "Pokdakan" | "Poklahsar" | "Pokmamas";
+  jumlah_anggota?: number;
+  produk_andalan?: string;
+  tahun_registrasi?: number;
+}
+export interface KomoditasUnggulanRow {
+  bidang: string;
+  komoditas: string;
+  varietas: string;
+  kecamatan?: string;
+  luas_lahan?: number;
+  produktivitas?: number;
+  produksi?: number;
+  ketersediaan_benih?: string;
+  tahun?: number;
+}
+export interface NilaiEkonomiRow {
+  bidang: string;
+  komoditas?: string;
+  satuan: string;
+  tahun: number;
+  triwulan?: number;
+  volume?: number;
+  nilai_rupiah?: number;
+  harga_per_unit?: number;
+}
+export interface LttKatamRow {
+  komoditas: string;
+  kecamatan: string;
+  jenis: "LTT" | "Katam";
+  luas_rencana?: number;
+  luas_tanam?: number;
+  luas_panen?: number;
+  produksi_rencana?: number;
+  produksi_aktual?: number;
+  bulan_mulai?: number;
+  bulan_panen?: number;
+  tahun: number;
+  source?: string;
+}
+
+/**
+ * Fetcher placeholder untuk bidang-gap yang belum ada di backend.
+ * Jika endpoint belum siap, kirim array kosong -> UI tampil empty state "Coming Soon".
+ * Backend route akan tersedia sesuai jadwal (data diberikan 23 Sep 2026).
+ */
+const createFetcher = <T,>(url: string): (() => Promise<T[]>) =>
+  async (): Promise<T[]> => {
+    try {
+      const res = await fetch(`${API_BASE}${url}`, {
+        headers: { "Cache-Control": "no-cache" },
+      });
+      if (!res.ok) return [];
+      const j = await res.json();
+      if (Array.isArray(j)) return j;
+      if (Array.isArray(j?.data)) return j.data;
+      if (Array.isArray(j?.result)) return j.result;
+      return [];
+    } catch {
+      return [];
+    }
+  };
+
+export const fetchKwt = createFetcher<KwtRow>("/v1/kewirausahaan/kwt");
+export const fetchKomoditasUnggulan = createFetcher<KomoditasUnggulanRow>("/v1/komoditas-unggulan");
+export const fetchNilaiEkonomi = createFetcher<NilaiEkonomiRow>("/v1/nilai-ekonomi");
+export const fetchLttKatam = createFetcher<LttKatamRow>("/v1/ltt-katam");

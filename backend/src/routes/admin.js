@@ -7,6 +7,8 @@
  * GET  /api/v1/admin/export/:domain   → .xlsx isi data MySQL (bisa diedit & re-import)
  * POST /api/v1/admin/import/:domain   → multipart "file" → laporan upsert per sheet
  *
+ * GET  /api/v1/admin/paket              -> indeks berkas paket template/export (Excel+CSV)
+ * GET  /api/v1/admin/paket/:tipe/:file  -> unduh berkas paket (template/export, xlsx/csv)
  * Auth: Bearer token in-memory (masa berlaku 12 jam). Kredensial dari .env
  * (ADMIN_USER / ADMIN_PASS). Login dibatasi 5 kegagalan / 15 menit per IP.
  */
@@ -16,6 +18,9 @@ import multer from "multer";
 import { listDomains } from "../lib/domains.js";
 import { buildWorkbook, importWorkbook } from "../lib/excel.js";
 import { q } from "../db.js";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 async function logSync(dataset, sumber, baris, status, pesan) {
   try {
@@ -131,6 +136,70 @@ router.post("/import/:domain", requireAdmin, upload.single("file"), async (req, 
   } catch (e) {
     res.status(e?.status ?? 500).json({ error: String(e?.message ?? e) });
   }
+});
+
+// ---------------------------------------------------------------------------
+// Paket template & export statis (database/template-import-export) - hasil
+// generator `npm run generate`: 16 domain xlsx + 37 tabel csv, template & snapshot.
+// ---------------------------------------------------------------------------
+const PAKET_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "..", "database", "template-import-export");
+const PAKET_TIPE = {
+  "template-xlsx": "templates",
+  "template-csv": "templates/csv",
+  "export-xlsx": "exports",
+  "export-csv": "exports/csv",
+};
+
+/** GET /paket -> indeks berkas per grup. Dibaca dari disk saat request, jadi
+ *  selalu sinkron dengan hasil regenerate terbaru. `snapshot` = tanggal export
+ *  terbaru (dari nama file export-*-YYYY-MM-DD.xlsx). */
+router.get("/paket", requireAdmin, (_req, res) => {
+  const groups = [];
+  let snapshot = null;
+  for (const [id, dir] of Object.entries(PAKET_TIPE)) {
+    const abs = path.join(PAKET_ROOT, dir);
+    let files = [];
+    try {
+      files = fs
+        .readdirSync(abs)
+        .filter((f) => /\.(xlsx|csv)$/i.test(f))
+        .map((f) => ({ file: f, bytes: fs.statSync(path.join(abs, f)).size }))
+        .sort((a, b) => a.file.localeCompare(b.file));
+    } catch {
+      /* folder belum ada -> grup kosong */
+    }
+    if (id === "export-xlsx") {
+      for (const f of files) {
+        const m = /-(\d{4}-\d{2}-\d{2})\.xlsx$/i.exec(f.file);
+        if (m && (!snapshot || m[1] > snapshot)) snapshot = m[1];
+      }
+    }
+    groups.push({ id, dir, files });
+  }
+  res.json({ snapshot, groups });
+});
+
+/** GET /paket/:tipe/:file -> unduh berkas. Tipe di-whitelist, nama berkas
+ *  divalidasi regex + basename (anti path-traversal), path final harus berada
+ *  di dalam PAKET_ROOT. */
+router.get("/paket/:tipe/:file", requireAdmin, (req, res) => {
+  const dir = PAKET_TIPE[req.params.tipe];
+  const file = req.params.file;
+  const namaAman = /^[A-Za-z0-9][A-Za-z0-9._-]*\.(xlsx|csv)$/i.test(file) && path.basename(file) === file;
+  if (!dir || !namaAman) return res.status(400).json({ error: "Permintaan tidak valid." });
+  const abs = path.join(PAKET_ROOT, dir, file);
+  let st = null;
+  try { st = fs.statSync(abs); } catch { /* berkas tidak ada */ }
+  if (!st || !st.isFile() || !abs.startsWith(PAKET_ROOT + path.sep)) {
+    return res.status(404).json({ error: "Berkas tidak ditemukan." });
+  }
+  res
+    .set("Content-Type", /\.xlsx$/i.test(file)
+      ? "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      : "text/csv; charset=utf-8")
+    .set("Content-Disposition", `attachment; filename="${file}"`)
+    .set("Content-Length", st.size);
+  fs.createReadStream(abs).pipe(res);
 });
 
 export default router;
