@@ -90,20 +90,29 @@ export function KecamatanMapMini({ desaList, namaKecamatan }: Props) {
 
     map.on("load", () => {
       const srcId = `kec-desa-${Date.now()}`;
+      // PERHATIKAN BENTUK DATA: DesaIndex.geometry = GeoFeature UTUH
+      // { type:"Feature", geometry:{...}, properties } — BUKAN objek geometry
+      // (lihat loadGeoIndex: `geometry = f`). Fitur geojson harus dibangun
+      // dengan base.geometry di slot geometry; memasang GeoFeature utuh di
+      // slot itu menghasilkan nested { type:"Feature" } yang invalid dan
+      // MapLibre membuang SEMUA fitur → polygon tidak pernah muncul.
       const fc: GeoJSON.FeatureCollection = {
         type: "FeatureCollection",
-        features: withGeom.map((v) => ({
-          type: "Feature",
-          geometry: v.geometry as unknown as GeoJSON.Geometry,
-          properties: {
-            OBJECTID: v.objectId, // promoteId — unik utk feature-state hover
-            nama: v.namaTampil,
-            namaPendek: labelPendek(v.namaTampil),
-            desaSlug: v.namaSlug,
-            kecSlug: v.kecamatanSlug,
-            luasHa: Math.round(v.luasHa || 0),
-          },
-        })),
+        features: withGeom.map((v) => {
+          const base = v.geometry as unknown as GeoJSON.Feature;
+          return {
+            type: "Feature" as const,
+            geometry: base.geometry,
+            properties: {
+              OBJECTID: v.objectId, // promoteId — unik utk feature-state hover
+              nama: v.namaTampil,
+              namaPendek: labelPendek(v.namaTampil),
+              desaSlug: v.namaSlug,
+              kecSlug: v.kecamatanSlug,
+              luasHa: Math.round(v.luasHa || 0),
+            },
+          };
+        }),
       };
 
       map.addSource(srcId, {

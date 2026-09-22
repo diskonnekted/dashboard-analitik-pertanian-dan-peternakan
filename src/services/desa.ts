@@ -150,7 +150,7 @@ export function buildDesaPath(kecamatan: string, nama: string): string {
 // ------------------------------------------------------------------
 // Cache helpers (localStorage, swallow errors)
 // ------------------------------------------------------------------
-const DESA_INDEX_CACHE_KEY = "desa-geo-index-v1";
+const DESA_INDEX_CACHE_KEY = "desa-geo-index-v2";
 
 const isBrowser = (): boolean =>
   typeof window !== "undefined" && typeof localStorage !== "undefined";
@@ -208,14 +208,28 @@ async function loadGeoIndex(): Promise<DesaIndex[]> {
     let cent: [number, number] | null = null;
 
     try {
-      if (
-        f.geometry &&
-        (f.geometry.type === "Polygon" || f.geometry.type === "MultiPolygon")
-      ) {
-        geometry = f;
-        const sqm = area(f as unknown as Parameters<typeof area>[0]);
+      // Lebarkan ke GeoJSON.Geometry penuh: 3 desa (Gemuruh/Bawang,
+      // Gumelemkulon/Susukan, Petambakan/Madukara) berformat
+      // GeometryCollection berisi 2 Polygon (wilayah utama + enklave) —
+      // lebur jadi MultiPolygon agar bisa dirender di peta.
+      let g = f.geometry as GeoJSON.Geometry | undefined;
+      if (g && g.type === "GeometryCollection") {
+        const members = (g as GeoJSON.GeometryCollection).geometries ?? [];
+        const rings: number[][][][] = [];
+        for (const m of members) {
+          if (!m) continue;
+          if (m.type === "Polygon") rings.push(m.coordinates);
+          else if (m.type === "MultiPolygon")
+            rings.push(...m.coordinates);
+        }
+        if (rings.length > 0)
+          g = { type: "MultiPolygon", coordinates: rings };
+      }
+      if (g && (g.type === "Polygon" || g.type === "MultiPolygon")) {
+        geometry = { ...f, geometry: g } as GeoFeature;
+        const sqm = area(geometry as unknown as Parameters<typeof area>[0]);
         luasHa = Math.round((sqm / 10_000) * 100) / 100;
-        const c = centroid(f as unknown as Parameters<typeof centroid>[0]);
+        const c = centroid(geometry as unknown as Parameters<typeof centroid>[0]);
         const coords = c.geometry.coordinates as unknown as [number, number];
         cent = [coords[0], coords[1]];
       }
