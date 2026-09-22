@@ -38,6 +38,7 @@ import {
   Settings,
   UserCog,
   Lock,
+  Store,
 } from "lucide-react";
 import { siteConfig } from "@/config/site";
 
@@ -120,6 +121,8 @@ export default function DefaultLayout({
         return <Scale className={cls} />;
       case "Kelembagaan Tani":
         return <Users className={cls} />;
+      case "Kewirausahaan KWT":
+        return <Store className={cls} />;
       case "Jadwal & Materi Penyuluhan":
         return <Calendar className={cls} />;
       case "Penilaian Kinerja Penyuluh":

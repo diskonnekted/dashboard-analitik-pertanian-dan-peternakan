@@ -111,16 +111,6 @@ export const siteConfig = {
       ],
     },
 
-    // 6b. Bidang Kewirausahaan (KWT)
-    {
-      title: "Kewirausahaan",
-      items: [
-        {
-          label: "Kelompok Wanita Tani",
-          href: "/kewirausahaan/kwt",
-        },
-      ],
-    },
     // 7. Bidang Perikanan
     {
       title: "Bidang Perikanan",
@@ -160,6 +150,10 @@ export const siteConfig = {
         {
           label: "Kelembagaan Tani",
           href: "/farmers",
+        },
+        {
+          label: "Kewirausahaan KWT",
+          href: "/kewirausahaan/kwt",
         },
       ],
     },
