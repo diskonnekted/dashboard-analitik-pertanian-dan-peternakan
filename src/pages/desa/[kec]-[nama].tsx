@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Loader2, Home, RefreshCw, AlertTriangle, MapPin, Users2 } from "lucide-react";
+import { Home, RefreshCw, AlertTriangle, MapPin, Users2 } from "lucide-react";
 
 import {
   fetchDesaDetail,
@@ -21,6 +21,8 @@ import { DesaDemografi } from "../../components/desa/DesaDemografi";
 import { DesaTernak } from "../../components/desa/DesaTernak";
 import { DesaKelembagaan } from "../../components/desa/DesaKelembagaan";
 import { DesaPerikanan } from "../../components/desa/DesaPerikanan";
+import DefaultLayout from "../../layouts/default";
+import { LoadingSpinner } from "../../components/ui";
 
 /**
  * Status pelaporan kegagalan per-sumber data agregat.
@@ -101,10 +103,11 @@ export default function DesaDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center text-slate-500">
-        <Loader2 className="w-8 h-8 animate-spin text-emerald-600 mb-2" />
-        <p className="text-sm">Memuat data desa…</p>
-      </div>
+      <DefaultLayout>
+        <section className="flex flex-col gap-8">
+          <LoadingSpinner label="Memuat data desa…" />
+        </section>
+      </DefaultLayout>
     );
   }
 
@@ -115,12 +118,12 @@ export default function DesaDetailPage() {
   const hasAnyFailure = sourceFailures.lahan || sourceFailures.kelompokTani || sourceFailures.st2023;
 
   return (
-    <div>
-      <DesaHero desa={detail} />
+    <DefaultLayout>
+      <section className="flex flex-col gap-6">
+        <DesaHero desa={detail} />
 
-      {hasAnyFailure && (
-        <div className="bg-amber-50/80 border-b border-amber-200/70">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 py-2 flex items-start gap-2.5 text-xs text-amber-900">
+        {hasAnyFailure && (
+          <div className="flex items-start gap-2.5 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900">
             <div className="mt-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-amber-100 flex-shrink-0">
               <AlertTriangle className="w-2.5 h-2.5 text-amber-700" />
             </div>
@@ -155,11 +158,9 @@ export default function DesaDetailPage() {
               Coba lagi
             </button>
           </div>
-        </div>
-      )}
+        )}
 
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-5 sm:py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div className="lg:col-span-2">
             {detail.centroid && detail.geometry ? (
               <DesaMapMini
@@ -229,8 +230,8 @@ export default function DesaDetailPage() {
           />
           <DesaKelembagaan data={detail.kelompokTani} />
         </div>
-      </main>
-    </div>
+      </section>
+    </DefaultLayout>
   );
 }
 
@@ -268,7 +269,8 @@ function NotFoundView({ kecSlug, namaSlug }: { kecSlug: string; namaSlug: string
     : "/";
 
   return (
-    <div className="min-h-[60vh] max-w-2xl mx-auto px-4 py-12">
+    <DefaultLayout>
+      <section className="mx-auto w-full max-w-2xl py-8">
       <h1 className="text-2xl font-bold text-slate-800 mb-2">Desa tidak ditemukan</h1>
       <p className="text-sm text-slate-600 mb-6">
         Desa <span className="font-medium">{namaSlug || "—"}</span> di Kecamatan{" "}
@@ -315,6 +317,7 @@ function NotFoundView({ kecSlug, namaSlug }: { kecSlug: string; namaSlug: string
         <Home className="w-4 h-4 mr-1.5" />
         Kembali ke Peta
       </Link>
-    </div>
+      </section>
+    </DefaultLayout>
   );
 }

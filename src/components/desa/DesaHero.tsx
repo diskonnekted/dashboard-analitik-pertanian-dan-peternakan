@@ -13,7 +13,7 @@ export function DesaHero({ desa }: Props) {
   return (
     <header
       className="
-        relative overflow-hidden
+        relative overflow-hidden rounded-xl shadow-sm
         bg-gradient-to-br from-emerald-700 via-emerald-800 to-teal-800
         text-white
       "
@@ -27,7 +27,7 @@ export function DesaHero({ desa }: Props) {
         "
       />
 
-      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-7">
+      <div className="relative px-5 sm:px-6 py-6 sm:py-7">
         {/* Breadcrumb */}
         <nav
           aria-label="breadcrumb"
