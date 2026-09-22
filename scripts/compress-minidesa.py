@@ -10,7 +10,7 @@ from PIL import Image
 SRC = r"I:\pertanian\pertanian-2\public\img\minidesa"
 DST = r"I:\pertanian\pertanian-2\public\img\minidesa-min"
 TARGET_W = 480
-TARGET_ASPECT = 16 / 9  # display popup ~205x112, rasio ~1.8 -> 16:9 pas
+TARGET_ASPECT = 4 / 3  # display popup ~205x154, rasio 4:3
 QUALITY = 70
 
 def center_crop(img: Image.Image, aspect: float) -> Image.Image:

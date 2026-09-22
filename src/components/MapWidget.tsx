@@ -513,7 +513,7 @@ const PopupContent = ({ desaName, kecName, data, taniData, st2023, kecVeg }: { d
               <img
                 src={fotoSrc}
                 alt={`Foto ilustrasi desa — ${DESA_FOTO_LABEL[fotoKategori]}`}
-                className="h-28 w-full rounded-lg object-cover shadow-sm"
+                className="aspect-[4/3] w-full rounded-lg object-cover shadow-sm"
                 loading="lazy"
               />
               <figcaption className="mt-1 text-[9px] leading-tight text-slate-400">
