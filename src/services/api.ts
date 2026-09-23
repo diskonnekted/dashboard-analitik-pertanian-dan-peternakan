@@ -1825,6 +1825,50 @@ const fetchDagingUnggasCsv = (): Promise<TernakFlow[]> =>
     "kg",
   );
 
+// Pemotongan RESMI di RPH Pemerintah — notulen Distankan KP 21 Sep 2026 (Submenu 4
+// Peternakan: "Lalu Lintas Ternak & Produksi Daging + RPH (resmi)").
+// 6 jenis — satu lebih banyak dari Luar RPH: ada kolom Kuda.
+const fetchRphPemerintahCsv = (): Promise<TernakFlow[]> =>
+  fetchTernakFlow(
+    "/14. Distankan KP/Jumlah Ternak yang Dipotong di RPH Pemerintah/Jumlah Ternak yang Dipotong di RPH Pemerintah CSV.csv",
+    "cache_rph_pemerintah_v1",
+    ["Sapi", "Kerbau", "Kuda", "Babi", "Kambing", "Domba"],
+    "ekor",
+  );
+
+// Produksi daging ternak besar/kecil per kecamatan (kg). Jalur utama MySQL
+// (/v1/peternakan/daging); CSV publik Distankan KP sebagai fallback
+// (nama folder sumber memang memakai spasi ganda: "Produksi Daging  Ternak ...").
+const fetchTernakDagingCsv = (): Promise<TernakFlow[]> =>
+  fetchTernakFlow(
+    "/14. Distankan KP/Produksi Daging  Ternak Menurut Kecamatan dan Jenis Ternak/Produksi Daging  Ternak Menurut Kecamatan dan Jenis Ternak CSV.csv",
+    "cache_daging_ternak_v1",
+    ["Sapi", "Kerbau", "Babi", "Kambing", "Domba"],
+    "kg",
+  );
+
+// Produksi telur per kecamatan (kg). Kolom CSV bernama "Ras Layer"/"Kampung" —
+// dinormalkan ke penamaan backend ternak_telur (Ayam Ras Layer / Ayam Kampung)
+// agar UI konsisten antara jalur MySQL dan fallback CSV.
+const fetchTernakTelurCsv = (): Promise<TernakFlow[]> =>
+  fetchTernakFlow(
+    "/14. Distankan KP/Produksi Telur Menurut Kecamatan dan Jenis Unggas/Produksi Telur Menurut Kecamatan dan Jenis Unggas CSV.csv",
+    "cache_telur_ternak_v1",
+    ["Ras Layer", "Kampung"],
+    "kg",
+  ).then((rows) =>
+    rows.map((r) => ({
+      ...r,
+      items: r.items.map((it) =>
+        it.jenis === "Ras Layer"
+          ? { ...it, jenis: "Ayam Ras Layer" }
+          : it.jenis === "Kampung"
+            ? { ...it, jenis: "Ayam Kampung" }
+            : it,
+      ),
+    })),
+  );
+
 // ---- Perikanan ----
 
 export interface PerikananBudidaya {
@@ -2698,6 +2742,7 @@ export const fetchUnggas = apiFirst<Unggas[]>("/v1/peternakan/unggas", fetchUngg
 export const fetchPemasukanTernak = apiFirst<TernakFlow[]>("/v1/peternakan/pemasukan", fetchPemasukanTernakCsv);
 export const fetchPengeluaranTernak = apiFirst<TernakFlow[]>("/v1/peternakan/pengeluaran", fetchPengeluaranTernakCsv);
 export const fetchLuarRPH = apiFirst<TernakFlow[]>("/v1/peternakan/luar-rph", fetchLuarRPHCsv);
+export const fetchRphPemerintah = apiFirst<TernakFlow[]>("/v1/peternakan/rph-pemerintah", fetchRphPemerintahCsv);
 export const fetchDagingUnggas = apiFirst<TernakFlow[]>("/v1/peternakan/daging-unggas", fetchDagingUnggasCsv);
 export const fetchPerikananBudidaya = apiFirst<PerikananBudidaya[]>("/v1/perikanan/budidaya", fetchPerikananBudidayaCsv);
 
@@ -2879,8 +2924,8 @@ export const fetchKomoditasUnggulan = createFetcher<KomoditasUnggulanRow>("/v1/k
 export const fetchNilaiEkonomi = createFetcher<NilaiEkonomiRow>("/v1/nilai-ekonomi");
 export const fetchLttKatam = createFetcher<LttKatamRow>("/v1/ltt-katam");
 
-// --- Nilai Ekonomi (halaman /nilai-ekonomi): daging ternak & telur per kecamatan ---
-// Bentuk TernakFlow (items + unit kg), konsisten dengan fetchDagingUnggas / fetchTernakSusuKulit.
-// Data hanya di MySQL (tidak ada CSV publik) -> fallback kosong; UI menampilkan EmptyBlock.
-export const fetchTernakDaging = apiFirst<TernakFlow[]>("/v1/peternakan/daging", async () => []);
-export const fetchTernakTelur = apiFirst<TernakFlow[]>("/v1/peternakan/telur", async () => []);
+// --- Daging ternak & telur per kecamatan (kg) — bentuk TernakFlow, konsisten dengan fetchDagingUnggas ---
+// Dipakai /livestock-flow (daging ternak), /livestock (produksi telur), dan
+// /nilai-ekonomi (keduanya). Jalur utama MySQL; fallback CSV publik Distankan KP.
+export const fetchTernakDaging = apiFirst<TernakFlow[]>("/v1/peternakan/daging", fetchTernakDagingCsv);
+export const fetchTernakTelur = apiFirst<TernakFlow[]>("/v1/peternakan/telur", fetchTernakTelurCsv);

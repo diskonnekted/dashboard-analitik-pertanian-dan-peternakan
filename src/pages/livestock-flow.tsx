@@ -2,10 +2,10 @@ import { useEffect, useState, useMemo } from "react";
 import DefaultLayout from "@/layouts/default";
 import { LoadingSpinner } from "@/components/ui";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { fetchPemasukanTernak, fetchPengeluaranTernak, fetchLuarRPH, fetchDagingUnggas, TernakFlow } from "@/services/api";
-import { Calendar, MapPin, FileSpreadsheet, ArrowDownToLine, ArrowUpFromLine, Slice, Drumstick } from "lucide-react";
+import { fetchPemasukanTernak, fetchPengeluaranTernak, fetchLuarRPH, fetchDagingUnggas, fetchRphPemerintah, fetchTernakDaging, TernakFlow } from "@/services/api";
+import { Calendar, MapPin, FileSpreadsheet, ArrowDownToLine, ArrowUpFromLine, Slice, Drumstick, Beef, Building2 } from "lucide-react";
 
-type Category = "pemasukan" | "pengeluaran" | "luar-rph" | "daging-unggas";
+type Category = "pemasukan" | "pengeluaran" | "rph-pemerintah" | "luar-rph" | "daging-ternak" | "daging-unggas";
 
 const CATEGORY_META: Record<Category, { label: string; sub: string; unit: string; icon: any; note: string }> = {
   "pemasukan": {
@@ -21,6 +21,20 @@ const CATEGORY_META: Record<Category, { label: string; sub: string; unit: string
     unit: "ekor",
     icon: ArrowUpFromLine,
     note: "Bersifat catatan transaksi: hanya kecamatan dengan aktivitas pengeluaran tercatat yang memiliki nilai (mayoritas di Kecamatan Madukara). Tanda \"–\" berarti tidak ada catatan pada sumber data, bukan nol.",
+  },
+  "rph-pemerintah": {
+    label: "Pemotongan RPH Pemerintah (Resmi)",
+    sub: "Ternak yang dipotong resmi di RPH Pemerintah",
+    unit: "ekor",
+    icon: Building2,
+    note: "Pemotongan ternak yang tercatat resmi di Rumah Potong Hewan (RPH) Pemerintah — melengkapi kategori \"Luar RPH\" yang bersifat perkiraan. Jenis mencakup Kuda (6 jenis: Sapi, Kerbau, Kuda, Babi, Kambing, Domba). Sumber: Distankan KP Banjarnegara (BPS) — notulen klien 21 Sep 2026 (Submenu 4 Peternakan: RPH resmi).",
+  },
+  "daging-ternak": {
+    label: "Produksi Daging Ternak",
+    sub: "Daging ternak besar & kecil per kecamatan",
+    unit: "kg",
+    icon: Beef,
+    note: "Produksi daging sapi, kerbau, kambing, domba, dan babi per kecamatan (kg). Untuk daging unggas, lihat kategori \"Daging Unggas\". Sumber: Distankan KP Banjarnegara (BPS).",
   },
   "luar-rph": {
     label: "Pemotongan di Luar RPH",
@@ -41,7 +55,9 @@ const CATEGORY_META: Record<Category, { label: string; sub: string; unit: string
 const CATEGORY_TAB: Record<Category, string> = {
   "pemasukan": "Pemasukan",
   "pengeluaran": "Pengeluaran",
+  "rph-pemerintah": "RPH Resmi",
   "luar-rph": "Luar RPH",
+  "daging-ternak": "Daging Ternak",
   "daging-unggas": "Daging Unggas",
 };
 
@@ -53,6 +69,8 @@ export default function LivestockFlowPage() {
   const [pengeluaran, setPengeluaran] = useState<TernakFlow[]>([]);
   const [luarRph, setLuarRph] = useState<TernakFlow[]>([]);
   const [dagingUnggas, setDagingUnggas] = useState<TernakFlow[]>([]);
+  const [rphPemerintah, setRphPemerintah] = useState<TernakFlow[]>([]);
+  const [dagingTernak, setDagingTernak] = useState<TernakFlow[]>([]);
 
   const [category, setCategory] = useState<Category>("pemasukan");
   const [selectedYear, setSelectedYear] = useState<string>("");
@@ -63,15 +81,19 @@ export default function LivestockFlowPage() {
   useEffect(() => {
     const load = async () => {
       try {
-        const [pm, pg, lr, du] = await Promise.all([
+        const [pm, pg, rp, lr, dt, du] = await Promise.all([
           fetchPemasukanTernak(),
           fetchPengeluaranTernak(),
+          fetchRphPemerintah(),
           fetchLuarRPH(),
+          fetchTernakDaging(),
           fetchDagingUnggas(),
         ]);
         setPemasukan(pm);
         setPengeluaran(pg);
+        setRphPemerintah(rp);
         setLuarRph(lr);
+        setDagingTernak(dt);
         setDagingUnggas(du);
       } catch (err) {
         console.error("Gagal memuat data lalu lintas ternak:", err);
@@ -85,9 +107,11 @@ export default function LivestockFlowPage() {
   const activeData = useMemo(() => {
     if (category === "pemasukan") return pemasukan;
     if (category === "pengeluaran") return pengeluaran;
+    if (category === "rph-pemerintah") return rphPemerintah;
     if (category === "luar-rph") return luarRph;
+    if (category === "daging-ternak") return dagingTernak;
     return dagingUnggas;
-  }, [category, pemasukan, pengeluaran, luarRph, dagingUnggas]);
+  }, [category, pemasukan, pengeluaran, rphPemerintah, luarRph, dagingTernak, dagingUnggas]);
 
   const jenisList = useMemo(() => {
     const names = new Set<string>();
@@ -351,9 +375,10 @@ export default function LivestockFlowPage() {
             Lalu Lintas Ternak & Produksi Daging
           </h1>
           <p className="text-sm text-slate-700 mt-1 max-w-3xl">
-            Data pemasukan ternak, pengeluaran ternak potong, perkiraan pemotongan
-            di luar Rumah Potong Hewan (RPH), serta produksi daging unggas
-            per kecamatan Kabupaten Banjarnegara.
+            Data pemasukan ternak, pengeluaran ternak potong, pemotongan resmi di
+            Rumah Potong Hewan (RPH) Pemerintah, perkiraan pemotongan di luar RPH,
+            serta produksi daging ternak dan daging unggas per kecamatan
+            Kabupaten Banjarnegara.
           </p>
         </header>
 

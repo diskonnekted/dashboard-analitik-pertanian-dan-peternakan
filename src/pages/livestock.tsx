@@ -1,8 +1,8 @@
 import { useEffect, useState, useMemo } from "react";
 import DefaultLayout from "@/layouts/default";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { fetchTernakKecil, fetchTernakBesar, fetchUnggas, TernakKecil, TernakBesar, Unggas } from "@/services/api";
-import { Beef, Squirrel, Bird, Calendar, MapPin, TrendingUp, Filter, AlertTriangle, ShieldCheck } from "lucide-react";
+import { fetchTernakKecil, fetchTernakBesar, fetchUnggas, fetchTernakTelur, TernakKecil, TernakBesar, Unggas, TernakFlow } from "@/services/api";
+import { Beef, Squirrel, Bird, Calendar, MapPin, TrendingUp, Filter, AlertTriangle, ShieldCheck, Egg } from "lucide-react";
 import { PageHeader, KpiCard, SectionCard, TrendPill, Badge, LoadingSpinner } from "@/components/ui";
 
 type Category = "besar" | "kecil" | "unggas";
@@ -36,6 +36,42 @@ export default function LivestockPage() {
     };
     loadAllData();
   }, []);
+
+  // ===== Produksi Telur (kg) — S1 "Produksi ternak: ... telur ..." (notulen Distankan KP 21 Sep) =====
+  const [telurData, setTelurData] = useState<TernakFlow[]>([]);
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const rows = await fetchTernakTelur();
+        if (mounted) setTelurData(rows);
+      } catch (err) {
+        console.error("Gagal memuat data produksi telur:", err);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const telurTahun = (() => {
+    const yrs = Array.from(new Set(telurData.map((r) => r.tahun).filter(Boolean))).sort();
+    return yrs.length > 0 ? yrs[yrs.length - 1] : "";
+  })();
+  const telurJenis = telurData.length > 0
+    ? Array.from(new Set(telurData.flatMap((r) => r.items.map((it) => it.jenis))))
+    : [];
+  const telurRows = telurData
+    .filter((r) => r.tahun === telurTahun)
+    .map((r) => ({
+      kecamatan: r.kecamatan,
+      byJenis: Object.fromEntries(r.items.map((it) => [it.jenis, Number(it.jumlah) || 0])),
+    }))
+    .sort((a, b) => a.kecamatan.localeCompare(b.kecamatan));
+  const telurTotal = telurRows.reduce(
+    (a, row) => a + telurJenis.reduce((x, j) => x + (row.byJenis[j] || 0), 0),
+    0
+  );
 
   const yearsList = useMemo(() => {
     const activeData = category === "besar" ? besarData : category === "kecil" ? kecilData : unggasData;
@@ -808,6 +844,66 @@ export default function LivestockPage() {
               </div>
             </SectionCard>
           </>
+        )}
+
+        {/* ===== Produksi Telur (kg) — S1 "Produksi ternak: ... telur ..." (notulen 21 Sep) ===== */}
+        {telurRows.length > 0 && (
+          <SectionCard
+            title={`Produksi Telur${telurTahun ? ` — ${telurTahun}` : ""} (kg)`}
+            icon={<Egg size={16} className="text-amber-600" />}
+            actions={<Badge tone="blue">Total {formatNum(telurTotal)} kg</Badge>}
+          >
+            <p className="text-xs text-slate-500 mb-4 leading-relaxed">
+              Produksi telur ayam kampung &amp; ayam ras layer per kecamatan. Sumber: Distankan KP Banjarnegara
+              (BPS) — jalur utama MySQL, fallback CSV. Telur puyuh &amp; itik akan menyusul melalui import dinas
+              (notulen Distankan KP 21 Sep 2026).
+            </p>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-sm border-collapse">
+                <thead>
+                  <tr className="border-b border-slate-200 bg-slate-50">
+                    <th className="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">No</th>
+                    <th className="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">Kecamatan</th>
+                    {telurJenis.map((j) => (
+                      <th key={j} className="px-3 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wide text-slate-500">{j}</th>
+                    ))}
+                    <th className="px-3 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wide text-slate-500">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {telurRows.map((row, idx) => (
+                    <tr key={row.kecamatan} className="border-b border-slate-100 hover:bg-slate-50">
+                      <td className="px-3 py-2.5 text-xs font-semibold text-slate-500">{idx + 1}</td>
+                      <td className="px-3 py-2.5 font-semibold">{row.kecamatan}</td>
+                      {telurJenis.map((j) => (
+                        <td key={j} className="px-3 py-2.5 text-right tabular-nums">{formatNum(row.byJenis[j] || 0)}</td>
+                      ))}
+                      <td className="px-3 py-2.5 font-bold text-right bg-slate-50 tabular-nums">
+                        {formatNum(telurJenis.reduce((a, j) => a + (row.byJenis[j] || 0), 0))}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+                {telurRows.length > 0 && (
+                  <tfoot>
+                    <tr className="border-t-2 border-slate-300 bg-slate-100 font-semibold">
+                      <td className="px-3 py-2.5 text-[11px] uppercase tracking-wide text-slate-600" colSpan={2}>
+                        Jumlah · Seluruh Kabupaten
+                      </td>
+                      {telurJenis.map((j) => (
+                        <td key={j} className="px-3 py-2.5 text-xs text-right tabular-nums">
+                          {formatNum(telurRows.reduce((a, row) => a + (row.byJenis[j] || 0), 0))}
+                        </td>
+                      ))}
+                      <td className="px-3 py-2.5 text-xs font-bold text-right bg-amber-50 tabular-nums">
+                        {formatNum(telurTotal)}
+                      </td>
+                    </tr>
+                  </tfoot>
+                )}
+              </table>
+            </div>
+          </SectionCard>
         )}
       </section>
     </DefaultLayout>

@@ -109,6 +109,15 @@ peternakanRouter.get(
   route(() => ternakFlow({ table: "ternak_pemotongan", where: "WHERE t.lokasi = ?", params: ["luar_rph"], labels: RPH_LABELS, valueCol: "jumlah_ekor", unit: "ekor" })),
 );
 
+/** GET /api/v1/peternakan/rph-pemerintah -> TernakFlow[] (ekor) - pemotongan RESMI di RPH Pemerintah.
+ *  Sumber: ternak_pemotongan lokasi='rph_pemerintah' (importer: "Jumlah Ternak yang Dipotong di RPH Pemerintah").
+ *  Notulen Distankan KP 21 Sep 2026 - Submenu 4 Peternakan: "Lalu Lintas Ternak & Produksi Daging + RPH (resmi)". */
+const RPH_PEMERINTAH_LABELS = ["Sapi", "Kerbau", "Kuda", "Babi", "Kambing", "Domba"];
+peternakanRouter.get(
+  "/rph-pemerintah",
+  route(() => ternakFlow({ table: "ternak_pemotongan", where: "WHERE t.lokasi = ?", params: ["rph_pemerintah"], labels: RPH_PEMERINTAH_LABELS, valueCol: "jumlah_ekor", unit: "ekor" })),
+);
+
 /** GET /api/v1/peternakan/daging-unggas -> TernakFlow[] (kg) */
 peternakanRouter.get(
   "/daging-unggas",
