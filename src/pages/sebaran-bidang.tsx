@@ -210,7 +210,7 @@ export default function SebaranBidangPage() {
                 key={k}
                 to={`/sebaran/${k}`}
                 className={[
-                  "inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors",
+                  "inline-flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-sm font-medium transition-colors",
                   aktif
                     ? "bg-emerald-600 text-white shadow-sm"
                     : "bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-emerald-50 hover:text-emerald-700",
