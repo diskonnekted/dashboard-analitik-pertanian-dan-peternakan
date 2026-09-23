@@ -35,6 +35,36 @@ ekonomiRouter.get(
   }),
 );
 
+/** GET /api/v1/ekonomi/nilai-ekonomi?bidang=pangan -> data resmi nilai ekonomi
+ *  input Dinas (tabel nilai_ekonomi_tahunan). triwulan null = tahunan; semester
+ *  (S1 = T1+T2, S2 = T3+T4) diturunkan klien. rows kosong -> frontend estimasi. */
+ekonomiRouter.get(
+  "/nilai-ekonomi",
+  route(async (req) => {
+    const VALID = ["pangan", "hortikultura", "perkebunan", "peternakan", "perikanan"];
+    const bidang = String(req.query.bidang ?? "");
+    if (!VALID.includes(bidang)) {
+      const err = new Error(`Parameter 'bidang' wajib salah satu dari: ${VALID.join(", ")}`);
+      err.status = 400;
+      throw err;
+    }
+    const rows = await q(
+      `SELECT komoditas, satuan, tahun, triwulan, volume,
+              harga_produsen AS hargaProdusen, nilai_rp AS nilaiRp
+         FROM nilai_ekonomi_tahunan
+        WHERE bidang = ?
+        ORDER BY tahun DESC, komoditas ASC, triwulan ASC`,
+      [bidang],
+    );
+    return {
+      bidang,
+      sumber: rows.length > 0 ? "resmi" : "kosong",
+      jumlah: rows.length,
+      rows,
+    };
+  }),
+);
+
 /** GET /api/v1/lumbung -> LumbungPangan[] (data tahun TERBARU per kecamatan) */
 lumbungRouter.get(
   "/",

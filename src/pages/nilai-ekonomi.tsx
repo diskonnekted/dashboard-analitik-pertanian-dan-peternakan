@@ -48,11 +48,13 @@ import { AKSES_HARGA_TANGGAL, KETERANGAN_PENCARIAN } from "@/data/harga-referens
 import {
   BIDANG_META,
   BIDANG_NILAI_EKONOMI,
+  fetchNilaiEkonomiResmi,
   loadEstimasiUnit,
   subtotalUnit,
   type BidangKey,
   type EstimasiUnit,
   type KelasEstimasi,
+  type NilaiEkonomiResmiRow,
 } from "@/services/nilai-ekonomi-estimasi";
 
 const IKON_BIDANG = { wheat: Wheat, carrot: Carrot, coffee: Coffee, beef: Beef } as const;
@@ -124,6 +126,8 @@ export default function NilaiEkonomiPage() {
   const [retry, setRetry] = useState(0);
   const [tahun, setTahun] = useState("");
   const [kecamatan, setKecamatan] = useState(SEMUA_KEC);
+  const [resmi, setResmi] = useState<NilaiEkonomiResmiRow[] | null>(null);
+  const [periode, setPeriode] = useState<"tahunan" | "triwulan" | "semester">("tahunan");
 
   useEffect(() => {
     if (!bidangKey) return;
@@ -151,9 +155,35 @@ export default function NilaiEkonomiPage() {
     };
   }, [bidangKey, retry]);
 
+  // Data resmi (tabel nilai_ekonomi_tahunan — input Dinas via dasbor admin,
+  // endpoint /api/v1/ekonomi/nilai-ekonomi). null = belum ada → halaman tetap
+  // mode estimasi harga referensi (pola auto-upgrade, keputusan notulen #4).
+  useEffect(() => {
+    if (!bidangKey) return;
+    let aktif = true;
+    setResmi(null);
+    setPeriode("tahunan");
+    fetchNilaiEkonomiResmi(bidangKey).then((rows) => {
+      if (aktif && rows) setResmi(rows);
+    });
+    return () => {
+      aktif = false;
+    };
+  }, [bidangKey, retry]);
+
+  const modeResmi = resmi != null && resmi.length > 0;
+  const adaTriwulanResmi = (resmi ?? []).some((r) => r.triwulan != null);
+
   const tahunList = useMemo(
-    () => [...new Set(units.map((u) => u.tahun))].sort((a, b) => b.localeCompare(a)),
-    [units],
+    () =>
+      [
+        ...new Set(
+          modeResmi
+            ? (resmi ?? []).map((r) => String(r.tahun))
+            : units.map((u) => u.tahun),
+        ),
+      ].sort((a, b) => b.localeCompare(a)),
+    [modeResmi, resmi, units],
   );
 
   useEffect(() => {
@@ -183,6 +213,128 @@ export default function NilaiEkonomiPage() {
           (kecamatan === SEMUA_KEC || u.kecamatan === kecamatan),
       ),
     [units, tahun, kecamatan],
+  );
+
+  /* ---------- derivasi data resmi (modeResmi) ---------- */
+  const resmiRowsTahun = useMemo(
+    () => (modeResmi ? (resmi ?? []).filter((r) => String(r.tahun) === tahun) : []),
+    [modeResmi, resmi, tahun],
+  );
+
+  const barisResmi = useMemo<BarisKomoditas[]>(() => {
+    if (!modeResmi || periode !== "tahunan") return [];
+    return resmiRowsTahun
+      .filter((r) => r.triwulan == null)
+      .map((r) => ({
+        komoditas: r.komoditas,
+        volume: r.volume,
+        satuanVolume: r.satuan,
+        konversiKg: 0,
+        hargaRp: r.hargaProdusen,
+        satuanHarga: r.satuan,
+        subtotalRp: r.nilaiRp,
+        terhitung: true,
+        kelas: "resmi-live" as KelasEstimasi,
+        sumber: "Tabel nilai_ekonomi_tahunan — input Dinas",
+      }))
+      .sort((a, b) => b.subtotalRp - a.subtotalRp);
+  }, [modeResmi, periode, resmiRowsTahun]);
+
+  // Triwulan langsung dari baris; Semester = gabungan (S1 = T1+T2, S2 = T3+T4).
+  const periodeGroups = useMemo(() => {
+    if (!modeResmi || periode === "tahunan") return [];
+    const rows = resmiRowsTahun.filter((r) => r.triwulan != null);
+    if (periode === "triwulan") {
+      return [1, 2, 3, 4].map((t) => ({
+        key: `T${t}`,
+        label: `Triwulan ${t}`,
+        rows: rows.filter((r) => r.triwulan === t),
+      }));
+    }
+    return [
+      {
+        key: "S1",
+        label: "Semester 1 (T1–T2)",
+        rows: rows.filter((r) => (r.triwulan ?? 0) <= 2),
+      },
+      {
+        key: "S2",
+        label: "Semester 2 (T3–T4)",
+        rows: rows.filter((r) => (r.triwulan ?? 0) >= 3),
+      },
+    ];
+  }, [modeResmi, periode, resmiRowsTahun]);
+
+  const periodeMatrix = useMemo(() => {
+    if (periodeGroups.length === 0) return [];
+    const semua = periodeGroups.flatMap((g) => g.rows);
+    return [...new Set(semua.map((r) => r.komoditas))]
+      .sort()
+      .map((k) => {
+        const sel = periodeGroups.map((g) => {
+          const rs = g.rows.filter((r) => r.komoditas === k);
+          return {
+            ada: rs.length > 0,
+            volume: rs.reduce((s, r) => s + r.volume, 0),
+            nilai: rs.reduce((s, r) => s + r.nilaiRp, 0),
+          };
+        });
+        return {
+          komoditas: k,
+          satuan: semua.find((r) => r.komoditas === k)?.satuan ?? "",
+          sel,
+          total: sel.reduce((s, x) => s + x.nilai, 0),
+        };
+      })
+      .sort((a, b) => b.total - a.total);
+  }, [periodeGroups]);
+
+  const totalResmiRp = useMemo(
+    () => barisResmi.reduce((s, b) => s + b.subtotalRp, 0),
+    [barisResmi],
+  );
+  const totalPeriodeRp = useMemo(
+    () =>
+      periodeGroups.reduce(
+        (s, g) => s + g.rows.reduce((t, r) => t + r.nilaiRp, 0),
+        0,
+      ),
+    [periodeGroups],
+  );
+  const teratasResmi = barisResmi[0];
+  const shareTeratasResmi =
+    teratasResmi && totalResmiRp > 0
+      ? (teratasResmi.subtotalRp / totalResmiRp) * 100
+      : 0;
+
+  const chartResmiK = useMemo(
+    () =>
+      barisResmi
+        .map((b) => ({ name: b.komoditas, nilai: b.subtotalRp / 1_000_000 }))
+        .sort((a, b) => b.nilai - a.nilai)
+        .slice(0, 12),
+    [barisResmi],
+  );
+  const chartResmiHarga = useMemo(
+    () =>
+      barisResmi
+        .filter((b) => b.hargaRp != null)
+        .map((b) => ({
+          name: b.komoditas,
+          harga: (b.hargaRp ?? 0) / 1_000_000,
+          satuan: `/${b.satuanHarga}`,
+        }))
+        .sort((a, b) => b.harga - a.harga)
+        .slice(0, 12),
+    [barisResmi],
+  );
+  const chartPeriode = useMemo(
+    () =>
+      periodeGroups.map((g) => ({
+        name: g.label,
+        nilai: g.rows.reduce((s, r) => s + r.nilaiRp, 0) / 1_000_000,
+      })),
+    [periodeGroups],
   );
 
   const barisKomoditas = useMemo<BarisKomoditas[]>(() => {
@@ -249,6 +401,7 @@ export default function NilaiEkonomiPage() {
   const meta = BIDANG_META[bidangKey];
   const Ikon = IKON_BIDANG[meta.ikon];
   const namaSeri = "Estimasi Nilai (juta Rp)";
+  const namaSeriResmi = "Nilai resmi (juta Rp)";
   const cakupanKec =
     kecamatan === SEMUA_KEC ? `${perKecamatan.length} kecamatan` : kecamatan;
 
@@ -262,33 +415,56 @@ export default function NilaiEkonomiPage() {
         />
 
         <Toolbar>
-          {/* Periode triwulan/semester — placeholder menunggu input data dinas
-              (notulen Distankan KP 21 Sep 2026): struktur filter sudah disiapkan,
-              opsi aktif otomatis begitu data periode tersedia. */}
+          {/* Periode triwulan/semester (notulen Distankan KP 21 Sep 2026):
+              aktif otomatis begitu baris triwulan tersedia di tabel
+              nilai_ekonomi_tahunan (input Dinas via dasbor admin). */}
           <ToolbarField label="Periode">
             <div
               className="flex h-9 overflow-hidden rounded-lg border border-slate-200"
-              title="Triwulan & Semester akan aktif setelah data dinas diimpor (notulen Distankan KP 21 Sep 2026)"
+              title={
+                modeResmi && adaTriwulanResmi
+                  ? "Granularitas periode — data resmi input Dinas (Semester = T1+T2 / T3+T4)"
+                  : "Triwulan & Semester aktif otomatis setelah data dinas diimpor (dasbor admin → domain Ekonomi → sheet Nilai Ekonomi)"
+              }
             >
               <button
                 type="button"
-                className="border-r border-slate-200 bg-blue-800 px-3 text-xs font-semibold uppercase tracking-wide text-white"
+                onClick={() => setPeriode("tahunan")}
+                className={
+                  periode === "tahunan"
+                    ? "border-r border-slate-200 bg-blue-800 px-3 text-xs font-semibold uppercase tracking-wide text-white"
+                    : "border-r border-slate-200 px-3 text-xs font-semibold uppercase tracking-wide text-slate-600 hover:bg-slate-50"
+                }
               >
                 Tahunan
               </button>
               <button
                 type="button"
-                disabled
+                disabled={!modeResmi || !adaTriwulanResmi}
                 title="Menunggu data triwulan dari Dinas"
-                className="cursor-not-allowed border-r border-slate-200 bg-slate-50 px-3 text-xs font-semibold uppercase tracking-wide text-slate-400"
+                onClick={() => setPeriode("triwulan")}
+                className={
+                  periode === "triwulan"
+                    ? "border-r border-slate-200 bg-blue-800 px-3 text-xs font-semibold uppercase tracking-wide text-white"
+                    : !modeResmi || !adaTriwulanResmi
+                      ? "cursor-not-allowed border-r border-slate-200 bg-slate-50 px-3 text-xs font-semibold uppercase tracking-wide text-slate-400"
+                      : "border-r border-slate-200 px-3 text-xs font-semibold uppercase tracking-wide text-slate-600 hover:bg-slate-50"
+                }
               >
                 Triwulan
               </button>
               <button
                 type="button"
-                disabled
-                title="Menunggu data semester dari Dinas"
-                className="cursor-not-allowed bg-slate-50 px-3 text-xs font-semibold uppercase tracking-wide text-slate-400"
+                disabled={!modeResmi || !adaTriwulanResmi}
+                title="Menunggu data semester dari Dinas (S1 = T1+T2, S2 = T3+T4)"
+                onClick={() => setPeriode("semester")}
+                className={
+                  periode === "semester"
+                    ? "bg-blue-800 px-3 text-xs font-semibold uppercase tracking-wide text-white"
+                    : !modeResmi || !adaTriwulanResmi
+                      ? "cursor-not-allowed bg-slate-50 px-3 text-xs font-semibold uppercase tracking-wide text-slate-400"
+                      : "px-3 text-xs font-semibold uppercase tracking-wide text-slate-600 hover:bg-slate-50"
+                }
               >
                 Semester
               </button>
@@ -309,30 +485,327 @@ export default function NilaiEkonomiPage() {
               ))}
             </select>
           </ToolbarField>
-          <ToolbarField label="Kecamatan">
-            <select
-              value={kecamatan}
-              onChange={(e) => setKecamatan(e.target.value)}
-              disabled={kecamatanList.length <= 1}
-              className="h-9 w-56 rounded-lg border border-slate-200 bg-white px-2.5 text-sm font-medium text-slate-700 focus:border-blue-400 focus:outline-none disabled:bg-slate-50 disabled:text-slate-400"
-            >
-              {kecamatanList.map((k) => (
-                <option key={k} value={k}>
-                  {k}
-                </option>
-              ))}
-            </select>
-          </ToolbarField>
-          {units.length > 0 && (
+          {modeResmi ? (
+            <ToolbarField label="Cakupan">
+              <span className="inline-flex h-9 items-center rounded-lg bg-emerald-50 px-3 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-200">
+                Kabupaten · data resmi Dinas
+              </span>
+            </ToolbarField>
+          ) : (
+            <ToolbarField label="Kecamatan">
+              <select
+                value={kecamatan}
+                onChange={(e) => setKecamatan(e.target.value)}
+                disabled={kecamatanList.length <= 1}
+                className="h-9 w-56 rounded-lg border border-slate-200 bg-white px-2.5 text-sm font-medium text-slate-700 focus:border-blue-400 focus:outline-none disabled:bg-slate-50 disabled:text-slate-400"
+              >
+                {kecamatanList.map((k) => (
+                  <option key={k} value={k}>
+                    {k}
+                  </option>
+                ))}
+              </select>
+            </ToolbarField>
+          )}
+          {(modeResmi
+            ? periode === "tahunan"
+              ? barisResmi.length > 0
+              : periodeMatrix.length > 0
+            : units.length > 0) && (
             <p className="ml-auto self-center text-xs font-mono text-slate-400">
-              {barisKomoditas.length} komoditas · {cakupanKec}
-              {tahun ? ` · ${tahun}` : ""}
+              {modeResmi
+                ? `${
+                    periode === "tahunan" ? barisResmi.length : periodeMatrix.length
+                  } komoditas · kabupaten (resmi)${tahun ? ` · ${tahun}` : ""}${
+                    periode !== "tahunan" ? ` · ${periode}` : ""
+                  }`
+                : `${barisKomoditas.length} komoditas · ${cakupanKec}${
+                    tahun ? ` · ${tahun}` : ""
+                  }`}
             </p>
           )}
         </Toolbar>
 
         {loading ? (
           <LoadingSpinner label="Memuat dataset produksi…" />
+        ) : modeResmi ? (
+          <>
+            {/* MODE RESMI — data input Dinas (tabel nilai_ekonomi_tahunan).
+                Estimasi harga referensi tidak dipakai selama data resmi tersedia. */}
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+              <KpiCard
+                icon={<DollarSign className="h-6 w-6" aria-hidden />}
+                label={
+                  periode === "tahunan"
+                    ? "Total Nilai (Resmi)"
+                    : `Total Nilai — ${periode === "triwulan" ? "Triwulan" : "Semester"}`
+                }
+                value={fmtRp(periode === "tahunan" ? totalResmiRp : totalPeriodeRp)}
+                hint={`input Dinas · kabupaten${tahun ? ` · ${tahun}` : ""}`}
+                color="bg-emerald-50 text-emerald-600"
+              />
+              <KpiCard
+                icon={<Trophy className="h-6 w-6" aria-hidden />}
+                label="Kontributor Terbesar"
+                value={
+                  periode === "tahunan"
+                    ? (teratasResmi?.komoditas ?? "—")
+                    : (periodeMatrix[0]?.komoditas ?? "—")
+                }
+                unit={
+                  periode === "tahunan"
+                    ? teratasResmi
+                      ? fmtRp(teratasResmi.subtotalRp)
+                      : undefined
+                    : periodeMatrix[0]
+                      ? fmtRp(periodeMatrix[0].total)
+                      : undefined
+                }
+                hint={`porsi ${(
+                  periode === "tahunan" ? shareTeratasResmi : totalPeriodeRp > 0 && periodeMatrix[0]
+                    ? (periodeMatrix[0].total / totalPeriodeRp) * 100
+                    : 0
+                ).toLocaleString("id-ID", { maximumFractionDigits: 1 })}% dari total`}
+                color="bg-violet-50 text-violet-600"
+              />
+              <KpiCard
+                icon={<BadgeCheck className="h-6 w-6" aria-hidden />}
+                label="Sumber Data"
+                value="Resmi · Dinas"
+                unit={
+                  periode === "tahunan"
+                    ? `${barisResmi.length} komoditas`
+                    : `${periodeMatrix.length} komoditas`
+                }
+                hint={`tabel nilai_ekonomi_tahunan${periode !== "tahunan" ? ` · mode ${periode}` : ""}`}
+                color="bg-blue-50 text-blue-700"
+              />
+            </div>
+
+            {periode === "tahunan" ? (
+              <>
+                <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                  <SectionCard
+                    title="Kontribusi komoditas (juta Rp)"
+                    icon={<Trophy className="h-4 w-4" aria-hidden />}
+                  >
+                    <div className="h-72">
+                      <ResponsiveContainer>
+                        <BarChart
+                          data={chartResmiK}
+                          layout="vertical"
+                          margin={{ left: 8, right: 24, top: 8, bottom: 8 }}
+                        >
+                          <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+                          <XAxis
+                            type="number"
+                            tickFormatter={(v) => `${v} jt`}
+                            tick={{ fontSize: 11 }}
+                          />
+                          <YAxis
+                            type="category"
+                            dataKey="name"
+                            width={110}
+                            tick={{ fontSize: 11 }}
+                          />
+                          <Tooltip
+                            formatter={(v) => [fmtRp(Number(v ?? 0) * 1_000_000), namaSeriResmi]}
+                          />
+                          <Bar dataKey="nilai" name={namaSeriResmi} radius={[0, 4, 4, 0]}>
+                            {chartResmiK.map((_, i) => (
+                              <Cell key={i} fill={PALET[i % PALET.length]} />
+                            ))}
+                          </Bar>
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </SectionCard>
+                  <SectionCard
+                    title="Harga produsen per komoditas (juta Rp)"
+                    icon={<BadgeCheck className="h-4 w-4" aria-hidden />}
+                  >
+                    <div className="h-72">
+                      <ResponsiveContainer>
+                        <BarChart
+                          data={chartResmiHarga}
+                          layout="vertical"
+                          margin={{ left: 8, right: 24, top: 8, bottom: 8 }}
+                        >
+                          <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+                          <XAxis
+                            type="number"
+                            tickFormatter={(v) => `${v} jt`}
+                            tick={{ fontSize: 11 }}
+                          />
+                          <YAxis
+                            type="category"
+                            dataKey="name"
+                            width={110}
+                            tick={{ fontSize: 11 }}
+                          />
+                          <Tooltip
+                            formatter={(v) => [fmtRp(Number(v ?? 0) * 1_000_000), "Harga produsen"]}
+                          />
+                          <Bar dataKey="harga" name="Harga produsen (juta Rp)" radius={[0, 4, 4, 0]}>
+                            {chartResmiHarga.map((_, i) => (
+                              <Cell key={i} fill={PALET[i % PALET.length]} />
+                            ))}
+                          </Bar>
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </SectionCard>
+                </div>
+
+                <SectionCard
+                  title={`Rincian resmi — kabupaten${tahun ? ` · ${tahun}` : ""}`}
+                  icon={<DollarSign className="h-4 w-4" aria-hidden />}
+                  bodyClassName="p-0"
+                >
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b border-slate-200 text-left text-xs uppercase tracking-wide text-slate-500">
+                          <th className="px-4 py-3 font-semibold">Komoditas</th>
+                          <th className="px-4 py-3 text-right font-semibold">Volume</th>
+                          <th className="px-4 py-3 text-right font-semibold">Harga Produsen</th>
+                          <th className="px-4 py-3 text-right font-semibold">Nilai (Rp)</th>
+                          <th className="px-4 py-3 font-semibold">Sumber</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {barisResmi.map((b) => (
+                          <tr key={b.komoditas} className="border-b border-slate-100 last:border-0 hover:bg-slate-50">
+                            <td className="px-4 py-3 font-medium text-slate-700">{b.komoditas}</td>
+                            <td className="px-4 py-3 text-right tabular-nums text-slate-600">
+                              {fmtNum(b.volume)} {b.satuanVolume}
+                            </td>
+                            <td className="px-4 py-3 text-right tabular-nums text-slate-600">
+                              {fmtRp(b.hargaRp ?? 0)}/{b.satuanHarga}
+                            </td>
+                            <td className="px-4 py-3 text-right font-semibold tabular-nums text-slate-800">
+                              {fmtRp(b.subtotalRp)}
+                            </td>
+                            <td className="px-4 py-3">
+                              <Badge tone="emerald">Resmi · input Dinas</Badge>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                      <tfoot>
+                        <tr className="border-t-2 border-slate-200 bg-slate-50 text-sm font-semibold text-slate-700">
+                          <td className="px-4 py-3">Jumlah total</td>
+                          <td className="px-4 py-3 text-right tabular-nums">
+                            {fmtNum(barisResmi.reduce((s, b) => s + b.volume, 0))}{" "}
+                            {barisResmi[0]?.satuanVolume ?? ""}
+                          </td>
+                          <td className="px-4 py-3 text-right text-slate-400">—</td>
+                          <td className="px-4 py-3 text-right tabular-nums">{fmtRp(totalResmiRp)}</td>
+                          <td className="px-4 py-3" />
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+                </SectionCard>
+              </>
+            ) : (
+              <>
+                <SectionCard
+                  title={`Nilai per ${periode === "triwulan" ? "triwulan" : "semester"} (juta Rp)${tahun ? ` — ${tahun}` : ""}`}
+                  icon={<DollarSign className="h-4 w-4" aria-hidden />}
+                >
+                  <div className="h-64">
+                    <ResponsiveContainer>
+                      <BarChart data={chartPeriode} margin={{ left: 8, right: 16, top: 8, bottom: 8 }}>
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                        <XAxis
+                          dataKey="name"
+                          tick={{ fontSize: 11 }}
+                          interval={0}
+                          angle={-20}
+                          textAnchor="end"
+                          height={48}
+                        />
+                        <YAxis
+                          tickFormatter={(v) => `${v} jt`}
+                          tick={{ fontSize: 11 }}
+                          width={64}
+                        />
+                        <Tooltip
+                          formatter={(v) => [fmtRp(Number(v ?? 0) * 1_000_000), namaSeriResmi]}
+                        />
+                        <Bar dataKey="nilai" name={namaSeriResmi} radius={[4, 4, 0, 0]}>
+                          {chartPeriode.map((_, i) => (
+                            <Cell key={i} fill={PALET[i % PALET.length]} />
+                          ))}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <p className="mt-3 text-xs text-slate-500">
+                    {periode === "semester"
+                      ? "Semester diturunkan dari gabungan triwulan (S1 = T1+T2, S2 = T3+T4)."
+                      : "Angka per triwulan sesuai input Dinas pada sheet Nilai Ekonomi."}
+                  </p>
+                </SectionCard>
+
+                <SectionCard
+                  title={`Matriks komoditas × ${periode === "triwulan" ? "triwulan" : "semester"}${tahun ? ` — ${tahun}` : ""}`}
+                  icon={<Trophy className="h-4 w-4" aria-hidden />}
+                  bodyClassName="p-0"
+                >
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b border-slate-200 text-left text-xs uppercase tracking-wide text-slate-500">
+                          <th className="px-4 py-3 font-semibold">Komoditas</th>
+                          {periodeGroups.map((g) => (
+                            <th key={g.key} className="px-4 py-3 text-right font-semibold">
+                              {g.label}
+                            </th>
+                          ))}
+                          <th className="px-4 py-3 text-right font-semibold">Total (Rp)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {periodeMatrix.map((m) => (
+                          <tr
+                            key={m.komoditas}
+                            className="border-b border-slate-100 last:border-0 hover:bg-slate-50"
+                          >
+                            <td className="px-4 py-3 font-medium text-slate-700">{m.komoditas}</td>
+                            {m.sel.map((s, i) => (
+                              <td
+                                key={i}
+                                className="px-4 py-3 text-right tabular-nums text-slate-600"
+                                title={s.ada ? `${fmtNum(s.volume)} ${m.satuan}` : undefined}
+                              >
+                                {s.ada ? fmtRp(s.nilai) : "—"}
+                              </td>
+                            ))}
+                            <td className="px-4 py-3 text-right font-semibold tabular-nums text-slate-800">
+                              {fmtRp(m.total)}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                      <tfoot>
+                        <tr className="border-t-2 border-slate-200 bg-slate-50 text-sm font-semibold text-slate-700">
+                          <td className="px-4 py-3">Jumlah per periode</td>
+                          {chartPeriode.map((c) => (
+                            <td key={c.name} className="px-4 py-3 text-right tabular-nums">
+                              {fmtRp(c.nilai * 1_000_000)}
+                            </td>
+                          ))}
+                          <td className="px-4 py-3 text-right tabular-nums">{fmtRp(totalPeriodeRp)}</td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+                </SectionCard>
+              </>
+            )}
+          </>
         ) : gagal ? (
           <EmptyStatePlaceholder
             title="Dataset tidak dapat dimuat"
@@ -608,11 +1081,23 @@ export default function NilaiEkonomiPage() {
               belum terverifikasi — perlu verifikasi lapangan.
             </li>
             <li>{KETERANGAN_PENCARIAN}</li>
-            <li>
-              Struktur halaman siap menyerap dataset resmi /api/v1/nilai-ekonomi (tabel
-              nilai_ekonomi_tahunan) begitu tersedia — estimasi harga referensi akan diganti nilai
-              aktual.
-            </li>
+            {modeResmi ? (
+              <li className="font-semibold text-emerald-700">
+                Mode RESMI aktif — data dari tabel nilai_ekonomi_tahunan (input Dinas
+                via dasbor admin; endpoint /api/v1/ekonomi/nilai-ekonomi). Estimasi
+                harga referensi tidak dipakai untuk bidang ini.
+                {adaTriwulanResmi
+                  ? " Data triwulan tersedia — Semester = gabungan T1+T2 / T3+T4."
+                  : " Tombol Triwulan/Semester aktif otomatis setelah baris triwulan diimpor."}
+              </li>
+            ) : (
+              <li>
+                Struktur halaman siap menyerap dataset resmi /api/v1/ekonomi/nilai-ekonomi
+                (tabel nilai_ekonomi_tahunan — input Dinas via dasbor admin, domain
+                Ekonomi, sheet Nilai Ekonomi) begitu tersedia — estimasi harga referensi
+                akan diganti nilai aktual.
+              </li>
+            )}
           </ul>
         </SectionCard>
       </div>

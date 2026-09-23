@@ -50,6 +50,8 @@ const LABELS = {
   rtup: "RTUP", rt_perikanan: "RT Perikanan",
   rt_perikanan_budidaya: "RT Perikanan Budidaya", rt_perikanan_tangkap: "RT Perikanan Tangkap",
   nilai: "Nilai", satuan: "Satuan",
+  bidang: "Bidang", volume: "Volume", harga_produsen: "Harga Produsen (Rp)",
+  triwulan: "Triwulan (1-4; kosong = tahunan)",
 };
 
 // Suffix kolom → satuan pada label
@@ -139,10 +141,17 @@ export const DOMAINS = {
   },
   ekonomi: {
     label: "Ekonomi",
-    desc: "Inflasi tahunan (wilayah) dan jumlah pasar per jenis.",
+    desc: "Inflasi tahunan, jumlah pasar, dan nilai ekonomi bidang (input Dinas — tahunan/triwulan; semester = gabungan triwulan).",
     sheets: [
       { table: "inflasi", name: "Inflasi", kecamatan: false, key: ["wilayah", "tahun"] },
       { table: "pasar", name: "Pasar", kecamatan: false, key: ["jenis", "tahun"] },
+      {
+        table: "nilai_ekonomi_tahunan",
+        name: "Nilai Ekonomi",
+        kecamatan: false,
+        key: ["bidang", "komoditas", "tahun", "triwulan"],
+        enums: { triwulan: ["1", "2", "3", "4"] },
+      },
     ],
   },
   kelembagaan: {
@@ -217,7 +226,8 @@ const colCache = new Map(); // table -> column meta (dari information_schema)
 async function loadColumns(table) {
   if (colCache.has(table)) return colCache.get(table);
   const rows = await q(
-    `SELECT column_name, data_type, column_type, is_nullable, column_default
+    `SELECT column_name, data_type, column_type, is_nullable, column_default,
+            generation_expression
      FROM information_schema.columns
      WHERE table_schema = DATABASE() AND table_name = ?
      ORDER BY ordinal_position`,
@@ -254,7 +264,7 @@ export async function loadDomain(domainKey) {
   const sheets = await Promise.all(
     domain.sheets.map(async (s) => {
       const colsRaw = (await loadColumns(s.table)).filter(
-        (c) => !SKIP_COLS.has(c.column_name) && !SKIP_TYPES.has(c.data_type)
+        (c) => !SKIP_COLS.has(c.column_name) && !SKIP_TYPES.has(c.data_type) && !c.generation_expression
       );
       const hasSumber = (await loadColumns(s.table)).some((c) => c.column_name === "sumber");
       const hasDesaNorm = (await loadColumns(s.table)).some((c) => c.column_name === "desa_norm");

@@ -735,22 +735,28 @@ CREATE TABLE komoditas_unggulan (
   KEY idx_komoditas_kec (kecamatan)
 ) ENGINE=InnoDB COMMENT='Komoditas unggulan dan varietas per kecamatan';
 
--- 3. Nilai ekonomi (bidang 2.2)
+-- 3. Nilai ekonomi (bidang 2.2) — input dinas via dasbor admin (domain "ekonomi",
+--     sheet "Nilai Ekonomi"); estimasi frontend (harga referensi) hanya fallback
+--     saat tabel kosong. nilai_rp = volume × harga_produsen (generated — menegakkan
+--     spesifikasi master S3 "Rp = Vol × Harga Produsen"). triwulan NULL = tahunan;
+--     semester diturunkan dari gabungan triwulan (S1 = T1+T2, S2 = T3+T4).
 DROP TABLE IF EXISTS nilai_ekonomi_tahunan;
 CREATE TABLE nilai_ekonomi_tahunan (
-  id           INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  bidang       ENUM('Tanaman Pangan','Hortikultura','Perkebunan','Peternakan','Perikanan') NOT NULL,
-  komoditas    VARCHAR(100),
-  satuan       VARCHAR(20) NOT NULL,
-  tahun        SMALLINT UNSIGNED,
-  triwulan     TINYINT UNSIGNED,
-  volume       DECIMAL(12,3),
-  nilai_rupiah DECIMAL(15,2) UNSIGNED,
-  harga_per_unit DECIMAL(12,2),
-  updated_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  id             INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  bidang         ENUM('pangan','hortikultura','perkebunan','peternakan','perikanan') NOT NULL,
+  komoditas      VARCHAR(100) NOT NULL,
+  satuan         VARCHAR(20) NOT NULL,
+  tahun          SMALLINT UNSIGNED NOT NULL,
+  triwulan       TINYINT UNSIGNED NULL, -- 1-4; NULL = tahunan
+  volume         DECIMAL(14,2) NOT NULL,
+  harga_produsen DECIMAL(14,2) NOT NULL,
+  nilai_rp       DECIMAL(16,2) GENERATED ALWAYS AS (volume * harga_produsen) STORED,
+  sumber         VARCHAR(100) NOT NULL DEFAULT 'manual',
+  created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   KEY idx_ekonomi_bidang (bidang, tahun),
   KEY idx_ekonomi_tahun (tahun)
-) ENGINE=InnoDB COMMENT='Nilai ekonomi agregat per bidang/tahun/triwulan';
+) ENGINE=InnoDB COMMENT='Nilai ekonomi per bidang/komoditas/tahun/triwulan (input dinas; Rp = volume x harga_produsen)';
 
 -- 4. LTT + Kalender tanam (bidang 1.3/6.4)
 DROP TABLE IF EXISTS ltt_katam;

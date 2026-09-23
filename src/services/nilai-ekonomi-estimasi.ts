@@ -13,6 +13,7 @@
  */
 
 import {
+  API_BASE,
   fetchPadiSawahLadang,
   fetchJagungUbiKayu,
   fetchKacangKedelai,
@@ -362,4 +363,39 @@ export async function loadEstimasiUnit(bidang: BidangKey): Promise<EstimasiUnit[
   // bidang perikanan tidak diestimasi di sini — nilai produksi aktual
   // perikanan ditampilkan halaman kanonik /economic-value (budidaya+tangkap).
   return units;
+}
+
+/* ---------- data resmi (tabel nilai_ekonomi_tahunan) ---------- */
+
+export interface NilaiEkonomiResmiRow {
+  komoditas: string;
+  satuan: string;
+  tahun: number;
+  /** 1-4; null = baris tahunan */
+  triwulan: number | null;
+  volume: number;
+  hargaProdusen: number;
+  nilaiRp: number;
+}
+
+/**
+ * Data resmi nilai ekonomi dari backend (tabel nilai_ekonomi_tahunan —
+ * input Dinas via dasbor admin; endpoint /api/v1/ekonomi/nilai-ekonomi).
+ * Return null bila endpoint gagal / tabel kosong → halaman tetap memakai
+ * mode estimasi harga referensi (pola auto-upgrade, keputusan notulen #4).
+ * Semester diturunkan klien: S1 = T1+T2, S2 = T3+T4.
+ */
+export async function fetchNilaiEkonomiResmi(
+  bidang: BidangKey,
+): Promise<NilaiEkonomiResmiRow[] | null> {
+  try {
+    const res = await fetch(
+      `${API_BASE}/v1/ekonomi/nilai-ekonomi?bidang=${encodeURIComponent(bidang)}`,
+    );
+    if (!res.ok) return null;
+    const body = (await res.json()) as { rows?: NilaiEkonomiResmiRow[] };
+    return Array.isArray(body.rows) && body.rows.length > 0 ? body.rows : null;
+  } catch {
+    return null;
+  }
 }

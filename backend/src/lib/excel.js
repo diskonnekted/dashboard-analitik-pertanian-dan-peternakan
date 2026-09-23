@@ -260,7 +260,13 @@ function keyWhere(spec, values) {
   for (const f of spec.key) {
     if (f === "kecamatan") { clauses.push("kecamatan_id = ?"); params.push(values.kecamatan_id); }
     else if (f === "desa") { clauses.push("desa_norm = ?"); params.push(normDesa(values.desa)); }
-    else { clauses.push(`\`${f}\` = ?`); params.push(values[f]); }
+    else {
+      // NULL-safe match untuk kolom kunci yang boleh kosong (mis. triwulan NULL =
+      // baris tahunan): `= NULL` tidak pernah cocok sehingga upsert akan menduplikasi.
+      const isNull = values[f] === null || values[f] === undefined;
+      clauses.push(`\`${f}\` ${isNull ? "<=>" : "="} ?`);
+      params.push(isNull ? null : values[f]);
+    }
   }
   return { where: clauses.join(" AND "), params };
 }
