@@ -66,6 +66,16 @@ const BENIH_TONE: Record<string, "emerald" | "amber" | "red" | "slate"> = {
   "Tidak ada": "slate",
 };
 
+/* Komoditas tambahan Bidang Perkebunan (notulen Distankan KP 21 Sep 2026;
+   keputusan klien 23 Sep: talas & porang = dua komoditas terpisah). Kartu
+   placeholder di bawah otomatis hilang begitu data dinas memuat komoditas
+   dengan nama yang sama (pola placeholder auto-upgrade). */
+const KOMODITAS_DINAS: { komoditas: string; deskripsi: string }[] = [
+  { komoditas: "Kelapa Deres", deskripsi: "Nira kelapa dalam diolah menjadi gula semut/gula aren — produk hilirisasi khas kawasan Dieng." },
+  { komoditas: "Talas", deskripsi: "Umbi talas sebagai komoditas non-rilis BPS; sentra kawasan Dieng." },
+  { komoditas: "Porang", deskripsi: "Umbi porang untuk bahan baku chip kering / tepung glukomanan berorientasi ekspor." },
+];
+
 /* ------------------------------------------------------------------
    DATA CONTOH (placeholder) — struktur & satuan identik dengan data
    resmi yang akan datang. Produksi (Ton) = luas (Ha) × produktivitas
@@ -239,6 +249,38 @@ export default function KomoditasUnggulanPage() {
             </p>
           </div>
         )}
+
+        {/* Komoditas tambahan Perkebunan — placeholder menunggu import dinas.
+            Kartu otomatis tergantikan data resmi begitu komoditas bernama sama
+            muncul di basis data. */}
+        {(() => {
+          const menunggu = KOMODITAS_DINAS.filter(
+            (k) => !baseRows.some((r) => r.bidang === "Perkebunan" && r.komoditas === k.komoditas),
+          );
+          if (menunggu.length === 0) return null;
+          return (
+            <div className="grid gap-4 rounded-lg border border-dashed border-amber-300 bg-amber-50/60 p-5 md:grid-cols-3">
+              {menunggu.map((k) => (
+                <div key={k.komoditas} className="flex flex-col gap-2 rounded-lg border border-amber-200 bg-white/70 p-4">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="flex items-center gap-1.5 font-mono text-xs font-bold uppercase tracking-wide text-amber-800">
+                      <Sprout className="h-4 w-4" aria-hidden />
+                      Perkebunan
+                    </span>
+                    <Badge tone="amber">Menunggu Data Dinas</Badge>
+                  </div>
+                  <p className="text-lg font-bold text-slate-900">{k.komoditas}</p>
+                  <p className="text-sm leading-relaxed text-slate-600">{k.deskripsi}</p>
+                </div>
+              ))}
+              <p className="text-xs leading-relaxed text-amber-800 md:col-span-3">
+                Tiga komoditas tambahan Bidang Perkebunan (notulen Distankan KP 21 Sep 2026 — talas &amp; porang
+                sebagai dua komoditas terpisah) akan diimpor dari Dinas; kartu di atas otomatis tergantikan
+                data resmi begitu tersedia di basis data.
+              </p>
+            </div>
+          );
+        })()}
 
         {/* ---------- Filter ---------- */}
         <Toolbar>

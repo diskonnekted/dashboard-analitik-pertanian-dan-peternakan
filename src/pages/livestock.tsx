@@ -350,6 +350,18 @@ export default function LivestockPage() {
           actions={<Badge tone="blue">Tahun {selectedYear}</Badge>}
         />
 
+        {/* Jenis ternak tambahan — placeholder menunggu data dinas (keputusan klien 23 Sep 2026) */}
+        <div className="flex items-start gap-3 rounded-lg border border-amber-300 bg-amber-50 p-4 text-amber-800">
+          <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0" aria-hidden />
+          <p className="text-sm leading-relaxed">
+            <span className="font-semibold">Jenis ternak tambahan — menunggu data dinas.</span>{" "}
+            <span className="font-semibold">Domba Batur</span> (kategori Ternak Kecil, entri terpisah dari Domba
+            lokal) dan <span className="font-semibold">Puyuh</span> (kategori Unggas) akan tampil otomatis pada
+            kategori terkait setelah data populasi &amp; produksinya diimpor dari Distankan KP melalui dasbor
+            admin. Dataset BPS tahunan belum memisahkan kedua jenis ini.
+          </p>
+        </div>
+
         {/* Filters */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-white border border-slate-200 rounded-lg p-4 shadow-sm">
           {/* Category Selector */}

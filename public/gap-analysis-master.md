@@ -2,7 +2,7 @@
 **SISPERTANI Kabupaten Banjarnegara**  
 **Berdasarkan:** Notulensi Paparan Klien Dinas Pertanian, Perikanan dan Ketahanan Pangan (Distankan KP)  
 **Tanggal Paparan:** 21 September 2026  
-**Dokumen:** `.docs/gap-analysis.md` (Update v3.2 — Matriks Komparasi Lengkap & Rincian Komoditas)  
+**Dokumen:** `.docs/gap-analysis.md` (Update v3.3 — Refinemen Struktur Submenu dari Notulen Klien; Peternakan 5 Submenu + RPH Resmi; disinkronkan 23 Sep 2026)  
 
 ---
 
@@ -10,10 +10,13 @@
 
 Sesuai arahan klien Distankan KP, pengembangan sistem dibagi menjadi dua pilar:
 1. **Pilar 1 — Standarisasi 5 Bidang Komoditas Simetris:** Bidang Tanaman Pangan, Hortikultura, Perkebunan, Peternakan, dan Perikanan wajib memiliki 4 submenu baku yang seragam:
-   - *Submenu 1: Data Produksi & Luas Tanam / Populasi*
-   - *Submenu 2: Komoditas Unggulan Bidang*
+   - *Submenu 1: Data Produksi & Luas Tanam / Populasi* (Perikanan: + kategori **Ikan Hias** dengan jenis dinamis)
+   - *Submenu 2: Komoditas Unggulan Bidang* (Perikanan: jenis ikan unggulan produknya; Perkebunan: + **Kelapa Deres, Talas, Porang**)
    - *Submenu 3: Nilai Ekonomi (Rp = Volume × Harga Produsen, Triwulan & Semester)*
    - *Submenu 4: Sebaran Wilayah Spasial (Per Kecamatan & Per Desa)*
+   - *Khusus Peternakan — 5 submenu (refinemen notulen 21 Sep, v3.3):* Submenu 4 tambahan **Lalu Lintas Ternak & Produksi Daging — Pemotongan RPH Pemerintah (resmi) vs Non-RPH**; Sebaran Wilayah Spasial menjadi Submenu 5. (Penomoran notulen asli acak 1-4-3-5 — dinormalisasi.)
+
+   > **Keputusan klien (jawaban 23 Sep 2026):** (1) **Domba Batur** = pemisahan entri tersendiri dari Domba lokal — kambing/domba tetap kategori Ternak Kecil; (2) **Talas** dan **Porang** = dua komoditas terpisah; (3) menu **LTT & Katam tetap di grup navigasi Perkebunan**; (4) seluruh data baru (kelapa deres, talas, porang, domba batur, puyuh, ikan hias, triwulan/semester) **akan diimpor dari Dinas** — placeholder UI disiapkan 23 Sep 2026 dengan pola auto-upgrade (kartu/panel "menunggu data dinas" otomatis tergantikan begitu data resmi tersedia).
 2. **Pilar 2 — Penataan Bidang Fungsional & Kebijakan:** Ketahanan Pangan (3 Pilar Bapanas & 2.100 kkal), Penyuluhan & Kelembagaan (Poktan, KWT, Pokdakan, Poklasan), Bantuan Barang & Rules, serta Multi-Admin RBAC + Template Upload.
 
 ---
@@ -73,7 +76,7 @@ Berikut adalah penjabaran detail teknis dari setiap butir wajib yang belum ada:
 | 10 | **Pembenihan: Benih Ikan** | Produksi Benih | Kolam Pendederan, Wadah Terpal | Balai Benih Ikan & Pokdakan | Ekor (Bukan Ton) | Triwulan & Semester |
 | 11 | **Ikan Hias Dinamis** | Ikan Hias (Entry Dinamis) | Akuarium, Bak Semen, Fiber | Bawang, Banjarnegara Kota | Ekor & Jenis (Koi, Cupang, dll) | Triwulan & Semester |
 
-> **Refinemen penyajian katalog produk (22 Sep 2026, konfirmasi klien):** halaman `/fisheries` (kategori "Jenis Ikan") menyajikan katalog produk sebagai **5 grup air tawar** — Lele, Gurame, Patin, **Nila / Mujair** (gabungan No. 2–3), **Ikan Gabus & Belut** (tangkap perairan umum, Pasar Ikan Purwanegara) — serta **4 grup ikan laut beredar pasar** (Selar Kuning/Ciu, Kurisi & Ikan Kembung, Bandeng, Cumi-cumi & Udang Putih Besar). Kebutuhan pengumpulan data statistik per jenis (tabel di atas, No. 1–7) **tidak berubah**; katalog grup akan dipecah ulang per jenis begitu data resmi per jenis tersedia (endpoint/admin).
+> **Refinemen penyajian katalog produk (22 Sep 2026, konfirmasi klien):** halaman `/fisheries` (kategori "Jenis Ikan") menyajikan katalog produk sebagai **5 grup air tawar** — Lele, Gurame, Patin, **Nila / Mujair** (gabungan No. 2–3), **Ikan Gabus & Belut** (tangkap perairan umum, Pasar Ikan Purwanegara) — serta **4 grup ikan laut beredar pasar** (Selar Kuning/Ciu, Kurisi & Ikan Kembung, Bandeng, Cumi-cumi & Udang Putih Besar). Kebutuhan pengumpulan data statistik per jenis (tabel di atas, No. 1–7) **tidak berubah**; katalog grup akan dipecah ulang per jenis begitu data resmi per jenis tersedia (endpoint/admin). **Ikan Hias (No. 11) diposisikan sebagai kategori di dalam Submenu 1 (Data Produksi & Populasi) per notulen klien — bukan modul terpisah (v3.3).**
 
 ---
 
@@ -92,6 +95,8 @@ Berikut adalah penjabaran detail teknis dari setiap butir wajib yang belum ada:
 | 9 | **Poultry Shop** | Sarana Prasarana | Toko pakan, konsentrat, obat unggas | Tersebar di 20 Kecamatan | Titik Lokasi & Kecamatan | Direktori Spasial |
 | 10 | **Pemotongan Hewan RPH** | Tata Niaga Daging | RPH Pemerintah vs Luar RPH | Banjarnegara Kota & Luar RPH | Ekor & Ton Daging | Triwulan & Semester |
 
+> **Pemetaan submenu peternakan (v3.3, 23 Sep 2026):** S1 = Populasi & Produksi (ternak besar/kecil — kambing & domba tetap kategori Ternak Kecil, **Domba Batur = entri terpisah** per keputusan klien 23 Sep; unggas termasuk **puyuh**; produksi daging potong besar/unggas, telur, kulit, susu) · S2 = Komoditas Unggulan · S3 = Nilai Ekonomi · **S4 = Lalu Lintas Ternak & Produksi Daging (RPH Pemerintah resmi vs Luar RPH)** · S5 = Sebaran Wilayah Spasial.
+
 ---
 
 ### 3.4. Rincian Komoditas Perkebunan Khas Banjarnegara (`/plantation`)
@@ -99,7 +104,8 @@ Berikut adalah penjabaran detail teknis dari setiap butir wajib yang belum ada:
 | No | Komoditas Perkebunan | Spesifikasi / Olahan Hilir | Sentra Kecamatan Utama | Volume Produksi | Satuan | Periode Wajib |
 |---|---|---|---|---|---|---|
 | 1 | **Kelapa Deres** | Nira Kelapa, Gula Semut / Kristal Ekspor, Gula Cetak | Punggelan, Banjarmangu, Sigaluh, Madukara | >15.000 Ton Nira/Gula | Ton & Nilai Rp | Triwulan & Semester |
-| 2 | **Talas Porang** | Umbi Porang & Chip Kering / Tepung Glukomanan | Pagentan, Pejawaran, Banjarmangu | >2.000 Ton Umbi | Ton & Nilai Rp | Triwulan & Semester |
+| 2 | **Talas** | Umbi Talas — komoditas non-rilis BPS, sentra kawasan Dieng | Pagentan, Pejawaran, Banjarmangu | Menunggu data dinas | Ton & Nilai Rp | Triwulan & Semester |
+| 2b | **Porang** | Umbi Porang & Chip Kering / Tepung Glukomanan | Pagentan, Pejawaran, Banjarmangu | >2.000 Ton Umbi | Ton & Nilai Rp | Triwulan & Semester |
 | 3 | **Kopi Robusta & Arabika** | Biji Kopi Sangrai & Green Beans Dieng/Kalibening | Kalibening, Batur, Pagentan | >1.200 Ton Biji Kopi | Ton & Nilai Rp | Triwulan & Semester |
 | 4 | **Kapulaga & Rempah** | Kapulaga Sabrang / Jawa, Jahe, Cengkeh | Wanadadi, Banjarmangu, Sigaluh | >800 Ton | Ton & Nilai Rp | Triwulan & Semester |
 
@@ -163,15 +169,17 @@ Berikut adalah penjabaran detail teknis dari setiap butir wajib yang belum ada:
 |---|---|---|---|---|
 | **Bidang Tanaman Pangan** | Data Produksi & LTT Padi/Palawija | **Padi Varietas Unggul & Jagung** | Nilai Ekonomi Tanaman Pangan (Triwulan/Semester) | Sebaran Wilayah & Prediksi Panen Katam |
 | **Bidang Hortikultura** | Data Produksi Sayuran & Buah | **Kentang Dieng, Kubis, Wortel, Tomat** | Nilai Ekonomi Hortikultura Sayuran (Triwulan/Semester) | Sebaran Sentra Dataran Tinggi Dieng per Desa |
-| **Bidang Perkebunan** | Data Produksi Perkebunan Rakyat | **Kelapa Deres (Gula Semut) & Talas Porang** | Nilai Ekonomi Perkebunan & Ekspor (Triwulan/Semester) | Sebaran Sentra Penderes & Porang per Desa |
+| **Bidang Perkebunan** | Data Produksi Perkebunan Rakyat | **Kelapa Deres (Gula Semut), Talas & Porang** | Nilai Ekonomi Perkebunan & Ekspor (Triwulan/Semester) | Sebaran Sentra Penderes & Porang per Desa |
 | **Bidang Peternakan & Keswan** | Data Populasi Ternak, Daging & Telur | **Domba Batur, Puyuh, Susu & Kulit** | Nilai Ekonomi Peternakan (Triwulan/Semester) | Sebaran Populasi, RPH & Poultry Shop per Desa |
-| **Bidang Perikanan** | Data Produksi Perikanan Budidaya & Tangkap | **Lele, Nila, Mujair, Gurame & Mina Padi** | Nilai Ekonomi Perikanan & Pasar (Triwulan/Semester) | Sebaran Kolam, Pembenihan & Pokdakan per Desa |
+| **Bidang Perikanan** | Data Produksi Perikanan Budidaya & Tangkap (+ Ikan Hias) | **Lele, Nila, Mujair, Gurame & Mina Padi** | Nilai Ekonomi Perikanan & Pasar (Triwulan/Semester) | Sebaran Kolam, Pembenihan & Pokdakan per Desa |
+
+> **Catatan v3.3 (23 Sep 2026):** Bidang Peternakan memiliki **kolom tambahan tersendiri** — *Lalu Lintas Ternak & Produksi Daging (RPH Pemerintah resmi)* — sehingga struktur nav Peternakan = **5 submenu** (Sebaran Spasial bergeser menjadi Submenu 5).
 
 ---
 
 ## 5. Rencana Tahapan Eksekusi Teknis
 
 1. **Fase 1 — Fondasi Multi-Admin RBAC & Template Upload:** Pembuatan peran admin berjenjang dan template Excel/CSV baku untuk data triwulan/semesteran per bidang.
-2. **Fase 2 — Implementasi 5 Bidang Komoditas Simetris:** Penyesuaian antarmuka 4 submenu baku pada Tanaman Pangan, Hortikultura Sayuran Dieng, Perkebunan Kelapa Deres/Porang, Peternakan Domba Batur/Susu/Kulit, dan Perikanan Mina Padi/Pembenihan.
+2. **Fase 2 — Implementasi 5 Bidang Komoditas Simetris:** Penyesuaian antarmuka 4 submenu baku pada Tanaman Pangan, Hortikultura Sayuran Dieng, Perkebunan Kelapa Deres/Porang, Peternakan Domba Batur/Susu/Kulit, dan Perikanan Mina Padi/Pembenihan. Peternakan memakai 5 submenu (S4 = Lalu Lintas Ternak & Produksi Daging + RPH Resmi; v3.3).
 3. **Fase 3 — Ketahanan Pangan 3 Pilar Bapanas:** Kalkulator kalori 2.100 kkal per kecamatan, peta FSVA, Skor PPH, PoU, dan pemetaan RMU.
 4. **Fase 4 — Kelembagaan Lengkap & Rules Bantuan:** Penambahan direktori KWT, Pokdakan, Poklahsar, Pokmamas, dan aturan kriteria bantuan barang.

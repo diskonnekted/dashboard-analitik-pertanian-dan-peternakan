@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import DefaultLayout from "@/layouts/default";
-import { LoadingSpinner } from "@/components/ui";
+import { EmptyStatePlaceholder, LoadingSpinner } from "@/components/ui";
 import {
   BarChart,
   Bar,
@@ -44,9 +44,10 @@ import {
   TrendingUp,
   ShoppingBasket,
   Banknote,
+  Palette,
 } from "lucide-react";
 
-type Category = "budidaya" | "tangkap" | "benih" | "produk";
+type Category = "budidaya" | "tangkap" | "benih" | "produk" | "hias";
 
 export default function FisheriesPage() {
   const [budidayaData, setBudidayaData] = useState<PerikananBudidaya[]>([]);
@@ -98,7 +99,9 @@ export default function FisheriesPage() {
           ? tangkapData
           : category === "produk"
             ? ([...budidayaData, ...tangkapData] as any[])
-            : benihData,
+            : category === "hias"
+              ? ([] as any[])
+              : benihData,
     [category, budidayaData, tangkapData, benihData],
   );
 
@@ -139,7 +142,7 @@ export default function FisheriesPage() {
 
   // Definisi jenis (dataKey) per kategori
   const seriesKeys = useMemo(() => {
-    if (category === "produk") return [];
+    if (category === "produk" || category === "hias") return [];
     if (category === "budidaya")
       return [
         { key: "kolamPembesaran", label: "Kolam Pembesaran" },
@@ -513,7 +516,7 @@ export default function FisheriesPage() {
             <label className="text-xs font-mono font-bold uppercase text-slate-500">
               Kategori Perikanan
             </label>
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-5 gap-2">
               <button
                 onClick={() => setCategory("budidaya")}
                 className={`py-2 px-3 border border-slate-200 font-mono font-bold text-xs uppercase flex items-center justify-center gap-1 transition-all ${
@@ -558,6 +561,19 @@ export default function FisheriesPage() {
                 <ShoppingBasket size={14} />
                 Jenis Ikan
               </button>
+              {/* Ikan Hias — placeholder kategori dinamis (notulen Distankan KP 21 Sep 2026);
+                  panel "menunggu data dinas" tampil hingga data diimpor. */}
+              <button
+                onClick={() => setCategory("hias")}
+                className={`py-2 px-3 border border-slate-200 font-mono font-bold text-xs uppercase flex items-center justify-center gap-1 transition-all ${
+                  category === "hias"
+                    ? "bg-blue-600 text-white shadow-sm"
+                    : "bg-white text-slate-800 hover:bg-slate-100 shadow-sm"
+                }`}
+              >
+                <Palette size={14} />
+                Ikan Hias
+              </button>
             </div>
           </div>
 
@@ -571,7 +587,8 @@ export default function FisheriesPage() {
               <select
                 value={selectedYear}
                 onChange={(e) => setSelectedYear(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 border border-slate-200 font-mono text-sm font-bold bg-white focus:outline-none appearance-none cursor-pointer rounded-xl"
+                disabled={category === "hias"}
+                className="w-full pl-9 pr-4 py-2 border border-slate-200 font-mono text-sm font-bold bg-white focus:outline-none appearance-none cursor-pointer rounded-xl disabled:opacity-50"
               >
                 {yearsList.map((yr) => (
                   <option key={yr} value={yr}>
@@ -592,7 +609,8 @@ export default function FisheriesPage() {
               <select
                 value={selectedKecamatan}
                 onChange={(e) => setSelectedKecamatan(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 border border-slate-200 font-mono text-sm font-bold bg-white focus:outline-none appearance-none cursor-pointer rounded-xl"
+                disabled={category === "hias"}
+                className="w-full pl-9 pr-4 py-2 border border-slate-200 font-mono text-sm font-bold bg-white focus:outline-none appearance-none cursor-pointer rounded-xl disabled:opacity-50"
               >
                 {uniqueKecamatan.map((kec) => (
                   <option key={kec} value={kec}>
@@ -606,6 +624,12 @@ export default function FisheriesPage() {
 
         {loading ? (
           <LoadingSpinner label="Memuat data perikanan..." />
+        ) : category === "hias" ? (
+          <EmptyStatePlaceholder
+            icon={<Palette className="h-6 w-6" aria-hidden />}
+            title="Kategori Ikan Hias — Menunggu Data Dinas"
+            message="Daftar jenis ikan hias dikelola dinamis oleh Distankan KP dan akan tampil di sini setelah data produksi & populasi diimpor melalui dasbor admin — mencakup jenis, volume, dan sentra kecamatan (notulen Distankan KP 21 Sep 2026)."
+          />
         ) : category === "produk" ? (
           <>
             {/* KPI: Volume & Nilai */}

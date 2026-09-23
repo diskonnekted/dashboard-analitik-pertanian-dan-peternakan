@@ -262,6 +262,38 @@ export default function NilaiEkonomiPage() {
         />
 
         <Toolbar>
+          {/* Periode triwulan/semester — placeholder menunggu input data dinas
+              (notulen Distankan KP 21 Sep 2026): struktur filter sudah disiapkan,
+              opsi aktif otomatis begitu data periode tersedia. */}
+          <ToolbarField label="Periode">
+            <div
+              className="flex h-9 overflow-hidden rounded-lg border border-slate-200"
+              title="Triwulan & Semester akan aktif setelah data dinas diimpor (notulen Distankan KP 21 Sep 2026)"
+            >
+              <button
+                type="button"
+                className="border-r border-slate-200 bg-blue-800 px-3 text-xs font-semibold uppercase tracking-wide text-white"
+              >
+                Tahunan
+              </button>
+              <button
+                type="button"
+                disabled
+                title="Menunggu data triwulan dari Dinas"
+                className="cursor-not-allowed border-r border-slate-200 bg-slate-50 px-3 text-xs font-semibold uppercase tracking-wide text-slate-400"
+              >
+                Triwulan
+              </button>
+              <button
+                type="button"
+                disabled
+                title="Menunggu data semester dari Dinas"
+                className="cursor-not-allowed bg-slate-50 px-3 text-xs font-semibold uppercase tracking-wide text-slate-400"
+              >
+                Semester
+              </button>
+            </div>
+          </ToolbarField>
           <ToolbarField label="Tahun">
             <select
               value={tahun}
