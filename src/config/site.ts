@@ -35,6 +35,10 @@ export const siteConfig = {
       title: "Data Master & Spasial",
       items: [
         {
+          label: "Luas & Penggunaan Lahan",
+          href: "/lahan",
+        },
+        {
           label: "Kesesuaian Lahan",
           href: "/suitability",
         },

@@ -474,6 +474,191 @@ const fetchLahanResmiKabupatenCsv = async (): Promise<LahanResmiKabupaten | null
   });
 };
 
+// ============================================================
+// Luas Penggunaan Lahan menurut Jenis Penggunaan (Ha) — seri
+// waktu tahunan tingkat kabupaten (I. lahan sawah + rincian,
+// II. bukan lahan sawah + rincian, III. lahan bukan pertanian).
+//
+// Sumber utama: CKAN opendata.banjarnegarakab.go.id — dataset
+// "Luas Penggunaan Lahan Menurut Jenis Penggunaan (Ha) 2025"
+// (id 1497085a-352e-4210-be1d-d9ffadc817a9, resource CSV
+// c79b7e5e-dca9-49ff-a075-1a674c297d93, datastore aktif, seri
+// 2017-2025) — LEBIH SEGAR daripada MySQL backend (2014-2024),
+// maka sengaja TIDAK apiFirst. Fallback: CSV tidy Distankan lokal.
+// CKAN tidak mengirim header CORS → wajib lewat proxy /api/3/*
+// (dev: vite proxy; prod: Express CKAN_PROXY).
+// ============================================================
+
+export type LahanPenggunaanGrup = "sawah" | "bukanSawah" | "bukanPertanian";
+
+export interface LahanPenggunaanSerie {
+  id: string;
+  kategori: string; // label bersih (tanpa penomoran & penanda footnote BPS)
+  grup: LahanPenggunaanGrup;
+  level: "utama" | "rincian";
+  nilai: Record<string, number>; // tahun ("2025") → luas (Ha)
+}
+
+export interface LahanPenggunaan {
+  sumber: "ckan" | "csv-lokal";
+  tahunList: number[];
+  series: LahanPenggunaanSerie[];
+}
+
+const LAHAN_KATEGORI_META: Record<string, Omit<LahanPenggunaanSerie, "nilai">> = {
+  "lahan sawah": { id: "sawah", kategori: "Lahan sawah", grup: "sawah", level: "utama" },
+  "lahan irigasi": { id: "sawah-irigasi", kategori: "Lahan irigasi", grup: "sawah", level: "rincian" },
+  "lahan tadah hujan": { id: "sawah-tadah-hujan", kategori: "Lahan tadah hujan", grup: "sawah", level: "rincian" },
+  "lahan pasang surut": { id: "sawah-pasang-surut", kategori: "Lahan pasang surut", grup: "sawah", level: "rincian" },
+  "bukan lahan sawah": { id: "bukan-sawah", kategori: "Bukan lahan sawah", grup: "bukanSawah", level: "utama" },
+  "tegal/kebun": { id: "tegal-kebun", kategori: "Tegal/kebun", grup: "bukanSawah", level: "rincian" },
+  "perkebunan": { id: "perkebunan", kategori: "Perkebunan", grup: "bukanSawah", level: "rincian" },
+  "hutan rakyat": { id: "hutan-rakyat", kategori: "Hutan rakyat", grup: "bukanSawah", level: "rincian" },
+  "lainnya": { id: "lainnya", kategori: "Lainnya", grup: "bukanSawah", level: "rincian" },
+  "lahan yang tidak diusahakan": { id: "tidak-diusahakan", kategori: "Lahan tidak diusahakan", grup: "bukanSawah", level: "rincian" },
+  "lahan bukan pertanian": { id: "bukan-pertanian", kategori: "Lahan bukan pertanian", grup: "bukanPertanian", level: "utama" },
+};
+// Varian label lama pada CSV tidy ("III. Lahan bukan pertanian lainnya").
+const LAHAN_KATEGORI_ALT: Record<string, string> = {
+  "lahan bukan pertanian lainnya": "lahan bukan pertanian",
+};
+
+/** Urutan tampilan kanonik (utama dulu, lalu rincian per grup). */
+export const LAHAN_SERI_ORDER = [
+  "sawah",
+  "sawah-irigasi",
+  "sawah-tadah-hujan",
+  "sawah-pasang-surut",
+  "bukan-sawah",
+  "tegal-kebun",
+  "perkebunan",
+  "hutan-rakyat",
+  "lainnya",
+  "tidak-diusahakan",
+  "bukan-pertanian",
+];
+
+// Normalisasi label kategori kedua sumber (CKAN & CSV tidy): buang
+// penomoran ("I.", "a."), penanda footnote BPS ("d. lainnya1",
+// "…pertanian2"), dan rapikan spasi → kunci kanonik.
+const normalizeLahanKategori = (raw: string): Omit<LahanPenggunaanSerie, "nilai"> | null => {
+  const kunci = raw
+    .replace(/\d+$/, "") // penanda catatan kaki BPS (…lainnya1 / …pertanian2)
+    .replace(/^(?:[IVX]+|[a-e])\.\s*/i, "") // penomoran romawi / huruf rincian
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+  return LAHAN_KATEGORI_META[LAHAN_KATEGORI_ALT[kunci] ?? kunci] ?? null;
+};
+
+const LAHAN_CKAN_RESOURCE_ID = "c79b7e5e-dca9-49ff-a075-1a674c297d93";
+
+const fetchLahanPenggunaanCkan = async (): Promise<LahanPenggunaan | null> => {
+  return withCache("lahan-penggunaan-ckan-v1", async () => {
+    try {
+      const res = await fetchWithTimeout(
+        `/api/3/action/datastore_search?resource_id=${LAHAN_CKAN_RESOURCE_ID}&limit=100`,
+        {},
+        12000,
+      );
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const body = (await res.json()) as {
+        success?: boolean;
+        result?: { records?: Record<string, string>[] };
+      };
+      const records = body?.result?.records;
+      if (!body?.success || !Array.isArray(records) || records.length === 0) {
+        throw new Error("datastore kosong / respons tidak sah");
+      }
+      const series: LahanPenggunaanSerie[] = [];
+      const tahunSet = new Set<string>();
+      records.forEach((rec) => {
+        const meta = normalizeLahanKategori(String(rec["Jenis Penggunaan"] ?? ""));
+        if (!meta) return; // baris non-tabel (mis. baris sumber/catatan kaki)
+        const nilai: Record<string, number> = {};
+        Object.entries(rec).forEach(([kolom, sel]) => {
+          const t = parseInt(kolom, 10);
+          if (isNaN(t) || t < 2000 || t > 2100) return; // "_id", "Jenis Penggunaan", dll.
+          // Sel CKAN campuran tipe (number/string) & kadang berkutip;
+          // ribuan dipisah koma ("14,127.80") — cleanFloat menangani.
+          const teks = String(sel ?? "").trim().replace(/["']/g, "");
+          if (!teks || teks === "-") return;
+          nilai[String(t)] = cleanFloat(teks);
+        });
+        if (Object.keys(nilai).length === 0) return;
+        Object.keys(nilai).forEach((t) => tahunSet.add(t));
+        series.push({ ...meta, nilai });
+      });
+      const tahunList = [...tahunSet].map(Number).sort((a, b) => a - b);
+      if (tahunList.length < 2 || series.length < 5) throw new Error("parsing gagal");
+      series.sort((a, b) => LAHAN_SERI_ORDER.indexOf(a.id) - LAHAN_SERI_ORDER.indexOf(b.id));
+      return { sumber: "ckan", tahunList, series };
+    } catch (e) {
+      console.warn("fetchLahanPenggunaanCkan gagal:", e);
+      return null;
+    }
+  });
+};
+
+const fetchLahanPenggunaanCsv = async (): Promise<LahanPenggunaan | null> => {
+  return withCache("lahan-penggunaan-csv-v1", async () => {
+    try {
+      const response = await fetch(
+        "/14. Distankan KP/tidy/Luas Penggunaan Lahan menurut Jenis Penggunaan (Ha)/Luas Penggunaan Lahan menurut Jenis Penggunaan (Ha) tidy.csv",
+      );
+      if (!response.ok) throw new Error("CSV tidy lahan tidak tersedia");
+      const csvText = await response.text();
+      return await new Promise<LahanPenggunaan | null>((resolve) => {
+        Papa.parse(csvText, {
+          header: true,
+          skipEmptyLines: true,
+          complete: (results) => {
+            const rows = results.data as Record<string, string>[];
+            const byId = new Map<string, LahanPenggunaanSerie>();
+            const tahunSet = new Set<string>();
+            rows.forEach((r) => {
+              const meta = normalizeLahanKategori(String(r.kategori ?? ""));
+              const t = parseInt(String(r.tahun), 10);
+              if (!meta || isNaN(t)) return;
+              const kunciTahun = String(t);
+              let serie = byId.get(meta.id);
+              if (!serie) {
+                serie = { ...meta, nilai: {} };
+                byId.set(meta.id, serie);
+              }
+              serie.nilai[kunciTahun] = cleanFloat(r.value);
+              tahunSet.add(kunciTahun);
+            });
+            if (byId.size < 5 || tahunSet.size < 2) return resolve(null);
+            const series = [...byId.values()].sort(
+              (a, b) => LAHAN_SERI_ORDER.indexOf(a.id) - LAHAN_SERI_ORDER.indexOf(b.id),
+            );
+            resolve({
+              sumber: "csv-lokal",
+              tahunList: [...tahunSet].map(Number).sort((a, b) => a - b),
+              series,
+            });
+          },
+          error: () => resolve(null),
+        });
+      });
+    } catch (e) {
+      console.warn("fetchLahanPenggunaanCsv gagal:", e);
+      return null;
+    }
+  });
+};
+
+/**
+ * Seri waktu luas penggunaan lahan kabupaten. CKAN opendata
+ * diprioritaskan (lebih segar — mencakup 2025); bila tidak
+ * terjangkau, fallback ke CSV tidy lokal (2014-2024).
+ */
+export const fetchLahanPenggunaan = async (): Promise<LahanPenggunaan | null> => {
+  const ckan = await fetchLahanPenggunaanCkan();
+  return ckan ?? (await fetchLahanPenggunaanCsv());
+};
+
 // Normalisasi nama kecamatan dari sumber CKAN/Distan yang kadang memuat
 // letter-spacing ("B a w a n g" -> "Bawang"), prefix angka ("2. Purwareja Klampok"),
 // atau salah eja ("Purwonegoro" -> "Purwanegara", "Purworejo Klampok" -> "Purwareja Klampok").

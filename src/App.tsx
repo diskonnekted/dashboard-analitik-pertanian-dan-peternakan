@@ -34,6 +34,7 @@ const KomoditasUnggulanPage = lazy(() => import("@/pages/komoditas-unggulan"));
 const NilaiEkonomiPage = lazy(() => import("@/pages/nilai-ekonomi"));
 const LttKatamPage = lazy(() => import("@/pages/ltt-katam"));
 const SebaranBidangPage = lazy(() => import("@/pages/sebaran-bidang"));
+const LahanPage = lazy(() => import("@/pages/lahan"));
 
 function PageLoading() {
   return <LoadingSpinner height="min-h-[60vh]" label="Memuat halaman..." />;
@@ -59,6 +60,7 @@ function App() {
           <Route element={<HorticulturePage />} path="/horticulture" />
           <Route element={<FoodCropsPage />} path="/food-crops" />
           <Route element={<SensusPage />} path="/sensus-2023" />
+          <Route element={<LahanPage />} path="/lahan" />
           <Route element={<FarmersPage />} path="/farmers" />
           <Route element={<RecommendationsPage />} path="/recommendations" />
           <Route element={<GovernmentAssistancePage />} path="/government-assistance" />
