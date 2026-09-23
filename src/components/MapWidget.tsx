@@ -250,12 +250,11 @@ const MapBounds = ({ data }: { data: any }) => {
         const layer = L.geoJSON(data);
         const bounds = layer.getBounds();
         if (!bounds.isValid()) return;
-        // Paskan peta ke bounds Banjarnegara dengan padding minimal
-        // (8 px). Lalu zoom in 2 step dari hasil fit supaya polygon
-        // lebih proporsional dengan frame.
-        map.fitBounds(bounds, { padding: [8, 8] });
-        const z = map.getZoom();
-        map.setZoom(Math.min(z + 2, 18));
+        // Paskan peta ke SELURUH bounds Banjarnegara dengan padding lega
+        // (24 px) agar tidak ada poligon yang terpotong tepi container.
+        // Tanpa zoom-in tambahan (+2 yang lama): garis batas sudah
+        // proporsional terhadap zoom, seluruh kabupaten tetap terlihat.
+        map.fitBounds(bounds, { padding: [24, 24] });
         map.setMaxZoom(18);
       } catch (err) {
         console.error("Gagal mendapatkan bounds peta", err);
