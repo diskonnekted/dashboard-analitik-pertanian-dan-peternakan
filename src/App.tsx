@@ -33,6 +33,7 @@ const KewirausahaanKwtPage = lazy(() => import("@/pages/kewirausahaan-kwt"));
 const KomoditasUnggulanPage = lazy(() => import("@/pages/komoditas-unggulan"));
 const NilaiEkonomiPage = lazy(() => import("@/pages/nilai-ekonomi"));
 const LttKatamPage = lazy(() => import("@/pages/ltt-katam"));
+const SebaranBidangPage = lazy(() => import("@/pages/sebaran-bidang"));
 
 function PageLoading() {
   return <LoadingSpinner height="min-h-[60vh]" label="Memuat halaman..." />;
@@ -68,6 +69,8 @@ function App() {
           <Route element={<AdminPage />} path="/admin" />
 <Route element={<KewirausahaanKwtPage />} path="/kewirausahaan/kwt" />
 <Route element={<KomoditasUnggulanPage />} path="/komoditas-unggulan" />
+<Route element={<KomoditasUnggulanPage />} path="/komoditas-unggulan/:bidang" />
+<Route element={<SebaranBidangPage />} path="/sebaran/:bidang" />
 <Route element={<Navigate to="/nilai-ekonomi/pangan" replace />} path="/nilai-ekonomi" />
 <Route element={<Navigate to="/economic-value" replace />} path="/nilai-ekonomi/perikanan" />
 <Route element={<NilaiEkonomiPage />} path="/nilai-ekonomi/:bidang" />

@@ -61,8 +61,16 @@ export const siteConfig = {
           href: "/food-crops",
         },
         {
+          label: "Komoditas Unggulan Pangan",
+          href: "/komoditas-unggulan/pangan",
+        },
+        {
           label: "Nilai Ekonomi Pangan",
           href: "/nilai-ekonomi/pangan",
+        },
+        {
+          label: "Sebaran Wilayah Pangan",
+          href: "/sebaran/pangan",
         },
       ],
     },
@@ -75,8 +83,16 @@ export const siteConfig = {
           href: "/horticulture",
         },
         {
+          label: "Komoditas Unggulan Hortikultura",
+          href: "/komoditas-unggulan/hortikultura",
+        },
+        {
           label: "Nilai Ekonomi Hortikultura",
           href: "/nilai-ekonomi/hortikultura",
+        },
+        {
+          label: "Sebaran Wilayah Hortikultura",
+          href: "/sebaran/hortikultura",
         },
       ],
     },
@@ -89,8 +105,8 @@ export const siteConfig = {
           href: "/plantation",
         },
         {
-          label: "Komoditas Unggulan",
-          href: "/komoditas-unggulan",
+          label: "Komoditas Unggulan Perkebunan",
+          href: "/komoditas-unggulan/perkebunan",
         },
         {
           label: "LTT & Kalender Tanam",
@@ -99,6 +115,10 @@ export const siteConfig = {
         {
           label: "Nilai Ekonomi Perkebunan",
           href: "/nilai-ekonomi/perkebunan",
+        },
+        {
+          label: "Sebaran Wilayah Perkebunan",
+          href: "/sebaran/perkebunan",
         },
       ],
     },
@@ -111,16 +131,24 @@ export const siteConfig = {
           href: "/livestock",
         },
         {
-          label: "Lalu Lintas & Pemotongan Ternak",
-          href: "/livestock-flow",
-        },
-        {
           label: "Susu & Kulit Ternak",
           href: "/peternakan/susu-kulit",
         },
         {
+          label: "Komoditas Unggulan Peternakan",
+          href: "/komoditas-unggulan/peternakan",
+        },
+        {
           label: "Nilai Ekonomi Peternakan",
           href: "/nilai-ekonomi/peternakan",
+        },
+        {
+          label: "Lalu Lintas & Pemotongan Ternak",
+          href: "/livestock-flow",
+        },
+        {
+          label: "Sebaran Wilayah Peternakan",
+          href: "/sebaran/peternakan",
         },
       ],
     },
@@ -134,8 +162,16 @@ export const siteConfig = {
           href: "/fisheries",
         },
         {
+          label: "Komoditas Unggulan Perikanan",
+          href: "/komoditas-unggulan/perikanan",
+        },
+        {
           label: "Nilai Ekonomi Perikanan",
           href: "/economic-value",
+        },
+        {
+          label: "Sebaran Wilayah Perikanan",
+          href: "/sebaran/perikanan",
         },
       ],
     },

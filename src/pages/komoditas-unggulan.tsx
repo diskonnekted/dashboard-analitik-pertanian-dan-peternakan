@@ -13,6 +13,7 @@
  * tanpa perubahan kode.
  */
 import { useEffect, useMemo, useState } from "react";
+import { useParams } from "react-router-dom";
 import {
   Award,
   BarChart3,
@@ -50,6 +51,14 @@ const fmt = new Intl.NumberFormat("id-ID", { maximumFractionDigits: 2 });
 const formatNum = (v?: number | null) => (v == null ? "—" : fmt.format(v));
 
 const BIDANG_LIST = ["Tanaman Pangan", "Hortikultura", "Perkebunan", "Peternakan", "Perikanan"] as const;
+/* Slug route -> nilai filter bidang (nav per grup bidang: /komoditas-unggulan/:bidang). */
+const BIDANG_SLUG: Record<string, string> = {
+  pangan: "Tanaman Pangan",
+  hortikultura: "Hortikultura",
+  perkebunan: "Perkebunan",
+  peternakan: "Peternakan",
+  perikanan: "Perikanan",
+};
 const CHART_COLORS = ["#1e40af", "#0891b2", "#ca8a04", "#7c3aed", "#dc2626", "#059669", "#db2777"];
 
 const BIDANG_TONE: Record<string, "amber" | "emerald" | "violet" | "blue" | "red"> = {
@@ -102,11 +111,17 @@ const PLACEHOLDER_ROWS: KomoditasUnggulanRow[] = [
 ];
 
 export default function KomoditasUnggulanPage() {
+  const { bidang: bidangParam } = useParams<{ bidang: string }>();
   const [realRows, setRealRows] = useState<KomoditasUnggulanRow[] | null>(null);
   const [year, setYear] = useState("");
   const [kecamatan, setKecamatan] = useState("all");
-  const [bidang, setBidang] = useState("all");
+  const [bidang, setBidang] = useState(bidangParam ? (BIDANG_SLUG[bidangParam] ?? "all") : "all");
   const [query, setQuery] = useState("");
+
+  // Sinkronkan filter bidang dengan route /komoditas-unggulan/:bidang (nav per grup).
+  useEffect(() => {
+    setBidang(bidangParam ? (BIDANG_SLUG[bidangParam] ?? "all") : "all");
+  }, [bidangParam]);
 
   useEffect(() => {
     let alive = true;
