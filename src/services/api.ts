@@ -2006,15 +2006,16 @@ const fetchTernakDagingCsv = (): Promise<TernakFlow[]> =>
     "kg",
   );
 
-// Produksi telur per kecamatan (kg). Kolom CSV bernama "Ras Layer"/"Kampung" —
-// dinormalkan ke penamaan backend ternak_telur (Ayam Ras Layer / Ayam Kampung)
-// agar UI konsisten antara jalur MySQL dan fallback CSV.
+// Produksi telur per kecamatan (BUTIR — sumber resmi menyimpan jumlah butir,
+// bukan kg). Kolom CSV "Ras Layer"/"Kampung"/"Itik" dinormalkan ke penamaan
+// backend ternak_telur (Ayam Ras Layer / Ayam Kampung / Itik) agar UI
+// konsisten antara jalur MySQL dan fallback CSV.
 const fetchTernakTelurCsv = (): Promise<TernakFlow[]> =>
   fetchTernakFlow(
     "/14. Distankan KP/Produksi Telur Menurut Kecamatan dan Jenis Unggas/Produksi Telur Menurut Kecamatan dan Jenis Unggas CSV.csv",
-    "cache_telur_ternak_v1",
-    ["Ras Layer", "Kampung"],
-    "kg",
+    "cache_telur_ternak_v2",
+    ["Ras Layer", "Kampung", "Itik"],
+    "butir",
   ).then((rows) =>
     rows.map((r) => ({
       ...r,

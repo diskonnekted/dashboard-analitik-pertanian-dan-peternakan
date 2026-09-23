@@ -37,7 +37,7 @@ export default function LivestockPage() {
     loadAllData();
   }, []);
 
-  // ===== Produksi Telur (kg) — S1 "Produksi ternak: ... telur ..." (notulen Distankan KP 21 Sep) =====
+  // ===== Produksi Telur (butir) — S1 "Produksi ternak: ... telur ..." (notulen Distankan KP 21 Sep) =====
   const [telurData, setTelurData] = useState<TernakFlow[]>([]);
   useEffect(() => {
     let mounted = true;
@@ -846,17 +846,18 @@ export default function LivestockPage() {
           </>
         )}
 
-        {/* ===== Produksi Telur (kg) — S1 "Produksi ternak: ... telur ..." (notulen 21 Sep) ===== */}
+        {/* ===== Produksi Telur (butir) — S1 "Produksi ternak: ... telur ..." (notulen 21 Sep) ===== */}
         {telurRows.length > 0 && (
           <SectionCard
-            title={`Produksi Telur${telurTahun ? ` — ${telurTahun}` : ""} (kg)`}
+            title={`Produksi Telur${telurTahun ? ` — ${telurTahun}` : ""} (butir)`}
             icon={<Egg size={16} className="text-amber-600" />}
-            actions={<Badge tone="blue">Total {formatNum(telurTotal)} kg</Badge>}
+            actions={<Badge tone="blue">Total {formatNum(telurTotal)} butir</Badge>}
           >
             <p className="text-xs text-slate-500 mb-4 leading-relaxed">
-              Produksi telur ayam kampung &amp; ayam ras layer per kecamatan. Sumber: Distankan KP Banjarnegara
-              (BPS) — jalur utama MySQL, fallback CSV. Telur puyuh &amp; itik akan menyusul melalui import dinas
-              (notulen Distankan KP 21 Sep 2026).
+              Produksi telur ayam kampung, ayam ras layer &amp; itik per kecamatan (satuan butir). Sumber:
+              Distankan KP Banjarnegara (BPS) — regen XLSX resmi 2018 &amp; 2020–2024 — jalur utama
+              MySQL, fallback CSV. Dataset telur 2025 (CKAN opendata) tidak dipakai: distribusi
+              kecamatannya tidak valid.
             </p>
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm border-collapse">

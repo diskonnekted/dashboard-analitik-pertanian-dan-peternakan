@@ -149,9 +149,9 @@ peternakanRouter.get(
   route(() => ternakFlow({ table: "ternak_daging", where: "WHERE t.kelompok = ?", params: ["ternak"], labels: DAGING_TERNAK_LABELS, valueCol: "produksi_kg", unit: "kg" })),
 );
 
-/** GET /api/v1/peternakan/telur -> TernakFlow[] (kg) — telur ayam kampung & ras layer. */
-const TELUR_LABELS = ["Ayam Kampung", "Ayam Ras Layer"];
+/** GET /api/v1/peternakan/telur -> TernakFlow[] (butir) — telur ayam kampung, ras layer & itik. */
+const TELUR_LABELS = ["Ayam Kampung", "Ayam Ras Layer", "Itik"];
 peternakanRouter.get(
   "/telur",
-  route(() => ternakFlow({ table: "ternak_telur", where: "", params: [], labels: TELUR_LABELS, valueCol: "produksi_kg", unit: "kg" })),
+  route(() => ternakFlow({ table: "ternak_telur", where: "", params: [], labels: TELUR_LABELS, valueCol: "produksi_kg", unit: "butir" })),
 );

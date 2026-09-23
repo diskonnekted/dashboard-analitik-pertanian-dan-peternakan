@@ -288,12 +288,14 @@ export async function importTernakProduk(ctx, kecMap) {
   }
 
   // --- telur (nama kolom sumber singkat -> dinormalisasi ke nama unggas baku) ---
+  // Satuan sumber = BUTIR (kolom DB tetap produksi_kg demi kompatibilitas skema).
   {
     const F = 'Produksi Telur Menurut Kecamatan dan Jenis Unggas CSV.csv';
     const { rows } = readCsv(ctx, F);
     const melted = meltToRows(ctx, kecMap, rows, [
       { col: 'Ras Layer', jenis: 'Ayam Ras Layer' },
       { col: 'Kampung', jenis: 'Ayam Kampung' },
+      { col: 'Itik', jenis: 'Itik' },
     ], F);
     const out = melted.map((m) => ({
       kecamatan_id: m.kecamatan_id, jenis: m.jenis, tahun: m.tahun, produksi_kg: m.nilai,

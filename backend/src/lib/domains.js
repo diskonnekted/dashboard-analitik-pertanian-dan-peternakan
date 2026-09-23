@@ -108,7 +108,7 @@ export const DOMAINS = {
     sheets: [
       { table: "ternak_populasi", name: "Populasi", kecamatan: true, key: ["kecamatan", "kelompok", "jenis", "tahun"] },
       { table: "ternak_daging", name: "Daging", kecamatan: true, key: ["kecamatan", "kelompok", "jenis", "tahun"] },
-      { table: "ternak_telur", name: "Telur", kecamatan: true, key: ["kecamatan", "jenis", "tahun"] },
+      { table: "ternak_telur", name: "Telur", kecamatan: true, key: ["kecamatan", "jenis", "tahun"], labels: { produksi_kg: "Produksi (Butir)" } },
       { table: "ternak_susu_kulit", name: "Susu & Kulit", kecamatan: true, key: ["kecamatan", "jenis", "tahun"] },
       { table: "ternak_flow", name: "Aliran Ternak", kecamatan: true, key: ["kecamatan", "arah", "jenis", "tahun"] },
       { table: "ternak_pemotongan", name: "Pemotongan RPH", kecamatan: true, key: ["kecamatan", "lokasi", "jenis", "tahun"] },
@@ -275,7 +275,8 @@ export async function loadDomain(domainKey) {
         const numeric = ["int", "bigint", "smallint", "tinyint", "mediumint", "decimal", "double", "float"].includes(c.data_type);
         return {
           field: c.column_name,
-          header: labelFor(c.column_name),
+          // Override label per-sheet (mis. ternak_telur: produksi_kg = butir).
+          header: s.labels?.[c.column_name] ?? labelFor(c.column_name),
           type: isYear ? "year" : enumCfg || enumDb ? "enum" : numeric ? "number" : "text",
           required: c.is_nullable === "NO" && c.column_default === null,
           enumValues: enumCfg ?? enumDb,

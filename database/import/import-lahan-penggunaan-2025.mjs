@@ -113,12 +113,13 @@ function buatSql(baris) {
 }
 
 async function main() {
-  console.log(`Ambil tahun ${tahunArg} dari CKAN opendata...`);
+  console.error(`Ambil tahun ${tahunArg} dari CKAN opendata...`);
   const baris = await ambilDariCkan();
-  console.log(`  OK: ${baris.length} kategori, Σ = ${baris.reduce((a, b) => a + b.luas_ha, 0).toFixed(2)} Ha`);
+  console.error(`  OK: ${baris.length} kategori, Σ = ${baris.reduce((a, b) => a + b.luas_ha, 0).toFixed(2)} Ha`);
 
   if (modeSql) {
-    console.log("\n-- SQL (jalankan di MySQL target) --");
+    // SQL murni ke stdout (log di stderr) agar aman di-redirect ke file:
+    // cmd /c "node import-lahan-penggunaan-2025.mjs --sql > lahan-2025.sql"
     console.log(buatSql(baris));
     return;
   }
