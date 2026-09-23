@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo, useRef } from "react";
-import { MapContainer, TileLayer, GeoJSON, LayersControl, useMap, LayerGroup } from "react-leaflet";
+import { MapContainer, TileLayer, GeoJSON, LayersControl, useMap, useMapEvents, LayerGroup } from "react-leaflet";
 import L from "leaflet";
 import ReactDOMServer from "react-dom/server";
 import { Search, Plus, Minus, Lock, AlertTriangle, RotateCw, ArrowUpRight } from "lucide-react";
@@ -213,6 +213,30 @@ const SearchFlyTo = ({ target, geoJsonRef }: { target: DesaSearchTarget | null; 
     }, 1200);
     return () => clearTimeout(t);
   }, [target, map, geoJsonRef]);
+  return null;
+};
+
+// ——— Ketebalan garis batas geojson proporsional terhadap zoom ———
+// Tipis (0.7) saat tampilan kabupaten penuh (z11), bertambah wajar saat
+// zoom-in per desa, dibatasi atas-bawah agar tak pernah terlalu tebal/tipis.
+const desaBorderWeight = (zoom: number) =>
+  Math.min(1.6, Math.max(0.7, 0.7 + 0.12 * (zoom - 11)));
+const kecBorderWeight = (zoom: number) =>
+  Math.min(1.9, Math.max(0.85, 0.85 + 0.13 * (zoom - 11)));
+const highlightBorderWeight = (zoom: number) =>
+  Math.min(3.4, Math.max(2.2, desaBorderWeight(zoom) + 1.5));
+
+/**
+ * BorderWeightWatcher — sinkronkan zoomRef dan restyle garis batas saat
+ * zoomend (termasuk fitBounds/flyTo), imperatif via setStyle tanpa re-mount.
+ */
+const BorderWeightWatcher = ({ zoomRef, restyle }: { zoomRef: { current: number }; restyle: () => void }) => {
+  const map = useMapEvents({
+    zoomend: () => {
+      zoomRef.current = map.getZoom();
+      restyle();
+    },
+  });
   return null;
 };
 
@@ -612,6 +636,9 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
   const [searchTarget, setSearchTarget] = useState<DesaSearchTarget | null>(null);
   const desaGeoJsonRef = useRef<L.GeoJSON | null>(null);
+  const kecGeoJsonRef = useRef<L.GeoJSON | null>(null);
+  // Zoom aktif untuk penskalaan garis batas (disinkronkan oleh BorderWeightWatcher)
+  const zoomRef = useRef<number>(11);
 
   // Indeks pencarian desa dari GeoJSON (nama + kecamatan + referensi feature)
   const desaSearchIndex = useMemo(() => {
@@ -790,10 +817,11 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
     const desaData = getDesaData(feature);
     const desaName = (feature.properties?.Nama_Desa_ || feature.properties?.Name || "").toUpperCase();
     
-    // Default style — polygon sudah besar, garis batas dibuat tipis (0.7)
+    // Default style - garis batas proporsional terhadap zoom (desaBorderWeight)
     let fillColor = "#cccccc";
     let fillOpacity = 0.4;
-    let weight = 0.7;
+    const baseWeight = desaBorderWeight(zoomRef.current);
+    let weight = baseWeight;
     let opacity = 1;
     let borderColor = "#1f2937";
 
@@ -826,7 +854,7 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
 
       if (matchesSearch && matchesLegend) {
         fillOpacity = 0.7;
-        weight = 0.7;
+        weight = baseWeight;
         opacity = 1;
       } else {
         // Mute if not matching search or legend — tetap
@@ -834,6 +862,7 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
         fillOpacity = 0.2;
         opacity = 0.5;
         fillColor = "#a1a1aa";
+        weight = Math.max(0.5, baseWeight * 0.75);
       }
     } else {
       // No Data behavior
@@ -847,7 +876,7 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
     if (searchTarget && desaName === searchTarget.name.toUpperCase() && (feature.properties?.Kecamatan || "") === searchTarget.kec) {
       fillColor = "#2563eb";
       fillOpacity = 0.65;
-      weight = 3;
+      weight = highlightBorderWeight(zoomRef.current);
       opacity = 1;
       borderColor = "#1d4ed8";
     }
@@ -862,12 +891,21 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
     };
   };
 
-  const kecStyle = {
+  // Garis batas kecamatan (putus-putus) — juga proporsional terhadap zoom
+  const getKecStyle = () => ({
     fill: false,
     color: "#9f1239",
-    weight: 0.7,
+    weight: kecBorderWeight(zoomRef.current),
     opacity: 0.85,
     dashArray: "6 4",
+  });
+
+  // Restyle imperatif seluruh garis batas saat zoom berubah (tanpa re-mount layer)
+  const restyleBorders = () => {
+    desaGeoJsonRef.current?.eachLayer((layer: any) => {
+      if (layer.feature) layer.setStyle(getDesaStyle(layer.feature));
+    });
+    kecGeoJsonRef.current?.setStyle(getKecStyle());
   };
 
   const getAuxiliaryStyle = (layer: AuxiliaryGeoJsonLayer, feature?: any) => {
@@ -1135,6 +1173,8 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
           <MapBounds data={kecGeoData} />
           <ZoomBridge onLockChange={setZoomLocked} />
           <SearchFlyTo target={searchTarget} geoJsonRef={desaGeoJsonRef} />
+
+          <BorderWeightWatcher zoomRef={zoomRef} restyle={restyleBorders} />
           
           <LayersControl position="bottomleft">
             {/* Base layers: Esri ArcGIS Online — gratis, tanpa API key, tidak terblokir */}
@@ -1215,7 +1255,8 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
                 <GeoJSON
                   key={`kec-${kecGeoData.features.length}`}
                   data={kecGeoData}
-                  style={kecStyle}
+                  style={getKecStyle()}
+                  ref={kecGeoJsonRef}
                   onEachFeature={(feature, layer) => {
                     const kecName = feature.properties?.Kecamatan || feature.properties?.WADMKC || "Tidak diketahui";
                     layer.bindTooltip(`KEC. ${kecName.toUpperCase()}`, { sticky: true, className: "font-mono font-bold text-xs uppercase" });
