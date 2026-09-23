@@ -1,7 +1,6 @@
 import DefaultLayout from "@/layouts/default";
-import { PageHeader, SectionCard, Badge } from "@/components/ui";
+import { SectionCard, Badge } from "@/components/ui";
 import {
-  Info,
   Wheat,
   Globe,
   FileSpreadsheet,
@@ -174,13 +173,6 @@ export default function InfoPage() {
   return (
     <DefaultLayout>
       <section className="flex flex-col gap-8 py-2 max-w-6xl mx-auto">
-        <PageHeader
-          icon={<Info className="h-6 w-6" />}
-          title="Info SISPERTANI"
-          subtitle="Informasi umum sistem, sumber data, dan roadmap pengembangan Dasbor Analitik Pertanian Kabupaten Banjarnegara."
-          actions={<Badge tone="emerald">Data Resmi Multi-Sumber</Badge>}
-        />
-
         {/* Kartu identitas aplikasi + logo resmi */}
         <div className="bg-white border border-slate-200 rounded-lg shadow-sm p-6 flex flex-col sm:flex-row items-center sm:items-start gap-6">
           <img
