@@ -23,6 +23,7 @@
  */
 
 import {
+  fetchFruitProduction,
   fetchJagungUbiKayu,
   fetchKacangKedelai,
   fetchKelompokTani,
@@ -31,10 +32,12 @@ import {
   fetchPadiSawahLadang,
   fetchPerikananBudidaya,
   fetchPerikananTangkap,
+  fetchPlantationProduction,
   fetchTernakBesar,
   fetchTernakKecil,
   fetchUbiKacangHijau,
   fetchUnggas,
+  fetchVegetableProduction,
   type FoodCropItem,
   type FoodCropRow,
   type KelompokTaniRow,
@@ -119,7 +122,7 @@ export interface KecamatanDetailResult {
  * "kec-" (dari teks geojson "Kec.X") → hilangkan dash (geojson
  * "Purwarejaklampok" 1 kata vs data "Purwareja Klampok" 2 kata).
  */
-const KEC_KEY = (nama: string): string =>
+export const KEC_KEY = (nama: string): string =>
   kecamatanSlugOf(String(nama))
     .replace(/^kec-?/, "")
     .replace(/-/g, "");
@@ -292,4 +295,318 @@ export async function fetchKecamatanDetail(
       kelembagaan: ktS.status === "rejected",
     },
   };
+}
+
+/* ------------------------------------------------------------------ */
+/* SEBARAN BIDANG (/sebaran/:bidang) — peta tematik per-kecamatan      */
+/* ------------------------------------------------------------------ */
+/**
+ * Agregat indikator utama tiap bidang: baris-terbaru per kecamatan per
+ * dataset, lalu dijumlah antar-dataset dalam bidang yang sama.
+ *   pangan       → Σ produksi tanaman pangan (ton)
+ *   hortikultura → Σ produksi sayuran + buah-buahan (ton)
+ *   perkebunan   → Σ produksi tanaman perkebunan rakyat (ton)
+ *   peternakan   → Σ populasi ternak besar + kecil + unggas (ekor)
+ *   perikanan    → Σ produksi budidaya + tangkap (kg → ton)
+ */
+
+export type SebaranBidangKey =
+  | "pangan"
+  | "hortikultura"
+  | "perkebunan"
+  | "peternakan"
+  | "perikanan";
+
+export const SEBARAN_BIDANG_KEYS: readonly SebaranBidangKey[] = [
+  "pangan",
+  "hortikultura",
+  "perkebunan",
+  "peternakan",
+  "perikanan",
+] as const;
+
+export const isSebaranBidangKey = (v: string | undefined): v is SebaranBidangKey =>
+  !!v && (SEBARAN_BIDANG_KEYS as readonly string[]).includes(v);
+
+export interface SebaranBidangRow {
+  /** Nama tampil (nama resmi 20 kecamatan). */
+  kecamatan: string;
+  /** Slug route profil kecamatan (mis. "purwareja-klampok"). */
+  kecamatanSlug: string;
+  /** Agregat indikator bidang (satuan lihat SebaranBidangData.unit). */
+  nilai: number;
+  /** Tahun baris terbaru yang dipakai agregat ini. */
+  tahun: string;
+}
+
+export interface SebaranBidangData {
+  bidang: SebaranBidangKey;
+  judul: string;
+  /** Penjelasan cakupan indikator. */
+  indikator: string;
+  /** Satuan angka (ton / ekor). */
+  unit: string;
+  /** Tahun data terbaru lintas kecamatan (maksimum). */
+  tahun: string;
+  /** Baris urut menurun — hanya kecamatan resmi dengan data > 0. */
+  rows: SebaranBidangRow[];
+}
+
+const SEBARAN_META: Record<
+  SebaranBidangKey,
+  { judul: string; indikator: string; unit: string }
+> = {
+  pangan: {
+    judul: "Sebaran Produksi Tanaman Pangan",
+    indikator:
+      "Total produksi padi sawah & ladang, jagung, ubi kayu, kacang-kedelai, dan ubi jalar — baris terbaru tiap dataset",
+    unit: "ton",
+  },
+  hortikultura: {
+    judul: "Sebaran Produksi Hortikultura",
+    indikator: "Total produksi sayuran dan buah-buahan — baris terbaru tiap dataset",
+    unit: "ton",
+  },
+  perkebunan: {
+    judul: "Sebaran Produksi Perkebunan",
+    indikator: "Total produksi tanaman perkebunan rakyat — baris terbaru dataset",
+    unit: "ton",
+  },
+  peternakan: {
+    judul: "Sebaran Populasi Ternak",
+    indikator: "Total populasi ternak besar, kecil, dan unggas — baris terbaru tiap kelompok",
+    unit: "ekor",
+  },
+  perikanan: {
+    judul: "Sebaran Produksi Perikanan",
+    indikator:
+      "Total produksi perikanan budidaya dan tangkap (kg dikonversi ton) — baris terbaru tiap kelompok",
+    unit: "ton",
+  },
+};
+
+interface BarisAgg {
+  nilai: number;
+  tahun: string;
+}
+
+/** Kolom non-produksi/populasi yang diabaikan saat menjumlah record. */
+const SUM_SKIP = /^(kecamatan|tahun|jumlah|total|luas|panen|satuan|id)$/i;
+
+const sumRecord = (r: Record<string, unknown>): number => {
+  let s = 0;
+  for (const [k, v] of Object.entries(r)) {
+    if (SUM_SKIP.test(k)) continue;
+    const n = typeof v === "number" ? v : Number(String(v ?? "").replace(/[^\d.-]/g, ""));
+    if (Number.isFinite(n) && n > 0) s += n;
+  }
+  return s;
+};
+
+const nilaiPanganRow = (r: FoodCropRow): number =>
+  r.items.reduce((s, it) => s + (Number(it.produksi) || 0), 0);
+
+/** Per kecamatan: baris tahun-terbaru (dijumlah bila ada >1 baris tahun sama). */
+function barisTerbaru<T extends { kecamatan?: string; tahun?: string | number }>(
+  rows: T[],
+  nilaiOf: (r: T) => number,
+): Map<string, BarisAgg> {
+  const m = new Map<string, BarisAgg>();
+  for (const r of rows) {
+    const key = KEC_KEY(r.kecamatan ?? "");
+    if (!key) continue;
+    const t = String(r.tahun ?? "");
+    const v = nilaiOf(r);
+    if (!Number.isFinite(v) || v <= 0) continue;
+    const cur = m.get(key);
+    if (!cur || t > cur.tahun) m.set(key, { nilai: v, tahun: t });
+    else if (t === cur.tahun) cur.nilai += v;
+  }
+  return m;
+}
+
+/** Jumlahkan antar-dataset dalam satu bidang (nilai = Σ nilai terbaru tiap dataset). */
+function gabungDataset(maps: Map<string, BarisAgg>[]): Map<string, BarisAgg> {
+  const out = new Map<string, BarisAgg>();
+  for (const m of maps)
+    for (const [key, b] of m) {
+      const cur = out.get(key);
+      if (cur) {
+        cur.nilai += b.nilai;
+        if (b.tahun > cur.tahun) cur.tahun = b.tahun;
+      } else out.set(key, { ...b });
+    }
+  return out;
+}
+
+/** Baris mentah antar-interface dataset (field kunci optional di sumber). */
+type BarisMentah = { kecamatan?: string; tahun?: string | number };
+
+/** Map tiap dataset → agregat baris-terbaru per kecamatan. */
+function barisTerbaruPerDataset(
+  datasets: Array<BarisMentah[]>,
+  nilaiOf: (r: BarisMentah) => number,
+): Map<string, BarisAgg>[] {
+  return datasets.map((rows) => barisTerbaru(rows, nilaiOf));
+}
+
+export async function fetchSebaranBidang(bidang: SebaranBidangKey): Promise<SebaranBidangData> {
+  const meta = SEBARAN_META[bidang];
+  let maps: Map<string, BarisAgg>[];
+
+  switch (bidang) {
+    case "pangan": {
+      const [padi, jagung, kacang, ubi] = await Promise.all([
+        fetchPadiSawahLadang(),
+        fetchJagungUbiKayu(),
+        fetchKacangKedelai(),
+        fetchUbiKacangHijau(),
+      ]);
+      maps = [padi, jagung, kacang, ubi].map((rs) => barisTerbaru(rs, nilaiPanganRow));
+      break;
+    }
+    case "hortikultura": {
+      const [sayur, buah] = await Promise.all([fetchVegetableProduction(), fetchFruitProduction()]);
+      maps = barisTerbaruPerDataset([sayur, buah], (r) =>
+        sumRecord(r as unknown as Record<string, unknown>),
+      );
+      break;
+    }
+    case "perkebunan": {
+      const keb = await fetchPlantationProduction();
+      maps = [
+        barisTerbaru(keb, (r) => sumRecord(r as unknown as Record<string, unknown>)),
+      ];
+      break;
+    }
+    case "peternakan": {
+      const [besar, kecil, unggas] = await Promise.all([
+        fetchTernakBesar(),
+        fetchTernakKecil(),
+        fetchUnggas(),
+      ]);
+      maps = barisTerbaruPerDataset([besar, kecil, unggas], (r) =>
+        sumRecord(r as unknown as Record<string, unknown>),
+      );
+      break;
+    }
+    case "perikanan": {
+      const [budidaya, tangkap] = await Promise.all([
+        fetchPerikananBudidaya(),
+        fetchPerikananTangkap(),
+      ]);
+      // Sumber menyimpan kg — konversi ke ton agar sebanding antar-bidang.
+      maps = barisTerbaruPerDataset([budidaya, tangkap], (r) =>
+        sumRecord(r as unknown as Record<string, unknown>) / 1000,
+      );
+      break;
+    }
+  }
+
+  const index = await fetchKecamatanIndex();
+  const idxByKey = new Map(index.map((k) => [KEC_KEY(k.namaTampil), k]));
+
+  const rows: SebaranBidangRow[] = Array.from(gabungDataset(maps).entries())
+    .flatMap(([key, b]) => {
+      const idx = idxByKey.get(key);
+      // Buang varian ejaan yang tak terpetakan ke 20 kecamatan resmi.
+      return idx
+        ? [
+            {
+              kecamatan: idx.namaTampil,
+              kecamatanSlug: idx.slug,
+              nilai: b.nilai,
+              tahun: b.tahun,
+            },
+          ]
+        : [];
+    })
+    .sort((a, b) => b.nilai - a.nilai);
+
+  return {
+    bidang,
+    judul: meta.judul,
+    indikator: meta.indikator,
+    unit: meta.unit,
+    tahun: rows.reduce((m, r) => (r.tahun > m ? r.tahun : m), ""),
+    rows,
+  };
+}
+
+/* ------------------------------------------------------------------ */
+/* GeoJSON batas kecamatan (peta tematik sebaran)                      */
+/* ------------------------------------------------------------------ */
+
+export interface KecGeoFeature {
+  type: "Feature";
+  geometry: unknown;
+  properties: {
+    /** Kunci join (= KEC_KEY, tanpa dash) — cocok dengan SebaranBidangRow via KEC_KEY. */
+    kecKey: string;
+    /** Nama tampil tanpa singkatan "Kec." */
+    nama: string;
+  };
+}
+
+export interface KecGeoCollection {
+  type: "FeatureCollection";
+  features: KecGeoFeature[];
+}
+
+const KEC_GEO_CACHE_KEY = "cache_kec_geo_v1";
+
+function lsGet<T>(key: string): T | null {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? (JSON.parse(raw) as T) : null;
+  } catch {
+    return null;
+  }
+}
+
+function lsSet(key: string, value: unknown): void {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    /* kuota penuh — biarkan fetch berikutnya memuat ulang */
+  }
+}
+
+/**
+ * GeoJSON 20 kecamatan (public/peta_kecamatan.geojson) + cache localStorage.
+ * Properties dinormalisasi: { kecKey, nama }.
+ */
+export async function fetchKecamatanGeo(): Promise<KecGeoCollection> {
+  const cached = lsGet<KecGeoCollection>(KEC_GEO_CACHE_KEY);
+  if (cached && Array.isArray(cached.features) && cached.features.length) return cached;
+
+  const res = await fetch(`${import.meta.env.BASE_URL}peta_kecamatan.geojson`, {
+    cache: "force-cache",
+  });
+  if (!res.ok) throw new Error(`Gagal memuat peta_kecamatan.geojson (HTTP ${res.status})`);
+  const raw = (await res.json()) as {
+    type: "FeatureCollection";
+    features: Array<{
+      type: "Feature";
+      geometry: unknown;
+      properties: Record<string, unknown>;
+    }>;
+  };
+
+  const fc: KecGeoCollection = {
+    type: "FeatureCollection",
+    features: raw.features.map((f) => {
+      const nama = String(f.properties?.Kecamatan ?? f.properties?.Name ?? "").trim();
+      return {
+        type: "Feature" as const,
+        geometry: f.geometry,
+        properties: {
+          kecKey: KEC_KEY(nama),
+          nama: namaKecamatanTanpaSingkatan(nama),
+        },
+      };
+    }),
+  };
+  lsSet(KEC_GEO_CACHE_KEY, fc);
+  return fc;
 }
