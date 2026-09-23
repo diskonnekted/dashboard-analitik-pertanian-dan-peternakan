@@ -435,45 +435,6 @@ export interface LahanResmiKabupaten {
   bukanSawah: number; // II. Bukan lahan sawah (Ha)
 }
 
-const fetchLahanResmiKabupatenCsv = async (): Promise<LahanResmiKabupaten | null> => {
-  return withCache("lahan-resmi-kabupaten-v1", async () => {
-    try {
-      const response = await fetch(
-        "/14. Distankan KP/tidy/Luas Penggunaan Lahan menurut Jenis Penggunaan (Ha)/Luas Penggunaan Lahan menurut Jenis Penggunaan (Ha) tidy.csv",
-      );
-      if (!response.ok) throw new Error("CSV tidy lahan tidak tersedia");
-      const csvText = await response.text();
-      return await new Promise<LahanResmiKabupaten | null>((resolve) => {
-        Papa.parse(csvText, {
-          header: true,
-          skipEmptyLines: true,
-          complete: (results) => {
-            const rows = results.data as any[];
-            let tahun = 0;
-            rows.forEach((r) => {
-              const t = parseInt(r.tahun);
-              if (!isNaN(t) && t > tahun) tahun = t;
-            });
-            if (!tahun) return resolve(null);
-            const pick = (kat: string) => {
-              const row = rows.find(
-                (r) => String(r.kategori || "").trim() === kat && parseInt(r.tahun) === tahun,
-              );
-              const v = row ? parseFloat(String(row.value).replace(",", ".")) : NaN;
-              return isNaN(v) ? 0 : v;
-            };
-            resolve({ tahun, sawah: pick("I. Lahan sawah"), bukanSawah: pick("II. Bukan lahan sawah") });
-          },
-          error: () => resolve(null),
-        });
-      });
-    } catch (e) {
-      console.warn("fetchLahanResmiKabupaten gagal:", e);
-      return null;
-    }
-  });
-};
-
 // ============================================================
 // Luas Penggunaan Lahan menurut Jenis Penggunaan (Ha) — seri
 // waktu tahunan tingkat kabupaten (I. lahan sawah + rincian,
@@ -657,6 +618,19 @@ const fetchLahanPenggunaanCsv = async (): Promise<LahanPenggunaan | null> => {
 export const fetchLahanPenggunaan = async (): Promise<LahanPenggunaan | null> => {
   const ckan = await fetchLahanPenggunaanCkan();
   return ckan ?? (await fetchLahanPenggunaanCsv());
+};
+
+// Kartu lahan dashboard: tahun terakhir dari seri penggunaan lahan
+// (CKAN live → fallback CSV lokal) — menggantikan parser CSV lama
+// (fetchLahanResmiKabupatenCsv) agar ikut segar tanpa menunggu backend.
+const fetchLahanResmiKabupatenDariSeri = async (): Promise<LahanResmiKabupaten | null> => {
+  const hasil = await fetchLahanPenggunaan();
+  if (!hasil) return null;
+  const t = hasil.tahunList[hasil.tahunList.length - 1];
+  const sawah = hasil.series.find((s) => s.id === "sawah")?.nilai[String(t)];
+  const bukanSawah = hasil.series.find((s) => s.id === "bukan-sawah")?.nilai[String(t)];
+  if (sawah === undefined || bukanSawah === undefined) return null;
+  return { tahun: t, sawah, bukanSawah };
 };
 
 // Normalisasi nama kecamatan dari sumber CKAN/Distan yang kadang memuat
@@ -2879,7 +2853,10 @@ const fetchSt2023DesaExtraCsv = async (): Promise<St2023DesaExtra[]> =>
 // ============================================================
 
 export const fetchLahanBanjarnegara = apiFirst<LahanDesa[]>("/v1/lahan/desa?regen=t410", fetchLahanBanjarnegaraCsv);
-export const fetchLahanResmiKabupaten = apiFirst<LahanResmiKabupaten | null>("/v1/lahan/kabupaten", fetchLahanResmiKabupatenCsv);
+export const fetchLahanResmiKabupaten = apiFirst<LahanResmiKabupaten | null>(
+  "/v1/lahan/kabupaten",
+  fetchLahanResmiKabupatenDariSeri,
+);
 export const fetchPadiProduction = apiFirst<PadiProduction[]>("/v1/padi/production", fetchPadiProductionCsv);
 export const fetchPadiHistory = apiFirst<PadiHistoryPoint[]>("/v1/padi/history", fetchPadiHistoryCsv);
 export const fetchJagungUbiKayu = apiFirst<FoodCropRow[]>("/v1/palawija/jagung-ubi-kayu", fetchJagungUbiKayuCsv);
