@@ -1,5 +1,7 @@
-import { SectionCard, Badge } from "@/components/ui";
+import DefaultLayout from "@/layouts/default";
+import { PageHeader, SectionCard, Badge } from "@/components/ui";
 import {
+  Info,
   Wheat,
   Globe,
   FileSpreadsheet,
@@ -13,7 +15,6 @@ import {
   MapPin,
   CheckCircle2,
   Circle,
-  ArrowRight,
   BarChart3,
   Layers,
   ShieldCheck,
@@ -21,31 +22,29 @@ import {
 } from "lucide-react";
 
 /* =========================================================
-   Halaman Info SISPERTANI
-   - Hero identitas aplikasi + logo resmi
-   - Sumber data (garis besar, tanpa rincian teknis sensitif)
-   - Alur akses data multi-lapis
-   - Kontak & roadmap
+   Halaman Info SISPERTANI — mengikuti pola layout & style
+   halaman lain (DefaultLayout + PageHeader + kartu baku).
+   Sumber data ditampilkan garis besar tanpa rincian teknis.
    ========================================================= */
 
 const RINGKASAN_FITUR = [
   {
-    icon: Layers,
+    icon: <Layers className="h-5 w-5" />,
+    boxClass: "bg-blue-100 text-blue-700",
     title: "Integrasi Multi-Sumber",
     desc: "Statistik dinas, portal data terbuka kabupaten, dan layanan data pangan nasional dalam satu tampilan.",
-    color: "bg-blue-50 text-blue-700",
   },
   {
-    icon: BarChart3,
+    icon: <BarChart3 className="h-5 w-5" />,
+    boxClass: "bg-emerald-100 text-emerald-700",
     title: "Visualisasi Interaktif",
     desc: "Peta 278 desa, tren produksi, harga, dan indikator ketahanan pangan dengan grafik yang mudah dibaca.",
-    color: "bg-emerald-50 text-emerald-700",
   },
   {
-    icon: ShieldCheck,
+    icon: <ShieldCheck className="h-5 w-5" />,
+    boxClass: "bg-amber-100 text-amber-700",
     title: "Akses Publik & Transparan",
     desc: "Setiap panel mencantumkan sumber datanya; arsip lokal menjaga ketersediaan saat gangguan jaringan.",
-    color: "bg-amber-50 text-amber-700",
   },
 ];
 
@@ -53,62 +52,83 @@ const RINGKASAN_FITUR = [
    Rincian endpoint/tabel teknis tidak ditampilkan di halaman publik. */
 const SUMBER_DATA = [
   {
-    icon: Globe,
+    icon: <Globe className="h-5 w-5" />,
+    boxClass: "bg-blue-100 text-blue-700",
     nama: "Portal Open Data Kabupaten Banjarnegara",
     lembaga: "Pemerintah Kabupaten Banjarnegara",
     jenis: "Portal Data Terbuka",
-    warna: "bg-blue-50 text-blue-700",
     cakupan: ["Produksi tanaman pangan", "Produksi sayuran", "Lumbung pangan", "Aktivitas pasar"],
     catatan:
       "Statistik resmi kabupaten yang diterbitkan melalui portal data terbuka opendata.banjarnegarakab.go.id.",
   },
   {
-    icon: TrendingUp,
+    icon: <TrendingUp className="h-5 w-5" />,
+    boxClass: "bg-rose-100 text-rose-700",
     nama: "Badan Pangan Nasional",
     lembaga: "Bapanas RI",
     jenis: "Layanan Data Daring",
-    warna: "bg-rose-50 text-rose-700",
-    cakupan: ["Indeks anomali harga pangan nasional", "Harga pangan konsumen Jateng", "Harga pangan produsen Jateng"],
+    cakupan: [
+      "Indeks anomali harga pangan nasional",
+      "Harga pangan konsumen Jateng",
+      "Harga pangan produsen Jateng",
+    ],
     catatan:
       "Indikator stabilitas harga pangan nasional serta harga tingkat konsumen dan produsen Provinsi Jawa Tengah.",
   },
   {
-    icon: FileSpreadsheet,
+    icon: <FileSpreadsheet className="h-5 w-5" />,
+    boxClass: "bg-teal-100 text-teal-700",
     nama: "Sensus Pertanian 2023",
     lembaga: "BPS Kabupaten Banjarnegara",
     jenis: "Publikasi Resmi",
-    warna: "bg-teal-50 text-teal-700",
-    cakupan: ["Profil lahan usaha tani per desa", "Rumah tangga pertanian", "Populasi ternak & perikanan"],
+    cakupan: [
+      "Profil lahan usaha tani per desa",
+      "Rumah tangga pertanian",
+      "Populasi ternak & perikanan",
+    ],
     catatan:
       "Hasil Sensus Pertanian 2023 (ST2023) hingga tingkat desa, sebagai baseline profil usaha tani kabupaten.",
   },
   {
-    icon: Wheat,
+    icon: <Wheat className="h-5 w-5" />,
+    boxClass: "bg-emerald-100 text-emerald-700",
     nama: "Dinas Pertanian & Ketahanan Pangan",
     lembaga: "Distankan Banjarnegara",
     jenis: "Arsip Dinas",
-    warna: "bg-emerald-50 text-emerald-700",
-    cakupan: ["Tanaman pangan & hortikultura", "Perkebunan, peternakan, perikanan", "Kelembagaan petani", "Dokumen renstra"],
+    cakupan: [
+      "Tanaman pangan & hortikultura",
+      "Perkebunan, peternakan, perikanan",
+      "Kelembagaan petani",
+      "Dokumen renstra",
+    ],
     catatan:
       "Tabel statistik resmi dinas (±2018–2024) serta dokumen perencanaan yang menjadi acuan program pertanian.",
   },
   {
-    icon: Map,
+    icon: <Map className="h-5 w-5" />,
+    boxClass: "bg-sky-100 text-sky-700",
     nama: "Data Geospasial",
     lembaga: "Pemkab Banjarnegara / BIG",
     jenis: "Peta & Batas Wilayah",
-    warna: "bg-sky-50 text-sky-700",
-    cakupan: ["Batas 20 kecamatan & 278 desa", "Layer jalan, sungai, danau", "Peta dasar daring (Esri, OpenFreeMap)"],
+    cakupan: [
+      "Batas 20 kecamatan & 278 desa",
+      "Layer jalan, sungai, danau",
+      "Peta dasar daring (Esri, OpenFreeMap)",
+    ],
     catatan:
       "Batas administrasi dan layer pendukung untuk visualisasi peta dasbor dan halaman detail desa.",
   },
   {
-    icon: Database,
+    icon: <Database className="h-5 w-5" />,
+    boxClass: "bg-violet-100 text-violet-700",
     nama: "Basis Data Internal SISPERTANI",
     lembaga: "Dikelola Dinas (Dasbor Admin)",
     jenis: "Integrasi & Normalisasi",
-    warna: "bg-violet-50 text-violet-700",
-    cakupan: ["Hasil integrasi seluruh sumber", "Normalisasi & validasi silang", "Arsip snapshot cadangan"],
+    cakupan: [
+      "Hasil integrasi seluruh sumber",
+      "Normalisasi & validasi silang",
+      "Arsip snapshot cadangan",
+    ],
     catatan:
       "Data utama aplikasi disajikan dari basis data internal yang dikelola melalui dasbor admin, dilengkapi arsip lokal sebagai lapisan cadangan.",
   },
@@ -116,17 +136,17 @@ const SUMBER_DATA = [
 
 const ALUR_AKSES = [
   {
-    icon: Database,
+    icon: <Database className="h-5 w-5" />,
     judul: "Basis Data Internal",
     desc: "Sajian utama dari hasil integrasi & normalisasi seluruh sumber.",
   },
   {
-    icon: Globe,
+    icon: <Globe className="h-5 w-5" />,
     judul: "Sumber Daring Resmi",
     desc: "Pembaruan langsung dari portal/API lembaga saat data terbaru tersedia.",
   },
   {
-    icon: Archive,
+    icon: <Archive className="h-5 w-5" />,
     judul: "Arsip Lokal",
     desc: "Snapshot tersimpan sebagai cadangan bila layanan daring mengalami gangguan.",
   },
@@ -152,172 +172,165 @@ const ROADMAP = [
 
 export default function InfoPage() {
   return (
-    <div className="space-y-6">
-      {/* ——— Hero identitas aplikasi ——— */}
-      <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-900 via-blue-800 to-emerald-700 px-6 py-10 text-white shadow-lg">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-[0.07]"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle at 20% 30%, white 0, transparent 40%), radial-gradient(circle at 80% 70%, white 0, transparent 45%)",
-          }}
+    <DefaultLayout>
+      <section className="flex flex-col gap-8 py-2 max-w-6xl mx-auto">
+        <PageHeader
+          icon={<Info className="h-6 w-6" />}
+          title="Info SISPERTANI"
+          subtitle="Informasi umum sistem, sumber data, dan roadmap pengembangan Dasbor Analitik Pertanian Kabupaten Banjarnegara."
+          actions={<Badge tone="emerald">Data Resmi Multi-Sumber</Badge>}
         />
-        <div className="relative flex flex-col items-center gap-6 text-center">
-          <div className="rounded-3xl bg-white/95 p-4 shadow-xl ring-1 ring-white/40">
-            <img src="/logo.png" alt="Logo resmi SISPERTANI" className="h-24 w-auto sm:h-28" />
-          </div>
-          <div className="space-y-2">
-            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">SISPERTANI</h1>
-            <p className="mx-auto max-w-2xl text-sm leading-relaxed text-blue-100 sm:text-base">
+
+        {/* Kartu identitas aplikasi + logo resmi */}
+        <div className="bg-white border border-slate-200 rounded-lg shadow-sm p-6 flex flex-col sm:flex-row items-center sm:items-start gap-6">
+          <img
+            src="/logo.png"
+            alt="Logo resmi SISPERTANI"
+            className="h-28 w-auto shrink-0 rounded-lg bg-white p-1"
+          />
+          <div className="text-center sm:text-left min-w-0">
+            <h2 className="text-2xl font-bold tracking-tight text-slate-800">SISPERTANI</h2>
+            <p className="mt-1 max-w-2xl text-sm leading-relaxed text-slate-500">
               Sistem Informasi Pertanian Kabupaten Banjarnegara — integrasi data statistik pertanian,
               harga pangan, dan profil desa dalam satu dasbor untuk mendukung ketahanan pangan daerah.
             </p>
-          </div>
-          <div className="flex flex-wrap items-center justify-center gap-2">
-            <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-medium ring-1 ring-white/25">
-              Kabupaten Banjarnegara
-            </span>
-            <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-medium ring-1 ring-white/25">
-              20 Kecamatan
-            </span>
-            <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-medium ring-1 ring-white/25">
-              278 Desa
-            </span>
-            <span className="rounded-full bg-emerald-400/20 px-3 py-1 text-xs font-medium text-emerald-100 ring-1 ring-emerald-300/40">
-              Data Resmi Multi-Sumber
-            </span>
+            <div className="mt-3 flex flex-wrap justify-center sm:justify-start gap-2">
+              <Badge tone="blue">Kabupaten Banjarnegara</Badge>
+              <Badge tone="slate">20 Kecamatan</Badge>
+              <Badge tone="slate">278 Desa</Badge>
+            </div>
           </div>
         </div>
+
+        {/* Ringkasan fitur */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {RINGKASAN_FITUR.map((f) => (
+            <div key={f.title} className="bg-white border border-slate-200 rounded-lg shadow-sm p-5">
+              <div className={`flex h-9 w-9 items-center justify-center rounded-md mb-3 ${f.boxClass}`}>
+                {f.icon}
+              </div>
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">Fitur</p>
+              <h3 className="mt-1 text-sm font-semibold text-slate-800">{f.title}</h3>
+              <p className="mt-1 text-sm leading-relaxed text-slate-500">{f.desc}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Sumber data */}
+        <SectionCard icon={<Landmark size={16} className="text-blue-800" />} title="Sumber Data">
+          <p className="mb-4 text-sm text-slate-500">
+            Institusi penyedia data yang digunakan aplikasi — garis besar per jenis kelompok data.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            {SUMBER_DATA.map((s) => (
+              <article
+                key={s.nama}
+                className="bg-white border border-slate-200 rounded-lg shadow-sm p-5 flex flex-col"
+              >
+                <div className="flex items-start justify-between gap-3 mb-3">
+                  <div className={`flex h-9 w-9 items-center justify-center rounded-md shrink-0 ${s.boxClass}`}>
+                    {s.icon}
+                  </div>
+                  <Badge tone="slate">{s.jenis}</Badge>
+                </div>
+                <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{s.lembaga}</p>
+                <h3 className="mt-1 text-sm font-semibold leading-snug text-slate-800">{s.nama}</h3>
+                <ul className="mt-3 space-y-1.5">
+                  {s.cakupan.map((c) => (
+                    <li key={c} className="flex items-start gap-2 text-sm leading-relaxed text-slate-600">
+                      <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-slate-400" />
+                      {c}
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-3 pt-3 border-t border-slate-200 text-xs leading-relaxed text-slate-500">
+                  {s.catatan}
+                </p>
+              </article>
+            ))}
+          </div>
+          <p className="mt-4 text-xs leading-relaxed text-slate-400">
+            Rincian teknis akses data (endpoint, tabel, dan kunci layanan) tidak ditampilkan di halaman publik
+            demi keamanan sistem. Setiap panel statistik mencantumkan sumber spesifiknya pada bagian bawah halaman.
+          </p>
+        </SectionCard>
+
+        {/* Alur akses data */}
+        <SectionCard icon={<Layers size={16} className="text-blue-800" />} title="Alur Akses Data">
+          <p className="mb-4 text-sm text-slate-500">
+            Urutan lapisan penyajian data agar tampilan tetap tersedia dan mutakhir.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {ALUR_AKSES.map((a, i) => (
+              <div key={a.judul} className="bg-white border border-slate-200 rounded-lg shadow-sm p-5">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-md bg-blue-100 text-blue-700 shrink-0">
+                    {a.icon}
+                  </div>
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+                    Lapisan {i + 1}
+                  </p>
+                </div>
+                <h3 className="text-sm font-semibold text-slate-800">{a.judul}</h3>
+                <p className="mt-1 text-sm leading-relaxed text-slate-500">{a.desc}</p>
+              </div>
+            ))}
+          </div>
+        </SectionCard>
+
+        {/* Kontak & jam layanan & roadmap */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <SectionCard icon={<MapPin size={16} className="text-blue-800" />} title="Kontak">
+            <div className="space-y-3 text-sm text-slate-600">
+              <p className="leading-relaxed">{KONTAK.alamat}</p>
+              <div className="flex items-center gap-2">
+                <Phone className="h-4 w-4 text-slate-400" />
+                <span>{KONTAK.telepon}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Mail className="h-4 w-4 text-slate-400" />
+                <span className="break-all">{KONTAK.email}</span>
+              </div>
+            </div>
+          </SectionCard>
+
+          <SectionCard icon={<Clock size={16} className="text-blue-800" />} title="Jam Layanan">
+            <div className="space-y-2">
+              {KONTAK.jam.map((j) => (
+                <div
+                  key={j.hari}
+                  className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2 text-sm"
+                >
+                  <span className="text-slate-600">{j.hari}</span>
+                  <span className="font-medium text-slate-800">{j.pelayanan}</span>
+                </div>
+              ))}
+            </div>
+          </SectionCard>
+
+          <SectionCard icon={<BarChart3 size={16} className="text-blue-800" />} title="Roadmap">
+            <ul className="space-y-2.5">
+              {ROADMAP.map((r) => (
+                <li key={r.judul} className="flex items-start gap-2.5 text-sm">
+                  {r.status === "selesai" ? (
+                    <CheckCircle2 className="h-4 w-4 shrink-0 mt-0.5 text-emerald-600" />
+                  ) : (
+                    <Circle className="h-4 w-4 shrink-0 mt-0.5 text-amber-500" />
+                  )}
+                  <span className={r.status === "selesai" ? "text-slate-600" : "font-medium text-slate-800"}>
+                    {r.judul}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </SectionCard>
+        </div>
+
+        <p className="pb-2 text-center text-xs leading-relaxed text-slate-400">
+          Foto pada peta dan halaman profil merupakan ilustrasi; seluruh angka statistik berasal dari sumber resmi
+          sebagaimana tercantum di atas.
+        </p>
       </section>
-
-      {/* ——— Ringkasan fitur ——— */}
-      <div className="grid gap-4 md:grid-cols-3">
-        {RINGKASAN_FITUR.map((f) => (
-          <div key={f.title} className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-            <div className={`mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg ${f.color}`}>
-              <f.icon className="h-5 w-5" />
-            </div>
-            <h3 className="text-sm font-semibold text-slate-800">{f.title}</h3>
-            <p className="mt-1 text-sm leading-relaxed text-slate-500">{f.desc}</p>
-          </div>
-        ))}
-      </div>
-
-      {/* ——— Sumber data ——— */}
-      <SectionCard icon={<Landmark className="h-5 w-5" />} title="Sumber Data">
-        <p className="mb-4 text-sm text-slate-500">
-          Institusi penyedia data yang digunakan aplikasi — garis besar per jenis kelompok data.
-        </p>
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {SUMBER_DATA.map((s) => (
-            <article key={s.nama} className="flex flex-col rounded-xl border border-slate-200 bg-slate-50/60 p-5 transition-shadow hover:shadow-md">
-              <div className="mb-3 flex items-start justify-between gap-3">
-                <div className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${s.warna}`}>
-                  <s.icon className="h-5 w-5" />
-                </div>
-                <Badge tone="slate">{s.jenis}</Badge>
-              </div>
-              <h3 className="text-sm font-semibold leading-snug text-slate-800">{s.nama}</h3>
-              <p className="mt-0.5 text-xs font-medium text-slate-500">{s.lembaga}</p>
-              <ul className="mt-3 space-y-1.5">
-                {s.cakupan.map((c) => (
-                  <li key={c} className="flex items-start gap-2 text-xs leading-relaxed text-slate-600">
-                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-slate-400" />
-                    {c}
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-3 border-t border-slate-200 pt-3 text-xs leading-relaxed text-slate-500">{s.catatan}</p>
-            </article>
-          ))}
-        </div>
-        <p className="mt-4 text-xs leading-relaxed text-slate-400">
-          Rincian teknis akses data (endpoint, tabel, dan kunci layanan) tidak ditampilkan di halaman publik
-          demi keamanan sistem. Setiap panel statistik mencantumkan sumber spesifiknya pada bagian bawah halaman.
-        </p>
-      </SectionCard>
-
-      {/* ——— Alur akses data ——— */}
-      <SectionCard icon={<Layers className="h-5 w-5" />} title="Alur Akses Data">
-        <p className="mb-4 text-sm text-slate-500">
-          Urutan lapisan penyajian data agar tampilan tetap tersedia dan mutakhir.
-        </p>
-        <div className="flex flex-col gap-3 md:flex-row md:items-stretch">
-          {ALUR_AKSES.map((a, i) => (
-            <div key={a.judul} className="flex flex-1 flex-col gap-3 md:flex-row md:items-center">
-              <div className="flex-1 rounded-xl border border-slate-200 bg-white p-4">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-700">
-                    <a.icon className="h-4.5 w-4.5" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-wide text-blue-800">Lapisan {i + 1}</p>
-                    <h3 className="text-sm font-semibold text-slate-800">{a.judul}</h3>
-                  </div>
-                </div>
-                <p className="mt-2 text-xs leading-relaxed text-slate-500">{a.desc}</p>
-              </div>
-              {i < ALUR_AKSES.length - 1 && (
-                <ArrowRight className="hidden h-5 w-5 shrink-0 text-slate-300 md:block" />
-              )}
-            </div>
-          ))}
-        </div>
-      </SectionCard>
-
-      {/* ——— Kontak & jam layanan ——— */}
-      <div className="grid gap-6 lg:grid-cols-3">
-        <SectionCard icon={<MapPin className="h-5 w-5" />} title="Kontak">
-          <p className="mb-3 text-sm text-slate-500">Layanan pengguna aplikasi.</p>
-          <div className="space-y-3 text-sm text-slate-600">
-            <p className="leading-relaxed">{KONTAK.alamat}</p>
-            <div className="flex items-center gap-2">
-              <Phone className="h-4 w-4 text-slate-400" />
-              <span>{KONTAK.telepon}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Mail className="h-4 w-4 text-slate-400" />
-              <span>{KONTAK.email}</span>
-            </div>
-          </div>
-        </SectionCard>
-
-        <SectionCard icon={<Clock className="h-5 w-5" />} title="Jam Layanan">
-          <p className="mb-3 text-sm text-slate-500">Waktu layanan administrasi.</p>
-          <div className="space-y-2">
-            {KONTAK.jam.map((j) => (
-              <div key={j.hari} className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2 text-sm">
-                <span className="text-slate-600">{j.hari}</span>
-                <span className="font-medium text-slate-800">{j.pelayanan}</span>
-              </div>
-            ))}
-          </div>
-        </SectionCard>
-
-        <SectionCard icon={<BarChart3 className="h-5 w-5" />} title="Roadmap">
-          <p className="mb-3 text-sm text-slate-500">Pengembangan aplikasi.</p>
-          <ul className="space-y-2.5">
-            {ROADMAP.map((r) => (
-              <li key={r.judul} className="flex items-start gap-2.5 text-sm">
-                {r.status === "selesai" ? (
-                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
-                ) : (
-                  <Circle className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" />
-                )}
-                <span className={r.status === "selesai" ? "text-slate-600" : "font-medium text-slate-800"}>
-                  {r.judul}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </SectionCard>
-      </div>
-
-      <p className="pb-2 text-center text-xs leading-relaxed text-slate-400">
-        Foto pada peta dan halaman profil merupakan ilustrasi; seluruh angka statistik berasal dari sumber resmi
-        sebagaimana tercantum di atas.
-      </p>
-    </div>
+    </DefaultLayout>
   );
 }
