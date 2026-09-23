@@ -17,10 +17,13 @@ import {
   CheckCircle2,
   Cherry,
   ClipboardList,
+  CloudDownload,
   Coins,
   Database,
   Download,
   ExternalLink,
+  Eye,
+  EyeOff,
   FileCheck,
   FileSpreadsheet,
   Fish,
@@ -138,6 +141,7 @@ export default function AdminPage() {
   const [pass, setPass] = useState("");
   const [loginErr, setLoginErr] = useState<string | null>(null);
   const [loginBusy, setLoginBusy] = useState(false);
+  const [showPass, setShowPass] = useState(false);
   const [domains, setDomains] = useState<DomainInfo[] | null>(null);
   const [health, setHealth] = useState<{ ok?: boolean; db?: string } | null>(null);
   const [bantuan, setBantuan] = useState<BantuanData | null>(null);
@@ -324,8 +328,8 @@ export default function AdminPage() {
 
           <ul className="relative space-y-3 text-sm text-slate-300">
             {[
-              { icon: Database, text: "15 domain data MySQL — pangan, ternak, perikanan, bantuan" },
-              { icon: RefreshCw, text: "Sinkronisasi Excel dua arah (template / export / import)" },
+              { icon: CloudDownload, text: "Terkoneksi dengan Open Data Kabupaten Banjarnegara" },
+              { icon: RefreshCw, text: "Sinkronisasi data via API dan manual" },
               { icon: ShieldCheck, text: "Area internal — akses terbatas pegawai dinas" },
             ].map((f) => (
               <li key={f.text} className="flex items-center gap-3">
@@ -387,13 +391,22 @@ export default function AdminPage() {
                   <div className="relative">
                     <KeyRound className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                     <input
-                      type="password"
+                      type={showPass ? "text" : "password"}
                       value={pass}
                       onChange={(e) => setPass(e.target.value)}
                       autoComplete="current-password"
-                      className="w-full rounded-lg border border-slate-300 bg-slate-50 py-2.5 pl-10 pr-3 text-sm text-slate-800 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-500/30"
+                      className="w-full rounded-lg border border-slate-300 bg-slate-50 py-2.5 pl-10 pr-10 text-sm text-slate-800 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-500/30"
                       placeholder="••••••••"
                     />
+                    <button
+                      type="button"
+                      onClick={() => setShowPass((v) => !v)}
+                      aria-label={showPass ? "Sembunyikan kata sandi" : "Lihat kata sandi"}
+                      title={showPass ? "Sembunyikan kata sandi" : "Lihat kata sandi"}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-0.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
+                    >
+                      {showPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
                   </div>
                 </label>
 
@@ -422,15 +435,6 @@ export default function AdminPage() {
                   )}
                 </button>
               </form>
-
-              <div className="mt-6 flex items-start gap-2.5 rounded-lg border border-slate-200 bg-slate-50 p-3 text-[11px] leading-relaxed text-slate-500">
-                <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-slate-400" />
-                <span>
-                  Kredensial diatur di <span className="font-mono">backend/.env</span>{" "}
-                  (ADMIN_USER / ADMIN_PASS). Sesi login berlaku 12 jam. Halaman ini
-                  tidak tampil di menu publik.
-                </span>
-              </div>
             </div>
 
             <Link
