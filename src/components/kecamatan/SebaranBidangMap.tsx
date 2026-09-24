@@ -15,8 +15,8 @@ import {
  * KecamatanMapMini (tingkat kecamatan, /kecamatan/:kec):
  * - basemap MapLibre + OpenFreeMap "liberty" (PMTiles, tanpa API key);
  * - polygon 20 kecamatan diwarnai per KELAS nilai (5 kelas kuantil —
- *   warna precomputed di properties.warna agar ekspresi fill-color
- *   cukup ["get","warna"]);
+ * warna precomputed di properties.warna agar ekspresi fill-color
+ * cukup ["get","warna"]);
  * - label nama kecamatan + angka indikator (compact);
  * - hover: highlight + popup ringkas; klik: menuju profil kecamatan.
  *
@@ -278,7 +278,7 @@ export function SebaranBidangMap({ geo, rows, breaks, colors, unit, judul }: Pro
   const adaData = rows.filter((r) => r.nilai > 0).length;
 
   return (
-    <div className="rounded-xl overflow-hidden border border-slate-200 shadow-sm bg-white">
+    <div className="rounded-lg overflow-hidden border border-slate-200 shadow-sm bg-white">
       <div
         className="
           flex items-center gap-2 px-3 py-1.5
@@ -306,7 +306,7 @@ export function SebaranBidangMap({ geo, rows, breaks, colors, unit, judul }: Pro
 }
 
 /* ------------------------------------------------------------------ */
-/* Utilitas kecil (duplikasi sadar dari KecamatanMapMini).             */
+/* Utilitas kecil (duplikasi sadar dari KecamatanMapMini). */
 /* ------------------------------------------------------------------ */
 
 function computeBBox(fc: GeoJSON.FeatureCollection): [[number, number], [number, number]] | null {

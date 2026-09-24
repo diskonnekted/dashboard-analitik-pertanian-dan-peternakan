@@ -49,11 +49,11 @@ const fmt = new Intl.NumberFormat("id-ID", { maximumFractionDigits: 2 });
 const formatNum = (v?: number | null) => (v == null ? "—" : fmt.format(v));
 
 const JENIS_LIST = ["KWT", "Pokdakan", "Poklahsar", "Pokmamas"] as const;
-const JENIS_TONE: Record<string, "blue" | "slate" | "violet" | "amber"> = {
+const JENIS_TONE: Record<string, "blue"> = {
   KWT: "blue",
-  Pokdakan: "slate",
-  Poklahsar: "violet",
-  Pokmamas: "amber",
+  Pokdakan: "blue",
+  Poklahsar: "blue",
+  Pokmamas: "blue",
 };
 const CHART_COLORS: Record<string, string> = {
   KWT: "#1e40af",

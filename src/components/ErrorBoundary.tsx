@@ -28,7 +28,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
       return (
         <div className="min-h-[60vh] flex items-center justify-center p-8">
-          <div className="bg-white border border-red-200 rounded-2xl shadow-lg p-8 max-w-md w-full text-center">
+          <div className="bg-white border border-red-200 rounded-2xl shadow p-8 max-w-md w-full text-center">
             <div className="w-16 h-16 mx-auto bg-red-100 rounded-full flex items-center justify-center mb-4">
               <AlertCircle className="text-red-600" size={32} />
             </div>
@@ -37,7 +37,7 @@ export class ErrorBoundary extends Component<Props, State> {
             <p className="text-xs text-slate-400 mb-6">Silakan muat ulang halaman jika masalah berlanjut.</p>
             <button
               onClick={() => window.location.reload()}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-800 text-white rounded-xl font-mono text-sm font-bold hover:bg-slate-700 transition-colors"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-800 text-white rounded-lg text-sm font-bold hover:bg-slate-700 transition-colors"
             >
               <RefreshCw size={14} />
               Muat Ulang

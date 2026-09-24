@@ -63,13 +63,13 @@ export function KpiCard({
 }) {
   return (
     <div
-      className={`bg-white border border-slate-200 rounded-xl shadow-sm p-5 flex flex-row items-center gap-4 text-left transition-all duration-200 hover:shadow-md hover:border-slate-300 ${className}`}
+      className={`bg-white border border-slate-200 rounded-lg shadow-sm p-5 flex flex-row items-center gap-4 text-left transition-all duration-200 hover:shadow hover:border-slate-300 ${className}`}
     >
       <div className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg text-slate-800 ${color}`}>
         {icon}
       </div>
       <div className="flex flex-col min-w-0">
-        <p className="text-[10px] font-mono font-semibold text-slate-400 uppercase tracking-wider">{label}</p>
+        <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">{label}</p>
         <div className="flex items-baseline gap-2 mt-1 flex-wrap">
           <p className="text-2xl font-sans font-bold tracking-tight text-slate-800 tabular-nums break-words">
             {value}
@@ -164,7 +164,6 @@ const badgeTones: Record<string, string> = {
   emerald: "bg-emerald-50 text-emerald-700",
   amber: "bg-amber-50 text-amber-700",
   red: "bg-red-50 text-red-700",
-  violet: "bg-violet-50 text-violet-700",
 };
 
 export function Badge({
@@ -224,7 +223,7 @@ export function EmptyStatePlaceholder({
 }) {
   return (
     <section
-      className={`flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white p-10 text-center ${className}`}
+      className={`flex flex-col items-center justify-center rounded-lg border border-dashed border-slate-300 bg-white p-10 text-center ${className}`}
     >
       <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-400">
         {icon ?? (

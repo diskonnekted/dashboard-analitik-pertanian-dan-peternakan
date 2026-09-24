@@ -4,20 +4,20 @@
  * PRINSIP (mengikuti harga-referensi.ts): harga TIDAK hardcode di komponen — semua di
  * modul data ini, setiap entri WAJIB punya keterangan sumber & tanggal.
  *
- * DUA KELOMPOK PRODUK:
- *  1. "tawar" — ikan air tawar hasil BUDIDAYA (kolam/karamba/minapadi) + TANGKAP
- *     perairan umum (Waduk Mrica / Serayu) Banjarnegara. Volume produksi resmi BPS
- *     hanya dipublikasikan per tempat pemeliharaan / alat tangkap — TIDAK per jenis
- *     ikan — sehingga rincian per jenis di halaman /fisheries adalah ESTIMASI
- *     komposisi (pangsa % indikatif), bukan angka BPS. Penyajian katalog memakai
- *     5 GRUP PRODUK sesuai daftar klien (refinemen 22 Sep 2026): Lele, Gurame,
- *     Patin, Nila / Mujair (grup gabungan master §3.2 No. 2–3), Ikan Gabus &
- *     Belut. Kebutuhan data statistik per jenis (7 jenis + minapadi + pembenihan)
- *     tetap mengikuti gap-analysis-master.md §3.2 — katalog grup ini dipecah
- *     ulang begitu data resmi per jenis tersedia (endpoint/admin).
- *  2. "laut" — ikan laut yang BEREDAR di pasar lokal (mis. Pasar Ikan Purwanegara),
- *     didatangkan dari wilayah pesisir; Banjarnegara BUKAN penghasil ikan laut,
- *     sehingga produk laut hanya dikatalogkan harga & ketersediaannya (tanpa volume).
+ * SATU KELOMPOK PRODUK:
+ *  - "tawar" — ikan air tawar hasil BUDIDAYA (kolam/karamba/minapadi) + TANGKAP
+ *    perairan umum (Waduk Mrica / Serayu) Banjarnegara. Volume produksi resmi BPS
+ *    hanya dipublikasikan per tempat pemeliharaan / alat tangkap — TIDAK per jenis
+ *    ikan — sehingga rincian per jenis di halaman /fisheries adalah ESTIMASI
+ *    komposisi (pangsa % indikatif), bukan angka BPS. Penyajian memakai 5 GRUP
+ *    PRODUK sesuai daftar klien (refinemen 22 Sep 2026): Lele, Gurame, Patin,
+ *    Nila / Mujair (grup gabungan master §3.2 No. 2–3), Ikan Gabus & Belut.
+ *    Kebutuhan data statistik per jenis (7 jenis + minapadi + pembenihan) tetap
+ *    mengikuti gap-analysis-master.md §3.2 — grup ini dipecah ulang begitu data
+ *    resmi per jenis tersedia (endpoint/admin).
+ *
+ * Ikan laut DIHAPUS: Banjarnegara bukan penghasil ikan laut, sehingga jenis laut
+ * tidak lagi dikatalogkan (keputusan klien 23 Sep 2026).
  *
  * KELAS SUMBER HARGA: "indikatif" — harga pasar wajar per 2025-2026 yang BELUM
  * terverifikasi dari sumber resmi online (API Bapanas 403 WAF; Bappebti infoharga
@@ -27,7 +27,7 @@
  * Update: cukup sunting entri di bawah (hargaMin/hargaMax/pangsa/sentra/deskripsi).
  */
 
-export type KelompokIkan = "tawar" | "laut";
+export type KelompokIkan = "tawar";
 
 export interface ProdukIkan {
   /** nama jenis ikan (label tampil) */
@@ -112,48 +112,6 @@ export const PRODUK_IKAN_TAWAR: ProdukIkan[] = [
     hargaMax: 65_000,
     pangsa: 9,
     catatan: "Umumnya hasil tangkap perairan umum/sawah, bukan budidaya.",
-  },
-];
-
-/* ===================== LAUT (peredaran pasar lokal) ===================== */
-/* Banjarnegara bukan penghasil ikan laut — produk didatangkan dari wilayah
- * pesisir (mis. via PPS Cilacap/Pekalongan) dan hanya dikatalogkan harga. */
-export const PRODUK_IKAN_LAUT: ProdukIkan[] = [
-  {
-    nama: "Selar Kuning (Ciu)",
-    kelompok: "laut",
-    deskripsi:
-      "Pasokan stabil dengan harga terjangkau di pasaran.",
-    hargaMin: 20_000,
-    hargaMax: 30_000,
-    catatan: "Ikan laut ekonomis paling banyak beredar harian.",
-  },
-  {
-    nama: "Kurisi & Ikan Kembung",
-    kelompok: "laut",
-    deskripsi:
-      "Sering dijual sebagai pilihan ikan laut segar harian.",
-    hargaMin: 25_000,
-    hargaMax: 35_000,
-    catatan: "Duo ikan laut segar andalan pedagang pasar tradisional.",
-  },
-  {
-    nama: "Ikan Bandeng",
-    kelompok: "laut",
-    deskripsi:
-      "Tersedia dalam berbagai ukuran berat per kilogram.",
-    hargaMin: 28_000,
-    hargaMax: 40_000,
-    catatan: "Ukuran/kelas berat menentukan harga per kilogram.",
-  },
-  {
-    nama: "Cumi-cumi & Udang Putih Besar",
-    kelompok: "laut",
-    deskripsi:
-      "Produk hasil laut pendukung yang juga tersedia di pusat perdagangan ikan setempat.",
-    hargaMin: 60_000,
-    hargaMax: 110_000,
-    catatan: "Produk premium — udang putih besar di harga atas kisaran.",
   },
 ];
 

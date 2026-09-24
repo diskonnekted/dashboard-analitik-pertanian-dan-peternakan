@@ -426,7 +426,7 @@ export default function PlantationPage() {
         {/* Hero / intro */}
         <PageHeader
           icon={<TreePine className="h-6 w-6" />}
-          title="Analitik Perkebunan & Komoditas"
+          title="Analitik Perkebunan"
           subtitle="Analisis luas lahan, hasil produksi, dan produktivitas perkebunan Kabupaten Banjarnegara."
           actions={<Badge tone="blue">Tahun {selectedYear}</Badge>}
         />

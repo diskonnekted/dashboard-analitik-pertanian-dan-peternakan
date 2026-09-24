@@ -110,7 +110,7 @@ export default function PeternakanSusuKulitPage() {
       <section className="flex flex-col gap-8">
         <PageHeader
           icon={<Droplets className="h-6 w-6" />}
-          title="Produksi Susu &amp; Kulit"
+          title="Susu &amp; Kulit Ternak"
           subtitle={
             rows && rows.length > 0
               ? `Produksi susu (liter) dari sapi/kerbau dan kulit (lembar) dari kambing/domba per kecamatan. Σ ${fmt(kpiTotal)} ${unitLabel} — diverifikasi backend.`

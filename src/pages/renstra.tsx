@@ -92,7 +92,7 @@ export default function RenstraPage() {
       <section className="flex flex-col gap-8 py-2 max-w-5xl mx-auto">
         {/* Toolbar */}
         <div className="no-print flex items-center justify-between bg-white border border-slate-200 p-4 shadow-sm">
-          <p className="text-xs font-mono font-bold uppercase text-slate-600">
+          <p className="text-xs font-bold uppercase text-slate-600">
             Halaman Evaluasi Capaian Rencana Strategis (Renstra) 2019-2022
           </p>
           <div className="flex items-center gap-2">
@@ -100,14 +100,14 @@ export default function RenstraPage() {
               href="/renstra.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 py-2 px-4 border border-slate-200 bg-white font-mono font-bold text-xs uppercase shadow-sm hover:bg-slate-50 transition-all text-slate-700"
+              className="inline-flex items-center gap-2 py-2 px-4 border border-slate-200 bg-white font-bold text-xs uppercase shadow-sm hover:bg-slate-50 transition-all text-slate-700"
             >
               <FileText size={16} />
               Lihat Dokumen Sumber
             </a>
             <button
               onClick={() => window.print()}
-              className="inline-flex items-center gap-2 py-2 px-4 border border-slate-200 bg-emerald-200 font-mono font-bold text-xs uppercase shadow-sm hover:bg-emerald-300 transition-all"
+              className="inline-flex items-center gap-2 py-2 px-4 border border-slate-200 bg-emerald-200 font-bold text-xs uppercase shadow-sm hover:bg-emerald-300 transition-all"
             >
               <Printer size={16} />
               Cetak Laporan
@@ -117,16 +117,16 @@ export default function RenstraPage() {
 
         {/* Kop / Banner */}
         <div className="print-block bg-white border border-slate-200 p-8 shadow-sm text-left">
-          <span className="inline-block px-3 py-1 bg-yellow-200 border border-slate-200 font-mono font-black text-xs uppercase shadow-sm mb-4">
+          <span className="inline-block px-3 py-1 bg-yellow-200 border border-slate-200 font-semibold text-xs uppercase shadow-sm mb-4">
             Evaluasi Rencana Strategis (RENSTRA)
           </span>
           <h1 className="text-2xl sm:text-4xl leading-tight font-bold tracking-tight text-slate-800">
-            Analisis Capaian Akhir Periode 2022
+            Analisis Renstra & RKPD
           </h1>
-          <p className="font-mono text-xs md:text-sm font-bold text-slate-500 uppercase mt-2">
+          <p className=" text-xs md:text-sm font-bold text-slate-500 uppercase mt-2">
             Dinas Pertanian, Perikanan dan Ketahanan Pangan Kabupaten Banjarnegara
           </p>
-          <p className="text-[10px] font-mono text-slate-400 mt-1 uppercase">
+          <p className="text-[10px] text-slate-400 mt-1 uppercase">
             Berdasarkan Analisis Data Terbuka · Dicetak {tanggalCetak}
           </p>
         </div>
@@ -135,15 +135,15 @@ export default function RenstraPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-emerald-100 border border-slate-200 p-5 shadow-sm text-left">
             <Award className="w-8 h-8 text-emerald-700 mb-3" />
-            <h4 className="font-mono font-bold uppercase text-xs text-emerald-800">Target Tercapai</h4>
-            <div className="text-3xl font-serif font-black text-slate-800 mt-1">{achievedSektor} / {totalSektor} Indikator</div>
-            <p className="text-[10px] font-mono font-bold text-slate-500 uppercase mt-2">Indikator dengan realisasi &ge; 100% dari target Renstra.</p>
+            <h4 className=" font-bold uppercase text-xs text-emerald-800">Target Tercapai</h4>
+            <div className="text-3xl font-semibold text-slate-800 mt-1">{achievedSektor} / {totalSektor} Indikator</div>
+            <p className="text-[10px] font-bold text-slate-500 uppercase mt-2">Indikator dengan realisasi &ge; 100% dari target Renstra.</p>
           </div>
           <div className="bg-yellow-100 border border-slate-200 p-5 shadow-sm text-left">
             <TrendingUp className="w-8 h-8 text-yellow-700 mb-3" />
-            <h4 className="font-mono font-bold uppercase text-xs text-yellow-800">Mendekati Target</h4>
-            <div className="text-3xl font-serif font-black text-slate-800 mt-1">{nearSektor} / {totalSektor} Indikator</div>
-            <p className="text-[10px] font-mono font-bold text-slate-500 uppercase mt-2">Indikator dengan realisasi berkisar antara 80% s/d 99%.</p>
+            <h4 className=" font-bold uppercase text-xs text-yellow-800">Mendekati Target</h4>
+            <div className="text-3xl font-semibold text-slate-800 mt-1">{nearSektor} / {totalSektor} Indikator</div>
+            <p className="text-[10px] font-bold text-slate-500 uppercase mt-2">Indikator dengan realisasi berkisar antara 80% s/d 99%.</p>
           </div>
           <div className={`border border-slate-200 p-5 shadow-sm text-left ${
             alignmentRate >= 90 ? "bg-emerald-100" : alignmentRate >= 70 ? "bg-yellow-100" : "bg-red-100"
@@ -155,23 +155,23 @@ export default function RenstraPage() {
             ) : (
               <XCircle className="w-8 h-8 text-red-700 mb-3" />
             )}
-            <h4 className={`font-mono font-bold uppercase text-xs ${
+            <h4 className={` font-bold uppercase text-xs ${
               alignmentRate >= 90 ? "text-emerald-800" : alignmentRate >= 70 ? "text-yellow-800" : "text-red-800"
             }`}>Tingkat Keselarasan</h4>
-            <div className="text-3xl font-serif font-black text-slate-800 mt-1">
+            <div className="text-3xl font-semibold text-slate-800 mt-1">
               {alignmentRate}%
             </div>
-            <p className="text-[10px] font-mono font-bold text-slate-500 uppercase mt-2">Proporsi target Renstra yang berhasil direalisasikan secara optimal.</p>
+            <p className="text-[10px] font-bold text-slate-500 uppercase mt-2">Proporsi target Renstra yang berhasil direalisasikan secara optimal.</p>
           </div>
         </div>
 
         {/* 4 Poin Utama Tujuan Renstra (dari PDF) */}
         <div className="print-block bg-white border border-slate-200 p-6 shadow-sm text-left">
-          <h3 className="text-md font-mono font-black uppercase border-b border-slate-200 pb-2 mb-4 flex items-center gap-2">
+          <h3 className="text-md font-semibold uppercase border-b border-slate-200 pb-2 mb-4 flex items-center gap-2">
             <FileText size={18} className="text-emerald-700" />
             Tujuan Pelaksanaan Renstra (Bab IV)
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 font-mono font-bold text-xs uppercase text-slate-700">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 font-bold text-xs uppercase text-slate-700">
             <div className="p-4 border border-dashed border-slate-300">
               <span className="text-emerald-700 block mb-1">01. Ketersediaan Pangan</span>
               <p className="text-[10px] text-slate-500 leading-relaxed font-bold">Menjamin pasokan pangan yang cukup, aman, dan berkelanjutan bagi seluruh penduduk Kabupaten Banjarnegara.</p>
@@ -193,11 +193,11 @@ export default function RenstraPage() {
 
         {/* Tabel Perbandingan Capaian */}
         <div className="print-block bg-white border border-slate-200 p-6 shadow-sm">
-          <h3 className="text-md font-mono font-black uppercase border-b border-slate-200 pb-2 mb-4 text-left">
+          <h3 className="text-md font-semibold uppercase border-b border-slate-200 pb-2 mb-4 text-left">
             Tabel Evaluasi Indikator Kinerja Renstra 2022 vs Realisasi Riil
           </h3>
           <div className="overflow-x-auto">
-            <table className="w-full text-left font-mono text-xs border-collapse">
+            <table className="w-full text-left text-xs border-collapse">
               <thead>
                 <tr className="border-b border-slate-200 bg-emerald-50">
                   <th className="p-3 uppercase">Bidang / Urusan</th>
@@ -219,7 +219,7 @@ export default function RenstraPage() {
                     <td className="p-3 text-right font-bold text-slate-600">
                       {new Intl.NumberFormat("id-ID").format(c.target2022)} {c.satuan}
                     </td>
-                    <td className="p-3 text-right font-black text-emerald-800">
+                    <td className="p-3 text-right font-semibold text-emerald-800">
                       {new Intl.NumberFormat("id-ID").format(c.actual2022)} {c.satuan}
                     </td>
                     <td className="p-3 text-center font-bold">
@@ -227,17 +227,17 @@ export default function RenstraPage() {
                     </td>
                     <td className="p-3 text-center">
                       {c.status === "achieved" && (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-green-100 border border-green-700 text-green-700 font-black text-[9px] uppercase">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-green-100 border border-green-700 text-green-700 font-semibold text-[9px] uppercase">
                           <CheckCircle2 size={10} /> Tercapai
                         </span>
                       )}
                       {c.status === "near" && (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-yellow-100 border border-yellow-700 text-yellow-700 font-black text-[9px] uppercase">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-yellow-100 border border-yellow-700 text-yellow-700 font-semibold text-[9px] uppercase">
                           <AlertTriangle size={10} /> Mendekati
                         </span>
                       )}
                       {c.status === "under" && (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-red-100 border border-red-700 text-red-700 font-black text-[9px] uppercase">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-red-100 border border-red-700 text-red-700 font-semibold text-[9px] uppercase">
                           <XCircle size={10} /> Belum Tercapai
                         </span>
                       )}
@@ -251,10 +251,10 @@ export default function RenstraPage() {
 
         {/* Catatan Evaluasi */}
         <div className="print-block bg-white border border-slate-200 p-6 shadow-sm text-left">
-          <h3 className="text-md font-mono font-black uppercase border-b border-slate-200 pb-2 mb-4">
+          <h3 className="text-md font-semibold uppercase border-b border-slate-200 pb-2 mb-4">
             Catatan Evaluasi &amp; Sinkronisasi Data
           </h3>
-          <ul className="space-y-3 font-mono font-bold text-xs uppercase text-slate-600">
+          <ul className="space-y-3 font-bold text-xs uppercase text-slate-600">
             <li className="flex items-start gap-2">
               <ArrowRight size={14} className="text-emerald-600 mt-0.5 shrink-0" />
               <span>

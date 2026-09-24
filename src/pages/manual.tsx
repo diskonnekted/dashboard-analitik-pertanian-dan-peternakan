@@ -21,7 +21,7 @@ const menuItems = [
   ["Prediksi Panen", "Analisis produktivitas dan simulasi prediksi panen padi."],
   ["Kesesuaian Lahan", "Analisis potensi/kesesuaian komoditas."],
   ["Fluktuasi Harga", "Analisis inflasi sebagai pendekatan fluktuasi harga."],
-  ["Ketahanan Pangan", "Produksi padi dan infrastruktur cadangan pangan."],
+  ["Ketersediaan Beras", "Rasio ketersediaan beras per kecamatan (produksi padi vs kebutuhan penduduk)."],
   ["Rantai Pasok", "Informasi pasar dan kesiapan distribusi."],
   ["Peternakan", "Data ternak kecil, ternak besar, dan unggas."],
   ["Perkebunan", "Luas, produksi, produktivitas, dan proyeksi perkebunan."],
@@ -62,8 +62,8 @@ const guideSections = [
     body: "Lihat produksi padi per kecamatan, produktivitas, dan simulasi tambahan luas tanam. Hasil prediksi bersifat simulatif dan perlu validasi lapangan.",
   },
   {
-    title: "Ketahanan Pangan",
-    body: "Amati produksi padi, jumlah lumbung/gudang, kapasitas cadangan pangan, dan wilayah yang perlu perhatian.",
+    title: "Ketersediaan Beras",
+    body: "Amati rasio ketersediaan beras per kecamatan — beras tersedia dari produksi padi dibandingkan kebutuhan konsumsi penduduk, dengan status surplus/seimbang/defisit per kecamatan.",
   },
   {
     title: "Peternakan",
@@ -114,7 +114,7 @@ const accessCards = [
   },
   {
     icon: <Smartphone className="h-5 w-5" />,
-    boxClass: "bg-purple-100 text-purple-700",
+    boxClass: "bg-blue-50 text-blue-700",
     label: "Perangkat",
     value: "Desktop, laptop, tablet, dan ponsel.",
     breakAll: false,
@@ -319,7 +319,7 @@ export default function ManualPage() {
         <SectionCard
           className="print-block"
           title="Cara Membaca Warna"
-          icon={<Palette size={16} className="text-purple-600" />}
+          icon={<Palette size={16} className="text-blue-600" />}
         >
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
             {colorMeanings.map(([name, desc, swatch]) => (

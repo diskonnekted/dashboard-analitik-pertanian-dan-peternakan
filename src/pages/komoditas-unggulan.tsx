@@ -61,12 +61,12 @@ const BIDANG_SLUG: Record<string, string> = {
 };
 const CHART_COLORS = ["#1e40af", "#0891b2", "#ca8a04", "#7c3aed", "#dc2626", "#059669", "#db2777"];
 
-const BIDANG_TONE: Record<string, "amber" | "emerald" | "violet" | "blue" | "red"> = {
-  "Tanaman Pangan": "amber",
-  Hortikultura: "emerald",
-  Perkebunan: "violet",
+const BIDANG_TONE: Record<string, "blue"> = {
+  "Tanaman Pangan": "blue",
+  Hortikultura: "blue",
+  Perkebunan: "blue",
   Peternakan: "blue",
-  Perikanan: "red",
+  Perikanan: "blue",
 };
 const BENIH_TONE: Record<string, "emerald" | "amber" | "red" | "slate"> = {
   Tersedia: "emerald",
@@ -189,7 +189,7 @@ export default function KomoditasUnggulanPage() {
         <section className="flex flex-col gap-8">
           <PageHeader
             icon={<Award className="h-6 w-6" />}
-            title="Komoditas Unggulan & Varietas"
+            title="Komoditas & Varietas Unggulan"
             subtitle="Komoditas dan varietas unggulan per bidang & kecamatan Kabupaten Banjarnegara — luas lahan, produktivitas, produksi, dan ketersediaan benih."
           />
           <LoadingSpinner label="Memuat data komoditas unggulan…" />
@@ -238,7 +238,7 @@ export default function KomoditasUnggulanPage() {
       <section className="flex flex-col gap-8">
         <PageHeader
           icon={<Award className="h-6 w-6" />}
-          title="Komoditas Unggulan & Varietas"
+          title="Komoditas & Varietas Unggulan"
           subtitle="Komoditas dan varietas unggulan per bidang & kecamatan Kabupaten Banjarnegara — luas lahan, produktivitas, produksi, dan ketersediaan benih."
           actions={
             <>
@@ -278,7 +278,7 @@ export default function KomoditasUnggulanPage() {
               {menunggu.map((k) => (
                 <div key={k.komoditas} className="flex flex-col gap-2 rounded-lg border border-amber-200 bg-white/70 p-4">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="flex items-center gap-1.5 font-mono text-xs font-bold uppercase tracking-wide text-amber-800">
+                    <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-amber-800">
                       <Sprout className="h-4 w-4" aria-hidden />
                       Perkebunan
                     </span>

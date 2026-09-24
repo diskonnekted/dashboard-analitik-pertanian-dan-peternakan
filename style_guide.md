@@ -1,147 +1,104 @@
-# Panduan Style — Neo-Brutalist / Retro-Industrial
+# Panduan Gaya Frontend — SISPERTANI
 
-Panduan ini merangkum sistem desain aplikasi ini agar dapat diterapkan ulang di aplikasi lain (React + Tailwind CSS v4). Salin bagian yang relevan ke proyek baru.
+Dashboard pertanian Kabupaten Banjarnegara. Gaya antarmuka resmi mengikuti **"government style / clean formal"** — meniru portal data pemerintah seperti BPS dan opendata.banjarnegarakab.go.id.
 
-## 1. Filosofi Desain
+> **Catatan riwayat:** versi awal memakai gaya "neo-brutalist / CoreUI ramai" (border tebal, gradient, font mono/serif dekoratif, shadow tebal, emoji). Arah itu **ditolak** dan digantikan sepenuhnya oleh gaya di bawah ini. Aturan "yang dilarang" ada di bagian terakhir.
 
-Gaya "hard-edge / neo-brutalist": sudut tegas (tanpa border-radius), border tebal hitam, dan bayangan padat tanpa blur (offset shadow) yang memberi kesan cetak/retro. Tipografi monospace dominan dengan huruf kapital dan tracking lebar untuk label, angka, dan heading.
+---
 
-Prinsip inti:
-- Sudut kotak: `rounded-none` di hampir semua elemen.
-- Border tegas hitam: `#141414`.
-- Bayangan keras tanpa blur (bukan `shadow-md/lg` bawaan Tailwind).
-- Mono + UPPERCASE + tracking lebar untuk label & metadata.
-- Warna dasar netral (hitam/off-white), aksen fungsional (biru = aktif, merah = alert).
+## 1. Prinsip inti
 
-## 2. Dependensi
+1. **Aksen tunggal biru pemerintahan** — satu warna merek (`#1d4ed8`), bukan pelangi siklik (lihat §7 "yang dilarang").
+2. **Kartu bersih** — latar putih, border tipis 1px, sudut `rounded-lg`, bayangan `shadow-sm`. Tanpa gradient dan tanpa shadow tebal.
+3. **Sans-serif + font-semibold** — tidak ada font mono/serif dekoratif sebagai aksen tipografi.
+4. **Warna hanya untuk makna** — emerald = positif/tersedia, amber = peringatan/terbatas, red = negatif/kurang. Warna kategori *arbitrer* (jenis lembaga, bidang) tidak boleh diberi warna berbeda-beda.
 
-- **Tailwind CSS v4** via plugin Vite `@tailwindcss/vite`.
-- Font di-load dari Google Fonts: `Inter`, `JetBrains Mono`, `Playfair Display`.
-- Ikon: `lucide-react`.
-- Animasi (opsional): `motion`.
+---
 
-## 3. Setup CSS
+## 2. Tipografi
 
-Impor Tailwind, definisikan token font via `@theme`, dan daftarkan utilities kustom. Salin ke file CSS utama proyek baru:
+| Elemen | Spesifikasi |
+|---|---|
+| Font utama | Inter (sans-serif) — default `font-sans` |
+| Font mono | JetBrains Mono — hanya untuk angka/data yang butuh perataan kolom; **bukan** untuk judul/label |
+| Judul halaman (H1) | `text-2xl font-semibold text-slate-900` |
+| Judul seksi | `text-base font-semibold text-slate-900` |
+| Subjudul | `text-sm text-slate-700` |
+| Label kecil (eyebrow) | `text-xs font-semibold uppercase tracking-wide text-blue-800` |
+| Angka statistik besar | `text-3xl font-semibold tabular-nums` |
+| Bobot maksimum | `font-semibold` (600). `font-bold` boleh untuk tombol/penekanan; **dilarang** `font-black` (900) / `font-extrabold` (800) |
 
-```css
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;1,400;1,600&display=swap');
-@import "tailwindcss";
+Kontras minimum untuk teks: `slate-700` di atas putih untuk isi; hindari `slate-400`/`slate-500` untuk teks penting.
 
-@theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Playfair Display", Georgia, Cambria, "Times New Roman", Times, serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
-}
+---
 
-/* Utilities inti gaya hard-edge / brutalist */
-@layer utilities {
-  .border-hd {
-    border: 1px solid #141414;
-  }
-  .border-hd-subtle {
-    border: 1px solid rgba(20, 20, 20, 0.12);
-  }
-  .shadow-hd {
-    box-shadow: 2px 2px 0px 0px #141414;
-  }
-  .shadow-hd-lg {
-    box-shadow: 4px 4px 0px 0px #141414;
-  }
-}
+## 3. Warna
+
+### Primary (merek) — biru
 ```
-
-## 4. Tipografi
-
-| Token | Font | Penggunaan |
-|-------|------|-----------|
-| `font-sans` | Inter | Teks isi / paragraf |
-| `font-mono` | JetBrains Mono | Label, heading, angka, badge (dominan) |
-| `font-serif` | Playfair Display | Aksen editorial (jarang) |
-
-Pola label khas:
-- `text-[9px]` / `text-[10px]` / `text-[11px]` — ukuran mikro untuk label mono.
-- `font-mono font-extrabold uppercase tracking-wide` (atau `tracking-widest`).
-- Heading angka besar: `font-mono font-black tracking-tighter`.
-
-## 5. Palet Warna
-
-| Peran | Nilai |
-|-------|-------|
-| Hitam utama (border/teks/bg gelap) | `#141414` |
-| Background kanvas terang | `#f1f1ef` |
-| Panel gelap / terminal | `#141414`, `#1a1a1a`, `#1c1c1a` |
-| Teks di atas gelap | `#E4E3E0` (terang), `#949494` / `#747474` (muted) |
-| Aksen aktif / angka penting | `blue-500`, `blue-600`, `blue-700` |
-| Alert / krisis | `red-*` (mis. `text-red-600`, `bg-red-50`, `border-red-200`) |
-| Peringatan | `amber-*` (mis. `bg-amber-100`, `border-amber-400`, `text-amber-800`) |
-| Aksen AI | `indigo-*` (mis. `bg-indigo-50`, `text-indigo-600`) |
-
-## 6. Pola Komponen
-
-### Kartu / Panel
-```html
-<div class="bg-white p-5 rounded-none border border-[#141414] shadow-hd space-y-3">...</div>
+primary-700  #1d4ed8   ← aksen utama (CTA, border aksen, teks tautan)
+primary-600  #2563eb
+primary-800  #1e40af   ← sidebar aktif
 ```
+Skala penuh tersedia: `primary-50 … primary-900`.
 
-### Tombol primer
-```html
-<button class="bg-[#141414] hover:bg-slate-800 text-white border border-slate-900 font-mono font-bold text-[11px] uppercase px-4 py-2 rounded-none shadow-hd transition">Aksi</button>
-```
+### Netral
+`slate-50 … slate-900` — untuk latar, border, dan teks.
 
-### Tombol sekunder
-```html
-<button class="bg-[#f1f1ef] hover:bg-slate-200 text-slate-800 border border-slate-900 font-mono font-bold text-[11px] uppercase px-4 py-2 rounded-none transition">Batal</button>
-```
+### Semantik (hanya untuk status/arti)
+| Warna | Arti | Token |
+|---|---|---|
+| Emerald | positif / tersedia / tercapai | `accent-emerald-*` |
+| Amber | peringatan / terbatas / hati-hati | `accent-amber-*` |
+| Red | negatif / kurang / tidak ada | `accent-red-*` |
 
-### Input / Select / Textarea
-```html
-<input class="w-full border border-slate-900 rounded-none p-2 text-xs outline-none focus:border-black font-sans font-medium" />
-```
+**Aturan emas:** warna semantik dipakai *hanya* saat membawa arti nyata (mis. `BENIH_TONE`: Tersedia=emerald, Terbatas=amber, Kurang=red). Jangan beri warna pada kategori yang tidak punya arti (jenis lembaga, nama bidang) — pakai satu warna netral + teks.
 
-### Label field
-```html
-<label class="text-[10px] font-mono font-extrabold text-[#747474] uppercase tracking-wide block">Nama Field</label>
-```
+### Seri grafik (khusus)
+Grafik multi-seri boleh memakai palet terbatas untuk membedakan seri, mis. `["#1d4ed8","#0d9488","#b45309","#e11d48","#6d28d9","#4d7c0f"]`. Ini **pengecualian** dari "aksen tunggal" karena kebutuhan diferensiasi seri, bukan dekorasi.
 
-### Header modal (dark)
-```html
-<div class="bg-[#141414] p-4 text-white flex items-center justify-between border-b border-black">...</div>
-```
+---
 
-### Overlay modal
-```html
-<div class="fixed inset-0 bg-slate-950/75 flex items-center justify-center z-50 p-4 animate-fade-in">
-  <div class="bg-white rounded-none max-w-md w-full shadow-hd-lg overflow-hidden border-2 border-slate-900 flex flex-col">...</div>
-</div>
-```
+## 4. Komponen & layout
 
-### Badge status
-```html
-<!-- Alert -->
-<span class="text-[9px] bg-red-50 text-red-600 border border-red-200 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider animate-pulse">Peringatan</span>
-<!-- Warning -->
-<span class="text-[9px] font-bold uppercase tracking-wider text-amber-800 bg-amber-100 border border-amber-400 px-2 py-0.5 animate-pulse">Status</span>
-```
+| Komponen | Spesifikasi |
+|---|---|
+| Kartu / panel | `bg-white border border-slate-200 rounded-lg shadow-sm p-4` |
+| Header halaman | eyebrow kecil + H1 + subjudul; tanpa dekorasi mubazir |
+| KPI card | `border-l-4 border-l-blue-800` + ikon kecil + label uppercase kecil + angka besar |
+| Tabel | header `bg-slate-50 text-xs uppercase`, footer `border-t-2`, angka rata kanan `tabular-nums` |
+| Badge | `bg-{color}-50 text-{color}-700`; tone: `blue`/`emerald`/`amber`/`red`/`slate` |
+| Tombol | primer `bg-blue-800 text-white`; sekunder `border border-slate-200` — `font-medium` |
+| Sudut | `rounded-lg` (panel/kartu), `rounded-full` **hanya** avatar/status dot |
+| Bayangan | `shadow-sm` (lunak, standar); **dilarang** `shadow-md/lg/xl/2xl` |
 
-### Header aplikasi (sticky)
-```html
-<header class="bg-white border-b-2 border-[#141414] py-4 px-6 sticky top-0 z-40 flex items-center justify-between">...</header>
-```
+---
 
-## 7. Aturan Penerapan
+## 5. Bahasa & copy
 
-1. Selalu pakai `rounded-none` — hindari `rounded-md/lg/xl` (kecuali badge kecil `rounded`/`rounded-full` untuk indikator).
-2. Gunakan `shadow-hd` / `shadow-hd-lg`, hindari shadow blur bawaan (`shadow-md`, `shadow-lg`).
-3. Border tebal untuk hierarki: `border-2 border-[#141414]` (utama), `border border-[#141414]` (kartu), `border-hd-subtle` (pemisah halus).
-4. Semua label & tombol: `font-mono uppercase` + tracking lebar.
-5. Warna aksen bersifat fungsional: biru = aktif/highlight, merah = alert, amber = peringatan, indigo = AI.
-6. Animasi hemat: `animate-pulse` (alert), `animate-ping` (indikator titik), `animate-bounce` (ikon perhatian).
+- Bahasa Indonesia formal, informatif, spesifik (hindari istilah asing bila ada padanan).
+- Angka pakai pemisah ribuan (`.`), desimal (`,`), satuan jelas (ton, Ha, butir, kg).
+- Data wajib dari backend/CSV resmi — **tanpa** placeholder/lorem/data palsu.
 
-## 8. Referensi di Codebase
+---
 
-- Definisi utilities & font: [index.css](file:///i:/edu-ai/src/index.css)
-- Contoh kartu/tombol/hero: [LandingPage.tsx](file:///i:/edu-ai/src/components/LandingPage.tsx)
-- Contoh form/modal: [Modals.tsx](file:///i:/edu-ai/src/components/Modals.tsx)
-- Contoh panel gelap/terminal: [DemoPanel.tsx](file:///i:/edu-ai/src/components/DemoPanel.tsx)
-- Contoh badge/status/dashboard: [Dashboards.tsx](file:///i:/edu-ai/src/components/Dashboards.tsx)
+## 6. Aksesibilitas (wajib)
+
+- Tombol ikon wajib `aria-label` (mis. `aria-label="Buka menu navigasi"`).
+- Fokus keyboard kasatmata (`focus-visible` ring) pada semua interaktif.
+- Makna tidak pernah hanya lewat warna — selalu ada teks/ikon pendamping.
+- Kontras teks memenuhi minimum (§2).
+
+---
+
+## 7. YANG DILARANG (anti-pattern, pernah ditolak)
+
+- ❌ Gradient (`bg-gradient-to-*`, `from-… via-… to-…`) pada UI chrome.
+- ❌ Shadow tebal `shadow-md/lg/xl/2xl` & `drop-shadow` dekoratif.
+- ❌ Border tebal `border-4`/`border-8` (kecuali aksen KPI `border-l-4`).
+- ❌ Font dekoratif: `font-mono`/`font-serif` untuk judul/label; `font-black`/`font-extrabold`.
+- ❌ Warna "invented" (mis. ungu/violet/fuchsia) sebagai aksen UI.
+- ❌ **Round-robin tone** — memberi warna berbeda-beda ke kategori arbitrer (jenis lembaga, bidang) agar "terlihat dirancang"; ini encoding-makna-semua yang keliru.
+- ❌ Emoji sebagai ikon fungsional; ikon pakai `lucide-react`.
+
+> **Pengecualian sah:** gradient/accent-strip pada hero halaman detail desa/kecamatan (hasil redesign tersendiri), dan palet seri grafik (§3).

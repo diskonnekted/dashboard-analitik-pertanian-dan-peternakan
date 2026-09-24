@@ -9,13 +9,13 @@ import { EmptyBlock } from "./EmptyBlock";
  *
  * Konteks data:
  * - ST2023 per desa hanya mencatat jumlah RT perikanan (total/budidaya/tangkap)
- *   — sudah ditampilkan di panel Demografi, tidak diduplikasi di sini.
+ * — sudah ditampilkan di panel Demografi, tidak diduplikasi di sini.
  * - Produksi resmi BPS hanya tersedia per KECAMATAN (budidaya per tempat
- *   pemeliharaan + tangkap per alat) → panel ini menampilkan konteks kecamatan
- *   untuk desa yang sedang dilihat.
+ * pemeliharaan + tangkap per alat) → panel ini menampilkan konteks kecamatan
+ * untuk desa yang sedang dilihat.
  * - Tabel `ikan_kolam` (BPS "Luas & Produksi Kolam") TIDAK ditampilkan:
- *   luas tercatat beku antar tahun (68,93 Ha di semua tahun) dan angka 2019
- *   korup (Σ 1,72 miliar kg) — menunggu verifikasi dinas.
+ * luas tercatat beku antar tahun (68,93 Ha di semua tahun) dan angka 2019
+ * korup (Σ 1,72 miliar kg) — menunggu verifikasi dinas.
  */
 
 interface Props {
@@ -85,7 +85,7 @@ export function DesaPerikanan({ kecamatan, budidaya, tangkap, ready = true }: Pr
     <div className="text-[11px]">
       <div className="flex items-center justify-between gap-2">
         <span className="text-slate-600">{label}</span>
-        <span className="font-mono font-bold text-slate-700 tabular-nums">
+        <span className=" font-bold text-slate-700 tabular-nums">
           {Math.round(v).toLocaleString("id-ID")} kg
         </span>
       </div>
@@ -99,7 +99,7 @@ export function DesaPerikanan({ kecamatan, budidaya, tangkap, ready = true }: Pr
   );
 
   return (
-    <section className="bg-white border border-slate-200 rounded-xl p-4">
+    <section className="bg-white border border-slate-200 rounded-lg p-4">
       <header className="mb-2.5 flex items-start gap-2.5">
         <span
           aria-hidden

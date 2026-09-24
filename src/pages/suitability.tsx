@@ -291,7 +291,7 @@ export default function SuitabilityPage() {
             Bidang Hortikultura &amp; Perkebunan
           </p>
           <h1 className="text-2xl font-semibold text-slate-900 mt-1.5">
-            Kesesuaian Lahan Sayuran
+            Kesesuaian Lahan
           </h1>
           <p className="text-sm text-slate-700 mt-1 max-w-3xl">
             Pemetaan kecocokan lahan berdasarkan volume produksi riil 8 komoditas sayuran
@@ -421,8 +421,8 @@ export default function SuitabilityPage() {
                 <p className="text-xs text-slate-700 mt-1.5">jenis sayuran dengan produksi tercatat</p>
               </div>
 
-              <div className="bg-white border border-slate-200 border-l-4 border-l-purple-700 rounded-lg p-5">
-                <div className="flex items-center gap-2.5 text-purple-700">
+              <div className="bg-white border border-slate-200 border-l-4 border-l-blue-700 rounded-lg p-5">
+                <div className="flex items-center gap-2.5 text-blue-700">
                   <Layers size={16} />
                   <p className="text-xs font-semibold uppercase tracking-wide text-slate-700">Layak Ekspansi</p>
                 </div>

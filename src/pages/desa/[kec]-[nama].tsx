@@ -21,6 +21,7 @@ import { DesaDemografi } from "../../components/desa/DesaDemografi";
 import { DesaTernak } from "../../components/desa/DesaTernak";
 import { DesaKelembagaan } from "../../components/desa/DesaKelembagaan";
 import { DesaPerikanan } from "../../components/desa/DesaPerikanan";
+import { DesaFsva } from "../../components/desa/DesaFsva";
 import DefaultLayout from "../../layouts/default";
 import { LoadingSpinner } from "../../components/ui";
 
@@ -170,7 +171,7 @@ export default function DesaDetailPage() {
                 namaTampil={detail.namaTampil}
               />
             ) : (
-              <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center">
+              <div className="rounded-lg border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center">
                 <MapPin className="w-5 h-5 text-slate-400 mx-auto mb-1.5" />
                 <p className="text-xs text-slate-500">Geometri polygon tidak tersedia.</p>
               </div>
@@ -179,7 +180,7 @@ export default function DesaDetailPage() {
 
           <div className="space-y-4">
             {detail.tetangga.length > 0 && (
-              <aside className="bg-white border border-slate-200 rounded-xl p-3.5 shadow-sm">
+              <aside className="bg-white border border-slate-200 rounded-lg p-3.5 shadow-sm">
                 <header className="mb-2 flex items-start gap-2">
                   <span
                     aria-hidden
@@ -229,6 +230,7 @@ export default function DesaDetailPage() {
             ready={perikanan !== null}
           />
           <DesaKelembagaan data={detail.kelompokTani} />
+          <DesaFsva objectId={detail.objectId} />
         </div>
       </section>
     </DefaultLayout>
@@ -236,7 +238,7 @@ export default function DesaDetailPage() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Halaman "Tidak Ditemukan" yang lebih ramah                          */
+/* Halaman "Tidak Ditemukan" yang lebih ramah */
 /* ------------------------------------------------------------------ */
 
 function NotFoundView({ kecSlug, namaSlug }: { kecSlug: string; namaSlug: string }) {

@@ -3,7 +3,7 @@
  *
  * - Login token (backend routes/admin.js, kredensial di backend/.env).
  * - 15 domain data MySQL: unduh TEMPLATE .xlsx, EXPORT data, IMPORT .xlsx
- *   (upsert per kunci natural — baris kunci sama memperbarui data lama).
+ * (upsert per kunci natural — baris kunci sama memperbarui data lama).
  * - Panel ringkas Data Bantuan Pemerintah + status backend.
  * - Desbor profesional: logo instansi, KPI ringkas, panel status & ringkasan.
  */
@@ -111,8 +111,23 @@ const formatBytes = (n: number): string =>
   n >= 1024 * 1024 ? `${(n / (1024 * 1024)).toFixed(1)} MB` : `${Math.max(1, Math.round(n / 1024))} KB`;
 
 const TOKEN_KEY = "sispertani:admin-token";
+const SESSION_KEY = "sispertani:admin-session";
 const AUTH_HEADERS = (token: string) => ({ Authorization: `Bearer ${token}` });
 const errMsg = (e: unknown): string => (e instanceof Error ? e.message : String(e));
+
+interface SessionInfo {
+  user: string;
+  role: string;
+  label: string;
+}
+const readSession = (): SessionInfo | null => {
+  try {
+    const raw = sessionStorage.getItem(SESSION_KEY);
+    return raw ? (JSON.parse(raw) as SessionInfo) : null;
+  } catch {
+    return null;
+  }
+};
 
 /* ---------- ikon & warna per domain ---------- */
 const DOMAIN_STYLE: Record<string, { icon: typeof Wheat; color: string }> = {
@@ -128,7 +143,7 @@ const DOMAIN_STYLE: Record<string, { icon: typeof Wheat; color: string }> = {
   lahan: { icon: MapIcon, color: "bg-stone-100 text-stone-700" },
   lumbung: { icon: Warehouse, color: "bg-slate-100 text-slate-700" },
   ekonomi: { icon: TrendingUp, color: "bg-indigo-50 text-indigo-700" },
-  kelembagaan: { icon: Users, color: "bg-violet-50 text-violet-700" },
+  kelembagaan: { icon: Users, color: "bg-blue-50 text-blue-700" },
   st2023: { icon: ClipboardList, color: "bg-blue-50 text-blue-700" },
   renstra: { icon: FileCheck, color: "bg-cyan-50 text-cyan-700" },
 };
@@ -137,6 +152,8 @@ const domainStyle = (d: string) =>
 
 export default function AdminPage() {
   const [token, setToken] = useState<string | null>(() => sessionStorage.getItem(TOKEN_KEY));
+  const [session, setSession] = useState<SessionInfo | null>(() => readSession());
+  const isAdmin = session?.role === "admin";
   const [user, setUser] = useState("admin");
   const [pass, setPass] = useState("");
   const [loginErr, setLoginErr] = useState<string | null>(null);
@@ -157,18 +174,19 @@ export default function AdminPage() {
     let alive = true;
     (async () => {
       try {
-        const [h, d, b] = await Promise.all([
+        const admin = readSession()?.role === "admin";
+        const [h, d] = await Promise.all([
           fetch(`${API_BASE}/health`).then((r) => r.json()),
           fetch(`${API_BASE}/v1/admin/domains`, { headers: AUTH_HEADERS(token) }).then((r) => {
             if (r.status === 401) throw new Error("sesi berakhir");
             return r.json();
           }),
-          fetchBantuanPemerintah(),
         ]);
         if (!alive) return;
         setHealth(h);
         setDomains(d);
-        setBantuan(b);
+        if (!admin) return; // akun bidang: cukup daftar domain miliknya
+        setBantuan(await fetchBantuanPemerintah());
         // --- fetch sync-log (best-effort; abaikan error) ---
         try {
           const s = await fetchSyncLog(token, 50);
@@ -198,6 +216,8 @@ export default function AdminPage() {
 
   function doLogout() {
     sessionStorage.removeItem(TOKEN_KEY);
+    sessionStorage.removeItem(SESSION_KEY);
+    setSession(null);
     setToken(null);
     setDomains(null);
     setReport(null);
@@ -218,6 +238,9 @@ export default function AdminPage() {
       const body = await res.json();
       if (!res.ok) throw new Error(body?.error ?? `HTTP ${res.status}`);
       sessionStorage.setItem(TOKEN_KEY, body.token);
+      const info: SessionInfo = { user: body.user ?? user, role: body.role ?? "admin", label: body.label ?? "Administrator" };
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify(info));
+      setSession(info);
       setToken(body.token);
       setPass("");
     } catch (err) {
@@ -314,11 +337,11 @@ export default function AdminPage() {
           <div className="pointer-events-none absolute -bottom-32 -right-16 h-96 w-96 rounded-full bg-lime-500/10 blur-3xl" />
 
           <div className="relative">
-            <img src="/logo.png" alt="Logo SISPERTANI" className="h-24 w-auto drop-shadow-lg" />
-            <p className="mt-8 font-mono text-[11px] font-semibold uppercase tracking-[0.25em] text-emerald-400">
+            <img src="/logo.png" alt="Logo SISPERTANI" className="h-24 w-auto drop-shadow" />
+            <p className="mt-8 text-[11px] font-semibold uppercase tracking-[0.25em] text-emerald-400">
               Sistem Informasi Pertanian Terintegrasi
             </p>
-            <h1 className="mt-2 text-4xl font-extrabold tracking-tight text-white">SISPERTANI</h1>
+            <h1 className="mt-2 text-4xl font-semibold tracking-tight text-white">SISPERTANI</h1>
             <p className="mt-3 max-w-md text-sm leading-relaxed text-slate-300">
               Dasbor data pertanian, perikanan, dan ketahanan pangan Kabupaten
               Banjarnegara — terintegrasi dari sensus BPS hingga bantuan
@@ -354,16 +377,21 @@ export default function AdminPage() {
               <img src="/logo.png" alt="Logo SISPERTANI" className="mx-auto h-20 w-auto" />
             </div>
 
-            <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-xl shadow-slate-200/60">
-              <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.25em] text-emerald-600">
+            <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow shadow-slate-200/60">
+              <p className=" text-[11px] font-semibold uppercase tracking-[0.25em] text-emerald-600">
                 Dasbor Internal
               </p>
               <h2 className="mt-1 text-2xl font-bold tracking-tight text-slate-800">
-                Masuk Admin Distan
+                Masuk SISPERTANI
               </h2>
               <p className="mt-1.5 text-sm text-slate-500">
                 Dinas Pertanian, Perikanan dan Ketahanan Pangan — Kabupaten
                 Banjarnegara
+              </p>
+              <p className="mt-2 rounded-lg bg-slate-50 px-3 py-2 text-[11px] leading-relaxed text-slate-500">
+                Gunakan akun sesuai bidang Anda. Setiap bidang hanya mengelola
+                data bidangnya sendiri; akun <b>admin</b> dapat melihat semua
+                data dan menyinkronkannya.
               </p>
 
               <form onSubmit={doLogin} className="mt-7 space-y-4">
@@ -379,7 +407,7 @@ export default function AdminPage() {
                       onChange={(e) => setUser(e.target.value)}
                       autoComplete="username"
                       className="w-full rounded-lg border border-slate-300 bg-slate-50 py-2.5 pl-10 pr-3 text-sm text-slate-800 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-500/30"
-                      placeholder="mis. admin"
+                      placeholder="mis. peternakan"
                     />
                   </div>
                 </label>
@@ -460,8 +488,8 @@ export default function AdminPage() {
         <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-3 px-4 py-3 md:px-6">
           <img src="/logo.png" alt="Logo SISPERTANI" className="h-9 w-auto" />
           <div className="min-w-0">
-            <p className="text-sm font-extrabold tracking-tight text-slate-800">
-              SISPERTANI <span className="font-medium text-slate-400">· Dasbor Admin</span>
+            <p className="text-sm font-semibold tracking-tight text-slate-800">
+              SISPERTANI <span className="font-medium text-slate-400">· Dasbor Data</span>
             </p>
             <p className="truncate text-[11px] text-slate-400">
               Dinas Pertanian, Perikanan dan Ketahanan Pangan Kab. Banjarnegara
@@ -469,6 +497,9 @@ export default function AdminPage() {
           </div>
 
           <div className="ml-auto flex flex-wrap items-center gap-2">
+            <Badge tone={isAdmin ? "emerald" : "blue"}>
+              <ShieldCheck className="h-3 w-3" /> {session?.label ?? "Administrator"}
+            </Badge>
             {health?.db === "up" ? (
               <Badge tone="emerald">
                 <Server className="h-3 w-3" /> Backend {health?.ok ? "OK" : "?"} · MySQL up
@@ -499,23 +530,40 @@ export default function AdminPage() {
       {/* ---------- Konten ---------- */}
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 md:px-6">
         <div className="mb-6">
-          <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.25em] text-emerald-600">
+          <p className=" text-[11px] font-semibold uppercase tracking-[0.25em] text-emerald-600">
             Area Internal
           </p>
           <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-800">
             Panel Manajemen Data
           </h1>
           <p className="mt-1 max-w-3xl text-sm leading-relaxed text-slate-500">
-            Manajemen data MySQL server lokal: unduh template Excel, ekspor data,
-            dan impor pembaruan (<b>upsert</b> — baris dengan kunci sama memperbarui
-            data lama). Semua data statistik &amp; bantuan pemerintah tersimpan di
-            basis data <b>sispertani</b> (MySQL) — tidak lagi bergantung pada
-            layanan eksternal.
+            {isAdmin
+              ? (
+                  <>Manajemen data MySQL server lokal: unduh template Excel, ekspor data,
+                  dan impor pembaruan (<b>upsert</b> — baris dengan kunci sama memperbarui
+                  data lama). Sebagai <b>administrator</b> Anda melihat <b>seluruh domain</b>
+                  {` `}dan dapat menyinkronkan semua data statistik &amp; bantuan pemerintah.</>
+                )
+              : (
+                  <>Anda masuk sebagai <b>{session?.label}</b>. Di sini Anda hanya mengelola
+                  data <b>bidang Anda sendiri</b> — unduh template Excel, ekspor, dan impor
+                  pembaruan (upsert) untuk tabel-tabel bidang tersebut.</>
+                )}
           </p>
         </div>
 
+        {!isAdmin && (
+          <div className="mb-6 flex items-start gap-2.5 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-700">
+            <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0" />
+            <span>
+              Hak akses terbatas pada <b>{session?.label}</b>. Domain lain dan fitur
+              sinkronisasi (riwayat impor &amp; paket data) hanya tersedia untuk administrator.
+            </span>
+          </div>
+        )}
+
         {msg && (
-          <div className="mb-6 flex items-start gap-2.5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <div className="mb-6 flex items-start gap-2.5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
             <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
             <span>{msg}</span>
           </div>
@@ -537,39 +585,43 @@ export default function AdminPage() {
             value={domains ? totalSheets : null}
             hint="Template · export · import"
           />
-          <KpiTile
-            icon={<Coins className="h-5 w-5" />}
-            color="bg-amber-50 text-amber-700"
-            label="Program Bantuan"
-            value={bantuan ? bantuan.program.length : null}
-            hint={
-              bantuan && bantuan.program.length > 0
-                ? `Total ${formatRupiahShort(totalNilai)} · ${totalPenerima.toLocaleString("id-ID")} penerima`
-                : "Belum ada data bantuan"
-            }
-          />
-          <KpiTile
-            icon={<History className="h-5 w-5" />}
-            color="bg-violet-50 text-violet-700"
-            label="Log Sinkronisasi"
-            value={syncLog ? syncLog.total : null}
-            hint={
-              syncLog && syncLog.rows.length > 0
-                ? `Terakhir: ${new Date(syncLog.rows[0].created_at).toLocaleString("id-ID", {
-                    day: "2-digit",
-                    month: "short",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}`
-                : "Belum ada aktivitas impor"
-            }
-          />
+          {isAdmin && (
+            <>
+              <KpiTile
+                icon={<Coins className="h-5 w-5" />}
+                color="bg-amber-50 text-amber-700"
+                label="Program Bantuan"
+                value={bantuan ? bantuan.program.length : null}
+                hint={
+                  bantuan && bantuan.program.length > 0
+                    ? `Total ${formatRupiahShort(totalNilai)} · ${totalPenerima.toLocaleString("id-ID")} penerima`
+                    : "Belum ada data bantuan"
+                }
+              />
+              <KpiTile
+                icon={<History className="h-5 w-5" />}
+                color="bg-blue-50 text-blue-700"
+                label="Log Sinkronisasi"
+                value={syncLog ? syncLog.total : null}
+                hint={
+                  syncLog && syncLog.rows.length > 0
+                    ? `Terakhir: ${new Date(syncLog.rows[0].created_at).toLocaleString("id-ID", {
+                        day: "2-digit",
+                        month: "short",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}`
+                    : "Belum ada aktivitas impor"
+                }
+              />
+            </>
+          )}
         </div>
 
         {/* ---------- Laporan import ---------- */}
         {report && (
           <section
-            className={`mt-6 overflow-hidden rounded-xl border shadow-sm ${
+            className={`mt-6 overflow-hidden rounded-lg border shadow-sm ${
               report.errors.length ? "border-amber-200" : "border-emerald-200"
             }`}
           >
@@ -667,7 +719,7 @@ export default function AdminPage() {
                   return (
                     <section
                       key={d.domain}
-                      className="flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:shadow-md"
+                      className="flex flex-col overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm transition hover:shadow"
                     >
                       <div className="flex items-center gap-3 border-b border-slate-100 px-4 py-3.5">
                         <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${st.color}`}>
@@ -687,7 +739,7 @@ export default function AdminPage() {
                               className="flex items-baseline justify-between gap-2 text-[11px] leading-relaxed"
                               title={`Tabel ${s.table}`}
                             >
-                              <span className="truncate font-mono font-semibold text-slate-600">{s.name}</span>
+                              <span className="truncate font-semibold text-slate-600">{s.name}</span>
                               <span className="shrink-0 text-slate-400">kunci: {s.key.join("+")}</span>
                             </li>
                           ))}
@@ -747,7 +799,7 @@ export default function AdminPage() {
             )}
 
             {/* Petunjuk penggunaan */}
-            <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+            <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
               <h3 className="flex items-center gap-2 text-sm font-bold text-slate-800">
                 <ShieldCheck className="h-4 w-4 text-emerald-600" />
                 Catatan Penggunaan
@@ -772,7 +824,7 @@ export default function AdminPage() {
                 </li>
                 <li>
                   Sesi login berlaku 12 jam. Setelah import domain bantuan, halaman publik{" "}
-                  <span className="font-mono">/government-assistance</span> otomatis menampilkan
+                  <span className="">/government-assistance</span> otomatis menampilkan
                   data terbaru (cache lama dihapus).
                 </li>
               </ol>
@@ -781,18 +833,20 @@ export default function AdminPage() {
 
           {/* Kolom ringkasan */}
           <div className="space-y-4 lg:sticky lg:top-20 lg:self-start">
-            <SectionLabel
-              icon={<Coins className="h-3.5 w-3.5" />}
-              title="Ringkasan Bantuan"
-            />
-            <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+            {isAdmin && (
+              <>
+                <SectionLabel
+                  icon={<Coins className="h-3.5 w-3.5" />}
+                  title="Ringkasan Bantuan"
+                />
+                <section className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
               {bantuan === null ? (
                 <div className="px-5 py-8 text-center text-sm text-slate-400">Memuat…</div>
               ) : bantuan.program.length === 0 ? (
                 <div className="px-5 py-8 text-center">
                   <p className="text-sm font-semibold text-slate-600">Belum ada data bantuan</p>
                   <p className="mt-1 text-xs text-slate-400">
-                    Import domain <span className="font-mono">bantuan-*</span> untuk mengisi data.
+                    Import domain <span className="">bantuan-*</span> untuk mengisi data.
                   </p>
                 </div>
               ) : (
@@ -828,12 +882,14 @@ export default function AdminPage() {
                 </>
               )}
             </section>
+              </>
+            )}
 
             <SectionLabel
               icon={<Server className="h-3.5 w-3.5" />}
               title="Status Sistem"
             />
-            <section className="rounded-xl border border-slate-200 bg-white shadow-sm">
+            <section className="rounded-lg border border-slate-200 bg-white shadow-sm">
               <dl className="divide-y divide-slate-100">
                 {[
                   {
@@ -872,10 +928,10 @@ export default function AdminPage() {
               icon={<History className="h-3.5 w-3.5" />}
               title={`Riwayat Sinkronisasi — ${syncLog.total} total entri, ${syncLog.rows.length} terbaru`}
             />
-            <div className="mt-2 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+            <div className="mt-2 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
               <div className="max-h-[480px] overflow-y-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="sticky top-0 bg-slate-50 font-mono text-[10px] uppercase tracking-wider text-slate-400">
+                  <thead className="sticky top-0 bg-slate-50 text-[10px] uppercase tracking-wider text-slate-400">
                     <tr>
                       <th className="px-4 py-2.5 font-semibold">Waktu</th>
                       <th className="px-2 py-2.5 font-semibold">Dataset</th>
@@ -892,7 +948,7 @@ export default function AdminPage() {
                           {new Date(r.created_at).toLocaleString("id-ID")}
                         </td>
                         <td className="px-2 py-2.5">
-                          <span className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[11px] text-slate-600">
+                          <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[11px] text-slate-600">
                             {r.dataset}
                           </span>
                         </td>
@@ -922,18 +978,18 @@ export default function AdminPage() {
             />
             <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-500">
               Berkas siap unduh dari paket generator{" "}
-              <span className="font-mono text-xs">database/template-import-export</span> —
+              <span className=" text-xs">database/template-import-export</span> —
               melengkapi tombol per domain di atas dengan versi <b>CSV per tabel</b> dan
               domain <b>Referensi</b> (kecamatan dan desa; hanya dokumentasi/audit — tidak
               untuk impor).
               {paket.snapshot ? ` Snapshot export: ${paket.snapshot}.` : ""} Regenerasi paket:{" "}
-              <span className="font-mono text-xs">npm run generate</span> di folder tersebut.
+              <span className=" text-xs">npm run generate</span> di folder tersebut.
             </p>
             <div className="mt-4 grid gap-4 lg:grid-cols-2">
               {paket.groups
                 .filter((g) => g.files.length > 0)
                 .map((g) => (
-                  <div key={g.id} className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+                  <div key={g.id} className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
                     <div className="flex items-baseline justify-between gap-2">
                       <h3 className="text-sm font-bold text-slate-800">{PAKET_LABELS[g.id] ?? g.id}</h3>
                       <span className="text-xs font-medium text-slate-400">{g.files.length} berkas</span>
@@ -994,12 +1050,12 @@ function KpiTile({
   hint?: string;
 }) {
   return (
-    <div className="flex items-center gap-4 rounded-xl border border-slate-200 bg-white p-5 text-left shadow-sm transition hover:border-slate-300 hover:shadow-md">
+    <div className="flex items-center gap-4 rounded-lg border border-slate-200 bg-white p-5 text-left shadow-sm transition hover:border-slate-300 hover:shadow">
       <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-lg ${color}`}>
         {icon}
       </span>
       <div className="min-w-0">
-        <p className="font-mono text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+        <p className=" text-[10px] font-semibold uppercase tracking-wider text-slate-400">
           {label}
         </p>
         <p className="mt-0.5 text-2xl font-bold tabular-nums tracking-tight text-slate-800">
@@ -1013,7 +1069,7 @@ function KpiTile({
 
 function SectionLabel({ icon, title }: { icon: ReactNode; title: string }) {
   return (
-    <p className="flex items-center gap-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
+    <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
       {icon}
       {title}
     </p>

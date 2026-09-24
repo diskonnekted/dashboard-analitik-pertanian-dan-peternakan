@@ -119,7 +119,7 @@ const SUMBER_DATA = [
   },
   {
     icon: <Database className="h-5 w-5" />,
-    boxClass: "bg-violet-100 text-violet-700",
+    boxClass: "bg-blue-50 text-blue-700",
     nama: "Basis Data Internal SISPERTANI",
     lembaga: "Dikelola Dinas (Dasbor Admin)",
     jenis: "Integrasi & Normalisasi",

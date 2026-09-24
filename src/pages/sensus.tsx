@@ -226,7 +226,7 @@ export default function SensusPage() {
             Badan Pusat Statistik · Sensus Pertanian 2023
           </p>
           <h1 className="text-2xl font-semibold text-slate-900 mt-1.5">
-            Hasil Sensus Pertanian 2023 (ST2023)
+            Sensus Pertanian 2023 (BPS)
           </h1>
           <p className="text-sm text-slate-700 mt-1 max-w-3xl">
             Potret menyeluruh hasil Sensus Pertanian 2023 untuk {rows.length} desa di seluruh
@@ -353,8 +353,8 @@ export default function SensusPage() {
                       </span>
                     </p>
                   </div>
-                  <div className="bg-white border border-slate-200 border-l-4 border-l-purple-700 rounded-lg p-5">
-                    <div className="flex items-center gap-2.5 text-purple-700">
+                  <div className="bg-white border border-slate-200 border-l-4 border-l-blue-700 rounded-lg p-5">
+                    <div className="flex items-center gap-2.5 text-blue-700">
                       <Fish size={16} />
                       <p className="text-xs font-semibold uppercase tracking-wide text-slate-700">RT Perikanan</p>
                     </div>

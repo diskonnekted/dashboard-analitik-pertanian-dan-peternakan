@@ -198,10 +198,11 @@ export function KecamatanMapMini({ desaList, namaKecamatan }: Props) {
           map.setFeatureState({ source: srcId, id: hoveredId }, { hover: false });
           hoveredId = null;
         }
-        if (popup) {
-          popup.remove();
-          popup = null;
-        }
+        // JANGAN hapus popup di sini: popup dipicu KLIK, bukan hover.
+        // Jika dihapus saat mouseleave, popup hilang sebelum user bisa
+        // mengklik tautan "Lihat detail desa →" di dalamnya (kursor keluar
+        // dari polygon desa saat bergerak menuju popup). Popup cukup
+        // ditutup via tombol ✕ atau klik peta lain (closeOnClick: true).
       });
 
       // Klik: popup nama desa + luas + tautan detail desa.
@@ -247,7 +248,7 @@ export function KecamatanMapMini({ desaList, namaKecamatan }: Props) {
   }, []);
 
   return (
-    <div className="rounded-xl overflow-hidden border border-slate-200 shadow-sm bg-white">
+    <div className="rounded-lg overflow-hidden border border-slate-200 shadow-sm bg-white">
       <div
         className="
           flex items-center gap-2 px-3 py-1.5
@@ -277,7 +278,7 @@ export function KecamatanMapMini({ desaList, namaKecamatan }: Props) {
 }
 
 /* ------------------------------------------------------------------ */
-/* Utilitas kecil (duplikasi sadar dari DesaMapMini).                   */
+/* Utilitas kecil (duplikasi sadar dari DesaMapMini). */
 /* ------------------------------------------------------------------ */
 
 function computeBBox(fc: GeoJSON.FeatureCollection): [[number, number], [number, number]] | null {

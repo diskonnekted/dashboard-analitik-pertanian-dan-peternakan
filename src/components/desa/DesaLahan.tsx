@@ -39,7 +39,7 @@ export function DesaLahan({ data }: Props) {
     n.toLocaleString("id-ID", { maximumFractionDigits: 2 });
 
   return (
-    <section className="bg-white border border-slate-200 rounded-xl p-4">
+    <section className="bg-white border border-slate-200 rounded-lg p-4">
       <SectionHeader
         icon={<Sprout className="w-4 h-4 text-emerald-600" />}
         title="Penggunaan Lahan"

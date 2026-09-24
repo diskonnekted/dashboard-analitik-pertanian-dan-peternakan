@@ -32,6 +32,7 @@ import {
   Rabbit,
   Ruler,
   Scale,
+  ShieldCheck,
   Sprout,
   Table2,
   UserCheck,
@@ -41,6 +42,12 @@ import {
 } from "lucide-react";
 import DefaultLayout from "@/layouts/default";
 import { Badge, LoadingSpinner } from "@/components/ui";
+import {
+  FSVA_DATA,
+  FSVA_YEARS,
+  kompositLabel,
+  type FsvaYear,
+} from "@/data/fsva";
 import { KecamatanMapMini } from "@/components/kecamatan/KecamatanMapMini";
 import {
   fetchKecamatanDetail,
@@ -60,7 +67,7 @@ const TONES = {
   emerald: "from-emerald-500 to-teal-600",
   cyan: "from-cyan-500 to-sky-600",
   orange: "from-orange-500 to-red-500",
-  violet: "from-violet-500 to-purple-600",
+  violet: "from-violet-500 to-blue-600",
   teal: "from-teal-500 to-emerald-600",
 } as const;
 
@@ -104,13 +111,13 @@ function PanelCard({
 }) {
   return (
     <section
-      className={`rounded-xl border border-slate-200 bg-white p-4 shadow-sm ${className}`}
+      className={`rounded-lg border border-slate-200 bg-white p-4 shadow-sm ${className}`}
     >
       <header className="mb-3 flex items-start gap-3">
         <span
           className={`
             flex h-9 w-9 shrink-0 items-center justify-center
-            rounded-xl bg-gradient-to-br text-white shadow-sm
+            rounded-lg bg-gradient-to-br text-white shadow-sm
             ${TONES[tone]}
           `}
         >
@@ -126,6 +133,65 @@ function PanelCard({
       </header>
       {children}
     </section>
+  );
+}
+
+/** Statistik kecil panel FSVA. */
+function MiniStat({
+  label,
+  value,
+  tone = "neutral",
+}: {
+  label: string;
+  value: string;
+  tone?: "good" | "poor" | "neutral";
+}) {
+  const color =
+    tone === "good"
+      ? "text-emerald-700"
+      : tone === "poor"
+        ? "text-rose-700"
+        : "text-slate-700";
+  return (
+    <div className="rounded-lg bg-slate-50 px-3 py-2.5 ring-1 ring-slate-100">
+      <div className="text-[10px] uppercase tracking-wider text-slate-500">{label}</div>
+      <div className={`text-lg font-bold tabular-nums ${color}`}>{value}</div>
+    </div>
+  );
+}
+
+/** Kartu sorotan desa (paling tahan / paling rawan) panel FSVA. */
+function HighlightDesa({
+  kind,
+  desa,
+  ikp,
+  label,
+  tone,
+}: {
+  kind: string;
+  desa: string;
+  ikp: number;
+  label: string;
+  tone: "good" | "poor";
+}) {
+  const border =
+    tone === "good" ? "border-emerald-200 bg-emerald-50/50" : "border-rose-200 bg-rose-50/50";
+  const chip =
+    tone === "good" ? "bg-emerald-100 text-emerald-700" : "bg-rose-100 text-rose-700";
+  return (
+    <div className={`flex items-center justify-between gap-3 rounded-lg border px-3 py-2.5 ${border}`}>
+      <div className="min-w-0">
+        <div className="text-[10px] uppercase tracking-wider text-slate-500">{kind}</div>
+        <div className="truncate text-sm font-semibold text-slate-800">{desa}</div>
+        <span className={`mt-1 inline-block rounded px-1.5 py-0.5 text-[10px] font-semibold ${chip}`}>
+          {label}
+        </span>
+      </div>
+      <div className="shrink-0 text-right">
+        <div className="text-lg font-bold tabular-nums text-slate-800">{ikp.toFixed(1)}</div>
+        <div className="text-[10px] text-slate-500">IKP</div>
+      </div>
+    </div>
   );
 }
 
@@ -299,7 +365,7 @@ function HeroChip({
   unit?: string;
 }) {
   return (
-    <div className="flex items-center gap-2.5 rounded-xl bg-white/10 px-3.5 py-2 ring-1 ring-white/20 backdrop-blur-sm">
+    <div className="flex items-center gap-2.5 rounded-lg bg-white/10 px-3.5 py-2 ring-1 ring-white/20 backdrop-blur-sm">
       <Icon className="h-4 w-4 shrink-0 text-emerald-100/90" />
       <div className="min-w-0">
         <p className="text-[10px] font-medium uppercase leading-none tracking-wider text-emerald-100/70">
@@ -372,11 +438,19 @@ export default function KecamatanDetailPage() {
     [result],
   );
 
+  /* ---------- Ketahanan Pangan (FSVA) ---------- */
+  const [fsvaYear, setFsvaYear] = useState<FsvaYear>(2024);
+  const fsvaRows = useMemo(() => {
+    const desa = result?.detail?.desa ?? [];
+    const ids = new Set(desa.map((v) => v.objectId));
+    return FSVA_DATA[fsvaYear].filter((r) => ids.has(r.objectId));
+  }, [result, fsvaYear]);
+
   if (notFound) {
     return (
       <DefaultLayout>
         <section className="mx-auto w-full max-w-2xl py-8">
-          <div className="rounded-xl border border-slate-200 bg-white p-6 text-center shadow-sm">
+          <div className="rounded-lg border border-slate-200 bg-white p-6 text-center shadow-sm">
             <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-100">
               <MapPin className="h-6 w-6 text-rose-600" />
             </div>
@@ -422,6 +496,14 @@ export default function KecamatanDetailPage() {
   }
 
   const d = result.detail;
+
+  const fsvaAvgIkp = fsvaRows.length
+    ? fsvaRows.reduce((s, r) => s + r.ikp, 0) / fsvaRows.length
+    : 0;
+  const fsvaRawan = fsvaRows.filter((r) => r.komposit <= 3);
+  const fsvaTahan = fsvaRows.filter((r) => r.komposit >= 5);
+  const fsvaTerbaik = [...fsvaRows].sort((a, b) => b.ikp - a.ikp)[0];
+  const fsvaTerendah = [...fsvaRows].sort((a, b) => a.ikp - b.ikp)[0];
 
   /* ---------- agregat turunan (baris per desa → kecamatan) ---------- */
   const lahanSawah = d.lahan.reduce((s, r) => s + (r.lahanSawah || 0), 0);
@@ -518,7 +600,7 @@ export default function KecamatanDetailPage() {
     <DefaultLayout>
       <section className="flex flex-col gap-5">
         {/* ---------- Hero ---------- */}
-        <header className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-700 via-teal-700 to-emerald-900 text-white shadow-md">
+        <header className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-700 via-teal-700 to-emerald-900 text-white shadow">
           {/* dekorasi latar */}
           <div
             aria-hidden
@@ -557,7 +639,7 @@ export default function KecamatanDetailPage() {
             <div className="mt-3 flex flex-wrap items-end justify-between gap-4">
               <div className="min-w-0">
                 <div className="flex items-center gap-2.5">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/15 ring-1 ring-white/25">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/15 ring-1 ring-white/25">
                     <MapPin className="h-5 w-5 text-emerald-50" />
                   </span>
                   <h1 className="text-2xl font-bold leading-tight tracking-tight sm:text-3xl">
@@ -631,7 +713,7 @@ export default function KecamatanDetailPage() {
 
         {/* ---------- Banner sumber gagal ---------- */}
         {failedSources.length > 0 && (
-          <div className="flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+          <div className="flex items-start gap-2.5 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3">
             <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
             <p className="text-xs leading-relaxed text-amber-900">
               Sebagian sumber data gagal dimuat ({failedSources.join(", ")}) —
@@ -948,31 +1030,31 @@ export default function KecamatanDetailPage() {
               <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-5">
                 <TileStat
                   icon={Users}
-                  iconClass="text-violet-600"
+                  iconClass="text-blue-600"
                   label="Kelompok Tani"
                   value={`${num(totalPoktan)} poktan`}
                 />
                 <TileStat
                   icon={UserCheck}
-                  iconClass="text-violet-600"
+                  iconClass="text-blue-600"
                   label="Anggota Poktan"
                   value={`${num(totalAnggotaPoktan)} orang`}
                 />
                 <TileStat
                   icon={Landmark}
-                  iconClass="text-purple-600"
+                  iconClass="text-blue-600"
                   label="Gapoktan"
                   value={`${num(totalGapoktan)} gabungan`}
                 />
                 <TileStat
                   icon={UserCheck}
-                  iconClass="text-purple-600"
+                  iconClass="text-blue-600"
                   label="Anggota Gapoktan"
                   value={`${num(totalAnggotaGapoktan)} orang`}
                 />
                 <TileStat
                   icon={Fish}
-                  iconClass="text-violet-600"
+                  iconClass="text-blue-600"
                   label="Kelompok Perikanan"
                   value={`${num(totalKelompokPerikanan)} kelompok`}
                 />
@@ -1003,7 +1085,7 @@ export default function KecamatanDetailPage() {
                     className={`
                       group relative overflow-hidden rounded-lg border border-slate-200
                       bg-white px-3 py-2.5 transition-all
-                      hover:-translate-y-0.5 hover:border-teal-300 hover:shadow-md
+                      hover:-translate-y-0.5 hover:border-teal-300 hover:shadow
                       focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500
                     `}
                   >
@@ -1029,8 +1111,84 @@ export default function KecamatanDetailPage() {
           </div>
         </PanelCard>
 
+        {/* ---------- Ketahanan Pangan (FSVA) ---------- */}
+        <PanelCard
+          icon={ShieldCheck}
+          tone="cyan"
+          title="Ketahanan Pangan"
+          subtitle={`Indeks Ketahanan Pangan (FSVA — Badan Pangan Nasional) ${fsvaRows.length} desa, tahun ${fsvaYear}.`}
+          actions={
+            <div className="flex items-center gap-0.5 rounded-lg bg-slate-100 p-0.5">
+              {FSVA_YEARS.map((y) => (
+                <button
+                  key={y}
+                  type="button"
+                  onClick={() => setFsvaYear(y)}
+                  aria-pressed={fsvaYear === y}
+                  className={`rounded-md px-2 py-1 text-[11px] font-semibold transition-colors ${
+                    fsvaYear === y
+                      ? "bg-white text-cyan-700 shadow-sm"
+                      : "text-slate-500 hover:text-slate-700"
+                  }`}
+                >
+                  {y}
+                </button>
+              ))}
+            </div>
+          }
+        >
+          {fsvaRows.length === 0 ? (
+            <p className="text-sm text-slate-500">
+              Data FSVA belum tersedia untuk kecamatan ini.
+            </p>
+          ) : (
+            <div className="space-y-3">
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                <MiniStat label="Rata-rata IKP" value={fsvaAvgIkp.toFixed(1)} />
+                <MiniStat
+                  label="Desa tahan (komposit ≥ 5)"
+                  value={`${fsvaTahan.length}`}
+                  tone="good"
+                />
+                <MiniStat
+                  label="Desa rawan (komposit ≤ 3)"
+                  value={`${fsvaRawan.length}`}
+                  tone={fsvaRawan.length ? "poor" : "good"}
+                />
+                <MiniStat label="Total desa" value={`${fsvaRows.length}`} />
+              </div>
+
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                {fsvaTerbaik && (
+                  <HighlightDesa
+                    kind="Paling tahan"
+                    desa={fsvaTerbaik.desa}
+                    ikp={fsvaTerbaik.ikp}
+                    label={kompositLabel(fsvaTerbaik.komposit)}
+                    tone="good"
+                  />
+                )}
+                {fsvaTerendah && (
+                  <HighlightDesa
+                    kind="Paling rawan"
+                    desa={fsvaTerendah.desa}
+                    ikp={fsvaTerendah.ikp}
+                    label={kompositLabel(fsvaTerendah.komposit)}
+                    tone="poor"
+                  />
+                )}
+              </div>
+
+              <p className="text-[10px] text-slate-400">
+                Sumber: FSVA Badan Pangan Nasional. IKP 0–100 (makin tinggi = makin
+                tahan); indeks komposit 1–6 (6 = paling tahan).
+              </p>
+            </div>
+          )}
+        </PanelCard>
+
         {/* ---------- Sumber data ---------- */}
-        <div className="rounded-xl border border-slate-200 bg-white px-4 py-3.5">
+        <div className="rounded-lg border border-slate-200 bg-white px-4 py-3.5">
           <div className="flex items-center gap-2 text-xs font-semibold text-slate-600">
             <BookOpen className="h-3.5 w-3.5 text-slate-400" />
             Sumber Data

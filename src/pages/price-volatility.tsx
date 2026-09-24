@@ -57,12 +57,12 @@ const AnomaliTooltip = ({ active, payload }: any) => {
   if (!active || !payload?.length) return null;
   const r: AnomaliHargaRow = payload[0].payload;
   return (
-    <div className="rounded-lg border border-slate-200 bg-white px-3 py-2 shadow-lg">
-      <p className="font-mono text-[11px] font-bold uppercase text-slate-800">{r.komoditas}</p>
-      <p className={`mt-1 inline-flex px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase ${badgeStatus(r.status)}`}>
+    <div className="rounded-lg border border-slate-200 bg-white px-3 py-2 shadow">
+      <p className=" text-[11px] font-bold uppercase text-slate-800">{r.komoditas}</p>
+      <p className={`mt-1 inline-flex px-1.5 py-0.5 text-[10px] font-bold uppercase ${badgeStatus(r.status)}`}>
         {STATUS_LABEL[r.status] ?? r.status}
       </p>
-      <div className="mt-2 space-y-0.5 font-mono text-[10px] font-bold uppercase text-slate-600">
+      <div className="mt-2 space-y-0.5 text-[10px] font-bold uppercase text-slate-600">
         <p>IFPA: {fmtSigned(r.ifpa)}</p>
         <p>QIPA: {fmtSigned(r.qipa)}</p>
         <p>AIPA: {fmtSigned(r.aipa)}</p>
@@ -74,10 +74,10 @@ const AnomaliTooltip = ({ active, payload }: any) => {
 const TrenTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-lg border border-slate-200 bg-white px-3 py-2 shadow-lg">
-      <p className="font-mono text-[11px] font-bold uppercase text-slate-800">{label}</p>
+    <div className="rounded-lg border border-slate-200 bg-white px-3 py-2 shadow">
+      <p className=" text-[11px] font-bold uppercase text-slate-800">{label}</p>
       {payload.map((p: any) => (
-        <p key={p.dataKey} className="mt-1 font-mono text-[10px] font-bold uppercase" style={{ color: p.color }}>
+        <p key={p.dataKey} className="mt-1 text-[10px] font-bold uppercase" style={{ color: p.color }}>
           {p.name}: {p.value == null ? "-" : fmtSigned(Number(p.value))}
         </p>
       ))}
@@ -102,9 +102,9 @@ const HargaTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload?.length) return null;
   const v = payload[0].value;
   return (
-    <div className="rounded-lg border border-slate-200 bg-white px-3 py-2 shadow-lg">
-      <p className="font-mono text-[11px] font-bold uppercase text-slate-800">{label}</p>
-      <p className="mt-1 font-mono text-[10px] font-bold uppercase text-blue-700">
+    <div className="rounded-lg border border-slate-200 bg-white px-3 py-2 shadow">
+      <p className=" text-[11px] font-bold uppercase text-slate-800">{label}</p>
+      <p className="mt-1 text-[10px] font-bold uppercase text-blue-700">
         Harga: {v == null ? "-" : fmtRp(Number(v))}
       </p>
     </div>
@@ -311,7 +311,7 @@ export default function PriceVolatilityPage() {
         <section className="relative text-left animate-fade-in py-4 md:py-8 flex flex-col md:flex-row items-center justify-between gap-8 border-b border-slate-200 pb-8">
           <div className="relative z-10 flex-1">
             <h2 className="text-2xl sm:text-4xl leading-tight font-bold tracking-tight text-slate-800">
-            Volatilitas Ekonomi & Harga
+            Fluktuasi Harga & Inflasi
           </h2>
             <p className="text-xs md:text-sm font-medium text-slate-500 mt-2 max-w-2xl border-l-2 border-blue-500 pl-3">
             Analisis laju inflasi makro ekonomi perbandingan tahun 2018 - 2024 sebagai proksi fluktuasi harga komoditas.
@@ -331,13 +331,13 @@ export default function PriceVolatilityPage() {
         ) : (
           <>
             {/* Chart Section */}
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 p-6 transition-all duration-300 hover:shadow-md">
+            <div className="bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow transition-all duration-200 p-6 transition-all duration-300 hover:shadow">
               <div className="flex flex-col mb-6 border-b border-slate-200 pb-3">
-                <h4 className="text-lg font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
+                <h4 className="text-lg font-bold uppercase flex items-center gap-2 tracking-wide">
                   <TrendingUp className="text-slate-800" />
                   Tren Laju Inflasi Pembanding (%)
                 </h4>
-                <p className="text-xs font-mono font-bold text-slate-500 uppercase mt-1">Perbandingan pertumbuhan inflasi tahunan daerah terhadap nasional</p>
+                <p className="text-xs font-bold text-slate-500 uppercase mt-1">Perbandingan pertumbuhan inflasi tahunan daerah terhadap nasional</p>
               </div>
 
               <div className="h-[350px] w-full">
@@ -346,7 +346,7 @@ export default function PriceVolatilityPage() {
                     <CartesianGrid strokeDasharray="3 3" stroke="#64748b" strokeOpacity={0.1} vertical={false} />
                     <XAxis 
                       dataKey="tahun" 
-                      className="font-mono font-bold text-[11px]" 
+                      className=" font-bold text-[11px]" 
                       tick={{ fill: '#475569', fontSize: 11, fontFamily: 'monospace', fontWeight: 'bold' }}
                       tickLine={{ stroke: '#cbd5e1' }} 
                       axisLine={{ stroke: '#cbd5e1', strokeWidth: 1 }} 
@@ -395,13 +395,13 @@ export default function PriceVolatilityPage() {
             {/* Volatility Index Metrics */}
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
               {/* Volatility Leaderboard */}
-              <div className="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 p-6 transition-all duration-300 hover:shadow-md">
+              <div className="bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow transition-all duration-200 p-6 transition-all duration-300 hover:shadow">
                 <div className="flex flex-col mb-4 border-b border-slate-200 pb-3">
-                  <h4 className="text-md font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
+                  <h4 className="text-md font-bold uppercase flex items-center gap-2 tracking-wide">
                     <ShieldAlert className="text-yellow-600" size={18} />
                     Indeks Volatilitas Harga
                   </h4>
-                  <p className="text-xs font-mono font-bold text-slate-500 uppercase mt-1">Semakin tinggi deviasi standar, semakin bergejolak harga wilayah</p>
+                  <p className="text-xs font-bold text-slate-500 uppercase mt-1">Semakin tinggi deviasi standar, semakin bergejolak harga wilayah</p>
                 </div>
 
                 <div className="flex flex-col gap-3">
@@ -419,15 +419,15 @@ export default function PriceVolatilityPage() {
                     return (
                       <div key={item.region} className="flex justify-between items-center p-3 border border-slate-200 bg-white shadow-sm">
                         <div className="flex items-center gap-3">
-                          <span className="text-xs font-mono font-bold text-slate-400">#{idx + 1}</span>
-                          <span className="text-xs font-mono font-bold text-slate-800 uppercase">{item.region}</span>
+                          <span className="text-xs font-bold text-slate-400">#{idx + 1}</span>
+                          <span className="text-xs font-bold text-slate-800 uppercase">{item.region}</span>
                         </div>
                         <div className="flex items-center gap-4">
                           <div className="text-right">
-                            <p className="text-[9px] text-slate-400 uppercase font-mono font-bold">Std Dev</p>
-                            <p className="text-xs font-mono font-bold text-slate-800">{formatNum(item.volatility)}</p>
+                            <p className="text-[9px] text-slate-400 uppercase font-bold">Std Dev</p>
+                            <p className="text-xs font-bold text-slate-800">{formatNum(item.volatility)}</p>
                           </div>
-                          <span className={`inline-flex items-center px-2 py-0.5 border border-slate-200 font-mono font-bold text-[10px] uppercase shadow-sm ${badgeClass}`}>
+                          <span className={`inline-flex items-center px-2 py-0.5 border border-slate-200 font-bold text-[10px] uppercase shadow-sm ${badgeClass}`}>
                             {level}
                           </span>
                         </div>
@@ -438,24 +438,24 @@ export default function PriceVolatilityPage() {
               </div>
 
               {/* Economic Insights Card */}
-              <div className="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 p-6 flex flex-col justify-between transition-all duration-300 hover:shadow-md">
+              <div className="bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow transition-all duration-200 p-6 flex flex-col justify-between transition-all duration-300 hover:shadow">
                 <div>
                   <div className="flex items-center gap-2 mb-4 border-b border-slate-200 pb-3">
                     <Award className="text-emerald-600" size={20} />
-                    <h4 className="text-md font-mono font-bold uppercase tracking-wide">Ringkasan Analisis</h4>
+                    <h4 className="text-md font-bold uppercase tracking-wide">Ringkasan Analisis</h4>
                   </div>
 
-                  <p className="text-xs font-mono font-bold text-slate-600 leading-relaxed mb-4 uppercase">
+                  <p className="text-xs font-bold text-slate-600 leading-relaxed mb-4 uppercase">
                     Berdasarkan data laju inflasi, daerah pembanding seperti Banyumas dan Cilacap memiliki laju yang cukup dinamis.
                   </p>
-                  <p className="text-xs font-mono font-bold text-slate-600 leading-relaxed mb-4 uppercase">
+                  <p className="text-xs font-bold text-slate-600 leading-relaxed mb-4 uppercase">
                     Sementara inflasi Banjarnegara yang stabil memberi ruang ketahanan harga jangka panjang, tetapi memerlukan penguatan daya beli pedesaan.
                   </p>
                 </div>
 
                 <div className="flex items-start gap-2 p-3 bg-red-50 border border-slate-200 shadow-sm text-[10px] text-red-800 mt-2">
                   <AlertTriangle className="shrink-0 mt-0.5 text-red-600" size={14} />
-                  <span className="font-mono font-bold leading-normal uppercase">
+                  <span className=" font-bold leading-normal uppercase">
                     Gejolak Musiman: Kenaikan inflasi dipicu harga volatile foods menjelang hari raya keagamaan dan puncak musim kemarau.
                   </span>
                 </div>
@@ -465,24 +465,24 @@ export default function PriceVolatilityPage() {
             {/* ===== Indeks Anomali Harga Pangan Nasional (Bapanas) ===== */}
             <div className="flex flex-col gap-8">
               <div className="flex flex-col border-b border-slate-200 pb-3">
-                <h4 className="text-lg font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
+                <h4 className="text-lg font-bold uppercase flex items-center gap-2 tracking-wide">
                   <ShieldAlert className="text-slate-800" size={20} />
                   Indeks Anomali Harga Pangan Nasional
                 </h4>
-                <p className="text-xs font-mono font-bold text-slate-500 uppercase mt-1">
+                <p className="text-xs font-bold text-slate-500 uppercase mt-1">
                   QIPA (kualitas) - AIPA (akurasi) - IFPA (indikator utama) - edisi bulanan komoditas strategis nasional
                 </p>
               </div>
 
               {anomaliLoading ? (
-                <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+                <div className="bg-white border border-slate-200 rounded-lg shadow-sm p-6">
                   <LoadingSpinner label="Memuat indeks anomali harga pangan..." />
                 </div>
               ) : !anomaliData ? (
-                <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+                <div className="bg-white border border-slate-200 rounded-lg shadow-sm p-6">
                   <div className="flex items-start gap-2 text-slate-500">
                     <AlertTriangle className="shrink-0 mt-0.5 text-amber-600" size={16} />
-                    <span className="font-mono text-xs font-bold uppercase">
+                    <span className=" text-xs font-bold uppercase">
                       Indeks anomali harga pangan belum tersedia - layanan API apiindonesia.id tidak dapat dijangkau.
                     </span>
                   </div>
@@ -491,53 +491,53 @@ export default function PriceVolatilityPage() {
                 <div className="flex flex-col gap-8">
                   {/* KPI edisi terbaru */}
                   <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div className="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 p-4 flex items-center gap-3">
+                    <div className="bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow transition-all duration-200 p-4 flex items-center gap-3">
                       <div className="h-10 w-10 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
                         <Calendar className="text-slate-600" size={20} />
                       </div>
                       <div>
-                        <p className="text-[9px] text-slate-400 uppercase font-mono font-bold">Edisi Terbaru</p>
-                        <p className="text-lg font-mono font-bold text-slate-800">{labelEdisi(anomaliData.edisiTerbaru)}</p>
+                        <p className="text-[9px] text-slate-400 uppercase font-bold">Edisi Terbaru</p>
+                        <p className="text-lg font-bold text-slate-800">{labelEdisi(anomaliData.edisiTerbaru)}</p>
                       </div>
                     </div>
-                    <div className="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 p-4 flex items-center gap-3">
+                    <div className="bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow transition-all duration-200 p-4 flex items-center gap-3">
                       <div className="h-10 w-10 rounded-lg bg-red-100 flex items-center justify-center shrink-0">
                         <AlertTriangle className="text-red-600" size={20} />
                       </div>
                       <div>
-                        <p className="text-[9px] text-slate-400 uppercase font-mono font-bold">Komoditas Waspada</p>
-                        <p className="text-lg font-mono font-bold text-slate-800">{anomaliData.kpi.alert}</p>
+                        <p className="text-[9px] text-slate-400 uppercase font-bold">Komoditas Waspada</p>
+                        <p className="text-lg font-bold text-slate-800">{anomaliData.kpi.alert}</p>
                       </div>
                     </div>
-                    <div className="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 p-4 flex items-center gap-3">
+                    <div className="bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow transition-all duration-200 p-4 flex items-center gap-3">
                       <div className="h-10 w-10 rounded-lg bg-amber-100 flex items-center justify-center shrink-0">
                         <Info className="text-amber-600" size={20} />
                       </div>
                       <div>
-                        <p className="text-[9px] text-slate-400 uppercase font-mono font-bold">Komoditas Perhatian</p>
-                        <p className="text-lg font-mono font-bold text-slate-800">{anomaliData.kpi.warning}</p>
+                        <p className="text-[9px] text-slate-400 uppercase font-bold">Komoditas Perhatian</p>
+                        <p className="text-lg font-bold text-slate-800">{anomaliData.kpi.warning}</p>
                       </div>
                     </div>
-                    <div className="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 p-4 flex items-center gap-3">
+                    <div className="bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow transition-all duration-200 p-4 flex items-center gap-3">
                       <div className="h-10 w-10 rounded-lg bg-emerald-100 flex items-center justify-center shrink-0">
                         <CheckCircle2 className="text-emerald-600" size={20} />
                       </div>
                       <div>
-                        <p className="text-[9px] text-slate-400 uppercase font-mono font-bold">Komoditas Normal</p>
-                        <p className="text-lg font-mono font-bold text-slate-800">{anomaliData.kpi.normal}</p>
+                        <p className="text-[9px] text-slate-400 uppercase font-bold">Komoditas Normal</p>
+                        <p className="text-lg font-bold text-slate-800">{anomaliData.kpi.normal}</p>
                       </div>
                     </div>
                   </div>
 
                   {/* Grafik sinyal IFPA + tren per komoditas */}
                   <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-                    <div className="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 p-6 flex flex-col">
+                    <div className="bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow transition-all duration-200 p-6 flex flex-col">
                       <div className="flex flex-col mb-6 border-b border-slate-200 pb-3">
-                        <h4 className="text-md font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
+                        <h4 className="text-md font-bold uppercase flex items-center gap-2 tracking-wide">
                           <TrendingUp className="text-slate-800" size={18} />
                           Sinyal IFPA per Komoditas
                         </h4>
-                        <p className="text-xs font-mono font-bold text-slate-500 uppercase mt-1">
+                        <p className="text-xs font-bold text-slate-500 uppercase mt-1">
                           Edisi {labelEdisi(anomaliData.edisiTerbaru)} - diurutkan kekuatan sinyal (|IFPA|)
                         </p>
                       </div>
@@ -559,21 +559,21 @@ export default function PriceVolatilityPage() {
                       </div>
                     </div>
 
-                    <div className="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 p-6 flex flex-col">
+                    <div className="bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow transition-all duration-200 p-6 flex flex-col">
                       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-6 border-b border-slate-200 pb-3">
                         <div className="flex flex-col">
-                          <h4 className="text-md font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
+                          <h4 className="text-md font-bold uppercase flex items-center gap-2 tracking-wide">
                             <Filter className="text-slate-800" size={18} />
                             Tren QIPA - AIPA - IFPA
                           </h4>
-                          <p className="text-xs font-mono font-bold text-slate-500 uppercase mt-1">
+                          <p className="text-xs font-bold text-slate-500 uppercase mt-1">
                             Satu komoditas dipantau lintas edisi
                           </p>
                         </div>
                         <select
                           value={komoditasPilih || anomaliData.komoditas[0]}
                           onChange={(e) => setKomoditasPilih(e.target.value)}
-                          className="border border-slate-200 rounded-lg px-3 py-1.5 font-mono text-xs font-bold uppercase text-slate-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="border border-slate-200 rounded-lg px-3 py-1.5 text-xs font-bold uppercase text-slate-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
                           {anomaliData.komoditas.map((k) => (
                             <option key={k} value={k}>{k}</option>
@@ -599,13 +599,13 @@ export default function PriceVolatilityPage() {
                   </div>
 
                   {/* Matriks status per edisi */}
-                  <div className="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 p-6">
+                  <div className="bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow transition-all duration-200 p-6">
                     <div className="flex flex-col mb-6 border-b border-slate-200 pb-3">
-                      <h4 className="text-md font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
+                      <h4 className="text-md font-bold uppercase flex items-center gap-2 tracking-wide">
                         <Calendar className="text-slate-800" size={18} />
                         Matriks Status Komoditas per Edisi
                       </h4>
-                      <p className="text-xs font-mono font-bold text-slate-500 uppercase mt-1">
+                      <p className="text-xs font-bold text-slate-500 uppercase mt-1">
                         Panah atas = tekanan harga tinggi - panah bawah = tekanan harga rendah - arahkan kursor untuk nilai indeks
                       </p>
                     </div>
@@ -613,9 +613,9 @@ export default function PriceVolatilityPage() {
                       <table className="w-full min-w-[640px]">
                         <thead>
                           <tr className="border-b-2 border-slate-200">
-                            <th className="py-2 pr-4 text-left font-mono text-[10px] font-bold uppercase text-slate-500">Komoditas</th>
+                            <th className="py-2 pr-4 text-left text-[10px] font-bold uppercase text-slate-500">Komoditas</th>
                             {anomaliData.edisi.map((m) => (
-                              <th key={m} className="px-1 py-2 text-center font-mono text-[10px] font-bold uppercase text-slate-500">
+                              <th key={m} className="px-1 py-2 text-center text-[10px] font-bold uppercase text-slate-500">
                                 {labelEdisi(m).split(" ")[0]}
                               </th>
                             ))}
@@ -624,13 +624,13 @@ export default function PriceVolatilityPage() {
                         <tbody>
                           {anomaliData.matriks.map((row) => (
                             <tr key={row.komoditas} className="border-b border-slate-100 last:border-0">
-                              <td className="py-2 pr-4 font-mono text-[11px] font-bold uppercase text-slate-700">{row.komoditas}</td>
+                              <td className="py-2 pr-4 text-[11px] font-bold uppercase text-slate-700">{row.komoditas}</td>
                               {row.sel.map((c, i) => (
                                 <td key={i} className="px-1 py-2 text-center">
                                   {c ? (
                                     <span
                                       title={`${labelEdisi(c.tanggal)} - ${STATUS_LABEL[c.status] ?? c.status} - IFPA ${fmtSigned(c.ifpa)} - QIPA ${fmtSigned(c.qipa)} - AIPA ${fmtSigned(c.aipa)}`}
-                                      className={`inline-flex h-6 w-6 items-center justify-center rounded-md font-mono text-[10px] font-bold ${badgeStatus(c.status)}`}
+                                      className={`inline-flex h-6 w-6 items-center justify-center rounded-md text-[10px] font-bold ${badgeStatus(c.status)}`}
                                     >
                                       {directionOf(c.status) === "high" ? "▲" : directionOf(c.status) === "low" ? "▼" : "•"}
                                     </span>
@@ -645,24 +645,24 @@ export default function PriceVolatilityPage() {
                       </table>
                     </div>
                     <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2">
-                      <span className="inline-flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase text-slate-500">
+                      <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase text-slate-500">
                         <span className="h-3 w-3 rounded-sm bg-red-500" /> Waspada (Alert)
                       </span>
-                      <span className="inline-flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase text-slate-500">
+                      <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase text-slate-500">
                         <span className="h-3 w-3 rounded-sm bg-amber-500" /> Perhatian (Warning)
                       </span>
-                      <span className="inline-flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase text-slate-500">
+                      <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase text-slate-500">
                         <span className="h-3 w-3 rounded-sm bg-emerald-500" /> Normal
                       </span>
-                      <span className="font-mono text-[10px] font-bold uppercase text-slate-400">▲ harga tinggi</span>
-                      <span className="font-mono text-[10px] font-bold uppercase text-slate-400">▼ harga rendah</span>
+                      <span className=" text-[10px] font-bold uppercase text-slate-400">▲ harga tinggi</span>
+                      <span className=" text-[10px] font-bold uppercase text-slate-400">▼ harga rendah</span>
                     </div>
                   </div>
 
                   {/* Sumber data */}
                   <div className="flex items-start gap-2 p-3 bg-blue-50 border border-slate-200 shadow-sm">
                     <Info className="shrink-0 mt-0.5 text-blue-600" size={14} />
-                    <span className="font-mono text-[10px] font-bold leading-normal uppercase text-blue-800">
+                    <span className=" text-[10px] font-bold leading-normal uppercase text-blue-800">
                       Sumber: Badan Pangan Nasional (Bapanas) melalui layanan API Indonesia (apiindonesia.id) - indeks anomali harga pangan edisi bulanan. Tanda IFPA menunjukkan arah anomali: positif = tekanan harga tinggi (mahal), negatif = tekanan harga rendah (murah).
                     </span>
                   </div>
@@ -673,24 +673,24 @@ export default function PriceVolatilityPage() {
             {/* ===== Harga Pangan Jawa Tengah (Konsumen & Produsen) ===== */}
             <div className="flex flex-col gap-8">
               <div className="flex flex-col border-b border-slate-200 pb-3">
-                <h4 className="text-lg font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
+                <h4 className="text-lg font-bold uppercase flex items-center gap-2 tracking-wide">
                   <Banknote className="text-slate-800" size={20} />
                   Harga Pangan Jawa Tengah
                 </h4>
-                <p className="text-xs font-mono font-bold text-slate-500 uppercase mt-1">
+                <p className="text-xs font-bold text-slate-500 uppercase mt-1">
                   Harga bulanan Bapanas tingkat provinsi - konsumen (eceran) & produsen (petani / penggilingan / RPH)
                 </p>
               </div>
 
               {hargaLoading ? (
-                <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+                <div className="bg-white border border-slate-200 rounded-lg shadow-sm p-6">
                   <LoadingSpinner label="Memuat harga pangan Jawa Tengah..." />
                 </div>
               ) : !hargaData ? (
-                <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+                <div className="bg-white border border-slate-200 rounded-lg shadow-sm p-6">
                   <div className="flex items-start gap-2 text-slate-500">
                     <AlertTriangle className="shrink-0 mt-0.5 text-amber-600" size={16} />
-                    <span className="font-mono text-xs font-bold uppercase">
+                    <span className=" text-xs font-bold uppercase">
                       Data harga pangan belum tersedia - layanan API apiindonesia.id tidak dapat dijangkau.
                     </span>
                   </div>
@@ -705,7 +705,7 @@ export default function PriceVolatilityPage() {
                           key={t}
                           type="button"
                           onClick={() => setTingkatPilih(t)}
-                          className={`px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-wide transition-colors ${
+                          className={`px-4 py-1.5 text-xs font-bold uppercase tracking-wide transition-colors ${
                             tingkatPilih === t ? "bg-slate-800 text-white" : "bg-white text-slate-500 hover:bg-slate-50"
                           }`}
                         >
@@ -713,7 +713,7 @@ export default function PriceVolatilityPage() {
                         </button>
                       ))}
                     </div>
-                    <span className="inline-flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase text-slate-500">
+                    <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase text-slate-500">
                       <MapPin size={12} className="text-slate-400" />
                       Provinsi Jawa Tengah - Edisi {labelEdisi(hargaData.edisiTerbaru)}
                     </span>
@@ -722,30 +722,30 @@ export default function PriceVolatilityPage() {
                   {/* KPI komoditas pokok */}
                   <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                     {hargaData.kpiStaples.map((s) => (
-                      <div key={s.komoditas} className="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 p-4">
-                        <p className="text-[9px] text-slate-400 uppercase font-mono font-bold leading-tight">{s.komoditas}</p>
-                        <p className="mt-1.5 text-lg font-mono font-bold text-slate-800">{fmtRp(s.harga)}</p>
+                      <div key={s.komoditas} className="bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow transition-all duration-200 p-4">
+                        <p className="text-[9px] text-slate-400 uppercase font-bold leading-tight">{s.komoditas}</p>
+                        <p className="mt-1.5 text-lg font-bold text-slate-800">{fmtRp(s.harga)}</p>
                         {s.mom != null ? (
-                          <p className={`mt-1 inline-flex items-center gap-1 font-mono text-[10px] font-bold uppercase ${momClass(s.mom)}`}>
+                          <p className={`mt-1 inline-flex items-center gap-1 text-[10px] font-bold uppercase ${momClass(s.mom)}`}>
                             {s.mom >= 0 ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
                             {fmtPct(s.mom)} MoM
                           </p>
                         ) : (
-                          <p className="mt-1 font-mono text-[10px] font-bold uppercase text-slate-400">Edisi lalu n/a</p>
+                          <p className="mt-1 text-[10px] font-bold uppercase text-slate-400">Edisi lalu n/a</p>
                         )}
                       </div>
                     ))}
                   </div>
 
                   {/* Tren harga komoditas */}
-                  <div className="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 p-6 flex flex-col">
+                  <div className="bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow transition-all duration-200 p-6 flex flex-col">
                     <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-6 border-b border-slate-200 pb-3">
                       <div className="flex flex-col">
-                        <h4 className="text-md font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
+                        <h4 className="text-md font-bold uppercase flex items-center gap-2 tracking-wide">
                           <Coins className="text-slate-800" size={18} />
                           Tren Harga Bulanan
                         </h4>
-                        <p className="text-xs font-mono font-bold text-slate-500 uppercase mt-1">
+                        <p className="text-xs font-bold text-slate-500 uppercase mt-1">
                           {tingkatPilih === "konsumen" ? "Harga eceran konsumen" : "Harga tingkat produsen"} per komoditas
                         </p>
                       </div>
@@ -753,7 +753,7 @@ export default function PriceVolatilityPage() {
                         <select
                           value={hargaData.kTerpilih}
                           onChange={(e) => setKomoditasHargaPilih(e.target.value)}
-                          className="border border-slate-200 rounded-lg px-3 py-1.5 font-mono text-xs font-bold uppercase text-slate-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 max-w-[220px]"
+                          className="border border-slate-200 rounded-lg px-3 py-1.5 text-xs font-bold uppercase text-slate-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 max-w-[220px]"
                         >
                           {hargaData.komoditas.map((k) => (
                             <option key={k} value={k}>{k}</option>
@@ -762,7 +762,7 @@ export default function PriceVolatilityPage() {
                         <select
                           value={rentangPilih}
                           onChange={(e) => setRentangPilih(Number(e.target.value))}
-                          className="border border-slate-200 rounded-lg px-3 py-1.5 font-mono text-xs font-bold uppercase text-slate-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="border border-slate-200 rounded-lg px-3 py-1.5 text-xs font-bold uppercase text-slate-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
                           <option value={12}>12 Bulan</option>
                           <option value={24}>24 Bulan</option>
@@ -790,13 +790,13 @@ export default function PriceVolatilityPage() {
                   </div>
 
                   {/* Tabel harga edisi terbaru */}
-                  <div className="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 p-6">
+                  <div className="bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow transition-all duration-200 p-6">
                     <div className="flex flex-col mb-6 border-b border-slate-200 pb-3">
-                      <h4 className="text-md font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
+                      <h4 className="text-md font-bold uppercase flex items-center gap-2 tracking-wide">
                         <Calendar className="text-slate-800" size={18} />
                         Daftar Harga Edisi {labelEdisi(hargaData.edisiTerbaru)}
                       </h4>
-                      <p className="text-xs font-mono font-bold text-slate-500 uppercase mt-1">
+                      <p className="text-xs font-bold text-slate-500 uppercase mt-1">
                         {tingkatPilih === "konsumen" ? "Tingkat konsumen (eceran)" : "Tingkat produsen (petani / penggilingan / RPH)"} - diurutkan perubahan bulanan
                       </p>
                     </div>
@@ -804,17 +804,17 @@ export default function PriceVolatilityPage() {
                       <table className="w-full min-w-[480px]">
                         <thead>
                           <tr className="border-b-2 border-slate-200">
-                            <th className="py-2 pr-4 text-left font-mono text-[10px] font-bold uppercase text-slate-500">Komoditas</th>
-                            <th className="px-2 py-2 text-right font-mono text-[10px] font-bold uppercase text-slate-500">Harga</th>
-                            <th className="py-2 pl-4 text-right font-mono text-[10px] font-bold uppercase text-slate-500">Perubahan MoM</th>
+                            <th className="py-2 pr-4 text-left text-[10px] font-bold uppercase text-slate-500">Komoditas</th>
+                            <th className="px-2 py-2 text-right text-[10px] font-bold uppercase text-slate-500">Harga</th>
+                            <th className="py-2 pl-4 text-right text-[10px] font-bold uppercase text-slate-500">Perubahan MoM</th>
                           </tr>
                         </thead>
                         <tbody>
                           {hargaData.tabel.map((t) => (
                             <tr key={t.komoditas} className="border-b border-slate-100 last:border-0">
-                              <td className="py-2 pr-4 font-mono text-[11px] font-bold uppercase text-slate-700">{t.komoditas}</td>
-                              <td className="px-2 py-2 text-right font-mono text-[11px] font-bold text-slate-800">{fmtRp(t.harga)}</td>
-                              <td className={`py-2 pl-4 text-right font-mono text-[11px] font-bold ${momClass(t.mom)}`}>
+                              <td className="py-2 pr-4 text-[11px] font-bold uppercase text-slate-700">{t.komoditas}</td>
+                              <td className="px-2 py-2 text-right text-[11px] font-bold text-slate-800">{fmtRp(t.harga)}</td>
+                              <td className={`py-2 pl-4 text-right text-[11px] font-bold ${momClass(t.mom)}`}>
                                 {t.mom == null ? "-" : `${t.mom >= 0 ? "+" : ""}${t.mom.toFixed(1)}%`}
                               </td>
                             </tr>
@@ -827,7 +827,7 @@ export default function PriceVolatilityPage() {
                   {/* Sumber data harga */}
                   <div className="flex items-start gap-2 p-3 bg-blue-50 border border-slate-200 shadow-sm">
                     <Info className="shrink-0 mt-0.5 text-blue-600" size={14} />
-                    <span className="font-mono text-[10px] font-bold leading-normal uppercase text-blue-800">
+                    <span className=" text-[10px] font-bold leading-normal uppercase text-blue-800">
                       Sumber: Badan Pangan Nasional (Bapanas) melalui layanan API Indonesia (apiindonesia.id) - harga bulanan provinsi Jawa Tengah (tingkat konsumen & produsen), rilis B+1. Sumber tidak menyediakan data harga level kabupaten/kota; Jawa Tengah adalah wilayah terdekat yang tersedia.
                     </span>
                   </div>

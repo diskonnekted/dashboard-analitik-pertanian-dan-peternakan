@@ -34,11 +34,11 @@ import {
  * /sebaran/:bidang — peta tematik choropleth kabupaten→kecamatan.
  *
  * Indikator menyesuaikan bidang yang ditangani:
- *   pangan → Σ produksi tanaman pangan (ton)
- *   hortikultura → Σ produksi sayuran + buah (ton)
- *   perkebunan → Σ produksi perkebunan (ton)
- *   peternakan → Σ populasi ternak + unggas (ekor)
- *   perikanan → Σ produksi budidaya + tangkap (ton)
+ * pangan → Σ produksi tanaman pangan (ton)
+ * hortikultura → Σ produksi sayuran + buah (ton)
+ * perkebunan → Σ produksi perkebunan (ton)
+ * peternakan → Σ populasi ternak + unggas (ekor)
+ * perikanan → Σ produksi budidaya + tangkap (ton)
  *
  * Layout & style mengikuti halaman Profil Kecamatan (/kecamatan):
  * DefaultLayout + PageHeader + baris KpiCard + SectionCard + catatan

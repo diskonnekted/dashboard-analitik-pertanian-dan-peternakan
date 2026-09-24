@@ -381,7 +381,7 @@ export default function LivestockPage() {
         {/* Hero / intro */}
         <PageHeader
           icon={<Beef className="h-6 w-6" />}
-          title="Analitik Peternakan & Unggas"
+          title="Populasi & Produksi Ternak"
           subtitle="Pemantauan populasi ternak besar, ternak kecil, dan unggas per kecamatan di Kabupaten Banjarnegara."
           actions={<Badge tone="blue">Tahun {selectedYear}</Badge>}
         />

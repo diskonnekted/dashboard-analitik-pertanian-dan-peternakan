@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { 
   LayoutDashboard, 
@@ -10,6 +10,7 @@ import {
   Menu, 
   X, 
   Info,
+  ChevronDown,
   Fish,
   DollarSign,
   ClipboardList,
@@ -50,6 +51,17 @@ export default function DefaultLayout({
 }) {
   const location = useLocation();
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  // Grup menu yang sedang terbuka (accordion — hanya satu terbuka dalam satu waktu)
+  const [openGroup, setOpenGroup] = useState<number | null>(null);
+
+  // Buka otomatis grup yang memuat halaman aktif saat rute berubah
+  useEffect(() => {
+    const idx = siteConfig.navGroups.findIndex((g) =>
+      g.items.some((it) => it.href === location.pathname),
+    );
+    if (idx >= 0) setOpenGroup(idx);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname]);
 
   // Helper to map route to its Lucide icon
   const getIcon = (label: string, isActive: boolean) => {
@@ -90,7 +102,7 @@ export default function DefaultLayout({
         return <Leaf className={cls} />;
       case "Sertifikasi & Mutu Hasil":
         return <Award className={cls} />;
-      case "Komoditas Unggulan":
+      case "Komoditas & Varietas Unggulan":
         return <Sprout className={cls} />;
       case "Kemitraan & Hilirisasi":
         return <Handshake className={cls} />;
@@ -104,15 +116,16 @@ export default function DefaultLayout({
         return <Droplets className={cls} />;
       case "Produksi Perikanan":
         return <Fish className={cls} />;
-      case "Nilai Ekonomi Pangan":
-      case "Nilai Ekonomi Hortikultura":
-      case "Nilai Ekonomi Perkebunan":
-      case "Nilai Ekonomi Peternakan":
+      case "Nilai Ekonomi":
       case "Nilai Ekonomi Perikanan":
         return <DollarSign className={cls} />;
+      case "Sebaran Wilayah (Peta)":
+        return <Map className={cls} />;
       case "Kesehatan Ikan & Lingkungan Perairan":
         return <Waves className={cls} />;
-      case "Neraca Komoditas Pangan":
+      case "Ketersediaan Beras":
+        return <ShieldCheck className={cls} />;
+      case "Ketahanan Pangan (FSVA)":
         return <ShieldCheck className={cls} />;
       case "Rantai Pasok & Distribusi":
         return <Truck className={cls} />;
@@ -154,7 +167,11 @@ export default function DefaultLayout({
   // Helper to get active page title
   const getPageTitle = () => {
     const activeItem = siteConfig.navItems.find(item => item.href === location.pathname);
-    return activeItem ? activeItem.label : "Dasbor Pertanian";
+    if (activeItem) return activeItem.label;
+    // Halaman yang diakses dari tombol top bar (bukan dari menu samping)
+    if (location.pathname === "/info") return "Info SISPERTANI";
+    if (location.pathname === "/manual") return "Manual Book / Panduan";
+    return "Dasbor Pertanian";
   };
 
   // Render grouped nav items
@@ -164,13 +181,22 @@ export default function DefaultLayout({
         // Menu inaktif (hidden) tidak dirender; grup tanpa item aktif → dilewati
         const visibleItems = group.items.filter((it) => !it.hidden);
         if (!visibleItems.length) return null;
+        const hasTitle = !!group.title;
+        const isOpen = hasTitle ? openGroup === groupIndex : true;
         return (
-        <div key={groupIndex} className={group.title ? "mt-4 first:mt-0" : ""}>
+        <div key={groupIndex} className={group.title ? "mt-1 first:mt-0" : ""}>
           {group.title && (
-            <p className="px-4 mb-1.5 text-[9px] font-mono font-bold text-slate-500 uppercase tracking-wider">
-              {group.title}
-            </p>
+            <button
+              type="button"
+              onClick={() => setOpenGroup(openGroup === groupIndex ? null : groupIndex)}
+              aria-expanded={isOpen}
+              className="w-full flex items-center justify-between px-3 py-2 mb-0.5 rounded-lg text-[10px] font-bold text-slate-400 uppercase tracking-wider hover:bg-slate-800 hover:text-slate-200 transition-colors text-left"
+            >
+              <span>{group.title}</span>
+              <ChevronDown className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
+            </button>
           )}
+          {isOpen && (
           <div className="space-y-1">
             {visibleItems.map((item) => {
               const isActive = location.pathname === item.href;
@@ -185,7 +211,7 @@ export default function DefaultLayout({
                   >
                     {getIcon(item.label, false)}
                     <span className="flex-1">{item.label}</span>
-                    <span className="text-[8px] font-mono text-slate-700 bg-slate-800/60 px-1.5 py-0.5 rounded">SOON</span>
+                    <span className="text-[8px] text-slate-700 bg-slate-800/60 px-1.5 py-0.5 rounded">SOON</span>
                   </div>
                 );
               }
@@ -207,6 +233,7 @@ export default function DefaultLayout({
               );
             })}
           </div>
+          )}
         </div>
         );
       })}
@@ -227,7 +254,7 @@ export default function DefaultLayout({
               <span className="font-sans font-bold text-base tracking-tight uppercase text-white block leading-none">
                 SISPERTANI
               </span>
-              <span className="text-[9px] font-mono font-semibold text-slate-400 uppercase tracking-wider block mt-1">
+              <span className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider block mt-1">
                 Kab. Banjarnegara
               </span>
             </div>
@@ -245,6 +272,7 @@ export default function DefaultLayout({
           <header className="no-print h-[88px] bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between shrink-0 shadow-sm">
             <div className="flex items-center gap-3">
               <button 
+                aria-label="Buka menu navigasi"
                 className="md:hidden text-slate-600 mr-2 border border-slate-200 p-2 rounded-lg bg-white hover:bg-slate-50 transition-all" 
                 onClick={() => setIsMobileSidebarOpen(true)}
               >
@@ -256,6 +284,24 @@ export default function DefaultLayout({
             </div>
             
             <div className="flex items-center gap-4">
+              {/* Info & Panduan — utilitas (bukan bagian menu samping) */}
+              <Link
+                to="/info"
+                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-800 transition-all"
+                title="Info SISPERTANI"
+              >
+                <Info className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Info</span>
+              </Link>
+              <Link
+                to="/manual"
+                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-800 transition-all"
+                title="Manual Book / Panduan"
+              >
+                <BookOpen className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Panduan</span>
+              </Link>
+
               {/* Login Button → pintu masuk dasbor admin internal */}
               <Link
                 to="/admin"
@@ -269,7 +315,7 @@ export default function DefaultLayout({
               {/* Guest Avatar */}
               <div className="flex items-center gap-3">
                 <div className="text-right hidden sm:block">
-                  <p className="text-xs font-semibold text-slate-850">Guest</p>
+                  <p className="text-xs font-semibold text-slate-900">Guest</p>
                   <p className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider leading-none">Pengunjung</p>
                 </div>
                 <div className="w-8 h-8 rounded-full border border-slate-200 bg-amber-100 flex items-center justify-center font-sans font-bold text-xs text-amber-800">
@@ -299,7 +345,7 @@ export default function DefaultLayout({
           onClick={() => setIsMobileSidebarOpen(false)}
         >
           <div 
-            className="w-64 h-full bg-slate-900 text-white flex flex-col p-5 shadow-xl"
+            className="w-64 h-full bg-slate-900 text-white flex flex-col p-5 shadow"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between pb-4 border-b border-slate-800">
@@ -310,6 +356,7 @@ export default function DefaultLayout({
                 </span>
               </div>
               <button 
+                aria-label="Tutup menu navigasi"
                 className="border border-slate-800 p-1.5 rounded-lg text-slate-400 hover:text-white" 
                 onClick={() => setIsMobileSidebarOpen(false)}
               >

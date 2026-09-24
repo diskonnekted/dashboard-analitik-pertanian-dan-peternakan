@@ -80,7 +80,7 @@ export default function GovernmentAssistancePage() {
         <section className="relative text-left animate-fade-in py-4 md:py-8 flex flex-col md:flex-row items-center justify-between gap-8 border-b border-slate-200 pb-8">
           <div className="relative z-10 flex-1">
             <h2 className="text-2xl sm:text-4xl leading-tight font-bold tracking-tight text-slate-800">
-              Analisis Bantuan Pemerintah
+              Analisis Bantuan
             </h2>
             <p className="text-xs md:text-sm font-medium text-slate-500 mt-2 max-w-2xl border-l-2 border-blue-500 pl-3">
               Korelasi penyaluran anggaran bantuan APBD/APBN terhadap laju pertumbuhan produktivitas sektor pertanian Banjarnegara.
@@ -99,24 +99,24 @@ export default function GovernmentAssistancePage() {
         {bantuan === null ? (
           <div className="bg-slate-50 border border-slate-200 p-4 flex items-start gap-3 shadow-sm">
             <Coins className="text-slate-400 shrink-0 mt-0.5" size={20} />
-            <div className="text-left font-mono text-xs text-slate-500">
-              <span className="font-black uppercase block mb-1">MEMUAT DATA</span>
+            <div className="text-left text-xs text-slate-500">
+              <span className="font-semibold uppercase block mb-1">MEMUAT DATA</span>
               Mengambil data bantuan pemerintah terbaru…
             </div>
           </div>
         ) : !adaData ? (
           <div className="bg-sky-50 border border-sky-400 p-4 flex items-start gap-3 shadow-sm">
             <AlertTriangle className="text-sky-600 shrink-0 mt-0.5" size={20} />
-            <div className="text-left font-mono text-xs text-sky-800">
-              <span className="font-black uppercase block mb-1">BELUM ADA DATA</span>
+            <div className="text-left text-xs text-sky-800">
+              <span className="font-semibold uppercase block mb-1">BELUM ADA DATA</span>
               Data alokasi bantuan pemerintah belum diinput. Grafik dan tabel di bawah akan terisi otomatis setelah admin Dinas Pertanian mengisi data melalui dasbor admin SISPERTANI.
             </div>
           </div>
         ) : (
           <div className="bg-emerald-50 border border-emerald-400 p-4 flex items-start gap-3 shadow-sm">
             <Coins className="text-emerald-600 shrink-0 mt-0.5" size={20} />
-            <div className="text-left font-mono text-xs text-emerald-800">
-              <span className="font-black uppercase block mb-1">DATA BANTUAN PEMERINTAH</span>
+            <div className="text-left text-xs text-emerald-800">
+              <span className="font-semibold uppercase block mb-1">DATA BANTUAN PEMERINTAH</span>
               Data diperbarui per {bantuan.updatedAt ? formatTanggal(bantuan.updatedAt) : "-"} — diinput manual oleh admin Dinas Pertanian Banjarnegara.
             </div>
           </div>
@@ -125,26 +125,26 @@ export default function GovernmentAssistancePage() {
         {/* Stats Row */}
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           <div className="bg-emerald-50 border border-slate-200 p-5 shadow-sm text-left">
-            <span className="text-[10px] font-mono font-bold uppercase text-emerald-800 tracking-wider block mb-1">Akumulasi Bantuan</span>
-            <h3 className="text-2xl font-serif font-black text-slate-800 leading-tight">{formatRupiahShort(totalBantuan)}</h3>
-            <p className="text-[10px] font-mono text-slate-500 mt-2 uppercase">Total Nilai {program.length} Program Bantuan</p>
+            <span className="text-[10px] font-bold uppercase text-emerald-800 tracking-wider block mb-1">Akumulasi Bantuan</span>
+            <h3 className="text-2xl font-semibold text-slate-800 leading-tight">{formatRupiahShort(totalBantuan)}</h3>
+            <p className="text-[10px] text-slate-500 mt-2 uppercase">Total Nilai {program.length} Program Bantuan</p>
           </div>
           <div className="bg-blue-50 border border-slate-200 p-5 shadow-sm text-left">
-            <span className="text-[10px] font-mono font-bold uppercase text-blue-800 tracking-wider block mb-1">Sumber Dana APBN</span>
-            <h3 className="text-2xl font-serif font-black text-slate-800 leading-tight">{formatRupiahShort(totalApbn)}</h3>
-            <p className="text-[10px] font-mono text-slate-500 mt-2 uppercase">Kontribusi Subsidi & Alat Mesin Pusat</p>
+            <span className="text-[10px] font-bold uppercase text-blue-800 tracking-wider block mb-1">Sumber Dana APBN</span>
+            <h3 className="text-2xl font-semibold text-slate-800 leading-tight">{formatRupiahShort(totalApbn)}</h3>
+            <p className="text-[10px] text-slate-500 mt-2 uppercase">Kontribusi Subsidi & Alat Mesin Pusat</p>
           </div>
-          <div className="bg-purple-50 border border-slate-200 p-5 shadow-sm text-left">
-            <span className="text-[10px] font-mono font-bold uppercase text-purple-800 tracking-wider block mb-1">Penerima Bantuan</span>
-            <h3 className="text-2xl font-serif font-black text-slate-800 leading-tight">{totalPenerima.toLocaleString("id-ID")}</h3>
-            <p className="text-[10px] font-mono text-slate-500 mt-2 uppercase">Akumulasi Kelompok & Petani Penerima</p>
+          <div className="bg-blue-50 border border-slate-200 p-5 shadow-sm text-left">
+            <span className="text-[10px] font-bold uppercase text-blue-800 tracking-wider block mb-1">Penerima Bantuan</span>
+            <h3 className="text-2xl font-semibold text-slate-800 leading-tight">{totalPenerima.toLocaleString("id-ID")}</h3>
+            <p className="text-[10px] text-slate-500 mt-2 uppercase">Akumulasi Kelompok & Petani Penerima</p>
           </div>
           <div className="bg-amber-50 border border-slate-200 p-5 shadow-sm text-left">
-            <span className="text-[10px] font-mono font-bold uppercase text-amber-800 tracking-wider block mb-1">Rata-rata Dampak</span>
-            <h3 className="text-2xl font-serif font-black text-slate-800 leading-tight">
+            <span className="text-[10px] font-bold uppercase text-amber-800 tracking-wider block mb-1">Rata-rata Dampak</span>
+            <h3 className="text-2xl font-semibold text-slate-800 leading-tight">
               {rataDampak === null ? "—" : `+${rataDampak.toFixed(1).replace(".", ",")}%`}
             </h3>
-            <p className="text-[10px] font-mono text-slate-500 mt-2 uppercase">Laju Peningkatan Produksi Sektoral</p>
+            <p className="text-[10px] text-slate-500 mt-2 uppercase">Laju Peningkatan Produksi Sektoral</p>
           </div>
         </div>
 
@@ -152,12 +152,12 @@ export default function GovernmentAssistancePage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 text-left">
           {/* Trend Bantuan */}
           <div className="bg-white border border-slate-200 shadow-sm p-6">
-            <h3 className="text-md font-mono font-bold uppercase mb-4 flex items-center gap-2">
+            <h3 className="text-md font-bold uppercase mb-4 flex items-center gap-2">
               <Coins size={18} className="text-emerald-700" />
               Trend Perkembangan Alokasi Bantuan (Miliar Rp)
             </h3>
             {alokasi.length === 0 ? (
-              <div className="w-full h-80 flex items-center justify-center font-mono text-xs uppercase text-slate-400 border border-dashed border-slate-200">
+              <div className="w-full h-80 flex items-center justify-center text-xs uppercase text-slate-400 border border-dashed border-slate-200">
                 Belum ada data alokasi tahunan
               </div>
             ) : (
@@ -179,12 +179,12 @@ export default function GovernmentAssistancePage() {
 
           {/* Korelasi Dampak Bantuan */}
           <div className="bg-white border border-slate-200 shadow-sm p-6">
-            <h3 className="text-md font-mono font-bold uppercase mb-4 flex items-center gap-2">
+            <h3 className="text-md font-bold uppercase mb-4 flex items-center gap-2">
               <TrendingUp size={18} className="text-blue-700" />
               Efektivitas Bantuan terhadap Laju Produksi (%)
             </h3>
             {korelasi.length === 0 ? (
-              <div className="w-full h-80 flex items-center justify-center font-mono text-xs uppercase text-slate-400 border border-dashed border-slate-200">
+              <div className="w-full h-80 flex items-center justify-center text-xs uppercase text-slate-400 border border-dashed border-slate-200">
                 Belum ada data korelasi sektor
               </div>
             ) : (
@@ -207,12 +207,12 @@ export default function GovernmentAssistancePage() {
 
         {/* Tabel Alokasi Program Bantuan */}
         <div className="bg-white border border-slate-200 shadow-sm p-6 text-left">
-          <h3 className="text-md font-mono font-bold uppercase mb-4 flex items-center gap-2">
-            <FileSpreadsheet size={18} className="text-purple-700" />
+          <h3 className="text-md font-bold uppercase mb-4 flex items-center gap-2">
+            <FileSpreadsheet size={18} className="text-blue-700" />
             Daftar Alokasi Program Kerja Bantuan Utama (APBD & APBN)
           </h3>
           <div className="overflow-x-auto">
-            <table className="w-full text-left font-mono text-xs border-collapse">
+            <table className="w-full text-left text-xs border-collapse">
               <thead>
                 <tr className="border-b border-slate-200 bg-slate-50">
                   <th className="p-3 uppercase">Nama Program Kerja</th>
@@ -226,7 +226,7 @@ export default function GovernmentAssistancePage() {
               <tbody>
                 {program.length === 0 ? (
                   <tr className="border-b border-slate-200">
-                    <td colSpan={6} className="p-8 text-center font-mono text-xs uppercase text-slate-400">
+                    <td colSpan={6} className="p-8 text-center text-xs uppercase text-slate-400">
                       Belum ada program bantuan yang diinput
                     </td>
                   </tr>
@@ -241,11 +241,11 @@ export default function GovernmentAssistancePage() {
                           {p.sumber} {p.tahunAnggaran || ""}
                         </span>
                       </td>
-                      <td className="p-3 text-right font-black text-slate-800">{formatRupiahShort(p.nilaiRupiah)}</td>
+                      <td className="p-3 text-right font-semibold text-slate-800">{formatRupiahShort(p.nilaiRupiah)}</td>
                       <td className="p-3 uppercase font-medium">{p.sektor || "-"}</td>
                       <td className="p-3">{p.penerimaJumlah > 0 ? `${p.penerimaJumlah.toLocaleString("id-ID")} ${p.penerimaJenis}` : "-"}</td>
                       <td className="p-3 text-center">
-                        <span className={`inline-flex items-center gap-0.5 px-2 py-0.5 border text-[10px] font-black uppercase ${
+                        <span className={`inline-flex items-center gap-0.5 px-2 py-0.5 border text-[10px] font-semibold uppercase ${
                           p.dampakLevel === "Tinggi" ? "bg-green-100 text-green-700 border-green-300" : "bg-yellow-100 text-yellow-700 border-yellow-300"
                         }`} title={p.dampakCatatan || undefined}>
                           <ArrowUpRight size={10} /> {p.dampakLevel}
@@ -261,11 +261,11 @@ export default function GovernmentAssistancePage() {
 
         {/* Insight / Rekomendasi Alokasi */}
         <div className="bg-white border border-slate-200 shadow-sm p-6 text-left">
-          <h3 className="text-md font-mono font-bold uppercase mb-4 flex items-center gap-2">
+          <h3 className="text-md font-bold uppercase mb-4 flex items-center gap-2">
             <HelpCircle size={18} className="text-amber-700" />
             Catatan Rekomendasi Alokasi Bantuan
           </h3>
-          <ul className="space-y-3 font-mono text-xs text-slate-600">
+          <ul className="space-y-3 text-xs text-slate-600">
             <li className="flex items-start gap-2">
               <span className="text-emerald-700 font-bold">▸</span>
               <span>

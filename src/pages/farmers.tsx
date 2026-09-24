@@ -376,7 +376,7 @@ export default function FarmersPage() {
         <section className="relative text-left animate-fade-in py-4 md:py-8 flex flex-col md:flex-row items-center justify-between gap-8 border-b border-slate-200 pb-8">
           <div className="relative z-10 flex-1">
             <h2 className="text-2xl sm:text-4xl leading-tight font-bold tracking-tight text-slate-800">
-            Kelembagaan Petani & Gapoktan
+            Kelembagaan Tani
           </h2>
             <p className="text-xs md:text-sm font-medium text-slate-500 mt-2 max-w-2xl border-l-2 border-blue-500 pl-3">
             Pemantauan Kemitraan, Kelompok Tani (Poktan), Kelompok Perikanan (Pokkan), dan Gapoktan Kabupaten Banjarnegara.
@@ -392,17 +392,17 @@ export default function FarmersPage() {
         </section>
 
         {/* Filters */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-white border border-slate-200 p-6 shadow-sm text-left transition-all duration-300 hover:shadow-md">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-white border border-slate-200 p-6 shadow-sm text-left transition-all duration-300 hover:shadow">
           {/* Tahun */}
           <div className="flex flex-col gap-2">
-            <label className="text-xs font-mono font-bold uppercase text-slate-500">Tahun Data</label>
+            <label className="text-xs font-bold uppercase text-slate-500">Tahun Data</label>
             <div className="relative">
               <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-slate-500 pointer-events-none" />
               <select
                 value={selectedYear ?? ""}
                 onChange={(e) => setSelectedYear(e.target.value)}
                 disabled={selectedYear === null}
-                className="w-full pl-9 pr-4 py-2 border border-slate-200 font-mono text-sm font-bold bg-white focus:outline-none appearance-none cursor-pointer rounded-xl disabled:opacity-50 disabled:cursor-wait"
+                className="w-full pl-9 pr-4 py-2 border border-slate-200 text-sm font-bold bg-white focus:outline-none appearance-none cursor-pointer rounded-lg disabled:opacity-50 disabled:cursor-wait"
               >
                 {yearsList.map((yr) => (
                   <option key={yr} value={yr}>
@@ -415,13 +415,13 @@ export default function FarmersPage() {
 
           {/* Kecamatan */}
           <div className="flex flex-col gap-2">
-            <label className="text-xs font-mono font-bold uppercase text-slate-500">Pilih Kecamatan</label>
+            <label className="text-xs font-bold uppercase text-slate-500">Pilih Kecamatan</label>
             <div className="relative">
               <Filter className="absolute left-3 top-2.5 h-4 w-4 text-slate-500 pointer-events-none" />
               <select
                 value={selectedKecamatan}
                 onChange={(e) => setSelectedKecamatan(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 border border-slate-200 font-mono text-sm font-bold bg-white focus:outline-none appearance-none cursor-pointer rounded-xl"
+                className="w-full pl-9 pr-4 py-2 border border-slate-200 text-sm font-bold bg-white focus:outline-none appearance-none cursor-pointer rounded-lg"
               >
                 {uniqueKecamatan.map((kec) => (
                   <option key={kec} value={kec}>
@@ -434,12 +434,12 @@ export default function FarmersPage() {
 
           {/* Aksi: Muat Ulang */}
           <div className="flex flex-col gap-2">
-            <label className="text-xs font-mono font-bold uppercase text-slate-500">Sinkronisasi</label>
+            <label className="text-xs font-bold uppercase text-slate-500">Sinkronisasi</label>
             <button
               type="button"
               onClick={handleReload}
               disabled={loading || reloading}
-              className="inline-flex items-center justify-center gap-2 w-full pl-3 pr-4 h-[38px] border border-slate-200 font-mono text-sm font-bold bg-amber-50 hover:bg-amber-100 text-amber-800 transition-all rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex items-center justify-center gap-2 w-full pl-3 pr-4 h-[38px] border border-slate-200 text-sm font-bold bg-amber-50 hover:bg-amber-100 text-amber-800 transition-all rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <FileSpreadsheet className="h-4 w-4" />
               {reloading ? "Memuat…" : "Muat Ulang Data"}
@@ -450,16 +450,16 @@ export default function FarmersPage() {
         {loading ? (
           <LoadingSpinner label="Memuat data kelembagaan Dinas, SIMLUH & ST2023..." />
         ) : loadError && rawData.length === 0 ? (
-          <div className="flex flex-col items-center justify-center gap-4 h-[300px] bg-rose-50 border border-rose-200 p-8 rounded-xl">
+          <div className="flex flex-col items-center justify-center gap-4 h-[300px] bg-rose-50 border border-rose-200 p-8 rounded-lg">
             <ShieldAlert className="h-10 w-10 text-rose-600" />
             <div className="text-center">
-              <h3 className="text-lg font-mono font-bold uppercase text-rose-900">
+              <h3 className="text-lg font-bold uppercase text-rose-900">
                 Gagal Memuat Data
               </h3>
-              <p className="text-sm text-rose-700 mt-2 font-mono">
+              <p className="text-sm text-rose-700 mt-2 ">
                 {loadError}
               </p>
-              <p className="text-xs text-rose-600 mt-3 font-mono">
+              <p className="text-xs text-rose-600 mt-3 ">
                 Periksa koneksi internet Anda lalu coba muat ulang.
               </p>
             </div>
@@ -467,7 +467,7 @@ export default function FarmersPage() {
               type="button"
               onClick={handleReload}
               disabled={reloading}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-mono font-bold uppercase text-sm rounded-lg transition-all disabled:opacity-50"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold uppercase text-sm rounded-lg transition-all disabled:opacity-50"
             >
               <FileSpreadsheet className="h-4 w-4" />
               {reloading ? "Memuat…" : "Coba Lagi"}
@@ -478,65 +478,65 @@ export default function FarmersPage() {
             {/* Stats Row */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
               {/* Stat 1: Kelompok Tani */}
-              <div className="bg-amber-50 border border-slate-200 p-5 shadow-sm flex flex-col justify-between transition-all duration-300 hover:shadow-md">
+              <div className="bg-amber-50 border border-slate-200 p-5 shadow-sm flex flex-col justify-between transition-all duration-300 hover:shadow">
                 <div>
-                  <h5 className="text-[10px] font-mono font-bold text-slate-500 uppercase">Kelompok Tani (Poktan)</h5>
-                  <h3 className="text-2xl font-serif font-black uppercase text-slate-800 mt-1">
-                    {formatNum(stats.kelompokTani)} <span className="text-xs font-mono font-normal lowercase">unit</span>
+                  <h5 className="text-[10px] font-bold text-slate-500 uppercase">Kelompok Tani (Poktan)</h5>
+                  <h3 className="text-2xl font-semibold uppercase text-slate-800 mt-1">
+                    {formatNum(stats.kelompokTani)} <span className="text-xs font-normal lowercase">unit</span>
                   </h3>
-                  <p className="text-[11px] font-mono font-bold text-amber-700 mt-2">
+                  <p className="text-[11px] font-bold text-amber-700 mt-2">
                     {formatNum(stats.anggotaTani)} anggota terdaftar
                   </p>
                 </div>
-                <div className="mt-4 pt-2 border-t border-slate-200 text-[9px] font-mono text-slate-400 uppercase">
+                <div className="mt-4 pt-2 border-t border-slate-200 text-[9px] text-slate-400 uppercase">
                   Poktan Pertanian / Pekebun
                 </div>
               </div>
 
               {/* Stat 2: Kelompok Perikanan */}
-              <div className="bg-blue-50 border border-slate-200 p-5 shadow-sm flex flex-col justify-between transition-all duration-300 hover:shadow-md">
+              <div className="bg-blue-50 border border-slate-200 p-5 shadow-sm flex flex-col justify-between transition-all duration-300 hover:shadow">
                 <div>
-                  <h5 className="text-[10px] font-mono font-bold text-slate-500 uppercase">Kelompok Perikanan (Pokkan)</h5>
-                  <h3 className="text-2xl font-serif font-black uppercase text-slate-800 mt-1">
-                    {formatNum(stats.kelompokPerikanan)} <span className="text-xs font-mono font-normal lowercase">unit</span>
+                  <h5 className="text-[10px] font-bold text-slate-500 uppercase">Kelompok Perikanan (Pokkan)</h5>
+                  <h3 className="text-2xl font-semibold uppercase text-slate-800 mt-1">
+                    {formatNum(stats.kelompokPerikanan)} <span className="text-xs font-normal lowercase">unit</span>
                   </h3>
-                  <p className="text-[11px] font-mono font-bold text-blue-700 mt-2">
+                  <p className="text-[11px] font-bold text-blue-700 mt-2">
                     {formatNum(stats.anggotaPerikanan)} anggota terdaftar
                   </p>
                 </div>
-                <div className="mt-4 pt-2 border-t border-slate-200 text-[9px] font-mono text-slate-400 uppercase">
+                <div className="mt-4 pt-2 border-t border-slate-200 text-[9px] text-slate-400 uppercase">
                   Pembudidaya Ikan lokal
                 </div>
               </div>
 
               {/* Stat 3: Gapoktan */}
-              <div className="bg-emerald-50 border border-slate-200 p-5 shadow-sm flex flex-col justify-between transition-all duration-300 hover:shadow-md">
+              <div className="bg-emerald-50 border border-slate-200 p-5 shadow-sm flex flex-col justify-between transition-all duration-300 hover:shadow">
                 <div>
-                  <h5 className="text-[10px] font-mono font-bold text-slate-500 uppercase">Gabungan Poktan (Gapoktan)</h5>
-                  <h3 className="text-2xl font-serif font-black uppercase text-slate-800 mt-1">
-                    {formatNum(stats.gapoktan)} <span className="text-xs font-mono font-normal lowercase">gabungan</span>
+                  <h5 className="text-[10px] font-bold text-slate-500 uppercase">Gabungan Poktan (Gapoktan)</h5>
+                  <h3 className="text-2xl font-semibold uppercase text-slate-800 mt-1">
+                    {formatNum(stats.gapoktan)} <span className="text-xs font-normal lowercase">gabungan</span>
                   </h3>
-                  <p className="text-[11px] font-mono font-bold text-emerald-700 mt-2">
+                  <p className="text-[11px] font-bold text-emerald-700 mt-2">
                     {formatNum(stats.anggotaGapoktan)} pengurus/anggota
                   </p>
                 </div>
-                <div className="mt-4 pt-2 border-t border-slate-200 text-[9px] font-mono text-slate-400 uppercase">
+                <div className="mt-4 pt-2 border-t border-slate-200 text-[9px] text-slate-400 uppercase">
                   Aliansi Poktan Tingkat Desa
                 </div>
               </div>
 
               {/* Stat 4: Kelompok Tani Hutan (SIMLUH snapshot) */}
-              <div className="bg-green-50 border border-slate-200 p-5 shadow-sm flex flex-col justify-between transition-all duration-300 hover:shadow-md">
+              <div className="bg-green-50 border border-slate-200 p-5 shadow-sm flex flex-col justify-between transition-all duration-300 hover:shadow">
                 <div>
-                  <h5 className="text-[10px] font-mono font-bold text-slate-500 uppercase">Kelompok Tani Hutan (KTH)</h5>
-                  <h3 className="text-2xl font-serif font-black uppercase text-slate-800 mt-1">
-                    {formatNum(kthStats.kelompok)} <span className="text-xs font-mono font-normal lowercase">unit</span>
+                  <h5 className="text-[10px] font-bold text-slate-500 uppercase">Kelompok Tani Hutan (KTH)</h5>
+                  <h3 className="text-2xl font-semibold uppercase text-slate-800 mt-1">
+                    {formatNum(kthStats.kelompok)} <span className="text-xs font-normal lowercase">unit</span>
                   </h3>
-                  <p className="text-[11px] font-mono font-bold text-green-700 mt-2">
+                  <p className="text-[11px] font-bold text-green-700 mt-2">
                     {kthStats.desa} desa · kelas: {kthStats.pemula} pemula / {kthStats.madya} madya / {kthStats.utama} utama
                   </p>
                 </div>
-                <div className="mt-4 pt-2 border-t border-slate-200 text-[9px] font-mono text-slate-400 uppercase">
+                <div className="mt-4 pt-2 border-t border-slate-200 text-[9px] text-slate-400 uppercase">
                   Snapshot SIMLUH per 2026 — bukan data tahunan
                 </div>
               </div>
@@ -545,31 +545,31 @@ export default function FarmersPage() {
             {/* Konteks BPS — Sensus Pertanian 2023 (ST2023) */}
             {st2023Stats.desa > 0 && (
               <div className="bg-slate-50 border border-slate-200 p-4 text-left flex flex-wrap items-center gap-x-6 gap-y-2">
-                <span className="text-[10px] font-mono font-bold uppercase text-slate-400">
+                <span className="text-[10px] font-bold uppercase text-slate-400">
                   Konteks BPS · Sensus Pertanian 2023
                 </span>
-                <span className="text-xs font-mono font-bold text-slate-700">
+                <span className="text-xs font-bold text-slate-700">
                   {selectedKecamatan === "Semua" ? "Kabupaten Banjarnegara (20 kec)" : `Kec. ${selectedKecamatan}`}
                 </span>
-                <span className="text-xs font-mono text-slate-600">
+                <span className="text-xs text-slate-600">
                   <b className="text-slate-800">{formatNum(st2023Stats.petani)}</b> petani (orang)
                 </span>
-                <span className="text-xs font-mono text-slate-600">
+                <span className="text-xs text-slate-600">
                   <b className="text-slate-800">{formatNum(st2023Stats.rtAnggotaKelompok)}</b> RTUP anggota kelompok tani/peternak/nelayan
                 </span>
-                <span className="text-xs font-mono text-slate-600">
+                <span className="text-xs text-slate-600">
                   <b className="text-slate-800">{formatNum(st2023Stats.rtup)}</b> RTUP total
                 </span>
-                <span className="text-[10px] font-mono text-slate-400 ml-auto">
+                <span className="text-[10px] text-slate-400 ml-auto">
                   {st2023Stats.desa} desa/kelurahan
                 </span>
               </div>
             )}
 
             {/* Time-Series Trend */}
-            <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
+            <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow">
               <div className="mb-4 text-left border-b border-slate-200 pb-3 flex flex-wrap items-center justify-between gap-2">
-                <h4 className="text-lg font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
+                <h4 className="text-lg font-bold uppercase flex items-center gap-2 tracking-wide">
                   <TrendingUp className="text-amber-600" />
                   Tren Keanggotaan Lembaga Tani ({(() => {
                     const actuals = trendData.filter((d) => !d.isPrediction);
@@ -578,7 +578,7 @@ export default function FarmersPage() {
                   })()})
                   {selectedKecamatan !== "Semua" ? ` · ${selectedKecamatan}` : ""}
                 </h4>
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-50 border border-amber-200 rounded-md text-[10px] font-mono font-bold text-amber-700 uppercase">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-50 border border-amber-200 rounded-md text-[10px] font-bold text-amber-700 uppercase">
                   <TrendingUp size={11} /> 2026: Prediksi Regresi Linier
                 </span>
               </div>
@@ -645,13 +645,13 @@ export default function FarmersPage() {
             </div>
 
             {/* Institutional Bar Chart */}
-            <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
+            <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow">
               <div className="flex flex-col mb-6 border-b border-slate-200 pb-3 text-left">
-                <h4 className="text-lg font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
+                <h4 className="text-lg font-bold uppercase flex items-center gap-2 tracking-wide">
                   <FileSpreadsheet className="text-emerald-600" />
                   Sebaran Unit Kelembagaan per Kecamatan ({selectedYear})
                 </h4>
-                <p className="text-xs font-mono font-bold text-slate-500 uppercase mt-1">
+                <p className="text-xs font-bold text-slate-500 uppercase mt-1">
                   Kontribusi unit Poktan, Pokkan, dan Gapoktan per wilayah
                 </p>
               </div>
@@ -697,18 +697,18 @@ export default function FarmersPage() {
             </div>
 
             {/* Data Table */}
-            <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
+            <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow">
               <div className="mb-4 text-left border-b border-slate-200 pb-2 flex justify-between items-center flex-wrap gap-2">
                 <div>
-                  <h4 className="text-md font-mono font-bold uppercase tracking-wide">
+                  <h4 className="text-md font-bold uppercase tracking-wide">
                     Tabel Rincian Poktan, Gapoktan & KTH ({selectedYear})
                   </h4>
-                  <p className="text-[10px] font-mono font-bold text-slate-500 uppercase mt-1">
+                  <p className="text-[10px] font-bold text-slate-500 uppercase mt-1">
                     Detail sebaran desa/kelurahan, poktan, pokkan, gapoktan, dan kelompok tani hutan di Kabupaten Banjarnegara
                   </p>
                 </div>
                 {filteredData.length === 0 && (
-                  <div className="inline-flex items-center gap-1.5 px-3 py-2 bg-rose-50 border border-slate-200 text-[10px] font-mono font-bold text-rose-800 uppercase max-w-full">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-2 bg-rose-50 border border-slate-200 text-[10px] font-bold text-rose-800 uppercase max-w-full">
                     <ShieldAlert size={14} className="flex-shrink-0" />
                     <span>
                       {selectedKecamatan === "Semua"
@@ -718,7 +718,7 @@ export default function FarmersPage() {
                   </div>
                 )}
                 {isAllZeroKecamatan && (
-                  <div className="inline-flex items-center gap-1.5 px-3 py-2 bg-amber-50 border border-amber-200 text-[10px] font-mono font-bold text-amber-800 uppercase max-w-full">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-2 bg-amber-50 border border-amber-200 text-[10px] font-bold text-amber-800 uppercase max-w-full">
                     <ShieldAlert size={14} className="flex-shrink-0" />
                     <span>
                       Semua nilai Kec. {selectedKecamatan} tercatat nol pada snapshot Dinas (belum terisi) — ST2023 BPS: {formatNum(st2023Stats.petani)} petani.
@@ -727,7 +727,7 @@ export default function FarmersPage() {
                 )}
               </div>
               <div className="overflow-x-auto max-h-[450px]">
-                <table className="w-full text-left font-mono text-sm border-collapse">
+                <table className="w-full text-left text-sm border-collapse">
                   <thead>
                     <tr className="border-b border-slate-200 bg-slate-100 sticky top-0 z-10">
                       <th className="p-3 border-r border-slate-200 font-bold uppercase text-xs">No</th>
@@ -785,7 +785,7 @@ export default function FarmersPage() {
             </div>
 
             {/* Catatan kualitas data */}
-            <p className="text-[10px] font-mono text-slate-400 leading-relaxed">
+            <p className="text-[10px] text-slate-400 leading-relaxed">
               Sumber: snapshot Data Kelembagaan Dinas Pertanian (cakupan 15/20 kecamatan — belum tersedia:
               Banjarmangu, Kalibening, Madukara, Pagedongan, Purwareja Klampok), KTH SIMLUH (snapshot per
               2026, ditampilkan seragam lintas tahun — bukan data tahunan), dan BPS Sensus Pertanian 2023

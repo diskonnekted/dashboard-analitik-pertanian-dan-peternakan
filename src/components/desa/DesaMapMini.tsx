@@ -11,10 +11,10 @@ import type { GeoFeature } from "../../services/desa";
  * OpenFreeMap (https://openfreemap.org) adalah basemap global gratis, tanpa
  * API key, didistribusikan lewat PMTiles hosted di tiles.openfreemap.org.
  * Style.json tersedia di:
- *   - https://tiles.openfreemap.org/styles/liberty  (default kartografi)
- *   - https://tiles.openfreemap.org/styles/positron (positron/positron-like)
- *   - https://tiles.openfreemap.org/styles/bright   (bright)
- *   - https://tiles.openfreemap.org/styles/dark     (dark)
+ * - https://tiles.openfreemap.org/styles/liberty (default kartografi)
+ * - https://tiles.openfreemap.org/styles/positron (positron/positron-like)
+ * - https://tiles.openfreemap.org/styles/bright (bright)
+ * - https://tiles.openfreemap.org/styles/dark (dark)
  * Kita pilih "liberty" — gaya kartografi Cantino-like dengan label kota,
  * jalan, dan kontur halus. Cocok untuk konteks pedesaan Banjarnegara.
  *
@@ -206,7 +206,7 @@ export function DesaMapMini({ centerLng, centerLat, geometry, namaTampil }: Prop
   }, []);
 
   return (
-    <div className="rounded-xl overflow-hidden border border-slate-200 shadow-sm bg-white">
+    <div className="rounded-lg overflow-hidden border border-slate-200 shadow-sm bg-white">
       <div
         className="
           flex items-center gap-2 px-3 py-1.5
@@ -234,7 +234,7 @@ export function DesaMapMini({ centerLng, centerLat, geometry, namaTampil }: Prop
 }
 
 /* ------------------------------------------------------------------ */
-/* Utilitas kecil.                                                     */
+/* Utilitas kecil. */
 /* ------------------------------------------------------------------ */
 
 /**

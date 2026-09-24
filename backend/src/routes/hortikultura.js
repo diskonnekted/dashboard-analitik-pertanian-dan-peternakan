@@ -129,3 +129,55 @@ hortikulturaRouter.get(
     return [...dbRows, ...bpsAnnualHorticulture2025];
   }),
 );
+
+/**
+ * Gabung luas (m2) + produksi (tangkai) tingkat kabupaten untuk suatu kelompok
+ * (tanaman_hias / biofarmaka) menjadi deret long per jenis tanaman × tahun.
+ * Bentuk hasil: [{ jenisTanaman, tahun, luas, produksi }]
+ */
+async function kelompokLuasProduksi(kelompok) {
+  const luasRows = await q(
+    `SELECT t.komoditas, t.tahun, t.nilai
+     FROM horti_luas_kabupaten t WHERE t.kelompok = '${kelompok}'`,
+  );
+  const prodRows = await q(
+    `SELECT t.komoditas, t.tahun, t.nilai
+     FROM horti_produksi_kabupaten t WHERE t.kelompok = '${kelompok}'`,
+  );
+  const luas = new Map(luasRows.map((r) => [`${r.komoditas}|${r.tahun}`, num0(r.nilai)]));
+  const prod = new Map(prodRows.map((r) => [`${r.komoditas}|${r.tahun}`, num0(r.nilai)]));
+  const keys = new Set([...luas.keys(), ...prod.keys()]);
+  return [...keys]
+    .map((k) => {
+      const [jenisTanaman, tahun] = k.split("|");
+      return {
+        jenisTanaman,
+        tahun: String(tahun),
+        luas: luas.get(k) ?? 0,
+        produksi: prod.get(k) ?? 0,
+      };
+    })
+    .sort(
+      (a, b) =>
+        a.jenisTanaman.localeCompare(b.jenisTanaman, "id") ||
+        a.tahun.localeCompare(b.tahun, "id"),
+    );
+}
+
+/** GET /api/v1/hortikultura/tanaman-hias -> [{ jenisTanaman, tahun, luas, produksi }] */
+hortikulturaRouter.get(
+  "/tanaman-hias",
+  route(async () => kelompokLuasProduksi("tanaman_hias")),
+);
+
+/** GET /api/v1/hortikultura/biofarmaka -> [{ jenisTanaman, tahun, luas, produksi }] */
+hortikulturaRouter.get(
+  "/biofarmaka",
+  route(async () => kelompokLuasProduksi("biofarmaka")),
+);
+
+/** GET /api/v1/hortikultura/sayuran-buah-semusim -> [{ jenisTanaman, tahun, luas, produksi }] */
+hortikulturaRouter.get(
+  "/sayuran-buah-semusim",
+  route(async () => kelompokLuasProduksi("sayuran_buah_semusim")),
+);

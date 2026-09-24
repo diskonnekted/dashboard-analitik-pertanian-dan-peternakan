@@ -87,7 +87,7 @@ export function DesaDemografi({ data }: Props) {
   }
 
   return (
-    <section className="bg-white border border-slate-200 rounded-xl p-4">
+    <section className="bg-white border border-slate-200 rounded-lg p-4">
       <header className="mb-2.5 flex items-start gap-2.5">
         <span
           aria-hidden

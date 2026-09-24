@@ -183,10 +183,10 @@ const auxiliaryGeoJsonLayers: AuxiliaryGeoJsonLayer[] = [
 
 // Target hasil pencarian desa untuk fly-to + highlight
 type DesaSearchTarget = {
-  name: string;          // nama desa apa adanya dari GeoJSON
-  kec: string;           // kecamatan (pembeda desa kembar antar-kecamatan)
+  name: string; // nama desa apa adanya dari GeoJSON
+  kec: string; // kecamatan (pembeda desa kembar antar-kecamatan)
   bounds: L.LatLngBounds;
-  token: number;         // berubah tiap pemilihan â†’ memicu ulang efek flyTo
+  token: number; // berubah tiap pemilihan â†’ memicu ulang efek flyTo
 };
 
 /**
@@ -362,14 +362,14 @@ const MetricRow = ({ label, value, sub, dot = "bg-slate-300", tip }: { label: st
 const SectionHeader = ({ icon, label, color }: { icon: string, label: string, color: string }) => (
   <div className="flex items-center gap-1.5 mb-1">
     <span className="text-[12px] leading-none">{icon}</span>
-    <p className={`text-[10px] font-black uppercase tracking-wider ${color}`}>{label}</p>
+    <p className={`text-[10px] font-semibold uppercase tracking-wider ${color}`}>{label}</p>
   </div>
 );
 
 const HeroStat = ({ label, value, unit }: { label: string, value: string, unit: string }) => (
   <div className="rounded-lg border border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50 px-2.5 py-2 shadow-sm">
     <p className="text-[9px] font-bold uppercase tracking-wider text-emerald-600">{label}</p>
-    <p className="text-[22px] font-black text-emerald-800 leading-none tabular-nums mt-1">
+    <p className="text-[22px] font-semibold text-emerald-800 leading-none tabular-nums mt-1">
       {value}
       <span className="text-[11px] font-semibold text-emerald-500 ml-1">{unit}</span>
     </p>
@@ -481,14 +481,14 @@ const PopupContent = ({ desaName, kecName, data, taniData, st2023, kecVeg }: { d
   return (
     <div className="font-sans w-[440px] max-w-[90vw]">
       {/* Header */}
-      <div className="rounded-xl bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-700 text-white px-3 py-2.5 shadow-md">
+      <div className="rounded-lg bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-700 text-white px-3 py-2.5 shadow">
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0">
-            <h3 className="text-[16px] font-black leading-tight uppercase drop-shadow-sm">{desaName}</h3>
+            <h3 className="text-[16px] font-semibold leading-tight uppercase drop-shadow-sm">{desaName}</h3>
             <p className="text-emerald-200/90 text-[10px] font-bold uppercase tracking-[0.18em]">{kecName}</p>
           </div>
           {sentraBadge && (
-            <span className="shrink-0 bg-amber-300 text-amber-900 text-[9px] font-black uppercase rounded-full px-2 py-1 shadow-sm">
+            <span className="shrink-0 bg-amber-300 text-amber-900 text-[9px] font-semibold uppercase rounded-full px-2 py-1 shadow-sm">
               {sentraBadge}
             </span>
           )}
@@ -945,8 +945,8 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
       const alamat = props.alamat || null;
       return `
         <div class="font-sans min-w-[220px]">
-          <p class="text-[9px] font-mono font-bold text-orange-600 uppercase">🛒 Pasar</p>
-          <h4 class="font-black text-[15px] leading-tight mb-1.5">${nama}</h4>
+          <p class="text-[9px] font-bold text-orange-600 uppercase">🛒 Pasar</p>
+          <h4 class="font-semibold text-[15px] leading-tight mb-1.5">${nama}</h4>
           <span class="inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full border ${badge}">${kat}</span>
           ${alamat ? `<p class="text-[11px] text-neutral-500 mt-2 leading-snug">${alamat}</p>` : ""}
         </div>
@@ -960,8 +960,8 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
       const kind = tags.waterway || tags.natural || tags.landuse || tags.leisure || tags.man_made || "-";
       return `
         <div class="font-sans min-w-[190px]">
-          <p class="text-[9px] font-mono font-bold text-sky-600 uppercase">💦 Air Permukaan</p>
-          <h4 class="font-black text-sm uppercase leading-tight mb-1">${nama}</h4>
+          <p class="text-[9px] font-bold text-sky-600 uppercase">💦 Air Permukaan</p>
+          <h4 class="font-semibold text-sm uppercase leading-tight mb-1">${nama}</h4>
           <div class="w-full h-0.5 bg-[#e2e8f0] my-2"></div>
           <p class="text-xs text-neutral-600"><b>Jenis:</b> ${kind}</p>
         </div>
@@ -973,8 +973,8 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
       const nama = props.name || "Tanpa nama";
       return `
         <div class="font-sans min-w-[190px]">
-          <p class="text-[9px] font-mono font-bold text-neutral-500 uppercase">${layerName}</p>
-          <h4 class="font-black text-sm uppercase leading-tight mb-1">${nama}</h4>
+          <p class="text-[9px] font-bold text-neutral-500 uppercase">${layerName}</p>
+          <h4 class="font-semibold text-sm uppercase leading-tight mb-1">${nama}</h4>
           <div class="w-full h-0.5 bg-[#e2e8f0] my-2"></div>
           <p class="text-xs text-neutral-600"><b>Jenis:</b> ${props.type}</p>
           ${props.ref ? `<p class="text-xs text-neutral-600"><b>Ruas:</b> ${props.ref}</p>` : ""}
@@ -988,8 +988,8 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
 
     return `
       <div class="font-sans min-w-[190px]">
-        <p class="text-[9px] font-mono font-bold text-neutral-500 uppercase">${layerName}</p>
-        <h4 class="font-black text-sm uppercase leading-tight mb-1">${nama}</h4>
+        <p class="text-[9px] font-bold text-neutral-500 uppercase">${layerName}</p>
+        <h4 class="font-semibold text-sm uppercase leading-tight mb-1">${nama}</h4>
         <div class="w-full h-0.5 bg-[#e2e8f0] my-2"></div>
         <p class="text-xs text-neutral-600"><b>Keterangan:</b> ${remark}</p>
         ${area ? `<p class="text-xs text-neutral-600"><b>Luas:</b> ${area}</p>` : ""}
@@ -1048,9 +1048,9 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
 
         {/* Dropdown Choropleth (sebelah kanan zoom buttons) */}
         <div className="bg-white border border-slate-200 shadow-sm p-2 flex flex-col gap-1 w-[210px] rounded-lg">
-          <label className="text-[10px] font-mono font-bold uppercase text-neutral-500">Pilih Layer Metrik</label>
+          <label className="text-[10px] font-bold uppercase text-neutral-500">Pilih Layer Metrik</label>
           <select 
-            className="font-mono text-[11px] font-bold uppercase p-1.5 border border-slate-200 focus:outline-none cursor-pointer bg-neutral-50 rounded"
+            className=" text-[11px] font-bold uppercase p-1.5 border border-slate-200 focus:outline-none cursor-pointer bg-neutral-50 rounded"
             value={activeMetric}
             onChange={(e) => setActiveMetric(e.target.value as any)}
           >
@@ -1058,7 +1058,7 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
             <option value="lahanBukanSawah">Ladang (Palawija)</option>
             <option value="jumlah">Total Lahan Dikuasai (ST2023)</option>
           </select>
-          <span className="text-[9px] font-mono text-neutral-500 mt-0.5">
+          <span className="text-[9px] text-neutral-500 mt-0.5">
             <kbd className="px-1 py-0.5 bg-neutral-100 border border-slate-300 rounded text-[9px] font-bold">CTRL</kbd>
             {" + scroll / klik untuk zoom"}
           </span>
@@ -1076,7 +1076,7 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
             <input
               type="text"
               placeholder="CARI DESA..."
-              className="w-full font-mono text-[11px] font-bold uppercase focus:outline-none bg-transparent"
+              className="w-full text-[11px] font-bold uppercase focus:outline-none bg-transparent"
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
@@ -1092,30 +1092,30 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
             {searchQuery && (
               <button
                 onClick={() => { setSearchQuery(""); setSearchTarget(null); setShowSearchDropdown(false); }}
-                className="px-2 font-black text-red-500 hover:bg-red-50"
+                className="px-2 font-semibold text-red-500 hover:bg-red-50"
               >X</button>
             )}
           </div>
 
           {showSearchDropdown && searchResults.length > 0 && (
-            <div className="absolute right-0 z-10 mt-1 w-[230px] bg-white border border-slate-200 shadow-lg rounded-lg overflow-hidden">
+            <div className="absolute right-0 z-10 mt-1 w-[230px] bg-white border border-slate-200 shadow rounded-lg overflow-hidden">
               {searchResults.map((item, idx) => (
                 <button
                   key={`${item.kec}-${item.name}-${idx}`}
                   onClick={() => handleSelectDesa(item)}
                   className="w-full text-left px-3 py-2 hover:bg-emerald-50 active:bg-emerald-100 border-b border-slate-100 last:border-b-0 transition-colors"
                 >
-                  <span className="block font-mono text-[11px] font-bold uppercase text-slate-800 leading-tight">{item.name}</span>
+                  <span className="block text-[11px] font-bold uppercase text-slate-800 leading-tight">{item.name}</span>
                   {item.kec && (
-                    <span className="block font-mono text-[9px] uppercase text-emerald-700 leading-tight">Kec. {item.kec}</span>
+                    <span className="block text-[9px] uppercase text-emerald-700 leading-tight">Kec. {item.kec}</span>
                   )}
                 </button>
               ))}
             </div>
           )}
           {showSearchDropdown && searchQuery.trim().length >= 2 && searchResults.length === 0 && desaGeoData && (
-            <div className="absolute right-0 z-10 mt-1 w-[230px] bg-white border border-slate-200 shadow-lg rounded-lg px-3 py-2">
-              <span className="font-mono text-[10px] uppercase text-neutral-500">Desa tidak ditemukan</span>
+            <div className="absolute right-0 z-10 mt-1 w-[230px] bg-white border border-slate-200 shadow rounded-lg px-3 py-2">
+              <span className=" text-[10px] uppercase text-neutral-500">Desa tidak ditemukan</span>
             </div>
           )}
         </div>
@@ -1123,7 +1123,7 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
 
       {/* --- BOTTOM RIGHT: Interactive Legend --- */}
       <div className="absolute bottom-3 right-3 z-[1000] bg-white border border-slate-200 shadow-sm p-2.5 flex flex-col gap-1.5 rounded-lg max-w-[180px]">
-        <span className="text-[10px] font-mono font-bold uppercase text-neutral-500 border-b border-slate-200 pb-1">
+        <span className="text-[10px] font-bold uppercase text-neutral-500 border-b border-slate-200 pb-1">
           Legenda & Filter
         </span>
         <div className="flex flex-col gap-1">
@@ -1134,12 +1134,12 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
               onClick={() => setActiveLegendCategory(activeLegendCategory === item.cat ? null : item.cat)}
             >
               <div className="w-3.5 h-3.5 border border-slate-200" style={{ backgroundColor: item.color }}></div>
-              <span className="font-mono text-[9px] font-bold uppercase">{item.label}</span>
+              <span className=" text-[9px] font-bold uppercase">{item.label}</span>
             </div>
           ))}
         </div>
         {activeLegendCategory !== null && (
-          <button onClick={() => setActiveLegendCategory(null)} className="mt-0.5 text-[9px] font-mono font-black text-red-500 hover:underline text-left">
+          <button onClick={() => setActiveLegendCategory(null)} className="mt-0.5 text-[9px] font-semibold text-red-500 hover:underline text-left">
             Reset Filter
           </button>
         )}
@@ -1258,7 +1258,7 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
                   ref={kecGeoJsonRef}
                   onEachFeature={(feature, layer) => {
                     const kecName = feature.properties?.Kecamatan || feature.properties?.WADMKC || "Tidak diketahui";
-                    layer.bindTooltip(`KEC. ${kecName.toUpperCase()}`, { sticky: true, className: "font-mono font-bold text-xs uppercase" });
+                    layer.bindTooltip(`KEC. ${kecName.toUpperCase()}`, { sticky: true, className: " font-bold text-xs uppercase" });
                   }}
                 />
               </LayersControl.Overlay>

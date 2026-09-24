@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import DefaultLayout from "@/layouts/default";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { fetchVegetableArea, fetchVegetableProduction, fetchFruitProduction, fetchAnnualHorticultureProduction, VegetableArea, VegetableProduction, FruitProduction, AnnualHorticultureProduction } from "@/services/api";
+import { fetchVegetableArea, fetchVegetableProduction, fetchFruitProduction, fetchAnnualHorticultureProduction, fetchTanamanHias, fetchBiofarmaka, fetchSayuranBuahSemusim, VegetableArea, VegetableProduction, FruitProduction, AnnualHorticultureProduction, TanamanHiasBiofarmaka } from "@/services/api";
 import { Sprout, Calendar, MapPin, TrendingUp, Filter, AlertTriangle, ShieldCheck, FileSpreadsheet, Pizza } from "lucide-react";
 import { PageHeader, KpiCard, SectionCard, TrendPill, Badge, LoadingSpinner } from "@/components/ui";
 
@@ -13,6 +13,9 @@ export default function HorticulturePage() {
   const [vegProdData, setVegProdData] = useState<VegetableProduction[]>([]);
   const [fruitProdData, setFruitProdData] = useState<FruitProduction[]>([]);
   const [annualProductionData, setAnnualProductionData] = useState<AnnualHorticultureProduction[]>([]);
+  const [tanamanHiasData, setTanamanHiasData] = useState<TanamanHiasBiofarmaka[]>([]);
+  const [biofarmakaData, setBiofarmakaData] = useState<TanamanHiasBiofarmaka[]>([]);
+  const [semusimData, setSemusimData] = useState<TanamanHiasBiofarmaka[]>([]);
   
   const [category, setCategory] = useState<Category>("sayuran");
   const [metric, setMetric] = useState<Metric>("luas");
@@ -23,16 +26,22 @@ export default function HorticulturePage() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [vegArea, vegProd, fruitProd, annualProd] = await Promise.all([
+        const [vegArea, vegProd, fruitProd, annualProd, tanamanHias, biofarmaka, semusim] = await Promise.all([
           fetchVegetableArea(),
           fetchVegetableProduction(),
           fetchFruitProduction(),
           fetchAnnualHorticultureProduction(),
+          fetchTanamanHias(),
+          fetchBiofarmaka(),
+          fetchSayuranBuahSemusim(),
         ]);
         setVegAreaData(vegArea);
         setVegProdData(vegProd);
         setFruitProdData(fruitProd);
         setAnnualProductionData(annualProd);
+        setTanamanHiasData(tanamanHias);
+        setBiofarmakaData(biofarmaka);
+        setSemusimData(semusim);
       } catch (err) {
         console.error("Gagal memuat data hortikultura:", err);
       } finally {
@@ -73,7 +82,7 @@ export default function HorticulturePage() {
     return name
       .toString()
       .replace(/^\d+\.\s*/, "") // buang "1. "
-      .replace(/\s+/g, "")      // buang spasi internal/eksternal
+      .replace(/\s+/g, "") // buang spasi internal/eksternal
       .toUpperCase();
   };
 
@@ -565,7 +574,7 @@ export default function HorticulturePage() {
         {/* Hero / intro */}
         <PageHeader
           icon={<Sprout className="h-6 w-6" />}
-          title="Analitik Hortikultura"
+          title="Produksi Sayuran, Buah & Flora Hias"
           subtitle="Pemantauan produksi dan lahan sayuran & buah-buahan per kecamatan di Kabupaten Banjarnegara."
           actions={<Badge tone="blue">Tahun {selectedYear}</Badge>}
         />
@@ -834,6 +843,28 @@ export default function HorticulturePage() {
                 </div>
               </div>
             </SectionCard>
+
+            {/* Panel Tanaman Hias & Biofarmaka (mengisi janji "Flora Hias" pada judul) */}
+            <KomoditasKabupatenPanel
+              title="Tanaman Hias"
+              subtitle='Sumber: "Luas Panen & Produksi Tanaman Hias Menurut Jenis Tanaman" (Distankan KP/BPS) — agregat kabupaten. Satuan luas m², produksi tangkai.'
+              data={tanamanHiasData}
+              accent="#2563eb"
+            />
+            <KomoditasKabupatenPanel
+              title="Tanaman Biofarmaka (Tanaman Obat)"
+              subtitle='Sumber: "Luas Panen & Produksi Tanaman Biofarmaka Menurut Jenis Tanaman" (Distankan KP/BPS) — agregat kabupaten. Satuan luas m², produksi tangkai.'
+              data={biofarmakaData}
+              accent="#059669"
+            />
+            <KomoditasKabupatenPanel
+              title="Sayuran & Buah Semusim (Kabupaten)"
+              subtitle='Sumber: "Luas Panen & Produksi Tanaman Sayuran dan Buah–Buahan Semusim Menurut Jenis Tanaman" (Distankan KP/BPS) — agregat kabupaten. Satuan luas ha, produksi ton.'
+              data={semusimData}
+              accent="#7c3aed"
+              unitProduksi="ton"
+              unitLuas="ha"
+            />
 
             {/* Time-Series Trend */}
             <SectionCard
@@ -1185,7 +1216,7 @@ export default function HorticulturePage() {
             </SectionCard>
 
             {/* Sumber Data */}
-            <div className="rounded-xl border border-slate-200 bg-slate-50/60 p-4 flex items-start gap-3">
+            <div className="rounded-lg border border-slate-200 bg-slate-50/60 p-4 flex items-start gap-3">
               <FileSpreadsheet size={18} className="text-emerald-600 shrink-0 mt-0.5" />
               <div className="text-xs leading-relaxed text-slate-500">
                 <p className="font-semibold text-slate-700 mb-1">Sumber Data</p>
@@ -1202,5 +1233,166 @@ export default function HorticulturePage() {
         )}
       </section>
     </DefaultLayout>
+  );
+}
+
+function KomoditasKabupatenPanel({
+  title,
+  subtitle,
+  data,
+  accent,
+  unitProduksi = "tangkai",
+  unitLuas = "m²",
+}: {
+  title: string;
+  subtitle: string;
+  data: TanamanHiasBiofarmaka[];
+  accent: string;
+  unitProduksi?: string;
+  unitLuas?: string;
+}) {
+  const [year, setYear] = useState<string>("");
+  const years = useMemo(
+    () => Array.from(new Set(data.map((d) => d.tahun))).sort((a, b) => b.localeCompare(a)),
+    [data],
+  );
+  useEffect(() => {
+    if (years.length > 0 && !years.includes(year)) setYear(years[0]);
+  }, [years, year]);
+
+  const items = useMemo(
+    () => data.filter((d) => d.tahun === year).sort((a, b) => b.produksi - a.produksi),
+    [data, year],
+  );
+  const totalProduksi = items.reduce((a, d) => a + d.produksi, 0);
+  const totalLuas = items.reduce((a, d) => a + d.luas, 0);
+  const top = items[0];
+
+  const trend = useMemo(() => {
+    const m = new Map<string, { produksi: number; luas: number }>();
+    for (const d of data) {
+      const e = m.get(d.tahun) ?? { produksi: 0, luas: 0 };
+      e.produksi += d.produksi;
+      e.luas += d.luas;
+      m.set(d.tahun, e);
+    }
+    return [...m.entries()]
+      .map(([tahun, v]) => ({ tahun, produksi: v.produksi, luas: v.luas }))
+      .sort((a, b) => a.tahun.localeCompare(b.tahun));
+  }, [data]);
+
+  const fmt = (n: number) =>
+    new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 }).format(n || 0);
+
+  if (data.length === 0) {
+    return (
+      <SectionCard title={title}>
+        <p className="text-xs text-slate-500">Belum ada data tersedia.</p>
+      </SectionCard>
+    );
+  }
+
+  return (
+    <SectionCard
+      title={title}
+      icon={<FileSpreadsheet size={16} className="text-emerald-600" />}
+      actions={
+        <div className="flex items-center gap-3">
+          <Badge tone="amber">Agregat kabupaten · tidak mengikuti filter</Badge>
+          {years.length > 1 && (
+            <select
+              value={year}
+              onChange={(e) => setYear(e.target.value)}
+              className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 focus:border-emerald-500 focus:outline-none"
+              aria-label={`Pilih tahun ${title}`}
+            >
+              {years.map((y) => (
+                <option key={y} value={y}>
+                  {y}
+                </option>
+              ))}
+            </select>
+          )}
+        </div>
+      }
+    >
+      <p className="text-xs text-slate-500 mb-4">{subtitle}</p>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 h-[320px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={items} layout="vertical" margin={{ top: 5, right: 20, left: 80, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#64748b" strokeOpacity={0.1} horizontal={false} />
+              <XAxis type="number" tickFormatter={(v) => fmt(v)} tick={{ fill: "#475569", fontSize: 10 }} />
+              <YAxis dataKey="jenisTanaman" type="category" width={130} tick={{ fill: "#475569", fontSize: 10 }} />
+              <Tooltip
+                contentStyle={{ backgroundColor: "#fff", border: "1px solid #cbd5e1", borderRadius: 8, fontSize: "12px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)" }}
+                formatter={(value: any, name: any) =>
+                  String(name || "").toLowerCase().includes("produksi")
+                    ? [`${fmt(Number(value))} ${unitProduksi}`, "Produksi"]
+                    : [`${fmt(Number(value))} ${unitLuas}`, "Luas"]
+                }
+              />
+              <Bar dataKey="produksi" name="Produksi" fill={accent} stroke="#cbd5e1" strokeWidth={1} radius={[0, 4, 4, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+        <div className="border border-slate-200 bg-emerald-50 rounded-lg p-4 flex flex-col gap-3">
+          <div>
+            <p className="text-[11px] font-semibold uppercase text-slate-500">Jenis Dominan {year}</p>
+            <h5 className="text-2xl font-bold text-slate-800 leading-tight mt-1">{top?.jenisTanaman || "-"}</h5>
+            <p className="text-sm font-semibold tabular-nums text-emerald-700 mt-2">
+              {fmt(top?.produksi || 0)} {unitProduksi}
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="bg-white border border-slate-200 rounded-md px-3 py-2">
+              <p className="text-[10px] font-semibold uppercase text-slate-500">Total Produksi</p>
+              <p className="text-sm font-bold tabular-nums text-slate-800">{fmt(totalProduksi)}</p>
+            </div>
+            <div className="bg-white border border-slate-200 rounded-md px-3 py-2">
+              <p className="text-[10px] font-semibold uppercase text-slate-500">Total Luas</p>
+              <p className="text-sm font-bold tabular-nums text-slate-800">{fmt(totalLuas)} {unitLuas}</p>
+            </div>
+          </div>
+          <div className="border-t border-slate-200 pt-3 flex flex-col gap-2 max-h-[180px] overflow-y-auto pr-1">
+            {items.map((item, idx) => (
+              <div key={item.jenisTanaman} className="flex items-center justify-between gap-3 text-xs font-semibold tabular-nums bg-white border border-slate-200 rounded-md px-2 py-1">
+                <span className="truncate">{idx + 1}. {item.jenisTanaman}</span>
+                <span className="shrink-0">{fmt(item.produksi)}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Tren tahunan */}
+      <div className="mt-6">
+        <p className="text-[11px] font-semibold uppercase text-slate-500 mb-2">
+          Tren Tahunan Produksi ({unitProduksi}) &amp; Luas ({unitLuas})
+        </p>
+        <div className="h-[220px] w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={trend} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#64748b" strokeOpacity={0.1} vertical={false} />
+              <XAxis dataKey="tahun" tick={{ fill: "#475569", fontSize: 11 }} axisLine={{ stroke: "#cbd5e1", strokeWidth: 1 }} tickLine={{ stroke: "#cbd5e1" }} />
+              <YAxis yAxisId="left" tick={{ fill: "#475569", fontSize: 10 }} tickFormatter={(v) => fmt(v)} axisLine={{ stroke: "#cbd5e1", strokeWidth: 1 }} tickLine={{ stroke: "#cbd5e1" }} />
+              <YAxis yAxisId="right" orientation="right" tick={{ fill: "#94a3b8", fontSize: 10 }} tickFormatter={(v) => fmt(v)} axisLine={{ stroke: "#cbd5e1", strokeWidth: 1 }} tickLine={{ stroke: "#cbd5e1" }} />
+              <Tooltip
+                contentStyle={{ backgroundColor: "#fff", border: "1px solid #cbd5e1", borderRadius: 8, fontSize: "12px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)" }}
+                formatter={(value: any, name: any) =>
+                  String(name || "").toLowerCase().includes("produksi")
+                    ? [`${fmt(Number(value))} ${unitProduksi}`, "Produksi"]
+                    : [`${fmt(Number(value))} ${unitLuas}`, "Luas"]
+                }
+              />
+              <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: "10px" }} />
+              <Line yAxisId="left" type="monotone" dataKey="produksi" name={`Produksi (${unitProduksi})`} stroke={accent} strokeWidth={2} dot={{ r: 3 }} activeDot={{ r: 5 }} />
+              <Line yAxisId="right" type="monotone" dataKey="luas" name={`Luas (${unitLuas})`} stroke="#94a3b8" strokeWidth={2} dot={{ r: 3 }} activeDot={{ r: 5 }} />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+    </SectionCard>
   );
 }

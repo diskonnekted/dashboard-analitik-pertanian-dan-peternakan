@@ -19,10 +19,10 @@ const kthKelasBadge = (kelas: string): string => {
 
 /**
  * Kelembagaan Pertanian — agregasi per desa:
- *   - Kelompok tani (jumlah + total anggota)
- *   - Kelompok perikanan (jumlah + total anggota)
- *   - Gapoktan (jumlah + total anggota)
- *   - KTH (Kelompok Tani Hutan) bila ada field
+ * - Kelompok tani (jumlah + total anggota)
+ * - Kelompok perikanan (jumlah + total anggota)
+ * - Gapoktan (jumlah + total anggota)
+ * - KTH (Kelompok Tani Hutan) bila ada field
  */
 export function DesaKelembagaan({ data }: Props) {
   if (!data || data.length === 0) {
@@ -108,7 +108,7 @@ export function DesaKelembagaan({ data }: Props) {
   }
 
   return (
-    <section className="bg-white border border-slate-200 rounded-xl p-4">
+    <section className="bg-white border border-slate-200 rounded-lg p-4">
       <header className="mb-2.5 flex items-start gap-2.5">
         <span
           aria-hidden
@@ -186,7 +186,7 @@ export function DesaKelembagaan({ data }: Props) {
                   </div>
                 )}
                 {k.noRegister && (
-                  <div className="mt-0.5 text-[10px] font-mono text-slate-500 truncate">
+                  <div className="mt-0.5 text-[10px] text-slate-500 truncate">
                     SK: {k.noRegister}
                   </div>
                 )}

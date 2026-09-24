@@ -13,7 +13,7 @@
  * tanpa rombak UI.
  */
 import { useEffect, useMemo, useState } from "react";
-import { Navigate, useParams } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
 import {
   Bar,
   BarChart,
@@ -30,9 +30,11 @@ import {
   Carrot,
   Coffee,
   DollarSign,
+  Fish,
   Trophy,
   Wheat,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import DefaultLayout from "@/layouts/default";
 import {
   Badge,
@@ -58,6 +60,34 @@ import {
 } from "@/services/nilai-ekonomi-estimasi";
 
 const IKON_BIDANG = { wheat: Wheat, carrot: Carrot, coffee: Coffee, beef: Beef } as const;
+
+type PemilihBidangItem = {
+  key: string;
+  label: string;
+  icon: LucideIcon;
+  href: string;
+};
+
+/**
+ * Tab pemilih bidang — 4 bidang estimasi (/nilai-ekonomi/:bidang) + perikanan
+ * yang dialihkan ke halaman kanonik /economic-value (budidaya + tangkap, data
+ * aktual). Pola tab sama dengan halaman sebaran & komoditas unggulan supaya
+ * ketiga halaman lintas bidang tampil seragam.
+ */
+const PEMILIH_BIDANG: PemilihBidangItem[] = [
+  ...BIDANG_NILAI_EKONOMI.map((key) => ({
+    key,
+    label: BIDANG_META[key].label,
+    icon: IKON_BIDANG[BIDANG_META[key].ikon],
+    href: `/nilai-ekonomi/${key}`,
+  })),
+  {
+    key: "perikanan",
+    label: "Perikanan",
+    icon: Fish,
+    href: "/economic-value",
+  },
+];
 
 const PALET = [
   "#1d4ed8",
@@ -414,6 +444,30 @@ export default function NilaiEkonomiPage() {
           subtitle={`${meta.tagline} Harga referensi diakses ${AKSES_HARGA_TANGGAL}.`}
         />
 
+        {/* Tab pemilih bidang — seragam dengan halaman sebaran & komoditas */}
+        <nav className="flex flex-wrap gap-2" aria-label="Pemilih bidang nilai ekonomi">
+          {PEMILIH_BIDANG.map((b) => {
+            const Ic = b.icon;
+            const aktif = b.key === bidangKey;
+            return (
+              <Link
+                key={b.key}
+                to={b.href}
+                className={[
+                  "inline-flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-sm font-medium transition-colors",
+                  aktif
+                    ? "bg-emerald-600 text-white shadow-sm"
+                    : "bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-emerald-50 hover:text-emerald-700",
+                ].join(" ")}
+                aria-current={aktif ? "page" : undefined}
+              >
+                <Ic className="h-4 w-4" aria-hidden />
+                {b.label}
+              </Link>
+            );
+          })}
+        </nav>
+
         <Toolbar>
           {/* Periode triwulan/semester (notulen Distankan KP 21 Sep 2026):
               aktif otomatis begitu baris triwulan tersedia di tabel
@@ -512,7 +566,7 @@ export default function NilaiEkonomiPage() {
               ? barisResmi.length > 0
               : periodeMatrix.length > 0
             : units.length > 0) && (
-            <p className="ml-auto self-center text-xs font-mono text-slate-400">
+            <p className="ml-auto self-center text-xs text-slate-400">
               {modeResmi
                 ? `${
                     periode === "tahunan" ? barisResmi.length : periodeMatrix.length
@@ -566,7 +620,7 @@ export default function NilaiEkonomiPage() {
                     ? (periodeMatrix[0].total / totalPeriodeRp) * 100
                     : 0
                 ).toLocaleString("id-ID", { maximumFractionDigits: 1 })}% dari total`}
-                color="bg-violet-50 text-violet-600"
+                color="bg-blue-50 text-blue-600"
               />
               <KpiCard
                 icon={<BadgeCheck className="h-6 w-6" aria-hidden />}
@@ -847,7 +901,7 @@ export default function NilaiEkonomiPage() {
                 value={teratas?.komoditas ?? "—"}
                 unit={teratas ? fmtRp(teratas.subtotalRp) : undefined}
                 hint={teratas ? `porsi ${shareTeratas.toLocaleString("id-ID", { maximumFractionDigits: 1 })}% dari total` : "belum ada subtotal terhitung"}
-                color="bg-violet-50 text-violet-600"
+                color="bg-blue-50 text-blue-600"
               />
               <KpiCard
                 icon={<BadgeCheck className="h-6 w-6" aria-hidden />}
@@ -978,7 +1032,7 @@ export default function NilaiEkonomiPage() {
                   </ResponsiveContainer>
                 </div>
                 {barisKomoditas.some((b) => b.hargaRp == null) && (
-                  <p className="mt-2 text-xs font-mono text-slate-400">
+                  <p className="mt-2 text-xs text-slate-400">
                     {barisKomoditas.filter((b) => b.hargaRp == null).length} komoditas tanpa
                     harga referensi tidak ditampilkan pada grafik harga.
                   </p>
@@ -1000,7 +1054,7 @@ export default function NilaiEkonomiPage() {
                         (h) => (
                           <th
                             key={h}
-                            className="px-4 py-3 text-[11px] font-mono font-semibold uppercase tracking-wider text-slate-500"
+                            className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-slate-500"
                           >
                             {h}
                           </th>
@@ -1014,7 +1068,7 @@ export default function NilaiEkonomiPage() {
                         <td className="px-4 py-3">
                           <p className="font-semibold text-slate-800">{b.komoditas}</p>
                           {(b.catatan || b.bobotKgPerEkor != null) && (
-                            <p className="mt-0.5 text-[10px] font-mono text-slate-400">
+                            <p className="mt-0.5 text-[10px] text-slate-400">
                               {b.bobotKgPerEkor != null && `≈ ${b.bobotKgPerEkor.toLocaleString("id-ID")} kg/ekor`}
                               {b.bobotKgPerEkor != null && b.catatan ? " · " : ""}
                               {b.catatan}
@@ -1033,7 +1087,7 @@ export default function NilaiEkonomiPage() {
                         <td className="px-4 py-3">
                           <div className="flex flex-col items-start gap-1">
                             {badgeKelas(b.kelas)}
-                            <span className="text-[10px] font-mono text-slate-400">{b.sumber}</span>
+                            <span className="text-[10px] text-slate-400">{b.sumber}</span>
                           </div>
                         </td>
                       </tr>
@@ -1041,19 +1095,19 @@ export default function NilaiEkonomiPage() {
                   </tbody>
                   <tfoot>
                     <tr className="border-t-2 border-blue-200 bg-blue-50/50">
-                      <td className="px-4 py-3 font-mono text-xs font-bold text-slate-700">
+                      <td className="px-4 py-3 text-xs font-bold text-slate-700">
                         Jumlah ({barisKomoditas.length} komoditas · {cakupanKec})
                       </td>
-                      <td className="px-4 py-3 font-mono text-xs font-bold tabular-nums text-slate-700">
+                      <td className="px-4 py-3 text-xs font-bold tabular-nums text-slate-700">
                         {fmtNum(totalVolume)} {satuanVolumeBidang}
                       </td>
-                      <td className="px-4 py-3 font-mono text-xs font-bold tabular-nums text-slate-700">
+                      <td className="px-4 py-3 text-xs font-bold tabular-nums text-slate-700">
                         {hargaImplisit != null ? `${fmtRp(hargaImplisit)}/kg (implisit)` : "—"}
                       </td>
-                      <td className="px-4 py-3 font-mono text-xs font-bold tabular-nums text-blue-900">
+                      <td className="px-4 py-3 text-xs font-bold tabular-nums text-blue-900">
                         {fmtRp(totalRp)}
                       </td>
-                      <td className="px-4 py-3 font-mono text-xs text-slate-500">
+                      <td className="px-4 py-3 text-xs text-slate-500">
                         {nResmi} resmi · {nIndikatif} indikatif
                         {nTanpa > 0 ? ` · ${nTanpa} tanpa harga` : ""}
                       </td>
@@ -1070,7 +1124,7 @@ export default function NilaiEkonomiPage() {
           title="Metodologi, Harga & Sumber"
           icon={<BadgeCheck className="h-4 w-4 text-blue-800" aria-hidden />}
         >
-          <ul className="list-disc space-y-1.5 pl-4 font-mono text-xs leading-relaxed text-slate-500">
+          <ul className="list-disc space-y-1.5 pl-4 text-xs leading-relaxed text-slate-500">
             {meta.catatan.map((c) => (
               <li key={c}>{c}</li>
             ))}

@@ -371,7 +371,7 @@ export default function FoodCropsPage() {
             Bidang Tanaman Pangan
           </p>
           <h1 className="text-2xl font-semibold text-slate-900 mt-1.5">
-            Produksi Tanaman Pangan
+            Tanaman Pangan (Padi & Palawija)
           </h1>
           <p className="text-sm text-slate-700 mt-1 max-w-3xl">
             Data luas panen, produksi, dan rata-rata produksi tanaman pangan — Padi

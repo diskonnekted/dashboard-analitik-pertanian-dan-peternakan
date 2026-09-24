@@ -135,7 +135,7 @@ export default function PredictionPage() {
             Bidang Tanaman Pangan · Produksi Padi
           </p>
           <h1 className="text-2xl font-semibold text-slate-900 mt-1.5">
-            Prediksi Panen Padi
+            Prediksi Panen
           </h1>
           <p className="text-sm text-slate-700 mt-1 max-w-3xl">
             Analisis produktivitas padi Kabupaten Banjarnegara per kecamatan dilengkapi tren

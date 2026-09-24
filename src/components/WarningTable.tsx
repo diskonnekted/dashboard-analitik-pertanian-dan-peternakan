@@ -48,17 +48,17 @@ export const WarningTable = ({ data }: WarningTableProps) => {
 
   return (
     <div
-      className="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 h-full flex flex-col p-6 transition-all duration-300 hover:shadow-md"
+      className="bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow transition-all duration-200 h-full flex flex-col p-6 transition-all duration-300 hover:shadow"
     >
       <div className="flex items-center gap-2 mb-4 border-b-2 border-[#e2e8f0] pb-3">
         <AlertTriangle className="text-red-600" />
-        <h4 className="text-lg font-mono font-bold uppercase tracking-wide">Analisa Lahan Kritis</h4>
+        <h4 className="text-lg font-bold uppercase tracking-wide">Analisa Lahan Kritis</h4>
       </div>
 
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse whitespace-nowrap">
           <thead>
-            <tr className="border-b-2 border-[#e2e8f0] text-xs font-mono font-bold text-neutral-700">
+            <tr className="border-b-2 border-[#e2e8f0] text-xs font-bold text-neutral-700">
               <th className="pb-3 px-2">DESA</th>
               <th className="pb-3 px-2 text-right">LAHAN USAHA TANI (Ha)</th>
               <th className="pb-3 px-6 text-center">STATUS</th>
@@ -68,7 +68,7 @@ export const WarningTable = ({ data }: WarningTableProps) => {
           <tbody>
             {analyzedData.length === 0 ? (
               <tr>
-                <td className="py-8 text-center text-default-400 font-mono" colSpan={4}>
+                <td className="py-8 text-center text-default-400 " colSpan={4}>
                   Memuat analisa lahan...
                 </td>
               </tr>
@@ -78,18 +78,18 @@ export const WarningTable = ({ data }: WarningTableProps) => {
                   key={item.id}
                   className="border-b border-[#e2e8f0]/20 hover:bg-neutral-50 transition-colors"
                 >
-                  <td className="py-4 px-2 font-mono font-bold uppercase text-neutral-800 text-xs">
+                  <td className="py-4 px-2 font-bold uppercase text-neutral-800 text-xs">
                     {item.desa}
                     <span className="block font-sans font-normal normal-case text-[10px] text-neutral-400 mt-0.5">
                       {item.kecamatan}
                     </span>
                   </td>
-                  <td className="py-4 px-2 text-right font-mono font-bold text-neutral-800">
+                  <td className="py-4 px-2 text-right font-bold text-neutral-800">
                     {item.lahan.toLocaleString("id-ID", { maximumFractionDigits: 4 })}
                   </td>
                   <td className="py-4 px-6 text-center">
                     <span
-                      className={`inline-flex items-center px-2 py-1 border font-mono font-bold text-[10px] uppercase shadow-sm ${statusStyleMap[item.status]}`}
+                      className={`inline-flex items-center px-2 py-1 border font-bold text-[10px] uppercase shadow-sm ${statusStyleMap[item.status]}`}
                     >
                       {getStatusIcon(item.status)}
                       {item.status}

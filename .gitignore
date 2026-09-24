@@ -56,3 +56,11 @@ docs/*.docx
 docs/screenshots/
 docs/tmp/
 memory/
+
+# Scratch / audit / test workspace — NEVER ship (may contain secrets, DB dumps, sandbox)
+_tmp/
+backend/_tmp/
+
+# Deliverable & working notes (not source code)
+LAPORAN_AKHIR_SISPERTANI.docx
+ketahanan-pangan.txt

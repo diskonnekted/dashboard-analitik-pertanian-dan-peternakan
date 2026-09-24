@@ -30,7 +30,109 @@ export const siteConfig = {
         },
       ],
     },
-    // 2. Data Master & Spasial
+    // 2. Bidang Tanaman Pangan
+    {
+      title: "Bidang Tanaman Pangan",
+      items: [
+        {
+          label: "Prediksi Panen",
+          href: "/prediction",
+        },
+        {
+          label: "Tanaman Pangan (Padi & Palawija)",
+          href: "/food-crops",
+        },
+      ],
+    },
+    // 3. Bidang Hortikultura & Perkebunan — resmi satu bidang (Seksi Usaha & Produksi)
+    {
+      title: "Bidang Hortikultura & Perkebunan",
+      items: [
+        {
+          label: "Produksi Sayuran, Buah & Flora Hias",
+          href: "/horticulture",
+        },
+        {
+          label: "Analitik Perkebunan",
+          href: "/plantation",
+        },
+        {
+          label: "LTT & Kalender Tanam",
+          href: "/ltt-katam",
+        },
+      ],
+    },
+    // 4. Bidang Peternakan
+    {
+      title: "Bidang Peternakan",
+      items: [
+        {
+          label: "Populasi & Produksi Ternak",
+          href: "/livestock",
+        },
+        {
+          label: "Susu & Kulit Ternak",
+          href: "/peternakan/susu-kulit",
+        },
+        {
+          label: "Lalu Lintas & Pemotongan Ternak",
+          href: "/livestock-flow",
+        },
+      ],
+    },
+
+    // 5. Bidang Perikanan
+    {
+      title: "Bidang Perikanan",
+      items: [
+        {
+          label: "Produksi Perikanan",
+          href: "/fisheries",
+        },
+      ],
+    },
+    // 6. Analisis Lintas Bidang — halaman generik lintas bidang (satu halaman
+    // dengan pemilih bidang tab/dropdown di dalamnya; bukan milik satu bidang).
+    {
+      title: "Analisis Lintas Bidang",
+      items: [
+        {
+          label: "Komoditas & Varietas Unggulan",
+          href: "/komoditas-unggulan",
+        },
+        {
+          label: "Nilai Ekonomi",
+          href: "/nilai-ekonomi/pangan",
+        },
+        {
+          label: "Sebaran Wilayah (Peta)",
+          href: "/sebaran/pangan",
+        },
+      ],
+    },
+    // 7. Ketahanan Pangan & Distribusi
+    {
+      title: "Ketahanan Pangan & Distribusi",
+      items: [
+        {
+          label: "Ketersediaan Beras",
+          href: "/food-security",
+        },
+        {
+          label: "Ketahanan Pangan (FSVA)",
+          href: "/fsva",
+        },
+        {
+          label: "Rantai Pasok & Distribusi",
+          href: "/supply-chain",
+        },
+        {
+          label: "Fluktuasi Harga & Inflasi",
+          href: "/price-volatility",
+        },
+      ],
+    },
+    // 8. Data Master & Spasial — penunjang/referensi (lahan, sensus, profil)
     {
       title: "Data Master & Spasial",
       items: [
@@ -49,151 +151,6 @@ export const siteConfig = {
         {
           label: "Profil Kecamatan",
           href: "/kecamatan",
-        },
-      ],
-    },
-    // 3. Bidang Tanaman Pangan
-    {
-      title: "Bidang Tanaman Pangan",
-      items: [
-        {
-          label: "Prediksi Panen",
-          href: "/prediction",
-        },
-        {
-          label: "Tanaman Pangan (Padi & Palawija)",
-          href: "/food-crops",
-        },
-        {
-          label: "Komoditas Unggulan Pangan",
-          href: "/komoditas-unggulan/pangan",
-        },
-        {
-          label: "Nilai Ekonomi Pangan",
-          href: "/nilai-ekonomi/pangan",
-        },
-        {
-          label: "Sebaran Wilayah Pangan",
-          href: "/sebaran/pangan",
-        },
-      ],
-    },
-    // 4. Bidang Hortikultura
-    {
-      title: "Bidang Hortikultura",
-      items: [
-        {
-          label: "Produksi Sayuran, Buah & Flora Hias",
-          href: "/horticulture",
-        },
-        {
-          label: "Komoditas Unggulan Hortikultura",
-          href: "/komoditas-unggulan/hortikultura",
-        },
-        {
-          label: "Nilai Ekonomi Hortikultura",
-          href: "/nilai-ekonomi/hortikultura",
-        },
-        {
-          label: "Sebaran Wilayah Hortikultura",
-          href: "/sebaran/hortikultura",
-        },
-      ],
-    },
-    // 5. Bidang Perkebunan
-    {
-      title: "Bidang Perkebunan",
-      items: [
-        {
-          label: "Analitik Perkebunan",
-          href: "/plantation",
-        },
-        {
-          label: "Komoditas Unggulan Perkebunan",
-          href: "/komoditas-unggulan/perkebunan",
-        },
-        {
-          label: "LTT & Kalender Tanam",
-          href: "/ltt-katam",
-        },
-        {
-          label: "Nilai Ekonomi Perkebunan",
-          href: "/nilai-ekonomi/perkebunan",
-        },
-        {
-          label: "Sebaran Wilayah Perkebunan",
-          href: "/sebaran/perkebunan",
-        },
-      ],
-    },
-    // 6. Bidang Peternakan
-    {
-      title: "Bidang Peternakan",
-      items: [
-        {
-          label: "Populasi & Produksi Ternak",
-          href: "/livestock",
-        },
-        {
-          label: "Susu & Kulit Ternak",
-          href: "/peternakan/susu-kulit",
-        },
-        {
-          label: "Komoditas Unggulan Peternakan",
-          href: "/komoditas-unggulan/peternakan",
-        },
-        {
-          label: "Nilai Ekonomi Peternakan",
-          href: "/nilai-ekonomi/peternakan",
-        },
-        {
-          label: "Lalu Lintas & Pemotongan Ternak",
-          href: "/livestock-flow",
-        },
-        {
-          label: "Sebaran Wilayah Peternakan",
-          href: "/sebaran/peternakan",
-        },
-      ],
-    },
-
-    // 7. Bidang Perikanan
-    {
-      title: "Bidang Perikanan",
-      items: [
-        {
-          label: "Produksi Perikanan",
-          href: "/fisheries",
-        },
-        {
-          label: "Komoditas Unggulan Perikanan",
-          href: "/komoditas-unggulan/perikanan",
-        },
-        {
-          label: "Nilai Ekonomi Perikanan",
-          href: "/economic-value",
-        },
-        {
-          label: "Sebaran Wilayah Perikanan",
-          href: "/sebaran/perikanan",
-        },
-      ],
-    },
-    // 8. Ketahanan Pangan & Distribusi
-    {
-      title: "Ketahanan Pangan & Distribusi",
-      items: [
-        {
-          label: "Neraca Komoditas Pangan",
-          href: "/food-security",
-        },
-        {
-          label: "Rantai Pasok & Distribusi",
-          href: "/supply-chain",
-        },
-        {
-          label: "Fluktuasi Harga & Inflasi",
-          href: "/price-volatility",
         },
       ],
     },
@@ -229,21 +186,7 @@ export const siteConfig = {
         },
       ],
     },
-    // 11. Pengaturan & Bantuan
-    {
-      title: "Pengaturan & Bantuan",
-      items: [
-        {
-          label: "Info SISPERTANI",
-          href: "/info",
-        },
-        {
-          label: "Manual Book / Panduan",
-          href: "/manual",
-        },
-      ],
-    },
-    // 12. Pengembangan (semua modul yang belum tersedia)
+    // 11. Pengembangan (semua modul yang belum tersedia)
     {
       title: "Pengembangan",
       items: [

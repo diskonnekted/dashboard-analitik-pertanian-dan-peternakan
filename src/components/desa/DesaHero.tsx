@@ -17,7 +17,7 @@ export function DesaHero({ desa }: Props) {
   return (
     <header
       className="
-        relative overflow-hidden rounded-xl shadow-sm
+        relative overflow-hidden rounded-lg shadow-sm
         bg-gradient-to-br from-emerald-700 via-emerald-800 to-teal-800
         text-white
       "

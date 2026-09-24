@@ -1,4 +1,5 @@
 import Papa from "papaparse";
+import { PENDUDUK_2023, type PendudukKecamatan } from "@/data/penduduk";
 
 const CACHE_STALE_AGE = 15 * 60 * 1000; // 15 menit limit stale
 // Catatan: tidak ada lagi limit umur keras. Cache localStorage berperan sebagai
@@ -2665,6 +2666,128 @@ const fetchFruitProductionCsv = async (): Promise<FruitProduction[]> =>
   }
   });
 
+// ===================== TANAMAN HIAS & BIOFARMAKA =====================
+// Data tingkat KABUPATEN ("Menurut Jenis Tanaman") — long per jenis tanaman × tahun.
+// Satuan: luas m2, produksi tangkai. Panel ini mengisi janji label "Flora Hias" pada
+// judul /horticulture yang sebelumnya belum punya data, plus tanaman biofarmaka.
+export interface TanamanHiasBiofarmaka {
+  jenisTanaman: string;
+  luas: number; // m2
+  produksi: number; // tangkai
+  tahun: string;
+}
+
+const fetchHiasBiofarmakaCsv = (
+  luasPath: string,
+  prodPath: string,
+  cacheKey: string,
+): (() => Promise<TanamanHiasBiofarmaka[]>) =>
+  async () =>
+    withCache(cacheKey, async () => {
+      const parseLong = (
+        csvPath: string,
+      ): Promise<Array<{ jenisTanaman: string; tahun: string; value: number }>> =>
+        new Promise((resolve) => {
+          fetch(csvPath)
+            .then(async (response) => {
+              const contentType = response.headers.get("content-type") || "";
+              if (!response.ok || contentType.includes("html")) return resolve([]);
+              const text = await response.text();
+              Papa.parse(text, {
+                header: true,
+                skipEmptyLines: true,
+                transformHeader: normalizeHeader,
+                complete: (results) => {
+                  const rows = results.data as any[];
+                  const sample = rows[0] || {};
+                  const jenisKey =
+                    Object.keys(sample).find((k) => /^jenis\s*tanaman$/i.test(k.trim())) ||
+                    "Jenis Tanaman";
+                  const valKey =
+                    Object.keys(sample).find((k) => /^produksi/i.test(k.trim())) ||
+                    Object.keys(sample).find((k) => /^luas\s*panen/i.test(k.trim())) ||
+                    "Nilai";
+                  const tahunKey =
+                    Object.keys(sample).find((k) => /^tahun$/i.test(k.trim())) || "Tahun";
+                  resolve(
+                    rows
+                      .map((r) => ({
+                        jenisTanaman: (r[jenisKey] || "").toString().trim(),
+                        tahun: (r[tahunKey] || "").toString().trim(),
+                        value: cleanFloat(r[valKey]),
+                      }))
+                      .filter(
+                        (r) =>
+                          r.jenisTanaman &&
+                          !isSummaryRow(r.jenisTanaman) &&
+                          /^\d{4}$/.test(r.tahun),
+                      ),
+                  );
+                },
+                error: () => resolve([]),
+              });
+            })
+            .catch(() => resolve([]));
+        });
+
+      const luas = await parseLong(luasPath);
+      const prod = await parseLong(prodPath);
+      const map = new Map<string, TanamanHiasBiofarmaka>();
+      const key = (j: string, t: string) => `${j}|${t}`;
+      for (const r of luas) {
+        map.set(key(r.jenisTanaman, r.tahun), {
+          jenisTanaman: r.jenisTanaman,
+          tahun: r.tahun,
+          luas: r.value,
+          produksi: 0,
+        });
+      }
+      for (const r of prod) {
+        const k = key(r.jenisTanaman, r.tahun);
+        const ex = map.get(k);
+        if (ex) ex.produksi = r.value;
+        else
+          map.set(k, {
+            jenisTanaman: r.jenisTanaman,
+            tahun: r.tahun,
+            luas: 0,
+            produksi: r.value,
+          });
+      }
+      return [...map.values()].sort(
+        (a, b) =>
+          a.jenisTanaman.localeCompare(b.jenisTanaman, "id") ||
+          a.tahun.localeCompare(b.tahun, "id"),
+      );
+    });
+
+export const fetchTanamanHias = apiFirst<TanamanHiasBiofarmaka[]>(
+  "/v1/hortikultura/tanaman-hias",
+  fetchHiasBiofarmakaCsv(
+    "/14. Distankan KP/Luas Panen Tanaman Hias Menurut Jenis Tanaman (m2)/Luas Panen Tanaman Hias Menurut Jenis Tanaman (m2) CSV.csv",
+    "/14. Distankan KP/Produksi Tanaman Hias Menurut Jenis Tanaman (tangkai)/Produksi Tanaman Hias Menurut Jenis Tanaman (tangkai) CSV.csv",
+    "cache_tanaman_hias_v1",
+  ),
+);
+
+export const fetchBiofarmaka = apiFirst<TanamanHiasBiofarmaka[]>(
+  "/v1/hortikultura/biofarmaka",
+  fetchHiasBiofarmakaCsv(
+    "/14. Distankan KP/Luas Panen Tanaman Biofarmaka Menurut Jenis Tanaman (m2)/Luas Panen Tanaman Biofarmaka Menurut Jenis Tanaman (m2) CSV.csv",
+    "/14. Distankan KP/Produksi Tanaman Biofarmaka Menurut Jenis Tanaman (Tangkai)/Produksi Tanaman Biofarmaka Menurut Jenis Tanaman (Tangkai) CSV.csv",
+    "cache_biofarmaka_v1",
+  ),
+);
+
+export const fetchSayuranBuahSemusim = apiFirst<TanamanHiasBiofarmaka[]>(
+  "/v1/hortikultura/sayuran-buah-semusim",
+  fetchHiasBiofarmakaCsv(
+    "/14. Distankan KP/Luas Panen Tanaman Sayuran dan Buah\u2013Buahan Semusim Menurut Jenis Tanaman (ha)/Luas Panen Tanaman Sayuran dan Buah\u2013Buahan Semusim Menurut Jenis Tanaman (ha) CSV.csv",
+    "/14. Distankan KP/Produksi Tanaman Sayuran dan Buah\u2013Buahan Semusim Menurut Jenis Tanaman (Ton)/Produksi Tanaman Sayuran dan Buah\u2013Buahan Semusim Menurut Jenis Tanaman (Ton) CSV.csv",
+    "cache_sayuran_buah_semusim_v1",
+  ),
+);
+
 export interface KelompokTaniHutanDetail {
   namaKelompok: string;
   noRegister: string;
@@ -2899,6 +3022,11 @@ const normalizeLumbungRow = (
 const fetchLumbungPanganApiFirst = apiFirst<LumbungPangan[]>("/v1/lumbung", fetchLumbungPanganCsv);
 export const fetchLumbungPangan = async (): Promise<LumbungPangan[]> =>
   (await fetchLumbungPanganApiFirst()).map(normalizeLumbungRow);
+
+// Jumlah penduduk per kecamatan (tahun 2023, sumber KEMENAG — lihat @/data/penduduk).
+// Data referensi statis sehingga tidak lewat API/CKAN; disimpan sebagai berkas data
+// yang dinormalisasi. Dipakai untuk Rasio Ketersediaan Pangan.
+export const fetchPenduduk = async (): Promise<PendudukKecamatan[]> => PENDUDUK_2023;
 export const fetchTernakKecil = apiFirst<TernakKecil[]>("/v1/peternakan/kecil", fetchTernakKecilCsv);
 export const fetchTernakBesar = apiFirst<TernakBesar[]>("/v1/peternakan/besar", fetchTernakBesarCsv);
 export const fetchUnggas = apiFirst<Unggas[]>("/v1/peternakan/unggas", fetchUnggasCsv);
@@ -2946,19 +3074,22 @@ const susuKulitTransform = (raw: any): TernakSusuKulit[] => {
   return out;
 };
 
-const fetchTernakSusuKulitCsv = async (): Promise<TernakSusuKulit[]> => {
+const fetchTernakSusuKulitCsv = async (): Promise<unknown> => {
   // Fallback: snapshot lokal public/data/susu-kulit-fallback.json (dump endpoint
   // /v1/peternakan/susu-kulit, 120 record, Σ 121.087 unit). Bentuk payload sama
-  // dengan respons API → cukup lewat susuKulitTransform.
+  // dengan respons API (array objek {kecamatan,tahun,unit,items[]}) → transform
+  // diterapkan satu kali di fetchTernakSusuKulit.
   try {
     const res = await fetch("/data/susu-kulit-fallback.json");
     if (!res.ok) return [];
-    return susuKulitTransform(await res.json());
+    return (await res.json()) as unknown;
   } catch {
     return [];
   }
 };
-export const fetchTernakSusuKulit = apiFirst<TernakSusuKulit[]>("/v1/peternakan/susu-kulit", fetchTernakSusuKulitCsv);
+const fetchTernakSusuKulitApiFirst = apiFirst<unknown>("/v1/peternakan/susu-kulit", fetchTernakSusuKulitCsv);
+export const fetchTernakSusuKulit = async (): Promise<TernakSusuKulit[]> =>
+  susuKulitTransform(await fetchTernakSusuKulitApiFirst());
 
 export interface SyncLogRow {
   id: number;
@@ -3006,7 +3137,28 @@ export const fetchPerikananBenih = apiFirst<PerikananBenih[]>("/v1/perikanan/ben
 export const fetchNilaiProduksiBudidaya = apiFirst<NilaiProduksiRow[]>("/v1/perikanan/nilai-budidaya", fetchNilaiProduksiBudidayaCsv);
 export const fetchNilaiProduksiTangkap = apiFirst<NilaiProduksiRow[]>("/v1/perikanan/nilai-tangkap", fetchNilaiProduksiTangkapCsv);
 export const fetchPlantationArea = apiFirst<PlantationArea[]>("/v1/perkebunan/areal", fetchPlantationAreaCsv);
-export const fetchPlantationProduction = apiFirst<PlantationProduction[]>("/v1/perkebunan/produksi", fetchPlantationProductionCsv);
+// KOREKSI SEMENTARA (23 Sep 2026): pada data BPS 2024, Karet Kec. Bawang tertulis
+// 436,25 ton (anomali — luas hanya 16,5 ha sehingga 26,4 ton/ha, padahal tahun-tahun
+// sebelumnya ~0,44 ton). Disetarakan ke 0,436 mengikuti pola digit/tren sebelumnya,
+// menunggu klarifikasi resmi BPS/Dinas. HAPUS blok ini begitu data dikonfirmasi.
+const normalisasiKaretBawang2024 = (
+  rows: PlantationProduction[],
+): PlantationProduction[] =>
+  rows.map((r) =>
+    String(r.kecamatan || "").trim().toLowerCase() === "bawang" &&
+    String(r.tahun) === "2024" &&
+    r.karet > 400
+      ? { ...r, karet: 0.436 }
+      : r,
+  );
+
+export const fetchPlantationProduction = async (): Promise<PlantationProduction[]> => {
+  const raw = await apiFirst<PlantationProduction[]>(
+    "/v1/perkebunan/produksi",
+    fetchPlantationProductionCsv,
+  )();
+  return normalisasiKaretBawang2024(raw);
+};
 export const fetchKelompokTaniHutanSnapshot = apiFirst<KelompokTaniRow[]>("/v1/kelembagaan/kth", fetchKelompokTaniHutanSnapshotCsv);
 export const fetchKelompokTani = apiFirst<KelompokTaniRow[]>("/v1/kelembagaan/kelompok-tani", fetchKelompokTaniCsv);
 export const fetchSt2023DesaExtra = apiFirst<St2023DesaExtra[]>("/v1/st2023/desa", fetchSt2023DesaExtraCsv);

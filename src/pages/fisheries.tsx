@@ -26,7 +26,6 @@ import {
 } from "@/services/api";
 import {
   PRODUK_IKAN_TAWAR,
-  PRODUK_IKAN_LAUT,
   PRODUK_IKAN_SUMBER,
   PRODUK_IKAN_TANGGAL,
   hargaTengah,
@@ -467,6 +466,54 @@ export default function FisheriesPage() {
     nilaiTangkapData,
   ]);
 
+  // Tren deret waktu volume estimasi PER JENIS ikan air tawar (per tahun).
+  // Volume per jenis = pangsa indikatif × total volume tawar (budidaya + tangkap)
+  // per tahun; menghormati filter kecamatan tetapi mengabaikan filter tahun
+  // (agar menampilkan seluruh rentang tahun yang tersedia).
+  const produkTrenTahunan = useMemo(() => {
+    const allYears = Array.from(
+      new Set([...budidayaData, ...tangkapData].map((d) => d.tahun).filter(Boolean)),
+    ).sort((a, b) => a.localeCompare(b, "id"));
+
+    const volForYear = (yr: string) => {
+      const matchKec = (d: { kecamatan: string; tahun: string }) =>
+        d.tahun === yr &&
+        (selectedKecamatan === "Semua" || d.kecamatan === selectedKecamatan);
+      const bud = budidayaData
+        .filter(matchKec)
+        .reduce(
+          (a, d) =>
+            a +
+            (d.kolamPembesaran || 0) +
+            (d.karambaApung || 0) +
+            (d.minaPenyelang || 0) +
+            (d.minaTumpangsari || 0),
+          0,
+        );
+      const tngkp = tangkapData
+        .filter(matchKec)
+        .reduce(
+          (a, d) =>
+            a +
+            (d.jalaTebar || 0) +
+            (d.pancing || 0) +
+            (d.jaringIngsang || 0) +
+            (d.lainnya || 0),
+          0,
+        );
+      return bud + tngkp;
+    };
+
+    return allYears.map((yr) => {
+      const total = volForYear(yr);
+      const row: Record<string, number | string> = { tahun: yr };
+      PRODUK_IKAN_TAWAR.forEach((p) => {
+        row[p.nama] = Math.round((total * (p.pangsa ?? 0)) / 100);
+      });
+      return row;
+    });
+  }, [budidayaData, tangkapData, selectedKecamatan]);
+
   const formatNum = (num: number) =>
     new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 }).format(num);
 
@@ -494,7 +541,7 @@ export default function FisheriesPage() {
         <section className="relative text-left animate-fade-in py-4 md:py-8 flex flex-col md:flex-row items-center justify-between gap-8 border-b border-slate-200 pb-8">
           <div className="relative z-10 flex-1">
             <h2 className="text-2xl sm:text-4xl leading-tight font-bold tracking-tight text-slate-800">
-            Analitik Perikanan
+            Produksi Perikanan
           </h2>
             <p className="text-xs md:text-sm font-medium text-slate-500 mt-2 max-w-2xl border-l-2 border-blue-500 pl-3">
             Pemantauan Produksi Perikanan Budidaya, Tangkap, dan Pembenihan Ikan Kabupaten Banjarnegara.
@@ -510,16 +557,16 @@ export default function FisheriesPage() {
         </section>
 
         {/* Filters */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow">
           {/* Category Selector */}
           <div className="flex flex-col gap-2 text-left">
-            <label className="text-xs font-mono font-bold uppercase text-slate-500">
+            <label className="text-xs font-bold uppercase text-slate-500">
               Kategori Perikanan
             </label>
             <div className="grid grid-cols-5 gap-2">
               <button
                 onClick={() => setCategory("budidaya")}
-                className={`py-2 px-3 border border-slate-200 font-mono font-bold text-xs uppercase flex items-center justify-center gap-1 transition-all ${
+                className={`py-2 px-3 border border-slate-200 font-bold text-xs uppercase flex items-center justify-center gap-1 transition-all ${
                   category === "budidaya"
                     ? "bg-blue-600 text-white shadow-sm"
                     : "bg-white text-slate-800 hover:bg-slate-100 shadow-sm"
@@ -530,7 +577,7 @@ export default function FisheriesPage() {
               </button>
               <button
                 onClick={() => setCategory("tangkap")}
-                className={`py-2 px-3 border border-slate-200 font-mono font-bold text-xs uppercase flex items-center justify-center gap-1 transition-all ${
+                className={`py-2 px-3 border border-slate-200 font-bold text-xs uppercase flex items-center justify-center gap-1 transition-all ${
                   category === "tangkap"
                     ? "bg-blue-600 text-white shadow-sm"
                     : "bg-white text-slate-800 hover:bg-slate-100 shadow-sm"
@@ -541,7 +588,7 @@ export default function FisheriesPage() {
               </button>
               <button
                 onClick={() => setCategory("benih")}
-                className={`py-2 px-3 border border-slate-200 font-mono font-bold text-xs uppercase flex items-center justify-center gap-1 transition-all ${
+                className={`py-2 px-3 border border-slate-200 font-bold text-xs uppercase flex items-center justify-center gap-1 transition-all ${
                   category === "benih"
                     ? "bg-blue-600 text-white shadow-sm"
                     : "bg-white text-slate-800 hover:bg-slate-100 shadow-sm"
@@ -552,7 +599,7 @@ export default function FisheriesPage() {
               </button>
               <button
                 onClick={() => setCategory("produk")}
-                className={`py-2 px-3 border border-slate-200 font-mono font-bold text-xs uppercase flex items-center justify-center gap-1 transition-all ${
+                className={`py-2 px-3 border border-slate-200 font-bold text-xs uppercase flex items-center justify-center gap-1 transition-all ${
                   category === "produk"
                     ? "bg-blue-600 text-white shadow-sm"
                     : "bg-white text-slate-800 hover:bg-slate-100 shadow-sm"
@@ -565,7 +612,7 @@ export default function FisheriesPage() {
                   panel "menunggu data dinas" tampil hingga data diimpor. */}
               <button
                 onClick={() => setCategory("hias")}
-                className={`py-2 px-3 border border-slate-200 font-mono font-bold text-xs uppercase flex items-center justify-center gap-1 transition-all ${
+                className={`py-2 px-3 border border-slate-200 font-bold text-xs uppercase flex items-center justify-center gap-1 transition-all ${
                   category === "hias"
                     ? "bg-blue-600 text-white shadow-sm"
                     : "bg-white text-slate-800 hover:bg-slate-100 shadow-sm"
@@ -579,7 +626,7 @@ export default function FisheriesPage() {
 
           {/* Year Selector */}
           <div className="flex flex-col gap-2 text-left">
-            <label className="text-xs font-mono font-bold uppercase text-slate-500">
+            <label className="text-xs font-bold uppercase text-slate-500">
               Tahun Data
             </label>
             <div className="relative">
@@ -588,7 +635,7 @@ export default function FisheriesPage() {
                 value={selectedYear}
                 onChange={(e) => setSelectedYear(e.target.value)}
                 disabled={category === "hias"}
-                className="w-full pl-9 pr-4 py-2 border border-slate-200 font-mono text-sm font-bold bg-white focus:outline-none appearance-none cursor-pointer rounded-xl disabled:opacity-50"
+                className="w-full pl-9 pr-4 py-2 border border-slate-200 text-sm font-bold bg-white focus:outline-none appearance-none cursor-pointer rounded-lg disabled:opacity-50"
               >
                 {yearsList.map((yr) => (
                   <option key={yr} value={yr}>
@@ -601,7 +648,7 @@ export default function FisheriesPage() {
 
           {/* Kecamatan Selector */}
           <div className="flex flex-col gap-2 text-left">
-            <label className="text-xs font-mono font-bold uppercase text-slate-500">
+            <label className="text-xs font-bold uppercase text-slate-500">
               Pilih Kecamatan
             </label>
             <div className="relative">
@@ -610,7 +657,7 @@ export default function FisheriesPage() {
                 value={selectedKecamatan}
                 onChange={(e) => setSelectedKecamatan(e.target.value)}
                 disabled={category === "hias"}
-                className="w-full pl-9 pr-4 py-2 border border-slate-200 font-mono text-sm font-bold bg-white focus:outline-none appearance-none cursor-pointer rounded-xl disabled:opacity-50"
+                className="w-full pl-9 pr-4 py-2 border border-slate-200 text-sm font-bold bg-white focus:outline-none appearance-none cursor-pointer rounded-lg disabled:opacity-50"
               >
                 {uniqueKecamatan.map((kec) => (
                   <option key={kec} value={kec}>
@@ -634,13 +681,13 @@ export default function FisheriesPage() {
           <>
             {/* KPI: Volume & Nilai */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-sky-50 border border-slate-200 p-6 shadow-sm text-left flex flex-col justify-between transition-all duration-300 hover:shadow-md">
+              <div className="bg-sky-50 border border-slate-200 p-6 shadow-sm text-left flex flex-col justify-between transition-all duration-300 hover:shadow">
                 <div className="flex justify-between items-start">
                   <div>
-                    <h5 className="text-xs font-mono font-bold text-slate-500 uppercase">
+                    <h5 className="text-xs font-bold text-slate-500 uppercase">
                       Volume Ikan Air Tawar Lokal
                     </h5>
-                    <h3 className="text-3xl font-serif font-black uppercase text-slate-800 mt-1">
+                    <h3 className="text-3xl font-semibold uppercase text-slate-800 mt-1">
                       {formatNum(produkEstimasi.volumeTawar)}
                     </h3>
                   </div>
@@ -648,19 +695,19 @@ export default function FisheriesPage() {
                     <Fish size={20} />
                   </div>
                 </div>
-                <p className="text-xs font-mono text-slate-500 mt-4 uppercase">
+                <p className="text-xs text-slate-500 mt-4 uppercase">
                   kg ({selectedYear}) · budidaya {formatNum(produkEstimasi.volBudidaya)} + tangkap {formatNum(produkEstimasi.volTangkap)}
                   {selectedKecamatan !== "Semua" ? ` · ${selectedKecamatan}` : ""}
                 </p>
               </div>
 
-              <div className="bg-violet-50 border border-slate-200 p-6 shadow-sm text-left flex flex-col justify-between transition-all duration-300 hover:shadow-md">
+              <div className="bg-blue-50 border border-slate-200 p-6 shadow-sm text-left flex flex-col justify-between transition-all duration-300 hover:shadow">
                 <div className="flex justify-between items-start">
                   <div>
-                    <h5 className="text-xs font-mono font-bold text-slate-500 uppercase">
+                    <h5 className="text-xs font-bold text-slate-500 uppercase">
                       Nilai Estimasi per Jenis
                     </h5>
-                    <h3 className="text-3xl font-serif font-black uppercase text-slate-800 mt-1">
+                    <h3 className="text-3xl font-semibold uppercase text-slate-800 mt-1">
                       {formatRp(produkEstimasi.nilaiEstimasi)}
                     </h3>
                   </div>
@@ -668,18 +715,18 @@ export default function FisheriesPage() {
                     <Banknote size={20} />
                   </div>
                 </div>
-                <p className="text-xs font-mono text-slate-500 mt-4 uppercase">
+                <p className="text-xs text-slate-500 mt-4 uppercase">
                   harga referensi tertimbang Rp {formatNum(HARGA_TAWAR_TERTIMBANG)}/kg · estimasi (bukan angka BPS)
                 </p>
               </div>
 
-              <div className="bg-emerald-50 border border-slate-200 p-6 shadow-sm text-left flex flex-col justify-between transition-all duration-300 hover:shadow-md">
+              <div className="bg-emerald-50 border border-slate-200 p-6 shadow-sm text-left flex flex-col justify-between transition-all duration-300 hover:shadow">
                 <div className="flex justify-between items-start">
                   <div>
-                    <h5 className="text-xs font-mono font-bold text-slate-500 uppercase">
+                    <h5 className="text-xs font-bold text-slate-500 uppercase">
                       Nilai Produksi Resmi BPS
                     </h5>
-                    <h3 className="text-3xl font-serif font-black uppercase text-slate-800 mt-1">
+                    <h3 className="text-3xl font-semibold uppercase text-slate-800 mt-1">
                       {produkEstimasi.nilaiAktual > 0
                         ? formatRp(produkEstimasi.nilaiAktual)
                         : "—"}
@@ -689,7 +736,7 @@ export default function FisheriesPage() {
                     <ShieldCheck size={20} />
                   </div>
                 </div>
-                <p className="text-xs font-mono text-slate-500 mt-4 uppercase">
+                <p className="text-xs text-slate-500 mt-4 uppercase">
                   {produkEstimasi.hargaImplisitAktual
                     ? `harga implisit Rp ${formatNum(Math.round(produkEstimasi.hargaImplisitAktual))}/kg · budidaya + tangkap`
                     : "data nilai produksi belum tersedia untuk filter ini"}
@@ -697,124 +744,117 @@ export default function FisheriesPage() {
               </div>
             </div>
 
-            {/* Katalog Jenis Ikan */}
-            <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
-              <div className="mb-4 text-left border-b border-slate-200 pb-2 flex flex-wrap items-center justify-between gap-2">
-                <h4 className="text-md font-mono font-bold uppercase tracking-wide">
-                  Katalog Jenis Ikan &amp; Harga Referensi
+            {/* Tren Produksi Tahunan per Jenis Ikan (grafik garis) */}
+            <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow">
+              <div className="mb-4 text-left border-b border-slate-200 pb-2">
+                <h4 className="text-md font-bold uppercase tracking-wide">
+                  Tren Produksi Tahunan per Jenis Ikan — kg
+                  {selectedKecamatan !== "Semua" ? ` · ${selectedKecamatan}` : ""}
                 </h4>
-                <span className="font-mono text-[10px] uppercase text-slate-500">
-                  {PRODUK_IKAN_SUMBER} · {PRODUK_IKAN_TANGGAL}
-                </span>
+                <p className="text-[10px] font-bold text-slate-500 uppercase mt-1">
+                  Estimasi komposisi (pangsa indikatif) × total volume ikan air tawar per tahun
+                </p>
               </div>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Air Tawar — produksi lokal */}
-                <div className="text-left">
-                  <h5 className="flex items-center gap-2 text-xs font-mono font-bold uppercase text-sky-700 mb-1">
-                    <Fish size={14} /> Ikan Air Tawar — Produksi Lokal
-                  </h5>
-                  <p className="mb-3 text-[10px] font-mono uppercase leading-relaxed text-slate-500">
-                    Minapadi (penyelang &amp; tumpangsari) — sentra: Singomerto ·
-                    Bawang · Madukara
-                  </p>
-                  <div className="flex flex-col gap-3">
-                    {PRODUK_IKAN_TAWAR.map((p) => (
-                      <div
-                        key={p.nama}
-                        className="border border-slate-200 bg-white p-4 flex flex-col gap-2"
-                      >
-                        <div className="flex items-start justify-between gap-2">
-                          <h6 className="text-sm font-mono font-bold uppercase text-slate-800">
-                            {p.nama}
-                          </h6>
-                          <span className="px-2 py-0.5 border border-sky-200 bg-sky-50 font-mono font-bold text-[10px] uppercase text-sky-700 shrink-0">
-                            Lokal
-                          </span>
-                        </div>
-                        <p className="text-xs text-slate-600 leading-relaxed">
-                          {p.deskripsi}
-                        </p>
-                        {p.sentra && (
-                          <p className="text-[10px] font-mono uppercase leading-relaxed text-sky-700">
-                            Sentra: {p.sentra.join(" · ")}
-                          </p>
-                        )}
-                        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-2">
-                          <span className="font-mono font-bold text-xs text-slate-800">
-                            Rp {formatNum(p.hargaMin)}–{formatNum(p.hargaMax)}/kg
-                          </span>
-                          {p.pangsa !== undefined && (
-                            <span className="font-mono text-[10px] font-bold uppercase text-slate-500">
-                              pangsa estimasi ±{p.pangsa}%
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-[10px] font-mono uppercase text-slate-400">
-                          {p.catatan}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Laut — peredaran pasar */}
-                <div className="text-left">
-                  <h5 className="flex items-center gap-2 text-xs font-mono font-bold uppercase text-blue-700 mb-3">
-                    <Waves size={14} /> Ikan Laut — Peredaran Pasar Lokal
-                  </h5>
-                  <div className="flex flex-col gap-3">
-                    {PRODUK_IKAN_LAUT.map((p) => (
-                      <div
-                        key={p.nama}
-                        className="border border-slate-200 bg-white p-4 flex flex-col gap-2"
-                      >
-                        <div className="flex items-start justify-between gap-2">
-                          <h6 className="text-sm font-mono font-bold uppercase text-slate-800">
-                            {p.nama}
-                          </h6>
-                          <span className="px-2 py-0.5 border border-blue-200 bg-blue-50 font-mono font-bold text-[10px] uppercase text-blue-700 shrink-0">
-                            Pasar
-                          </span>
-                        </div>
-                        <p className="text-xs text-slate-600 leading-relaxed">
-                          {p.deskripsi}
-                        </p>
-                        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-2">
-                          <span className="font-mono font-bold text-xs text-slate-800">
-                            Rp {formatNum(p.hargaMin)}–{formatNum(p.hargaMax)}/kg
-                          </span>
-                        </div>
-                        <p className="text-[10px] font-mono uppercase text-slate-400">
-                          {p.catatan}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                  <p className="mt-3 border border-dashed border-slate-300 bg-slate-50 p-3 text-[10px] font-mono uppercase leading-relaxed text-slate-500">
-                    Banjarnegara bukan penghasil ikan laut — produk laut
-                    didatangkan dari wilayah pesisir dan dikatalogkan
-                    harga/ketersediaannya saja (tanpa volume produksi lokal).
-                  </p>
-                </div>
+              <div className="h-[340px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart
+                    data={produkTrenTahunan}
+                    margin={{ top: 10, right: 20, left: 0, bottom: 0 }}
+                  >
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      stroke="#64748b"
+                      strokeOpacity={0.1}
+                      vertical={false}
+                    />
+                    <XAxis
+                      dataKey="tahun"
+                      tick={{
+                        fill: "#475569",
+                        fontSize: 11,
+                        fontFamily: "monospace",
+                        fontWeight: "bold",
+                      }}
+                      axisLine={{ stroke: "#cbd5e1", strokeWidth: 1 }}
+                      tickLine={{ stroke: "#cbd5e1" }}
+                    />
+                    <YAxis
+                      tick={{
+                        fill: "#475569",
+                        fontSize: 10,
+                        fontFamily: "monospace",
+                        fontWeight: "bold",
+                      }}
+                      axisLine={{ stroke: "#cbd5e1", strokeWidth: 1 }}
+                      tickLine={{ stroke: "#cbd5e1" }}
+                      tickFormatter={(v) => formatNum(v)}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "#ffffff",
+                        border: "1px solid #e2e8f0",
+                        borderRadius: 8,
+                        fontFamily: "monospace",
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                        boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)",
+                      }}
+                      formatter={(value: any, name: any) => [
+                        formatNum(Number(value)),
+                        String(name ?? ""),
+                      ]}
+                    />
+                    <Legend
+                      verticalAlign="top"
+                      height={36}
+                      wrapperStyle={{
+                        fontFamily: "monospace",
+                        fontSize: "11px",
+                        fontWeight: "bold",
+                      }}
+                    />
+                    {PRODUK_IKAN_TAWAR.map((p, idx) => {
+                      const colors = [
+                        "#0ea5e9",
+                        "#3b82f6",
+                        "#8b5cf6",
+                        "#10b981",
+                        "#ef4444",
+                        "#f472b6",
+                      ];
+                      return (
+                        <Line
+                          key={p.nama}
+                          type="monotone"
+                          dataKey={p.nama}
+                          stroke={colors[idx % colors.length]}
+                          strokeWidth={2}
+                          dot={{ r: 3 }}
+                          activeDot={{ r: 5 }}
+                        />
+                      );
+                    })}
+                  </LineChart>
+                </ResponsiveContainer>
               </div>
             </div>
 
             {/* Estimasi Komposisi Produksi per Jenis */}
-            <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
+            <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow">
               <div className="mb-4 text-left border-b border-slate-200 pb-2">
-                <h4 className="text-md font-mono font-bold uppercase tracking-wide">
+                <h4 className="text-md font-bold uppercase tracking-wide">
                   Estimasi Produksi per Jenis Ikan Air Tawar ({selectedYear})
                   {selectedKecamatan !== "Semua" ? ` · ${selectedKecamatan}` : ""}
                 </h4>
               </div>
               {produkEstimasi.volumeTawar === 0 ? (
-                <div className="border border-dashed border-slate-300 bg-slate-50 p-6 text-center font-mono text-xs uppercase text-slate-500">
+                <div className="border border-dashed border-slate-300 bg-slate-50 p-6 text-center text-xs uppercase text-slate-500">
                   Tidak ada data produksi ikan air tawar untuk filter ini.
                 </div>
               ) : (
                 <>
                   <div className="overflow-x-auto">
-                    <table className="w-full text-left font-mono text-sm border-collapse">
+                    <table className="w-full text-left text-sm border-collapse">
                       <thead>
                         <tr className="border-b border-slate-200 bg-slate-100">
                           <th className="p-3 border-r border-slate-200 font-bold uppercase text-xs">
@@ -862,7 +902,7 @@ export default function FisheriesPage() {
                                     />
                                   </div>
                                   {r.produk.sentra && (
-                                    <span className="text-[9px] font-mono uppercase text-slate-400">
+                                    <span className="text-[9px] uppercase text-slate-400">
                                       {r.produk.sentra.join(" · ")}
                                     </span>
                                   )}
@@ -911,7 +951,7 @@ export default function FisheriesPage() {
 
                   {/* Pembanding resmi BPS */}
                   <div className="mt-4 border border-slate-200 bg-slate-50 p-4 text-left">
-                    <h5 className="text-xs font-mono font-bold uppercase text-slate-600 mb-2">
+                    <h5 className="text-xs font-bold uppercase text-slate-600 mb-2">
                       Pembanding Resmi BPS (budidaya + tangkap, {selectedYear})
                     </h5>
                     <ul className="list-disc pl-4 space-y-1 text-xs text-slate-600 leading-relaxed">
@@ -947,7 +987,7 @@ export default function FisheriesPage() {
 
             {/* Catatan Metodologi */}
             <div className="bg-amber-50 border border-amber-200 p-6 text-left">
-              <h4 className="flex items-center gap-2 text-md font-mono font-bold uppercase tracking-wide text-amber-800">
+              <h4 className="flex items-center gap-2 text-md font-bold uppercase tracking-wide text-amber-800">
                 <AlertTriangle size={16} /> Catatan Metodologi
               </h4>
               <ul className="mt-3 list-disc space-y-1.5 pl-5 text-xs text-amber-900 leading-relaxed">
@@ -975,7 +1015,7 @@ export default function FisheriesPage() {
                 </li>
                 <li>
                   Pangsa &amp; harga dapat disesuaikan di{" "}
-                  <code className="font-mono">src/data/produk-ikan.ts</code>.
+                  <code className="">src/data/produk-ikan.ts</code>.
                 </li>
               </ul>
             </div>
@@ -985,13 +1025,13 @@ export default function FisheriesPage() {
             {/* Stats Row */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Stat 1: Total Produksi */}
-              <div className="bg-sky-50 border border-slate-200 p-6 shadow-sm text-left flex flex-col justify-between transition-all duration-300 hover:shadow-md">
+              <div className="bg-sky-50 border border-slate-200 p-6 shadow-sm text-left flex flex-col justify-between transition-all duration-300 hover:shadow">
                 <div className="flex justify-between items-start">
                   <div>
-                    <h5 className="text-xs font-mono font-bold text-slate-500 uppercase">
+                    <h5 className="text-xs font-bold text-slate-500 uppercase">
                       Total Produksi
                     </h5>
-                    <h3 className="text-3xl font-serif font-black uppercase text-slate-800 mt-1">
+                    <h3 className="text-3xl font-semibold uppercase text-slate-800 mt-1">
                       {formatNum(stats.total)}
                     </h3>
                   </div>
@@ -1005,19 +1045,19 @@ export default function FisheriesPage() {
                     )}
                   </div>
                 </div>
-                <p className="text-xs font-mono text-slate-500 mt-4 uppercase">
+                <p className="text-xs text-slate-500 mt-4 uppercase">
                   Total {unit} terdata di Banjarnegara ({selectedYear})
                 </p>
               </div>
 
               {/* Stat 2: Top Kecamatan */}
-              <div className="bg-emerald-50 border border-slate-200 p-6 shadow-sm text-left flex flex-col justify-between transition-all duration-300 hover:shadow-md">
+              <div className="bg-emerald-50 border border-slate-200 p-6 shadow-sm text-left flex flex-col justify-between transition-all duration-300 hover:shadow">
                 <div className="flex justify-between items-start">
                   <div>
-                    <h5 className="text-xs font-mono font-bold text-slate-500 uppercase">
+                    <h5 className="text-xs font-bold text-slate-500 uppercase">
                       Kecamatan Terproduktif
                     </h5>
-                    <h3 className="text-2xl font-serif font-black uppercase text-slate-800 mt-1 break-words leading-tight">
+                    <h3 className="text-2xl font-semibold uppercase text-slate-800 mt-1 break-words leading-tight">
                       {stats.topDistrict}
                     </h3>
                   </div>
@@ -1025,14 +1065,14 @@ export default function FisheriesPage() {
                     <MapPin size={20} />
                   </div>
                 </div>
-                <p className="text-xs font-mono text-slate-500 mt-4 uppercase">
+                <p className="text-xs text-slate-500 mt-4 uppercase">
                   Produksi: {formatNum(stats.topVal)} {unit}
                 </p>
               </div>
 
               {/* Stat 3: Komposisi Jenis */}
-              <div className="bg-violet-50 border border-slate-200 p-6 shadow-sm text-left transition-all duration-300 hover:shadow-md">
-                <h5 className="text-xs font-mono font-bold text-slate-500 uppercase mb-3">
+              <div className="bg-blue-50 border border-slate-200 p-6 shadow-sm text-left transition-all duration-300 hover:shadow">
+                <h5 className="text-xs font-bold text-slate-500 uppercase mb-3">
                   Komposisi Produksi
                 </h5>
                 <div className="flex flex-col gap-2">
@@ -1041,7 +1081,7 @@ export default function FisheriesPage() {
                       stats.total > 0 ? (item.value / stats.total) * 100 : 0;
                     return (
                       <div key={idx} className="flex flex-col gap-1">
-                        <div className="flex justify-between text-[11px] font-mono font-bold uppercase">
+                        <div className="flex justify-between text-[11px] font-bold uppercase">
                           <span>{item.name}</span>
                           <span>{formatNum(item.value)}</span>
                         </div>
@@ -1059,15 +1099,15 @@ export default function FisheriesPage() {
             </div>
 
             {/* Tren Deret Waktu */}
-            <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
+            <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow">
               <div className="mb-4 text-left border-b border-slate-200 pb-2 flex flex-wrap items-center justify-between gap-2">
-                <h4 className="text-md font-mono font-bold uppercase tracking-wide">
+                <h4 className="text-md font-bold uppercase tracking-wide">
                   Tren Produksi {trendData.length > 0 ? `${trendData[0].tahun}–${trendData[trendData.length - 1].tahun}` : ""} — {unit}
                   {selectedKecamatan !== "Semua" ? ` · ${selectedKecamatan}` : ""}
                 </h4>
                 {trendGrowth && (
                   <span
-                    className={`inline-flex items-center gap-1 px-2 py-0.5 border border-slate-200 font-mono font-bold text-[10px] uppercase ${
+                    className={`inline-flex items-center gap-1 px-2 py-0.5 border border-slate-200 font-bold text-[10px] uppercase ${
                       trendGrowth.pct >= 0
                         ? "bg-emerald-100 text-emerald-800"
                         : "bg-red-100 text-red-800"
@@ -1182,34 +1222,34 @@ export default function FisheriesPage() {
 
             {/* Proyeksi Tahun Depan (Regresi Linear) */}
             {projection && (
-              <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
+              <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow">
                 <div className="mb-4 text-left border-b border-slate-200 pb-2">
-                  <h4 className="text-md font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
+                  <h4 className="text-md font-bold uppercase flex items-center gap-2 tracking-wide">
                     <TrendingUp className="text-red-600" size={18} />
                     Proyeksi {projection.nextYear} — Regresi Linear
                     {selectedKecamatan !== "Semua" ? ` · ${selectedKecamatan}` : ""}
                   </h4>
-                  <p className="text-[10px] font-mono font-bold text-slate-500 uppercase mt-1">
+                  <p className="text-[10px] font-bold text-slate-500 uppercase mt-1">
                     Perkiraan berdasarkan tren garis lurus (least-squares) atas total produksi
                   </p>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   {/* Perkiraan produksi */}
                   <div className="border border-slate-200 bg-red-50 p-4 shadow-sm flex flex-col justify-between">
-                    <span className="text-[10px] font-mono font-bold uppercase text-slate-500">
+                    <span className="text-[10px] font-bold uppercase text-slate-500">
                       Perkiraan {projection.nextYear} ({unit})
                     </span>
-                    <span className="text-2xl font-serif font-black text-slate-800 mt-2">
+                    <span className="text-2xl font-semibold text-slate-800 mt-2">
                       {formatNum(projection.predicted)}
                     </span>
                   </div>
                   {/* Perubahan vs tahun terakhir */}
                   <div className="border border-slate-200 bg-white p-4 shadow-sm flex flex-col justify-between">
-                    <span className="text-[10px] font-mono font-bold uppercase text-slate-500">
+                    <span className="text-[10px] font-bold uppercase text-slate-500">
                       Perubahan vs {projection.lastTahun}
                     </span>
                     <span
-                      className={`text-2xl font-serif font-black mt-2 ${
+                      className={`text-2xl font-semibold mt-2 ${
                         projection.deltaPct === null
                           ? "text-slate-400"
                           : projection.deltaPct >= 0
@@ -1224,11 +1264,11 @@ export default function FisheriesPage() {
                   </div>
                   {/* Keandalan (R^2) */}
                   <div className="border border-slate-200 bg-white p-4 shadow-sm flex flex-col justify-between">
-                    <span className="text-[10px] font-mono font-bold uppercase text-slate-500">
+                    <span className="text-[10px] font-bold uppercase text-slate-500">
                       Keandalan Model (R²)
                     </span>
                     <span
-                      className={`text-2xl font-serif font-black mt-2 ${
+                      className={`text-2xl font-semibold mt-2 ${
                         projection.r2 >= 0.7
                           ? "text-emerald-600"
                           : projection.r2 >= 0.4
@@ -1240,7 +1280,7 @@ export default function FisheriesPage() {
                     </span>
                   </div>
                 </div>
-                <p className="text-[10px] font-mono text-slate-500 uppercase mt-3">
+                <p className="text-[10px] text-slate-500 uppercase mt-3">
                   {projection.r2 >= 0.7
                     ? "Tren cukup konsisten — proyeksi relatif dapat diandalkan."
                     : projection.r2 >= 0.4
@@ -1251,18 +1291,18 @@ export default function FisheriesPage() {
             )}
 
             {/* Deteksi Anomali */}
-            <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
+            <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow">
               <div className="mb-4 text-left border-b border-slate-200 pb-2 flex flex-wrap items-center justify-between gap-2">
-                <h4 className="text-md font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
+                <h4 className="text-md font-bold uppercase flex items-center gap-2 tracking-wide">
                   <AlertTriangle className="text-red-600" size={18} />
                   Deteksi Anomali Produksi
                 </h4>
-                <span className="text-[10px] font-mono font-bold text-slate-500 uppercase">
+                <span className="text-[10px] font-bold text-slate-500 uppercase">
                   Ambang penurunan tajam: {ANOMALY_THRESHOLD}% YoY
                 </span>
               </div>
               {anomalies.length === 0 ? (
-                <div className="flex items-center gap-2 p-3 bg-emerald-50 border border-slate-200 text-[11px] font-mono font-bold text-emerald-800 uppercase">
+                <div className="flex items-center gap-2 p-3 bg-emerald-50 border border-slate-200 text-[11px] font-bold text-emerald-800 uppercase">
                   <ShieldCheck size={14} />
                   Tidak ada penurunan tajam terdeteksi pada periode ini
                   {selectedKecamatan !== "Semua" ? ` (${selectedKecamatan})` : ""}.
@@ -1275,19 +1315,19 @@ export default function FisheriesPage() {
                       className="flex flex-wrap items-center justify-between gap-3 p-3 bg-red-50 border border-slate-200 shadow-sm"
                     >
                       <div className="flex items-center gap-3">
-                        <span className="inline-flex items-center px-2 py-0.5 bg-red-600 text-white border border-slate-200 font-mono font-black text-sm">
+                        <span className="inline-flex items-center px-2 py-0.5 bg-red-600 text-white border border-slate-200 font-semibold text-sm">
                           {a.tahun}
                         </span>
                         <div className="text-left">
-                          <p className="text-[11px] font-mono font-bold uppercase text-red-800">
+                          <p className="text-[11px] font-bold uppercase text-red-800">
                             Turun {formatPct(Math.abs(a.pct))}% dari {a.prevTahun}
                           </p>
-                          <p className="text-[10px] font-mono text-slate-600 uppercase">
+                          <p className="text-[10px] text-slate-600 uppercase">
                             Penyumbang utama: {a.penyumbang} · {formatNum(Math.abs(a.selisih))} {unit}
                           </p>
                         </div>
                       </div>
-                      <span className="text-xl font-serif font-black text-red-600">
+                      <span className="text-xl font-semibold text-red-600">
                         ▼ {formatPct(Math.abs(a.pct))}%
                       </span>
                     </div>
@@ -1298,23 +1338,23 @@ export default function FisheriesPage() {
 
             {/* CAGR per Komoditas */}
             {cagrData && (
-              <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
+              <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow">
                 <div className="mb-4 text-left border-b border-slate-200 pb-2">
-                  <h4 className="text-md font-mono font-bold uppercase tracking-wide">
+                  <h4 className="text-md font-bold uppercase tracking-wide">
                     Laju Pertumbuhan Tahunan (CAGR) {cagrData.periode}
                     {selectedKecamatan !== "Semua" ? ` · ${selectedKecamatan}` : ""}
                   </h4>
-                  <p className="text-[10px] font-mono font-bold text-slate-500 uppercase mt-1">
+                  <p className="text-[10px] font-bold text-slate-500 uppercase mt-1">
                     Rata-rata pertumbuhan majemuk per tahun selama {cagrData.years} tahun
                   </p>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
                   {/* Kartu Total */}
                   <div className="border border-slate-200 bg-slate-800 text-white p-4 flex flex-col justify-between">
-                    <span className="text-[10px] font-mono font-bold uppercase text-slate-400">
+                    <span className="text-[10px] font-bold uppercase text-slate-400">
                       Total
                     </span>
-                    <span className="text-2xl font-serif font-black mt-2">
+                    <span className="text-2xl font-semibold mt-2">
                       {cagrData.total === null
                         ? "N/A"
                         : `${cagrData.total >= 0 ? "+" : ""}${formatPct(cagrData.total)}%`}
@@ -1325,11 +1365,11 @@ export default function FisheriesPage() {
                       key={item.name}
                       className="border border-slate-200 bg-white p-4 flex flex-col justify-between shadow-sm"
                     >
-                      <span className="text-[10px] font-mono font-bold uppercase text-slate-500 leading-tight">
+                      <span className="text-[10px] font-bold uppercase text-slate-500 leading-tight">
                         {item.name}
                       </span>
                       <span
-                        className={`text-2xl font-serif font-black mt-2 ${
+                        className={`text-2xl font-semibold mt-2 ${
                           item.cagr === null
                             ? "text-slate-400"
                             : item.cagr >= 0
@@ -1352,9 +1392,9 @@ export default function FisheriesPage() {
             )}
 
             {/* Chart */}
-            <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
+            <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow">
               <div className="mb-4 text-left border-b border-slate-200 pb-2">
-                <h4 className="text-md font-mono font-bold uppercase tracking-wide">
+                <h4 className="text-md font-bold uppercase tracking-wide">
                   Produksi per Kecamatan ({selectedYear}) — dalam {unit}
                 </h4>
               </div>
@@ -1446,14 +1486,14 @@ export default function FisheriesPage() {
             </div>
 
             {/* Data Table */}
-            <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
+            <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow">
               <div className="mb-4 text-left border-b border-slate-200 pb-2">
-                <h4 className="text-md font-mono font-bold uppercase tracking-wide">
+                <h4 className="text-md font-bold uppercase tracking-wide">
                   Tabel Rincian Produksi ({selectedYear}) — {unit}
                 </h4>
               </div>
               <div className="overflow-x-auto">
-                <table className="w-full text-left font-mono text-sm border-collapse">
+                <table className="w-full text-left text-sm border-collapse">
                   <thead>
                     <tr className="border-b border-slate-200 bg-slate-100">
                       <th className="p-3 border-r border-slate-200 font-bold uppercase text-xs">

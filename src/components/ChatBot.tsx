@@ -16,7 +16,7 @@ function renderMarkdown(text: string): string {
     escapeHtml(s)
       .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
       .replace(/\*(.+?)\*/g, "<em>$1</em>")
-      .replace(/`(.+?)`/g, '<code class="px-1 py-0.5 bg-slate-100 rounded text-[11px] font-mono">$1</code>');
+      .replace(/`(.+?)`/g, '<code class="px-1 py-0.5 bg-slate-100 rounded text-[11px] ">$1</code>');
 
   // Baris pemisah tabel: |---|, |:---:|, dsb.
   const isSeparatorRow = (s: string) =>
@@ -105,19 +105,19 @@ function renderMarkdown(text: string): string {
     // Headers (h4-h2)
     if (processed.startsWith("#### ")) {
       closeLists();
-      html += `<p class="font-mono font-bold text-[12px] text-emerald-700 uppercase tracking-wide mt-2.5">${processed.slice(5)}</p>`;
+      html += `<p class=" font-bold text-[12px] text-emerald-700 uppercase tracking-wide mt-2.5">${processed.slice(5)}</p>`;
       i++;
       continue;
     }
     if (processed.startsWith("### ")) {
       closeLists();
-      html += `<p class="font-mono font-bold text-xs text-slate-800 uppercase tracking-wide mt-2">${processed.slice(4)}</p>`;
+      html += `<p class=" font-bold text-xs text-slate-800 uppercase tracking-wide mt-2">${processed.slice(4)}</p>`;
       i++;
       continue;
     }
     if (processed.startsWith("## ")) {
       closeLists();
-      html += `<p class="font-mono font-bold text-sm text-slate-800 mt-2">${processed.slice(3)}</p>`;
+      html += `<p class=" font-bold text-sm text-slate-800 mt-2">${processed.slice(3)}</p>`;
       i++;
       continue;
     }
@@ -134,7 +134,7 @@ function renderMarkdown(text: string): string {
     const numMatch = processed.match(/^(\d+)\.\s+(.+)/);
     if (numMatch) {
       if (!inNumList) { html += '<ol class="space-y-1 my-1">'; inNumList = true; }
-      html += `<li class="flex gap-1.5"><span class="font-mono font-bold text-emerald-600 shrink-0">${numMatch[1]}.</span><span>${numMatch[2]}</span></li>`;
+      html += `<li class="flex gap-1.5"><span class=" font-bold text-emerald-600 shrink-0">${numMatch[1]}.</span><span>${numMatch[2]}</span></li>`;
       i++;
       continue;
     }
@@ -369,7 +369,7 @@ export default function ChatBot({ dataContext }: ChatBotProps) {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="no-print fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-3 bg-emerald-600 text-white rounded-2xl shadow-lg hover:bg-emerald-700 hover:shadow-xl transition-all duration-200 group"
+          className="no-print fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-3 bg-emerald-600 text-white rounded-2xl shadow hover:bg-emerald-700 hover:shadow transition-all duration-200 group"
           aria-label="Buka chat Si Pertani"
         >
           <div className="relative">
@@ -380,7 +380,7 @@ export default function ChatBot({ dataContext }: ChatBotProps) {
             />
             <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-300 rounded-full ring-2 ring-emerald-600 animate-pulse" />
           </div>
-          <span className="font-mono font-bold text-sm uppercase tracking-wide hidden sm:inline group-hover:inline">
+          <span className=" font-bold text-sm uppercase tracking-wide hidden sm:inline group-hover:inline">
             Si Pertani
           </span>
         </button>
@@ -388,7 +388,7 @@ export default function ChatBot({ dataContext }: ChatBotProps) {
 
       {/* ── Chat Panel ──────────────────────────────────── */}
       {isOpen && (
-        <div className="no-print fixed bottom-0 right-0 sm:bottom-6 sm:right-6 z-50 w-full sm:w-[420px] h-full sm:h-[600px] max-h-[100vh] sm:max-h-[85vh] bg-white border border-slate-200 sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-fade-in">
+        <div className="no-print fixed bottom-0 right-0 sm:bottom-6 sm:right-6 z-50 w-full sm:w-[420px] h-full sm:h-[600px] max-h-[100vh] sm:max-h-[85vh] bg-white border border-slate-200 sm:rounded-2xl shadow-sm flex flex-col overflow-hidden animate-fade-in">
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white shrink-0">
             <div className="flex items-center gap-3">
@@ -396,15 +396,15 @@ export default function ChatBot({ dataContext }: ChatBotProps) {
                 <img
                   src="/sipertani.ico"
                   alt="Si Pertani"
-                  className="w-10 h-10 rounded-xl object-cover"
+                  className="w-10 h-10 rounded-lg object-cover"
                 />
                 <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-300 rounded-full ring-2 ring-emerald-700" />
               </div>
               <div>
-                <h3 className="font-mono font-bold text-sm uppercase tracking-wide">
+                <h3 className=" font-bold text-sm uppercase tracking-wide">
                   Si Pertani
                 </h3>
-                <p className="text-[10px] font-mono text-emerald-100 flex items-center gap-1">
+                <p className="text-[10px] text-emerald-100 flex items-center gap-1">
                   <Sparkles size={10} />
                   Analis Pertanian AI
                 </p>
@@ -498,14 +498,14 @@ export default function ChatBot({ dataContext }: ChatBotProps) {
             {/* Quick questions (hanya tampil saat pesan pertama) */}
             {messages.length === 1 && !isLoading && (
               <div className="pt-2 space-y-2">
-                <p className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider px-1">
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-1">
                   Coba tanyakan:
                 </p>
                 {QUICK_QUESTIONS.map((q) => (
                   <button
                     key={q}
                     onClick={() => sendMessage(q)}
-                    className="w-full text-left px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-mono font-medium text-slate-600 hover:border-emerald-300 hover:bg-emerald-50/50 hover:text-emerald-700 transition-all"
+                    className="w-full text-left px-3 py-2 bg-white border border-slate-200 rounded-lg text-xs font-medium text-slate-600 hover:border-emerald-300 hover:bg-emerald-50/50 hover:text-emerald-700 transition-all"
                   >
                     {q}
                   </button>
@@ -526,20 +526,20 @@ export default function ChatBot({ dataContext }: ChatBotProps) {
                 onKeyDown={handleKeyDown}
                 placeholder="Ketik pertanyaan tentang pertanian..."
                 rows={1}
-                className="flex-1 resize-none border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-200 focus:border-emerald-400 transition-all max-h-32"
+                className="flex-1 resize-none border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-200 focus:border-emerald-400 transition-all max-h-32"
                 style={{ minHeight: "42px" }}
                 disabled={isLoading}
               />
               <button
                 onClick={() => sendMessage(input)}
                 disabled={!input.trim() || isLoading}
-                className="shrink-0 w-10 h-10 flex items-center justify-center bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 disabled:bg-slate-300 disabled:cursor-not-allowed transition-all"
+                className="shrink-0 w-10 h-10 flex items-center justify-center bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:bg-slate-300 disabled:cursor-not-allowed transition-all"
                 aria-label="Kirim pesan"
               >
                 <Send size={18} />
               </button>
             </div>
-            <p className="text-[9px] font-mono text-slate-400 mt-1.5 text-center">
+            <p className="text-[9px] text-slate-400 mt-1.5 text-center">
               Si Pertani berdasarkan data SISPERTANI Banjarnegara
             </p>
           </div>

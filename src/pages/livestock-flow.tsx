@@ -372,7 +372,7 @@ export default function LivestockFlowPage() {
             Bidang Peternakan
           </p>
           <h1 className="text-2xl font-semibold text-slate-900 mt-1.5">
-            Lalu Lintas Ternak & Produksi Daging
+            Lalu Lintas & Pemotongan Ternak
           </h1>
           <p className="text-sm text-slate-700 mt-1 max-w-3xl">
             Data pemasukan ternak, pengeluaran ternak potong, pemotongan resmi di

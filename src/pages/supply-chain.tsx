@@ -146,7 +146,7 @@ export default function SupplyChainPage() {
       risk: "Ketergantungan pada pasar pengumpul dan variasi harga antar wilayah",
       priority: "Kemitraan pedagang, gudang mini, pencatatan volume keluar daerah",
       distance: "Koridor barat",
-      badgeStyle: "bg-violet-100 text-violet-800 border-violet-600"
+      badgeStyle: "bg-blue-50 text-blue-800 border-blue-600"
     }
   ];
 
@@ -157,7 +157,7 @@ export default function SupplyChainPage() {
         <section className="relative text-left animate-fade-in py-4 md:py-8 flex flex-col md:flex-row items-center justify-between gap-8 border-b border-slate-200 pb-8">
           <div className="relative z-10 flex-1">
             <h2 className="text-2xl sm:text-4xl leading-tight font-bold tracking-tight text-slate-800">
-            Infrastruktur Rantai Pasok
+            Rantai Pasok & Distribusi
           </h2>
             <p className="text-xs md:text-sm font-medium text-slate-500 mt-2 max-w-2xl border-l-2 border-blue-500 pl-3">
             Pemetaan sarana perdagangan pasar riil Kabupaten Banjarnegara untuk mengoptimalkan alur distribusi pangan.
@@ -177,13 +177,13 @@ export default function SupplyChainPage() {
         ) : (
           <>
             {/* Analisis Kesiapan Koridor Logistik */}
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 p-6 transition-all duration-300 hover:shadow-md">
+            <div className="bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow transition-all duration-200 p-6 transition-all duration-300 hover:shadow">
               <div className="flex flex-col mb-6 border-b border-slate-200 pb-3">
-                <h4 className="text-lg font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
+                <h4 className="text-lg font-bold uppercase flex items-center gap-2 tracking-wide">
                   <Truck className="text-slate-800" />
                   Analisis Kesiapan Koridor Logistik Hortikultura
                 </h4>
-                <p className="text-xs font-mono font-bold text-slate-500 uppercase mt-1">Ringkasan fungsi pasar dan prioritas intervensi distribusi pangan</p>
+                <p className="text-xs font-bold text-slate-500 uppercase mt-1">Ringkasan fungsi pasar dan prioritas intervensi distribusi pangan</p>
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -203,18 +203,18 @@ export default function SupplyChainPage() {
                 </div>
                 <div className="grid grid-cols-1 gap-3">
                   <div className="border border-slate-200 bg-emerald-50 p-4 shadow-sm">
-                    <p className="text-[10px] font-mono font-bold uppercase text-slate-500">Pasar Aktif {latestYear}</p>
-                    <h5 className="text-3xl font-serif font-black text-slate-800 mt-1">{totalLatestMarkets}</h5>
-                    <p className="text-[10px] font-mono font-bold uppercase text-emerald-700 mt-1">Total simpul pasar dari data resmi</p>
+                    <p className="text-[10px] font-bold uppercase text-slate-500">Pasar Aktif {latestYear}</p>
+                    <h5 className="text-3xl font-semibold text-slate-800 mt-1">{totalLatestMarkets}</h5>
+                    <p className="text-[10px] font-bold uppercase text-emerald-700 mt-1">Total simpul pasar dari data resmi</p>
                   </div>
                   <div className="border border-slate-200 bg-yellow-50 p-4 shadow-sm">
-                    <p className="text-[10px] font-mono font-bold uppercase text-slate-500">Koridor Prioritas</p>
-                    <h5 className="text-3xl font-serif font-black text-slate-800 mt-1">{realRoutes.length}</h5>
-                    <p className="text-[10px] font-mono font-bold uppercase text-yellow-700 mt-1">Rute produksi menuju pasar konsumen</p>
+                    <p className="text-[10px] font-bold uppercase text-slate-500">Koridor Prioritas</p>
+                    <h5 className="text-3xl font-semibold text-slate-800 mt-1">{realRoutes.length}</h5>
+                    <p className="text-[10px] font-bold uppercase text-yellow-700 mt-1">Rute produksi menuju pasar konsumen</p>
                   </div>
                   <div className="border border-slate-200 bg-sky-50 p-4 shadow-sm">
-                    <p className="text-[10px] font-mono font-bold uppercase text-slate-500">Fokus Tindakan</p>
-                    <p className="text-xs font-mono font-bold uppercase text-slate-800 mt-2 leading-relaxed">Sortasi, konsolidasi muatan, cold chain sederhana, dan pencatatan volume keluar daerah.</p>
+                    <p className="text-[10px] font-bold uppercase text-slate-500">Fokus Tindakan</p>
+                    <p className="text-xs font-bold uppercase text-slate-800 mt-2 leading-relaxed">Sortasi, konsolidasi muatan, cold chain sederhana, dan pencatatan volume keluar daerah.</p>
                   </div>
                 </div>
               </div>
@@ -223,17 +223,17 @@ export default function SupplyChainPage() {
             {/* Peta / Tabel Alur Distribusi */}
             <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
               {/* Market Capacity summary */}
-              <div className="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 p-6 flex flex-col justify-between transition-all duration-300 hover:shadow-md">
+              <div className="bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow transition-all duration-200 p-6 flex flex-col justify-between transition-all duration-300 hover:shadow">
                 <div>
-                  <h4 className="text-md font-mono font-bold uppercase flex items-center gap-2 mb-4 border-b border-slate-200 pb-3 tracking-wide">
+                  <h4 className="text-md font-bold uppercase flex items-center gap-2 mb-4 border-b border-slate-200 pb-3 tracking-wide">
                     <Store className="text-slate-800" size={18} />
                     Kapasitas Pasar Aktif ({latestYear})
                   </h4>
                   <div className="flex flex-col gap-4">
                     {latestMarkets.map(item => (
                       <div key={item.jenis} className="flex justify-between items-center pb-2 border-b border-slate-200/20">
-                        <span className="text-xs font-mono font-bold text-slate-800 uppercase">Pasar {item.jenis}</span>
-                        <span className="inline-flex items-center px-2 py-0.5 border border-slate-200 bg-yellow-200 text-slate-800 font-mono font-bold text-xs shadow-sm">
+                        <span className="text-xs font-bold text-slate-800 uppercase">Pasar {item.jenis}</span>
+                        <span className="inline-flex items-center px-2 py-0.5 border border-slate-200 bg-yellow-200 text-slate-800 font-bold text-xs shadow-sm">
                           {item.jumlah} UNIT
                         </span>
                       </div>
@@ -242,18 +242,18 @@ export default function SupplyChainPage() {
                 </div>
                 <div className="mt-6 p-3 bg-emerald-50 border border-slate-200 shadow-sm text-[10px] text-emerald-800 flex items-start gap-2">
                   <ShieldCheck size={16} className="shrink-0 mt-0.5 text-emerald-600" />
-                  <span className="font-mono font-bold uppercase leading-normal">Ketersediaan pasar ikan dan buah khusus sangat mendukung stabilitas harga komoditas.</span>
+                  <span className=" font-bold uppercase leading-normal">Ketersediaan pasar ikan dan buah khusus sangat mendukung stabilitas harga komoditas.</span>
                 </div>
               </div>
 
               {/* Real Distribution Routes */}
-              <div className="lg:col-span-2 bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 p-6 transition-all duration-300 hover:shadow-md">
+              <div className="lg:col-span-2 bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow transition-all duration-200 p-6 transition-all duration-300 hover:shadow">
                 <div className="flex flex-col mb-6 border-b border-slate-200 pb-3">
-                  <h4 className="text-md font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
+                  <h4 className="text-md font-bold uppercase flex items-center gap-2 tracking-wide">
                     <Truck className="text-slate-800" size={18} />
                     Alur Distribusi Logistik Hortikultura Riil
                   </h4>
-                  <p className="text-xs font-mono font-bold text-slate-500 uppercase mt-1">Peta pergerakan pasokan pertanian dari produsen ke pasar konsumen</p>
+                  <p className="text-xs font-bold text-slate-500 uppercase mt-1">Peta pergerakan pasokan pertanian dari produsen ke pasar konsumen</p>
                 </div>
 
                 <div className="flex flex-col gap-5">
@@ -263,32 +263,32 @@ export default function SupplyChainPage() {
                       className="p-4 border border-slate-200 bg-white shadow-sm flex flex-col gap-3"
                     >
                       <div className="flex justify-between items-center border-b border-slate-200/10 pb-2">
-                        <span className={`inline-flex items-center px-2 py-0.5 border border-slate-200 font-mono font-bold text-[10px] uppercase shadow-sm ${route.badgeStyle}`}>
+                        <span className={`inline-flex items-center px-2 py-0.5 border border-slate-200 font-bold text-[10px] uppercase shadow-sm ${route.badgeStyle}`}>
                           Jalur {route.status}
                         </span>
-                        <span className="text-xs font-mono font-bold text-blue-600 uppercase">{route.commodity}</span>
+                        <span className="text-xs font-bold text-blue-600 uppercase">{route.commodity}</span>
                       </div>
                       
-                      <div className="flex flex-wrap items-center gap-2 text-xs font-mono font-bold text-slate-800 uppercase">
+                      <div className="flex flex-wrap items-center gap-2 text-xs font-bold text-slate-800 uppercase">
                         <span>{route.from}</span>
                         <ArrowRight size={14} className="text-slate-500" />
-                        <span className="text-purple-600">{route.via}</span>
+                        <span className="text-blue-600">{route.via}</span>
                         <ArrowRight size={14} className="text-slate-500" />
                         <span>{route.to}</span>
                       </div>
 
-                      <p className="text-xs text-slate-600 leading-relaxed font-mono mt-1 whitespace-normal uppercase text-[10px]">
+                      <p className="text-xs text-slate-600 leading-relaxed mt-1 whitespace-normal uppercase text-[10px]">
                         {route.desc}
                       </p>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-1">
                         <div className="bg-rose-50 border border-rose-300 p-2">
-                          <p className="text-[9px] font-mono font-black uppercase text-rose-700 mb-1">Risiko Distribusi</p>
-                          <p className="text-[10px] font-mono font-bold uppercase text-slate-700 leading-relaxed">{route.risk}</p>
+                          <p className="text-[9px] font-semibold uppercase text-rose-700 mb-1">Risiko Distribusi</p>
+                          <p className="text-[10px] font-bold uppercase text-slate-700 leading-relaxed">{route.risk}</p>
                         </div>
                         <div className="bg-emerald-50 border border-emerald-300 p-2">
-                          <p className="text-[9px] font-mono font-black uppercase text-emerald-700 mb-1">Prioritas Intervensi</p>
-                          <p className="text-[10px] font-mono font-bold uppercase text-slate-700 leading-relaxed">{route.priority}</p>
+                          <p className="text-[9px] font-semibold uppercase text-emerald-700 mb-1">Prioritas Intervensi</p>
+                          <p className="text-[10px] font-bold uppercase text-slate-700 leading-relaxed">{route.priority}</p>
                         </div>
                       </div>
                     </div>
@@ -298,18 +298,18 @@ export default function SupplyChainPage() {
             </div>
 
             {/* Daftar Simpul Pasar */}
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 p-6 transition-all duration-300 hover:shadow-md">
+            <div className="bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow transition-all duration-200 p-6 transition-all duration-300 hover:shadow">
               <div className="flex flex-col mb-6 border-b border-slate-200 pb-3">
-                <h4 className="text-md font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
+                <h4 className="text-md font-bold uppercase flex items-center gap-2 tracking-wide">
                   <Store className="text-slate-800" size={18} />
                   Daftar Simpul Pasar & Lokasi Fungsional
                 </h4>
-                <p className="text-xs font-mono font-bold text-slate-500 uppercase mt-1">
+                <p className="text-xs font-bold text-slate-500 uppercase mt-1">
                   Daftar disusun dari rute logistik internal aplikasi. Tersedia 36 titik koordinat pasar (data/pasar-banjarnegara.geojson, sumber komunitas/OSM) untuk pengembangan peta ke depan.
                 </p>
               </div>
               <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse font-mono text-xs">
+                <table className="w-full text-left border-collapse text-xs">
                   <thead>
                     <tr className="border-b border-slate-200 bg-slate-100">
                       <th className="p-3 border-r border-slate-200 uppercase">Nama Pasar</th>
@@ -322,7 +322,7 @@ export default function SupplyChainPage() {
                   <tbody>
                     {marketNodes.map((market) => (
                       <tr key={market.name} className="border-b border-slate-200 hover:bg-slate-50">
-                        <td className="p-3 border-r border-slate-200 font-black uppercase text-slate-800">{market.name}</td>
+                        <td className="p-3 border-r border-slate-200 font-semibold uppercase text-slate-800">{market.name}</td>
                         <td className="p-3 border-r border-slate-200 font-bold uppercase text-emerald-700">{market.kecamatan}</td>
                         <td className="p-3 border-r border-slate-200 uppercase text-slate-700">{market.type}</td>
                         <td className="p-3 border-r border-slate-200 uppercase text-blue-700 font-bold">{market.commodities}</td>

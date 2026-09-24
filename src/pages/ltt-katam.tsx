@@ -56,7 +56,7 @@ const musim = (mulai?: number | null, panen?: number | null) =>
   mulai && panen ? `${BULAN[mulai - 1]}–${BULAN[panen - 1]}` : "—";
 
 const JENIS_LIST = ["LTT", "Katam"] as const;
-const JENIS_TONE: Record<string, "blue" | "violet"> = { LTT: "blue", Katam: "violet" };
+const JENIS_TONE: Record<string, "blue"> = { LTT: "blue", Katam: "blue" };
 const CHART_COLORS = { rencana: "#0891b2", tanam: "#1e40af", panen: "#059669" };
 
 /* ------------------------------------------------------------------

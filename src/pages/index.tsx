@@ -105,17 +105,17 @@ export default function IndexPage() {
             trend="20 Kecamatan"
             trendUp={true}
             value={`${totalDesa} Desa/Kelurahan`}
-            color="bg-purple-300"
+            color="bg-blue-300"
           />
         </div>
 
         {/* Map Section */}
         <div className="w-full flex flex-col gap-4">
-          <h3 className="text-lg font-mono font-bold uppercase flex items-center gap-2 text-slate-800 tracking-wide">
+          <h3 className="text-lg font-bold uppercase flex items-center gap-2 text-slate-800 tracking-wide">
             <MapPin className="text-emerald-600" /> Peta Sebaran Lahan Pertanian
           </h3>
-          <div className="border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 bg-white">
-            <div className="w-full aspect-[4/3] rounded-xl overflow-hidden">
+          <div className="border border-slate-200 rounded-lg shadow-sm hover:shadow transition-all duration-200 bg-white">
+            <div className="w-full aspect-[4/3] rounded-lg overflow-hidden">
               <MapWidget data={lahanData} />
             </div>
           </div>

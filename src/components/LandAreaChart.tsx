@@ -26,14 +26,14 @@ export const LandAreaChart = ({ data }: LandAreaChartProps) => {
 
   return (
     <div
-      className="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 h-full flex flex-col p-6"
+      className="bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow transition-all duration-200 h-full flex flex-col p-6"
     >
       <div className="flex flex-col mb-4 border-b border-slate-200 pb-3">
-        <h4 className="text-lg font-mono font-bold uppercase flex items-center gap-2 tracking-wide">
+        <h4 className="text-lg font-bold uppercase flex items-center gap-2 tracking-wide">
           <TrendingUp className="text-emerald-600" />
           Top 15 Desa
         </h4>
-        <p className="text-xs font-mono font-bold text-slate-500 uppercase mt-1">
+        <p className="text-xs font-bold text-slate-500 uppercase mt-1">
           Berdasarkan Luas Lahan Sawah Tertinggi (Ha)
         </p>
       </div>
@@ -53,7 +53,7 @@ export const LandAreaChart = ({ data }: LandAreaChartProps) => {
               <XAxis
                 angle={-45}
                 axisLine={{ stroke: '#cbd5e1', strokeWidth: 1 }}
-                className="font-mono font-bold text-[8px]"
+                className=" font-bold text-[8px]"
                 dataKey="desa"
                 interval={0}
                 textAnchor="end"
@@ -64,7 +64,7 @@ export const LandAreaChart = ({ data }: LandAreaChartProps) => {
               <YAxis
                 width={70}
                 axisLine={{ stroke: '#cbd5e1', strokeWidth: 1 }}
-                className="font-mono font-bold text-[9px]"
+                className=" font-bold text-[9px]"
                 tickFormatter={(value) => `${value.toLocaleString("id-ID")}`}
                 tick={{ fill: '#475569', fontSize: 10, fontFamily: 'monospace', fontWeight: 'bold' }}
                 tickLine={{ stroke: '#cbd5e1', strokeWidth: 1 }}
@@ -114,7 +114,7 @@ export const LandAreaChart = ({ data }: LandAreaChartProps) => {
             </BarChart>
           </ResponsiveContainer>
         ) : (
-          <div className="flex items-center justify-center h-full text-slate-400 font-mono">
+          <div className="flex items-center justify-center h-full text-slate-400 ">
             Memuat data lahan...
           </div>
         )}

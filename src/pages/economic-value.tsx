@@ -1,91 +1,201 @@
-import { useEffect, useState, useMemo } from "react";
-import DefaultLayout from "@/layouts/default";
-import { LoadingSpinner } from "@/components/ui";
+import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import {
-  BarChart,
   Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Cell,
 } from "recharts";
+import {
+  BadgeCheck,
+  Beef,
+  Carrot,
+  Coffee,
+  DollarSign,
+  Fish,
+  Tag,
+  Trophy,
+  Waves,
+  Wheat,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import DefaultLayout from "@/layouts/default";
+import {
+  Badge,
+  EmptyStatePlaceholder,
+  KpiCard,
+  LoadingSpinner,
+  PageHeader,
+  SectionCard,
+  Toolbar,
+  ToolbarField,
+} from "@/components/ui";
 import {
   fetchNilaiProduksiBudidaya,
   fetchNilaiProduksiTangkap,
-  NilaiProduksiRow,
+  type NilaiProduksiRow,
 } from "@/services/api";
-import { Fish, Waves, Calendar, Filter, DollarSign, Tag, PieChart } from "lucide-react";
+import {
+  PRODUK_IKAN_TAWAR,
+  PRODUK_IKAN_SUMBER,
+  PRODUK_IKAN_TANGGAL,
+  hargaTengah,
+} from "@/data/produk-ikan";
+import {
+  BIDANG_META,
+  BIDANG_NILAI_EKONOMI,
+} from "@/services/nilai-ekonomi-estimasi";
+
+/**
+ * Nilai Ekonomi Perikanan — /economic-value (halaman kanonik perikanan).
+ *
+ * Seragam dengan /nilai-ekonomi/:bidang (PageHeader + tab pemilih bidang +
+ * Toolbar + KpiCard + SectionCard + PALET). Sumber = data aktual Distankan
+ * (budidaya + tangkap), BUKAN estimasi harga referensi.
+ *
+ * Catatan penting: data BPS memublikasikan produksi per METODE PEMELIHARAAN /
+ * ALAT TANGKAP (kolam, KJA, jala, dll.) — TIDAK per jenis ikan. Sehingga
+ * "rincian per jenis ikan" di bawah adalah ESTIMASI komposisi pangsa (% indikatif)
+ * dari data/produk-ikan.ts, bukan angka BPS.
+ */
+
+const IKON_BIDANG = { wheat: Wheat, carrot: Carrot, coffee: Coffee, beef: Beef } as const;
+
+type PemilihBidangItem = {
+  key: string;
+  label: string;
+  icon: LucideIcon;
+  href: string;
+};
+
+/** Tab pemilih bidang — sama dengan /nilai-ekonomi/:bidang; perikanan aktif. */
+const PEMILIH_BIDANG: PemilihBidangItem[] = [
+  ...BIDANG_NILAI_EKONOMI.map((key) => ({
+    key,
+    label: BIDANG_META[key].label,
+    icon: IKON_BIDANG[BIDANG_META[key].ikon],
+    href: `/nilai-ekonomi/${key}`,
+  })),
+  {
+    key: "perikanan",
+    label: "Perikanan",
+    icon: Fish,
+    href: "/economic-value",
+  },
+];
+
+const PALET = [
+  "#1d4ed8",
+  "#0d9488",
+  "#7c3aed",
+  "#db2777",
+  "#ea580c",
+  "#65a30d",
+  "#0891b2",
+  "#9333ea",
+  "#dc2626",
+  "#ca8a04",
+];
+
+const SEMUA_KEC = "Semua Kecamatan";
+
+const fmtRp = (v: number | null): string =>
+  v == null
+    ? "—"
+    : new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        maximumFractionDigits: 0,
+      }).format(v);
+
+const fmtNum = (v: number): string =>
+  v.toLocaleString("id-ID", { maximumFractionDigits: 1 });
 
 type SubSektor = "Budidaya" | "Tangkap";
-
-const COLORS = ["#0ea5e9", "#f59e0b", "#8b5cf6", "#10b981", "#ef4444", "#f472b6"];
 
 export default function EconomicValuePage() {
   const [budidayaData, setBudidayaData] = useState<NilaiProduksiRow[]>([]);
   const [tangkapData, setTangkapData] = useState<NilaiProduksiRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [gagal, setGagal] = useState<string | null>(null);
+  const [retry, setRetry] = useState(0);
 
   const [subSektor, setSubSektor] = useState<SubSektor>("Budidaya");
-  const [selectedYear, setSelectedYear] = useState<string>("");
-  const [selectedKecamatan, setSelectedKecamatan] = useState<string>("Semua");
-  const [loading, setLoading] = useState<boolean>(true);
+  const [tahun, setTahun] = useState("");
+  const [kecamatan, setKecamatan] = useState(SEMUA_KEC);
 
   useEffect(() => {
-    const load = async () => {
-      try {
-        const [budidaya, tangkap] = await Promise.all([
-          fetchNilaiProduksiBudidaya(),
-          fetchNilaiProduksiTangkap(),
-        ]);
+    let aktif = true;
+    setLoading(true);
+    setGagal(null);
+    Promise.all([fetchNilaiProduksiBudidaya(), fetchNilaiProduksiTangkap()])
+      .then(([budidaya, tangkap]) => {
+        if (!aktif) return;
         setBudidayaData(budidaya);
         setTangkapData(tangkap);
-      } catch (err) {
-        console.error("Gagal memuat data nilai produksi:", err);
-      } finally {
+      })
+      .catch(() => {
+        if (!aktif) return;
+        setGagal("Gagal memuat data nilai produksi perikanan (backend & fallback CSV tidak merespons).");
+      })
+      .finally(() => {
+        if (!aktif) return;
         setLoading(false);
-      }
+      });
+    return () => {
+      aktif = false;
     };
-    load();
-  }, []);
+  }, [retry]);
 
   const activeRaw = useMemo(
     () => (subSektor === "Budidaya" ? budidayaData : tangkapData),
     [subSektor, budidayaData, tangkapData],
   );
 
-  const yearsList = useMemo(() => {
-    return Array.from(new Set(activeRaw.map((d) => d.tahun).filter(Boolean))).sort(
-      (a, b) => b.localeCompare(a),
-    );
-  }, [activeRaw]);
-
-  useEffect(() => {
-    if (yearsList.length > 0 && !yearsList.includes(selectedYear)) {
-      setSelectedYear(yearsList[0]);
-    }
-  }, [yearsList]);
-
-  const currentData = useMemo(
-    () => activeRaw.filter((d) => d.tahun === selectedYear),
-    [activeRaw, selectedYear],
+  const tahunList = useMemo(
+    () =>
+      Array.from(new Set(activeRaw.map((d) => d.tahun).filter(Boolean))).sort(
+        (a, b) => b.localeCompare(a),
+      ),
+    [activeRaw],
   );
 
-  const uniqueKecamatan = useMemo(() => {
-    return ["Semua", ...Array.from(new Set(currentData.map((d) => d.kecamatan))).sort()];
+  useEffect(() => {
+    if (tahunList.length > 0 && !tahunList.includes(tahun)) setTahun(tahunList[0]);
+    if (tahunList.length === 0) setTahun("");
+  }, [tahunList, tahun]);
+
+  const currentData = useMemo(
+    () => activeRaw.filter((d) => d.tahun === tahun),
+    [activeRaw, tahun],
+  );
+
+  const kecamatanList = useMemo(() => {
+    const set = new Set(currentData.map((d) => d.kecamatan));
+    return [SEMUA_KEC, ...[...set].sort((a, b) => a.localeCompare(b))];
   }, [currentData]);
 
-  const filteredData = useMemo(() => {
-    return selectedKecamatan === "Semua"
-      ? currentData
-      : currentData.filter((d) => d.kecamatan === selectedKecamatan);
-  }, [currentData, selectedKecamatan]);
+  useEffect(() => {
+    if (!kecamatanList.includes(kecamatan)) setKecamatan(SEMUA_KEC);
+  }, [kecamatanList, kecamatan]);
 
-  // Nilai (ribu rupiah) -> Rupiah penuh
+  const filteredData = useMemo(
+    () =>
+      kecamatan === SEMUA_KEC
+        ? currentData
+        : currentData.filter((d) => d.kecamatan === kecamatan),
+    [currentData, kecamatan],
+  );
+
+  // Nilai sumber = ribu rupiah -> rupiah penuh
   const toRupiah = (ribu: number) => ribu * 1000;
 
-  // Agregat nilai & produksi per jenis (untuk kontribusi & harga implisit)
-  const byJenis = useMemo(() => {
+  // Agregat per METODE pemeliharaan / alat tangkap (data aktual BPS)
+  const byMetode = useMemo(() => {
     const map = new Map<string, { nilai: number; produksi: number }>();
     filteredData.forEach((row) => {
       row.jenis.forEach((j) => {
@@ -100,32 +210,33 @@ export default function EconomicValuePage() {
       nilaiRibu: v.nilai,
       nilaiRp: toRupiah(v.nilai),
       produksi: v.produksi,
-      // Harga implisit Rp/kg = (nilai ribu * 1000) / produksi kg
       hargaImplisit: v.produksi > 0 ? toRupiah(v.nilai) / v.produksi : 0,
     }));
   }, [filteredData]);
 
-  // Statistik ringkas
   const stats = useMemo(() => {
-    const totalNilaiRibu = byJenis.reduce((a, j) => a + j.nilaiRibu, 0);
-    const totalProduksi = byJenis.reduce((a, j) => a + j.produksi, 0);
+    const totalNilaiRibu = byMetode.reduce((a, j) => a + j.nilaiRibu, 0);
+    const totalProduksi = byMetode.reduce((a, j) => a + j.produksi, 0);
     const totalRp = toRupiah(totalNilaiRibu);
     const hargaRata = totalProduksi > 0 ? totalRp / totalProduksi : 0;
-
-    // Jenis dengan kontribusi nilai terbesar
-    let topJenis = "-";
+    let topMetode = "—";
     let topVal = 0;
-    byJenis.forEach((j) => {
+    byMetode.forEach((j) => {
       if (j.nilaiRibu > topVal) {
         topVal = j.nilaiRibu;
-        topJenis = j.label;
+        topMetode = j.label;
       }
     });
+    return {
+      totalRp,
+      totalProduksi,
+      hargaRata,
+      topMetode,
+      topNilaiRp: toRupiah(topVal),
+      topShare: totalNilaiRibu > 0 ? (topVal / totalNilaiRibu) * 100 : 0,
+    };
+  }, [byMetode]);
 
-    return { totalRp, totalProduksi, hargaRata, topJenis, topShare: totalNilaiRibu > 0 ? (topVal / totalNilaiRibu) * 100 : 0 };
-  }, [byJenis]);
-
-  // Nilai ekonomi per kecamatan (bar chart)
   const perKecamatan = useMemo(() => {
     const map = new Map<string, number>();
     filteredData.forEach((row) => {
@@ -137,413 +248,540 @@ export default function EconomicValuePage() {
       .sort((a, b) => b.nilaiJuta - a.nilaiJuta);
   }, [filteredData]);
 
-  // Kontribusi nilai per jenis (untuk chart & persentase)
   const kontribusi = useMemo(() => {
-    const total = byJenis.reduce((a, j) => a + j.nilaiRibu, 0);
-    return byJenis
+    const total = byMetode.reduce((a, j) => a + j.nilaiRibu, 0);
+    return byMetode
       .map((j) => ({
         name: j.label,
         nilaiJuta: j.nilaiRp / 1_000_000,
         pct: total > 0 ? (j.nilaiRibu / total) * 100 : 0,
       }))
       .sort((a, b) => b.nilaiJuta - a.nilaiJuta);
-  }, [byJenis]);
+  }, [byMetode]);
 
-  // Harga implisit per jenis (Rp/kg)
-  const hargaData = useMemo(() => {
-    return byJenis
-      .filter((j) => j.produksi > 0)
-      .map((j) => ({ name: j.label, harga: Math.round(j.hargaImplisit) }))
-      .sort((a, b) => b.harga - a.harga);
-  }, [byJenis]);
+  const hargaData = useMemo(
+    () =>
+      byMetode
+        .filter((j) => j.produksi > 0)
+        .map((j) => ({ name: j.label, harga: Math.round(j.hargaImplisit) }))
+        .sort((a, b) => b.harga - a.harga),
+    [byMetode],
+  );
 
-  const formatRp = (num: number) =>
-    new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
-      maximumFractionDigits: 0,
-    }).format(num);
+  // Estimasi per JENIS IKAN (spesies) — pangsa komposisi indikatif dari
+  // produk-ikan.ts. Basis = gabungan budidaya + tangkap tingkat KABUPATEN
+  // untuk tahun terpilih (pangsa tidak tersedia per sub-sektor/kecamatan).
+  const perSpesies = useMemo(() => {
+    const semua = [...budidayaData, ...tangkapData].filter((d) => d.tahun === tahun);
+    const nilaiRibu = semua.reduce(
+      (a, r) => a + r.jenis.reduce((b, j) => b + j.nilai, 0),
+      0,
+    );
+    const produksi = semua.reduce(
+      (a, r) => a + r.jenis.reduce((b, j) => b + j.produksi, 0),
+      0,
+    );
+    const nilaiRp = toRupiah(nilaiRibu);
+    return PRODUK_IKAN_TAWAR.map((p) => {
+      const pangsa = p.pangsa ?? 0;
+      return {
+        nama: p.nama,
+        pangsa,
+        harga: hargaTengah(p),
+        estimasiProduksi: (produksi * pangsa) / 100,
+        estimasiNilai: (nilaiRp * pangsa) / 100,
+        estimasiNilaiJuta: (nilaiRp * pangsa) / 100 / 1_000_000,
+        sentra: p.sentra ?? [],
+        catatan: p.catatan,
+      };
+    }).sort((a, b) => b.estimasiNilai - a.estimasiNilai);
+  }, [budidayaData, tangkapData, tahun]);
 
-  const formatNum = (num: number) =>
-    new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 }).format(num);
-
-  const formatPct = (val: number) =>
-    new Intl.NumberFormat("id-ID", {
-      minimumFractionDigits: 1,
-      maximumFractionDigits: 1,
-    }).format(val);
+  const cakupanKec =
+    kecamatan === SEMUA_KEC ? `${perKecamatan.length} kecamatan` : kecamatan;
 
   return (
     <DefaultLayout>
-      <section className="flex flex-col gap-8 py-2">
-        {/* Hero / intro */}
-        <section className="relative text-left animate-fade-in py-4 md:py-8 flex flex-col md:flex-row items-center justify-between gap-8 border-b border-slate-200 pb-8">
-          <div className="relative z-10 flex-1">
-            <h2 className="text-2xl sm:text-4xl leading-tight font-bold tracking-tight text-slate-800">
-            Nilai Ekonomi Perikanan
-          </h2>
-            <p className="text-xs md:text-sm font-medium text-slate-500 mt-2 max-w-2xl border-l-2 border-blue-500 pl-3">
-            Nilai Produksi, Harga Rata-rata Implisit & Kontribusi Sub-sektor Perikanan Kabupaten Banjarnegara.
-          </p>
-          </div>
-          <div className="w-full md:w-48 lg:w-64 shrink-0 flex items-center justify-center">
-            <img
-              src="/img/economic-value.png"
-              alt="Nilai Ekonomi"
-              className="w-full max-h-32 md:max-h-36 object-contain"
-            />
-          </div>
-        </section>
+      <div className="flex flex-col gap-6">
+        <PageHeader
+          icon={<Fish className="h-6 w-6" aria-hidden />}
+          title="Nilai Ekonomi Perikanan"
+          subtitle="Nilai produksi, harga rata-rata implisit & kontribusi sub-sektor perikanan Kabupaten Banjarnegara — data aktual Distankan (budidaya & tangkap)."
+        />
 
-        {/* Filters */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
-          {/* Sub-sektor Selector */}
-          <div className="flex flex-col gap-2 text-left">
-            <label className="text-xs font-mono font-bold uppercase text-slate-500">
-              Sub-sektor
-            </label>
-            <div className="grid grid-cols-2 gap-2">
+        {/* Tab pemilih bidang — seragam dengan /nilai-ekonomi/:bidang */}
+        <nav className="flex flex-wrap gap-2" aria-label="Pemilih bidang nilai ekonomi">
+          {PEMILIH_BIDANG.map((b) => {
+            const Ic = b.icon;
+            const aktif = b.key === "perikanan";
+            return (
+              <Link
+                key={b.key}
+                to={b.href}
+                className={[
+                  "inline-flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-sm font-medium transition-colors",
+                  aktif
+                    ? "bg-emerald-600 text-white shadow-sm"
+                    : "bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-emerald-50 hover:text-emerald-700",
+                ].join(" ")}
+                aria-current={aktif ? "page" : undefined}
+              >
+                <Ic className="h-4 w-4" aria-hidden />
+                {b.label}
+              </Link>
+            );
+          })}
+        </nav>
+
+        <Toolbar>
+          <ToolbarField label="Sub-sektor">
+            <div className="flex h-9 overflow-hidden rounded-lg border border-slate-200">
               <button
+                type="button"
                 onClick={() => setSubSektor("Budidaya")}
-                className={`py-2 px-3 border border-slate-200 font-mono font-bold text-xs uppercase flex items-center justify-center gap-1 transition-all ${
+                className={
                   subSektor === "Budidaya"
-                    ? "bg-blue-600 text-white shadow-sm"
-                    : "bg-white text-slate-800 hover:bg-slate-100 shadow-sm"
-                }`}
+                    ? "flex items-center gap-1.5 border-r border-slate-200 bg-blue-800 px-3 text-xs font-semibold uppercase tracking-wide text-white"
+                    : "flex items-center gap-1.5 border-r border-slate-200 px-3 text-xs font-semibold uppercase tracking-wide text-slate-600 hover:bg-slate-50"
+                }
               >
-                <Fish size={14} />
-                Budidaya
+                <Fish className="h-3.5 w-3.5" aria-hidden /> Budidaya
               </button>
               <button
+                type="button"
                 onClick={() => setSubSektor("Tangkap")}
-                className={`py-2 px-3 border border-slate-200 font-mono font-bold text-xs uppercase flex items-center justify-center gap-1 transition-all ${
+                className={
                   subSektor === "Tangkap"
-                    ? "bg-blue-600 text-white shadow-sm"
-                    : "bg-white text-slate-800 hover:bg-slate-100 shadow-sm"
-                }`}
+                    ? "flex items-center gap-1.5 bg-blue-800 px-3 text-xs font-semibold uppercase tracking-wide text-white"
+                    : "flex items-center gap-1.5 px-3 text-xs font-semibold uppercase tracking-wide text-slate-600 hover:bg-slate-50"
+                }
               >
-                <Waves size={14} />
-                Tangkap
+                <Waves className="h-3.5 w-3.5" aria-hidden /> Tangkap
               </button>
             </div>
-          </div>
-
-          {/* Year Selector */}
-          <div className="flex flex-col gap-2 text-left">
-            <label className="text-xs font-mono font-bold uppercase text-slate-500">
-              Tahun Data
-            </label>
-            <div className="relative">
-              <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-slate-500 pointer-events-none" />
-              <select
-                value={selectedYear}
-                onChange={(e) => setSelectedYear(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 border border-slate-200 font-mono text-sm font-bold bg-white focus:outline-none appearance-none cursor-pointer rounded-xl"
-              >
-                {yearsList.map((yr) => (
-                  <option key={yr} value={yr}>
-                    {yr}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          {/* Kecamatan Selector */}
-          <div className="flex flex-col gap-2 text-left">
-            <label className="text-xs font-mono font-bold uppercase text-slate-500">
-              Pilih Kecamatan
-            </label>
-            <div className="relative">
-              <Filter className="absolute left-3 top-2.5 h-4 w-4 text-slate-500 pointer-events-none" />
-              <select
-                value={selectedKecamatan}
-                onChange={(e) => setSelectedKecamatan(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 border border-slate-200 font-mono text-sm font-bold bg-white focus:outline-none appearance-none cursor-pointer rounded-xl"
-              >
-                {uniqueKecamatan.map((kec) => (
-                  <option key={kec} value={kec}>
-                    {kec}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-        </div>
+          </ToolbarField>
+          <ToolbarField label="Tahun">
+            <select
+              value={tahun}
+              onChange={(e) => setTahun(e.target.value)}
+              disabled={tahunList.length === 0}
+              className="h-9 w-36 rounded-lg border border-slate-200 bg-white px-2.5 text-sm font-medium text-slate-700 focus:border-blue-400 focus:outline-none disabled:bg-slate-50 disabled:text-slate-400"
+            >
+              {tahunList.length === 0 && <option value="">—</option>}
+              {tahunList.map((t) => (
+                <option key={t} value={t}>
+                  {t}
+                </option>
+              ))}
+            </select>
+          </ToolbarField>
+          <ToolbarField label="Kecamatan">
+            <select
+              value={kecamatan}
+              onChange={(e) => setKecamatan(e.target.value)}
+              disabled={kecamatanList.length <= 1}
+              className="h-9 w-56 rounded-lg border border-slate-200 bg-white px-2.5 text-sm font-medium text-slate-700 focus:border-blue-400 focus:outline-none disabled:bg-slate-50 disabled:text-slate-400"
+            >
+              {kecamatanList.map((k) => (
+                <option key={k} value={k}>
+                  {k}
+                </option>
+              ))}
+            </select>
+          </ToolbarField>
+          {byMetode.length > 0 && (
+            <p className="ml-auto self-center text-xs text-slate-400">
+              {byMetode.length} metode · {cakupanKec}
+              {tahun ? ` · ${tahun}` : ""} · {subSektor}
+            </p>
+          )}
+        </Toolbar>
 
         {loading ? (
-          <LoadingSpinner label="Memuat data nilai produksi..." />
-        ) : currentData.length === 0 ? (
-          <div className="flex items-center justify-center h-[200px] bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-md">
-            <p className="text-slate-500 font-mono font-bold uppercase">
-              Data tidak tersedia untuk tahun ini
-            </p>
-          </div>
+          <LoadingSpinner label="Memuat data nilai produksi perikanan…" />
+        ) : gagal ? (
+          <EmptyStatePlaceholder
+            title="Dataset tidak dapat dimuat"
+            message={gagal}
+            action={
+              <button
+                type="button"
+                onClick={() => setRetry((r) => r + 1)}
+                className="rounded-lg bg-blue-800 px-4 py-2 text-xs font-semibold text-white hover:bg-blue-900"
+              >
+                Muat Ulang
+              </button>
+            }
+          />
+        ) : byMetode.length === 0 ? (
+          <EmptyStatePlaceholder
+            title={`Data nilai ekonomi ${subSektor.toLowerCase()} tidak tersedia`}
+            message={
+              `Tidak ada data nilai produksi ${subSektor.toLowerCase()} untuk tahun` +
+              (tahun ? ` ${tahun}` : "") +
+              " dan kecamatan terpilih. Pilih kombinasi filter lain."
+            }
+          />
         ) : (
           <>
-            {/* Stats Row */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Total Nilai Ekonomi */}
-              <div className="bg-emerald-50 border border-slate-200 p-6 shadow-sm text-left flex flex-col justify-between transition-all duration-300 hover:shadow-md">
-                <div className="flex justify-between items-start">
-                  <span className="text-xs font-mono font-bold uppercase text-slate-500">
-                    Total Nilai Ekonomi — {subSektor} {selectedYear}
-                  </span>
-                  <DollarSign className="text-emerald-600" size={20} />
-                </div>
-                <span className="text-2xl font-serif font-black text-slate-800 mt-3 break-words leading-tight">
-                  {formatRp(stats.totalRp)}
-                </span>
-                <span className="text-[10px] font-mono font-bold text-slate-500 uppercase mt-1">
-                  {formatNum(stats.totalProduksi)} kg total produksi
-                </span>
-              </div>
-
-              {/* Harga Rata-rata Implisit */}
-              <div className="bg-amber-50 border border-slate-200 p-6 shadow-sm text-left flex flex-col justify-between transition-all duration-300 hover:shadow-md">
-                <div className="flex justify-between items-start">
-                  <span className="text-xs font-mono font-bold uppercase text-slate-500">
-                    Harga Rata-rata Implisit
-                  </span>
-                  <Tag className="text-amber-600" size={20} />
-                </div>
-                <span className="text-2xl font-serif font-black text-slate-800 mt-3 break-words leading-tight">
-                  {formatRp(stats.hargaRata)}
-                </span>
-                <span className="text-[10px] font-mono font-bold text-slate-500 uppercase mt-1">
-                  Per kg (nilai ÷ produksi)
-                </span>
-              </div>
-
-              {/* Jenis Kontribusi Tertinggi */}
-              <div className="bg-violet-50 border border-slate-200 p-6 shadow-sm text-left flex flex-col justify-between transition-all duration-300 hover:shadow-md">
-                <div className="flex justify-between items-start">
-                  <span className="text-xs font-mono font-bold uppercase text-slate-500">
-                    Kontributor Terbesar
-                  </span>
-                  <PieChart className="text-violet-600" size={20} />
-                </div>
-                <span className="text-2xl font-serif font-black text-slate-800 mt-3 break-words leading-tight">
-                  {stats.topJenis}
-                </span>
-                <span className="text-[10px] font-mono font-bold text-slate-500 uppercase mt-1">
-                  {formatPct(stats.topShare)}% dari total nilai
-                </span>
-              </div>
+            {/* KPI */}
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+              <KpiCard
+                icon={<DollarSign className="h-6 w-6" aria-hidden />}
+                label={`Total Nilai Ekonomi — ${subSektor}`}
+                value={fmtRp(stats.totalRp)}
+                hint={`${fmtNum(stats.totalProduksi)} kg produksi · ${cakupanKec}${tahun ? ` · ${tahun}` : ""}`}
+                color="bg-emerald-50 text-emerald-600"
+              />
+              <KpiCard
+                icon={<Tag className="h-6 w-6" aria-hidden />}
+                label="Harga Rata-rata Implisit"
+                value={fmtRp(stats.hargaRata)}
+                hint="Per kg (nilai ÷ produksi)"
+                color="bg-amber-50 text-amber-600"
+              />
+              <KpiCard
+                icon={<Trophy className="h-6 w-6" aria-hidden />}
+                label="Kontributor Terbesar"
+                value={fmtRp(stats.topNilaiRp)}
+                hint={`${stats.topMetode} · porsi ${stats.topShare.toLocaleString("id-ID", { maximumFractionDigits: 1 })}%`}
+                color="bg-blue-50 text-blue-600"
+              />
             </div>
 
-            {/* Nilai Ekonomi per Kecamatan */}
-            {selectedKecamatan === "Semua" && (
-              <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
-                <div className="mb-4 text-left border-b border-slate-200 pb-2">
-                  <h4 className="text-md font-mono font-bold uppercase tracking-wide">
-                    Nilai Ekonomi per Kecamatan (Juta Rupiah)
-                  </h4>
-                </div>
-                <div className="h-[420px] w-full">
+            {/* Nilai per kecamatan */}
+            {kecamatan === SEMUA_KEC && perKecamatan.length > 1 && (
+              <SectionCard
+                title={`Nilai ekonomi per kecamatan — ${tahun}`}
+                icon={<DollarSign className="h-4 w-4 text-blue-800" aria-hidden />}
+              >
+                <div className="h-72">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={perKecamatan} margin={{ top: 10, right: 20, left: 0, bottom: 90 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#64748b" strokeOpacity={0.1} vertical={false} />
+                    <BarChart data={perKecamatan} margin={{ top: 8, right: 16, left: 8, bottom: 4 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
                       <XAxis
                         dataKey="name"
                         angle={-45}
                         textAnchor="end"
-                        height={70}
-                        tick={{ fill: "#475569", fontFamily: "monospace", fontSize: 10, fontWeight: "bold" }}
-                        stroke="#64748b"
+                        height={64}
+                        interval={0}
+                        tick={{ fontSize: 10, fill: "#64748b" }}
                       />
                       <YAxis
-                        width={70}
-                        tick={{ fill: "#475569", fontFamily: "monospace", fontSize: 10, fontWeight: "bold" }}
-                        stroke="#64748b"
+                        tick={{ fontSize: 10, fill: "#64748b" }}
+                        tickFormatter={(v: number) => `${v.toLocaleString("id-ID")} jt`}
                       />
                       <Tooltip
-                        formatter={(v: any) => [`${formatNum(Number(v))} Juta`, "Nilai"]}
-                        contentStyle={{
-                          border: "1px solid #e2e8f0",
-                          borderRadius: 8,
-                          fontFamily: "monospace",
-                          fontSize: "12px",
-                          fontWeight: "bold",
-                        }}
+                        formatter={(v) => [
+                          `Rp ${Number(v ?? 0).toLocaleString("id-ID", { maximumFractionDigits: 1 })} juta`,
+                          "Nilai",
+                        ]}
                       />
-                      <Bar dataKey="nilaiJuta" fill="#10b981" stroke="#cbd5e1" strokeWidth={1} />
+                      <Bar dataKey="nilaiJuta" name="Nilai" fill="#1d4ed8" radius={[4, 4, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
-              </div>
+              </SectionCard>
             )}
 
-            {/* Kontribusi & Harga Implisit per Jenis */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Kontribusi Nilai per Jenis */}
-              <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
-                <div className="mb-4 text-left border-b border-slate-200 pb-2">
-                  <h4 className="text-md font-mono font-bold uppercase tracking-wide">
-                    Kontribusi Nilai per Jenis
-                  </h4>
-                </div>
-                <div className="h-[300px] w-full">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+              <SectionCard
+                title="Kontribusi per metode produksi (juta Rp)"
+                icon={<Trophy className="h-4 w-4 text-blue-800" aria-hidden />}
+              >
+                <div className="h-72">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart
-                      data={kontribusi}
+                      data={kontribusi.map((k) => ({
+                        name: k.name.length > 18 ? `${k.name.slice(0, 17)}…` : k.name,
+                        nilaiJuta: k.nilaiJuta,
+                        pct: k.pct,
+                      }))}
                       layout="vertical"
-                      margin={{ top: 10, right: 20, left: 20, bottom: 0 }}
+                      margin={{ top: 4, right: 24, left: 8, bottom: 4 }}
                     >
-                      <CartesianGrid strokeDasharray="3 3" stroke="#64748b" strokeOpacity={0.1} horizontal={false} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" horizontal={false} />
                       <XAxis
                         type="number"
-                        tick={{ fontFamily: "monospace", fontSize: 10, fontWeight: "bold" }}
-                        stroke="#64748b"
+                        tick={{ fontSize: 10, fill: "#64748b" }}
+                        tickFormatter={(v: number) => `${v.toLocaleString("id-ID")} jt`}
                       />
                       <YAxis
                         type="category"
                         dataKey="name"
-                        width={110}
-                        tick={{ fontFamily: "monospace", fontSize: 10, fontWeight: "bold" }}
-                        stroke="#64748b"
+                        width={130}
+                        tick={{ fontSize: 10, fill: "#475569" }}
                       />
                       <Tooltip
                         formatter={(v: any, _n: any, p: any) => [
-                          `${formatNum(Number(v))} Juta (${formatPct(p.payload.pct)}%)`,
+                          `Rp ${Number(v).toLocaleString("id-ID", { maximumFractionDigits: 1 })} juta (${p.payload.pct.toLocaleString("id-ID", { maximumFractionDigits: 1 })}%)`,
                           "Nilai",
                         ]}
-                        contentStyle={{
-                          border: "1px solid #e2e8f0",
-                          borderRadius: 8,
-                          fontFamily: "monospace",
-                          fontSize: "12px",
-                          fontWeight: "bold",
-                        }}
                       />
-                      <Bar dataKey="nilaiJuta" stroke="#cbd5e1" strokeWidth={1}>
-                        {kontribusi.map((_, idx) => (
-                          <Cell key={idx} fill={COLORS[idx % COLORS.length]} />
+                      <Bar dataKey="nilaiJuta" name="Nilai" radius={[0, 4, 4, 0]}>
+                        {kontribusi.map((k, i) => (
+                          <Cell key={k.name} fill={PALET[i % PALET.length]} />
                         ))}
                       </Bar>
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
-              </div>
+              </SectionCard>
 
-              {/* Harga Implisit per Jenis */}
-              <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
-                <div className="mb-4 text-left border-b border-slate-200 pb-2">
-                  <h4 className="text-md font-mono font-bold uppercase tracking-wide">
-                    Harga Rata-rata Implisit (Rp/kg)
-                  </h4>
-                </div>
-                <div className="h-[300px] w-full">
+              <SectionCard
+                title="Harga implisit per metode produksi (Rp/kg)"
+                icon={<Tag className="h-4 w-4 text-blue-800" aria-hidden />}
+              >
+                <div className="h-72">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={hargaData} margin={{ top: 10, right: 20, left: 0, bottom: 40 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#64748b" strokeOpacity={0.1} vertical={false} />
+                    <BarChart
+                      data={hargaData.map((h) => ({
+                        name: h.name.length > 18 ? `${h.name.slice(0, 17)}…` : h.name,
+                        harga: h.harga,
+                      }))}
+                      layout="vertical"
+                      margin={{ top: 4, right: 24, left: 8, bottom: 4 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" horizontal={false} />
                       <XAxis
-                        dataKey="name"
-                        angle={-25}
-                        textAnchor="end"
-                        height={50}
-                        tick={{ fontFamily: "monospace", fontSize: 10, fontWeight: "bold" }}
-                        stroke="#64748b"
+                        type="number"
+                        tick={{ fontSize: 10, fill: "#64748b" }}
+                        tickFormatter={(v: number) => `${(v / 1000).toLocaleString("id-ID")}rb`}
                       />
                       <YAxis
-                        tick={{ fontFamily: "monospace", fontSize: 10, fontWeight: "bold" }}
-                        stroke="#64748b"
+                        type="category"
+                        dataKey="name"
+                        width={130}
+                        tick={{ fontSize: 10, fill: "#475569" }}
                       />
-                      <Tooltip
-                        formatter={(v: any) => [formatRp(Number(v)), "Harga/kg"]}
-                        contentStyle={{
-                          border: "1px solid #e2e8f0",
-                          borderRadius: 8,
-                          fontFamily: "monospace",
-                          fontSize: "12px",
-                          fontWeight: "bold",
-                        }}
-                      />
-                      <Bar dataKey="harga" fill="#f59e0b" stroke="#cbd5e1" strokeWidth={1} />
+                      <Tooltip formatter={(v) => [fmtRp(Number(v ?? 0)), "Harga implisit (Rp/kg)"]} />
+                      <Bar dataKey="harga" name="Harga implisit (Rp/kg)" fill="#0d9488" radius={[0, 4, 4, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
-              </div>
+              </SectionCard>
             </div>
 
-            {/* Tabel Rincian per Jenis */}
-            <div className="bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
-              <div className="mb-4 text-left border-b border-slate-200 pb-2">
-                <h4 className="text-md font-mono font-bold uppercase tracking-wide">
-                  Rincian per Jenis {subSektor}
-                </h4>
+            {/* ===== Rincian per JENIS IKAN (spesies — estimasi komposisi) ===== */}
+            <SectionCard
+              title={`Estimasi nilai per jenis ikan — ${tahun || "—"}`}
+              icon={<Fish className="h-4 w-4 text-blue-800" aria-hidden />}
+            >
+              <p className="mb-3 text-xs text-slate-500">
+                BPS tidak memublikasikan volume per jenis ikan, hanya per metode
+                pemeliharaan/alat tangkap. Rincian ini adalah{" "}
+                <span className="font-semibold text-amber-700">estimasi komposisi pangsa</span>{" "}
+                (indikatif) atas total produksi & nilai kabupaten — basis{" "}
+                {PRODUK_IKAN_SUMBER.toLowerCase()} ({PRODUK_IKAN_TANGGAL}).
+              </p>
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={perSpesies.map((s) => ({
+                      name: s.nama,
+                      nilaiJuta: s.estimasiNilaiJuta,
+                    }))}
+                    margin={{ top: 8, right: 16, left: 8, bottom: 4 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+                    <XAxis
+                      dataKey="name"
+                      angle={-20}
+                      textAnchor="end"
+                      height={56}
+                      interval={0}
+                      tick={{ fontSize: 10, fill: "#64748b" }}
+                    />
+                    <YAxis
+                      tick={{ fontSize: 10, fill: "#64748b" }}
+                      tickFormatter={(v: number) => `${v.toLocaleString("id-ID")} jt`}
+                    />
+                    <Tooltip
+                      formatter={(v) => [
+                        `Rp ${Number(v ?? 0).toLocaleString("id-ID", { maximumFractionDigits: 1 })} juta`,
+                        "Estimasi nilai",
+                      ]}
+                    />
+                    <Bar dataKey="nilaiJuta" name="Estimasi nilai" radius={[4, 4, 0, 0]}>
+                      {perSpesies.map((s, i) => (
+                        <Cell key={s.nama} fill={PALET[i % PALET.length]} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
               </div>
+            </SectionCard>
+
+            <SectionCard
+              title="Rincian per jenis ikan"
+              icon={<Fish className="h-4 w-4 text-blue-800" aria-hidden />}
+              bodyClassName="p-0"
+            >
               <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
+                <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-slate-200">
-                      <th className="py-2 px-3 font-mono text-xs font-bold uppercase text-slate-500">
-                        Jenis
-                      </th>
-                      <th className="py-2 px-3 font-mono text-xs font-bold uppercase text-slate-500 text-right">
-                        Produksi (kg)
-                      </th>
-                      <th className="py-2 px-3 font-mono text-xs font-bold uppercase text-slate-500 text-right">
-                        Nilai (Rp)
-                      </th>
-                      <th className="py-2 px-3 font-mono text-xs font-bold uppercase text-slate-500 text-right">
-                        Harga Implisit (Rp/kg)
-                      </th>
+                    <tr className="bg-slate-50 text-left">
+                      {[
+                        "Jenis Ikan",
+                        "Pangsa",
+                        "Harga Ref. (Rp/kg)",
+                        "Estimasi Produksi (kg)",
+                        "Estimasi Nilai (Rp)",
+                        "Sentra Utama",
+                      ].map((h) => (
+                        <th
+                          key={h}
+                          className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-slate-500"
+                        >
+                          {h}
+                        </th>
+                      ))}
                     </tr>
                   </thead>
                   <tbody>
-                    {byJenis.map((j) => (
-                      <tr key={j.label} className="border-b border-slate-200">
-                        <td className="py-2 px-3 font-mono text-sm font-bold">{j.label}</td>
-                        <td className="py-2 px-3 font-mono text-sm text-right">
-                          {formatNum(j.produksi)}
+                    {perSpesies.map((s) => (
+                      <tr key={s.nama} className="border-t border-slate-100 hover:bg-slate-50/60">
+                        <td className="px-4 py-3">
+                          <p className="font-semibold text-slate-800">{s.nama}</p>
+                          <p className="mt-0.5 text-[10px] text-slate-400">{s.catatan}</p>
                         </td>
-                        <td className="py-2 px-3 font-mono text-sm text-right">
-                          {formatRp(j.nilaiRp)}
+                        <td className="px-4 py-3 tabular-nums text-slate-700">
+                          {s.pangsa.toLocaleString("id-ID")}%
                         </td>
-                        <td className="py-2 px-3 font-mono text-sm text-right">
-                          {j.produksi > 0 ? formatRp(j.hargaImplisit) : "-"}
+                        <td className="px-4 py-3 tabular-nums text-slate-700">{fmtRp(s.harga)}</td>
+                        <td className="px-4 py-3 tabular-nums text-slate-700">
+                          {fmtNum(s.estimasiProduksi)}
+                        </td>
+                        <td className="px-4 py-3 tabular-nums font-semibold text-slate-800">
+                          {fmtRp(s.estimasiNilai)}
+                        </td>
+                        <td className="px-4 py-3 text-slate-600">
+                          {s.sentra.length > 0 ? s.sentra.join(", ") : "—"}
                         </td>
                       </tr>
                     ))}
                   </tbody>
                   <tfoot>
-                    <tr className="border-t-2 border-slate-300 bg-slate-100 font-bold">
-                      <td className="py-2 px-3 font-mono text-xs uppercase">
-                        {selectedKecamatan === "Semua"
-                          ? "Jumlah (20 kecamatan)"
-                          : `Jumlah (${selectedKecamatan})`}
+                    <tr className="border-t-2 border-blue-200 bg-blue-50/50">
+                      <td className="px-4 py-3 text-xs font-bold text-slate-700">
+                        Jumlah ({perSpesies.length} jenis)
                       </td>
-                      <td className="py-2 px-3 font-mono text-sm text-right">
-                        {formatNum(stats.totalProduksi)}
+                      <td className="px-4 py-3 text-xs font-bold tabular-nums text-slate-700">100%</td>
+                      <td className="px-4 py-3 text-xs font-bold tabular-nums text-slate-700">
+                        tertimbang
                       </td>
-                      <td className="py-2 px-3 font-mono text-sm text-right">
-                        {formatRp(stats.totalRp)}
+                      <td className="px-4 py-3 text-xs font-bold tabular-nums text-slate-700">
+                        {fmtNum(perSpesies.reduce((a, s) => a + s.estimasiProduksi, 0))}
                       </td>
-                      <td className="py-2 px-3 font-mono text-sm text-right">
-                        {stats.totalProduksi > 0 ? formatRp(stats.hargaRata) : "-"}
+                      <td className="px-4 py-3 text-xs font-bold tabular-nums text-blue-900">
+                        {fmtRp(perSpesies.reduce((a, s) => a + s.estimasiNilai, 0))}
+                      </td>
+                      <td className="px-4 py-3" />
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+              <div className="border-t border-slate-100 px-4 py-2">
+                <Badge tone="amber">
+                  Indikatif · estimasi komposisi — bukan angka BPS per jenis
+                </Badge>
+              </div>
+            </SectionCard>
+
+            {/* Rincian per metode produksi (data aktual Distankan) */}
+            <SectionCard
+              title={`Rincian per metode ${subSektor.toLowerCase()} — ${cakupanKec}${tahun ? ` · ${tahun}` : ""}`}
+              icon={<DollarSign className="h-4 w-4 text-blue-800" aria-hidden />}
+              bodyClassName="p-0"
+            >
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="bg-slate-50 text-left">
+                      {["Metode", "Produksi (kg)", "Nilai (Rp)", "Harga Implisit (Rp/kg)"].map(
+                        (h) => (
+                          <th
+                            key={h}
+                            className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-slate-500"
+                          >
+                            {h}
+                          </th>
+                        ),
+                      )}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {byMetode.map((j) => (
+                      <tr key={j.label} className="border-t border-slate-100 hover:bg-slate-50/60">
+                        <td className="px-4 py-3 font-semibold text-slate-800">{j.label}</td>
+                        <td className="px-4 py-3 tabular-nums text-slate-700">{fmtNum(j.produksi)}</td>
+                        <td className="px-4 py-3 tabular-nums font-semibold text-slate-800">
+                          {fmtRp(j.nilaiRp)}
+                        </td>
+                        <td className="px-4 py-3 tabular-nums text-slate-700">
+                          {j.produksi > 0 ? fmtRp(j.hargaImplisit) : "—"}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                  <tfoot>
+                    <tr className="border-t-2 border-blue-200 bg-blue-50/50">
+                      <td className="px-4 py-3 text-xs font-bold text-slate-700">
+                        Jumlah ({byMetode.length} metode · {cakupanKec})
+                      </td>
+                      <td className="px-4 py-3 text-xs font-bold tabular-nums text-slate-700">
+                        {fmtNum(stats.totalProduksi)}
+                      </td>
+                      <td className="px-4 py-3 text-xs font-bold tabular-nums text-blue-900">
+                        {fmtRp(stats.totalRp)}
+                      </td>
+                      <td className="px-4 py-3 text-xs font-bold tabular-nums text-slate-700">
+                        {stats.totalProduksi > 0 ? fmtRp(stats.hargaRata) : "—"}
                       </td>
                     </tr>
                   </tfoot>
                 </table>
               </div>
-            </div>
+            </SectionCard>
           </>
         )}
-      </section>
 
-      {/* Catatan koreksi data sumber */}
-      <p className="text-[10px] font-mono text-slate-400 leading-relaxed">
-        Catatan: nilai produksi pada data sumber (Distankan KP) memakai satuan ribu rupiah. Pada 2022
-        budidaya, 4 sel kecamatan di xlsx tertulis dalam rupiah penuh (1000× lipat) — KJA: Bawang &amp;
-        Wanadadi; Minapadi: Mandiraja &amp; Purwanegara — dan dikoreksi saat regenerasi CSV; baris
-        Jumlah xlsx 2022 untuk KJA &amp; Minapadi ikut terdistorsi sel salah sehingga tidak dipakai
-        sebagai pembanding (Σ produksi semua tahun dan Σ nilai tahun lain cocok persis dengan baris
-        Jumlah resmi). Harga implisit 2022 pasca-koreksi kembali wajar (KJA ≈Rp 24.000/kg, Minapadi
-        ≈Rp 20.000/kg; Pembesaran semua tahun ≈Rp 21.300–22.600/kg). Minapadi 2021 tidak tercatat
-        pada sumber. Dua sel "Lainnya" 2021 tangkap (Bawang, Wanadadi) bernilai jauh di bawah
-        produksi × harga wajar (quirk data BPS) dibiarkan sesuai sumber.
-      </p>
+        {/* Metodologi & sumber */}
+        <SectionCard
+          title="Metodologi, Harga & Sumber"
+          icon={<BadgeCheck className="h-4 w-4 text-blue-800" aria-hidden />}
+        >
+          <ul className="list-disc space-y-1.5 pl-4 text-xs leading-relaxed text-slate-500">
+            <li>
+              Nilai produksi bersumber dari data Distankan KP (budidaya & tangkap) —
+              satuan <span className="font-semibold">ribu rupiah</span> pada sumber,
+              dikonversi ke rupiah penuh di halaman ini.
+            </li>
+            <li>
+              Harga rata-rata implisit = total nilai ÷ total produksi (kg) — bukan
+              harga pasar per jenis.
+            </li>
+            <li>
+              Rincian per jenis ikan memakai <span className="font-semibold">pangsa komposisi indikatif</span>{" "}
+              (Σ = 100%) sesuai katalog {PRODUK_IKAN_SUMBER.toLowerCase()} (
+              {PRODUK_IKAN_TANGGAL}) — Lele mendominasi, disusul grup Nila/Mujair.
+            </li>
+            <li>
+              Catatan koreksi data sumber: pada 2022 budidaya, 4 sel kecamatan di xlsx
+              tertulis rupiah penuh (1000× lipat) — KJA: Bawang & Wanadadi; Minapadi:
+              Mandiraja & Purwanegara — dikoreksi saat regenerasi CSV; baris Jumlah
+              xlsx 2022 untuk KJA & Minapadi ikut terdistorsi sehingga tidak dipakai
+              sebagai pembanding. Harga implisit 2022 pasca-koreksi kembali wajar
+              (KJA ≈ Rp 24.000/kg, Minapadi ≈ Rp 20.000/kg). Minapadi 2021 tidak
+              tercatat pada sumber.
+            </li>
+            <li>
+              Dua sel "Lainnya" 2021 tangkap (Bawang, Wanadadi) bernilai jauh di bawah
+              produksi × harga wajar (quirk data BPS) — dibiarkan sesuai sumber.
+            </li>
+          </ul>
+        </SectionCard>
+      </div>
     </DefaultLayout>
   );
 }

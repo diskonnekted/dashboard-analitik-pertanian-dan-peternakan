@@ -194,7 +194,7 @@ export default function RecommendationsPage() {
     });
 
     // 3. Perikanan budidaya — kolom CSV adalah "Produksi (Kg)".
-    //    Simpan kg secara internal, konversi ke ton HANYA untuk tampilan.
+    // Simpan kg secara internal, konversi ke ton HANYA untuk tampilan.
     const tahunIkan = maxTahun(ikanData);
     const ikanLatest = ikanData.filter(
       (d) => parseInt(d.tahun, 10) === tahunIkan,
@@ -259,7 +259,7 @@ export default function RecommendationsPage() {
         : 0;
 
     // 4. Lahan — JSON multi-tahun (2023 parsial 97 desa; 2025 lengkap 192 desa).
-    //    WAJIB filter tahun terbaru; menjumlah lintas tahun = double count.
+    // WAJIB filter tahun terbaru; menjumlah lintas tahun = double count.
     const tahunLahan = maxTahun(lahanData);
     const lahanLatest = lahanData.filter(
       (d) => parseInt(d.tahun, 10) === tahunLahan,
@@ -639,7 +639,7 @@ export default function RecommendationsPage() {
     const padiTop5 = [...padiData]
       .sort((a, b) => b.produksi - a.produksi)
       .slice(0, 5)
-      .map((d) => `  - ${d.kecamatan}: ${fmt(d.produksi)} Ton (luas ${fmt(d.luasPanen)} Ha)`)
+      .map((d) => ` - ${d.kecamatan}: ${fmt(d.produksi)} Ton (luas ${fmt(d.luasPanen)} Ha)`)
       .join("\n");
 
     const ternakTop5 = Object.entries(
@@ -652,14 +652,14 @@ export default function RecommendationsPage() {
     )
       .sort((a, b) => b[1] - a[1])
       .slice(0, 5)
-      .map(([kec, pop]) => `  - ${kec}: ${fmt(pop)} ekor`)
+      .map(([kec, pop]) => ` - ${kec}: ${fmt(pop)} ekor`)
       .join("\n");
 
     const ikanTop5 = ikanData
       .filter((d) => parseInt(d.tahun, 10) === stats.tahunIkan)
       .sort((a, b) => b.kolamPembesaran - a.kolamPembesaran)
       .slice(0, 5)
-      .map((d) => `  - ${d.kecamatan}: ${fmt(d.kolamPembesaran / 1000)} Ton`)
+      .map((d) => ` - ${d.kecamatan}: ${fmt(d.kolamPembesaran / 1000)} Ton`)
       .join("\n");
 
     // Katalog dataset OpenData Banjarnegara (ringkasan untuk AI)
@@ -791,7 +791,7 @@ ${catalogSection}`;
             Pemerintah Kabupaten Banjarnegara
           </p>
           <h1 className="text-2xl sm:text-3xl leading-tight font-semibold tracking-tight text-slate-900 mt-3">
-            Rekomendasi Strategis Pembangunan
+            Rekomendasi Kebijakan
           </h1>
           <h2 className="text-base md:text-lg font-semibold text-blue-800 mt-1">
             Sektor Pertanian, Peternakan &amp; Perikanan
@@ -837,7 +837,7 @@ ${catalogSection}`;
             </p>
           </div>
 
-          <div className="bg-white border border-slate-200 border-l-4 border-l-purple-700 rounded-lg p-5 text-left">
+          <div className="bg-white border border-slate-200 border-l-4 border-l-blue-700 rounded-lg p-5 text-left">
             <span className="text-xs font-semibold uppercase tracking-wide text-slate-700 block">Total Lahan Sawah</span>
             <h3 className="text-xl font-semibold text-slate-900 leading-tight mt-2 tabular-nums">
               {new Intl.NumberFormat("id-ID").format(Math.round(stats.totalSawah))} Ha
@@ -850,10 +850,10 @@ ${catalogSection}`;
 
         {/* Konteks Pasar Terkini (Bapanas) - harga aktual & sinyal anomali */}
         {pasarMemo && (
-          <div className="print-block bg-white border border-slate-200 p-6 shadow-sm text-left transition-all duration-300 hover:shadow-md">
+          <div className="print-block bg-white border border-slate-200 p-6 shadow-sm text-left transition-all duration-300 hover:shadow">
             <div className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-200 pb-4 mb-4">
               <div>
-                <p className="text-[10px] font-mono font-bold uppercase text-slate-500 tracking-widest">
+                <p className="text-[10px] font-bold uppercase text-slate-500 tracking-widest">
                   Konteks Pasar Terkini
                 </p>
                 <h2 className="text-lg font-semibold text-slate-900 mt-1">
@@ -863,7 +863,7 @@ ${catalogSection}`;
                   Angka aktual terbaru dari Badan Pangan Nasional (Bapanas) via layanan API Indonesia - pembanding pasar bagi rekomendasi pada dokumen ini.
                 </p>
               </div>
-              <span className="inline-flex items-center gap-1.5 text-[9px] font-mono font-bold uppercase text-slate-600 bg-slate-100 border border-slate-200 px-2.5 py-1.5 rounded-full whitespace-nowrap">
+              <span className="inline-flex items-center gap-1.5 text-[9px] font-bold uppercase text-slate-600 bg-slate-100 border border-slate-200 px-2.5 py-1.5 rounded-full whitespace-nowrap">
                 <Banknote size={11} /> Sumber Resmi Bapanas
               </span>
             </div>
@@ -871,7 +871,7 @@ ${catalogSection}`;
             <div className="grid md:grid-cols-3 gap-6">
               {/* Harga tingkat petani */}
               <div>
-                <p className="text-[10px] font-mono font-bold uppercase text-slate-500 tracking-widest mb-3">
+                <p className="text-[10px] font-bold uppercase text-slate-500 tracking-widest mb-3">
                   Harga Tingkat Petani - Jateng (edisi {pasarMemo.petaniList[0]?.edisi})
                 </p>
                 <div className="space-y-2.5">
@@ -904,7 +904,7 @@ ${catalogSection}`;
 
               {/* Harga konsumen */}
               <div>
-                <p className="text-[10px] font-mono font-bold uppercase text-slate-500 tracking-widest mb-3">
+                <p className="text-[10px] font-bold uppercase text-slate-500 tracking-widest mb-3">
                   Harga Konsumen - Jateng (edisi {pasarMemo.konsumenList[0]?.edisi})
                 </p>
                 <div className="space-y-2.5">
@@ -937,7 +937,7 @@ ${catalogSection}`;
 
               {/* Sinyal anomali nasional */}
               <div>
-                <p className="text-[10px] font-mono font-bold uppercase text-slate-500 tracking-widest mb-3">
+                <p className="text-[10px] font-bold uppercase text-slate-500 tracking-widest mb-3">
                   Sinyal Anomali Nasional (edisi {pasarMemo.edisiAnomali})
                 </p>
                 <div className="space-y-2">
@@ -972,7 +972,7 @@ ${catalogSection}`;
             {/* Margin rantai pasok beras */}
             {pasarMemo.marginBeras && (
               <div className="mt-5 bg-amber-50 border border-amber-200 rounded-lg p-4">
-                <p className="text-[10px] font-mono font-bold uppercase text-amber-800 tracking-widest mb-1.5 flex items-center gap-1.5">
+                <p className="text-[10px] font-bold uppercase text-amber-800 tracking-widest mb-1.5 flex items-center gap-1.5">
                   <TrendingUp size={11} /> Estimasi Margin Rantai Pasok Beras
                 </p>
                 <p className="text-xs text-amber-900 leading-relaxed">
@@ -994,17 +994,17 @@ ${catalogSection}`;
         )}
 
         {/* Panel Analisis Ilmiah (Statistik Deskriptif, Konsentrasi, Proyeksi, Nilai Ekonomi) */}
-        <div className="print-block bg-white border border-slate-200 p-6 shadow-sm text-left transition-all duration-300 hover:shadow-md">
+        <div className="print-block bg-white border border-slate-200 p-6 shadow-sm text-left transition-all duration-300 hover:shadow">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <p className="text-[10px] font-mono font-black uppercase text-slate-500 tracking-widest">
+              <p className="text-[10px] font-semibold uppercase text-slate-500 tracking-widest">
                 Panel Ilmiah
               </p>
-              <h2 className="text-lg font-serif font-bold text-slate-800">
+              <h2 className="text-lg font-bold text-slate-800">
                 Analisis Statistik Pertanian
               </h2>
             </div>
-            <span className="text-[9px] font-mono font-bold uppercase text-slate-500 bg-slate-100 px-2 py-1 rounded">
+            <span className="text-[9px] font-bold uppercase text-slate-500 bg-slate-100 px-2 py-1 rounded">
               Scientific Insight
             </span>
           </div>
@@ -1012,7 +1012,7 @@ ${catalogSection}`;
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Padi */}
             <div className="border border-emerald-200 bg-emerald-50/50 p-4 rounded">
-              <p className="text-[10px] font-mono font-black uppercase text-emerald-800 tracking-wider mb-2">
+              <p className="text-[10px] font-semibold uppercase text-emerald-800 tracking-wider mb-2">
                 Padi
               </p>
               <ul className="text-[11px] font-sans text-slate-700 space-y-1.5 leading-snug">
@@ -1042,7 +1042,7 @@ ${catalogSection}`;
 
             {/* Peternakan */}
             <div className="border border-orange-200 bg-orange-50/50 p-4 rounded">
-              <p className="text-[10px] font-mono font-black uppercase text-orange-800 tracking-wider mb-2">
+              <p className="text-[10px] font-semibold uppercase text-orange-800 tracking-wider mb-2">
                 Peternakan
               </p>
               <ul className="text-[11px] font-sans text-slate-700 space-y-1.5 leading-snug">
@@ -1064,7 +1064,7 @@ ${catalogSection}`;
 
             {/* Perikanan — data 2024, terkoreksi */}
             <div className="border border-sky-200 bg-sky-50/50 p-4 rounded">
-              <p className="text-[10px] font-mono font-black uppercase text-sky-800 tracking-wider mb-2">
+              <p className="text-[10px] font-semibold uppercase text-sky-800 tracking-wider mb-2">
                 Perikanan ({stats.tahunIkan})
               </p>
               <ul className="text-[11px] font-sans text-slate-700 space-y-1.5 leading-snug">
@@ -1081,32 +1081,32 @@ ${catalogSection}`;
 
               {/* Estimasi Nilai Ekonomi */}
               <div className="col-span-2 mt-5 border-t border-slate-200 pt-4">
-                <p className="text-[10px] font-mono font-black uppercase text-slate-600 tracking-wider mb-3">
+                <p className="text-[10px] font-semibold uppercase text-slate-600 tracking-wider mb-3">
                   Estimasi Nilai Ekonomi (harga acuan pasar Banjarnegara 2024-2025)
                 </p>
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
                   <div className="text-center border border-slate-200 p-3 rounded bg-slate-50">
-                    <p className="text-[9px] font-mono uppercase text-slate-500">Gabah Kering</p>
-                    <p className="text-sm font-serif font-bold text-slate-800 mt-1">{formatRupiah(stats.econ.gabah)}</p>
+                    <p className="text-[9px] uppercase text-slate-500">Gabah Kering</p>
+                    <p className="text-sm font-bold text-slate-800 mt-1">{formatRupiah(stats.econ.gabah)}</p>
                   </div>
                   <div className="text-center border border-slate-200 p-3 rounded bg-slate-50">
-                    <p className="text-[9px] font-mono uppercase text-slate-500">Ternak Sapi</p>
-                    <p className="text-sm font-serif font-bold text-slate-800 mt-1">{formatRupiah(stats.econ.sapi)}</p>
+                    <p className="text-[9px] uppercase text-slate-500">Ternak Sapi</p>
+                    <p className="text-sm font-bold text-slate-800 mt-1">{formatRupiah(stats.econ.sapi)}</p>
                   </div>
                   <div className="text-center border border-slate-200 p-3 rounded bg-slate-50">
-                    <p className="text-[9px] font-mono uppercase text-slate-500">Kambing</p>
-                    <p className="text-sm font-serif font-bold text-slate-800 mt-1">{formatRupiah(stats.econ.kambing)}</p>
+                    <p className="text-[9px] uppercase text-slate-500">Kambing</p>
+                    <p className="text-sm font-bold text-slate-800 mt-1">{formatRupiah(stats.econ.kambing)}</p>
                   </div>
                   <div className="text-center border border-slate-200 p-3 rounded bg-slate-50">
-                    <p className="text-[9px] font-mono uppercase text-slate-500">Nilai Produksi Ikan {stats.tahunNilai}</p>
-                    <p className="text-sm font-serif font-bold text-slate-800 mt-1">{formatRupiah(stats.econ.ikan)}</p>
+                    <p className="text-[9px] uppercase text-slate-500">Nilai Produksi Ikan {stats.tahunNilai}</p>
+                    <p className="text-sm font-bold text-slate-800 mt-1">{formatRupiah(stats.econ.ikan)}</p>
                   </div>
                   <div className="text-center border-2 border-emerald-600 p-3 rounded bg-emerald-100">
-                    <p className="text-[9px] font-mono uppercase text-emerald-800">Total Estimasi</p>
-                    <p className="text-sm font-serif font-bold text-emerald-900 mt-1">{formatRupiah(stats.econ.totalEst)}</p>
+                    <p className="text-[9px] uppercase text-emerald-800">Total Estimasi</p>
+                    <p className="text-sm font-bold text-emerald-900 mt-1">{formatRupiah(stats.econ.totalEst)}</p>
                   </div>
                 </div>
-                <p className="text-[9px] font-mono text-slate-500 mt-2 italic leading-relaxed">
+                <p className="text-[9px] text-slate-500 mt-2 italic leading-relaxed">
                   * Asumsi: Gabah Kering Panen Rp 6.000/kg, Sapi Rp 18 jt/ekor, Kambing Rp 3 jt/ekor. Nilai ikan = nilai produksi aktual {stats.tahunNilai} (Distankan KP, terkoreksi): {formatRupiah(stats.totalNilaiProduksi2024 * 1000)}. Nilai indikatif untuk analisis kebijakan, bukan nilai transaksi riil.
                 </p>
                 {pasarMemo &&
@@ -1115,7 +1115,7 @@ ${catalogSection}`;
                     if (!gkg) return null;
                     const nilaiAktual = stats.totalPadiProd * 1000 * gkg.harga;
                     return (
-                      <p className="text-[9px] font-mono text-emerald-700 mt-1.5 leading-relaxed">
+                      <p className="text-[9px] text-emerald-700 mt-1.5 leading-relaxed">
                         * Pembanding harga pasar aktual: produksi padi {stats.tahunPadi} ({new Intl.NumberFormat("id-ID").format(Math.round(stats.totalPadiProd))} Ton) × harga GKG tingkat penggilingan Bapanas Jateng edisi {gkg.edisi} (Rp {gkg.harga.toLocaleString("id-ID")}/kg) ≈ {formatRupiah(nilaiAktual)} — estimasi nilai gabah pada harga pasar berlaku (Bapanas via apiindonesia.id).
                       </p>
                     );
@@ -1124,10 +1124,10 @@ ${catalogSection}`;
         </div>
 
         {/* Ringkasan Eksekutif */}
-        <div className="print-block bg-slate-50 border border-slate-200 p-6 shadow-sm text-left transition-all duration-300 hover:shadow-md">
+        <div className="print-block bg-slate-50 border border-slate-200 p-6 shadow-sm text-left transition-all duration-300 hover:shadow">
           <div className="flex items-center gap-2 mb-3 border-b border-slate-300 pb-2">
             <Target size={18} className="text-emerald-700" />
-            <h3 className="text-md font-mono font-bold uppercase tracking-wide">
+            <h3 className="text-md font-bold uppercase tracking-wide">
               Ringkasan Eksekutif
             </h3>
           </div>
@@ -1152,7 +1152,7 @@ ${catalogSection}`;
                 <span className="w-10 h-10 border border-slate-200 bg-white flex items-center justify-center shadow-sm">
                   {s.icon}
                 </span>
-                <h3 className="text-lg font-mono font-bold uppercase text-slate-800 tracking-wide">
+                <h3 className="text-lg font-bold uppercase text-slate-800 tracking-wide">
                   Rekomendasi Sektor {s.nama}
                 </h3>
               </div>
@@ -1164,14 +1164,14 @@ ${catalogSection}`;
             {s.items.map((item, idx) => (
               <div
                 key={idx}
-                className="print-block bg-white border border-slate-200 p-6 shadow-sm text-left transition-all duration-300 hover:shadow-md"
+                className="print-block bg-white border border-slate-200 p-6 shadow-sm text-left transition-all duration-300 hover:shadow"
               >
                 <div className="flex items-start justify-between gap-4 mb-3">
-                  <h4 className="text-md font-mono font-bold uppercase text-slate-800 tracking-wide">
+                  <h4 className="text-md font-bold uppercase text-slate-800 tracking-wide">
                     {idx + 1}. {item.judul}
                   </h4>
                   <span
-                    className={`shrink-0 text-[10px] font-mono font-bold uppercase px-2 py-1 border ${PRIORITY_STYLE[item.prioritas]}`}
+                    className={`shrink-0 text-[10px] font-bold uppercase px-2 py-1 border ${PRIORITY_STYLE[item.prioritas]}`}
                   >
                     {item.prioritas}
                   </span>
@@ -1189,13 +1189,13 @@ ${catalogSection}`;
                 </div>
 
                 <div className="mb-3">
-                  <p className="text-xs font-mono font-bold uppercase text-slate-500 mb-2">
+                  <p className="text-xs font-bold uppercase text-slate-500 mb-2">
                     Langkah Rekomendasi
                   </p>
                   <ul className="space-y-1.5">
                     {item.aksi.map((a, i) => (
                       <li key={i} className="flex items-start gap-2 text-sm">
-                        <span className="text-emerald-700 font-black mt-0.5">
+                        <span className="text-emerald-700 font-semibold mt-0.5">
                           ▸
                         </span>
                         <span className="text-slate-800">{a}</span>
@@ -1216,17 +1216,17 @@ ${catalogSection}`;
         ))}
 
         {/* Rekomendasi Strategis untuk Dinas */}
-        <div className="print-block bg-white border border-slate-200 p-6 shadow-sm text-left transition-all duration-300 hover:shadow-md">
+        <div className="print-block bg-white border border-slate-200 p-6 shadow-sm text-left transition-all duration-300 hover:shadow">
           <div className="flex items-center gap-2 mb-4 border-b border-slate-300 pb-2">
             <Building2 size={18} className="text-emerald-700" />
-            <h3 className="text-md font-mono font-bold uppercase tracking-wide">
+            <h3 className="text-md font-bold uppercase tracking-wide">
               Rekomendasi Strategis untuk Dinas Terkait
             </h3>
           </div>
           <ol className="space-y-3">
             {strategisDinas.map((r, i) => (
               <li key={i} className="flex items-start gap-3 text-sm">
-                <span className="shrink-0 w-6 h-6 border border-slate-200 bg-emerald-100 flex items-center justify-center font-mono font-black text-xs">
+                <span className="shrink-0 w-6 h-6 border border-slate-200 bg-emerald-100 flex items-center justify-center font-semibold text-xs">
                   {i + 1}
                 </span>
                 <span className="text-slate-800 leading-relaxed">{r}</span>
@@ -1236,17 +1236,17 @@ ${catalogSection}`;
         </div>
 
         {/* Rekomendasi Strategis untuk Bupati */}
-        <div className="print-block bg-white border border-slate-200 p-6 shadow-sm text-left transition-all duration-300 hover:shadow-md">
+        <div className="print-block bg-white border border-slate-200 p-6 shadow-sm text-left transition-all duration-300 hover:shadow">
           <div className="flex items-center gap-2 mb-4 border-b border-slate-300 pb-2">
             <Target size={18} className="text-emerald-700" />
-            <h3 className="text-md font-mono font-bold uppercase tracking-wide">
+            <h3 className="text-md font-bold uppercase tracking-wide">
               Rekomendasi Strategis untuk Bupati
             </h3>
           </div>
           <ol className="space-y-3">
             {strategisBupati.map((r, i) => (
               <li key={i} className="flex items-start gap-3 text-sm">
-                <span className="shrink-0 w-6 h-6 border border-slate-200 bg-yellow-200 flex items-center justify-center font-mono font-black text-xs">
+                <span className="shrink-0 w-6 h-6 border border-slate-200 bg-yellow-200 flex items-center justify-center font-semibold text-xs">
                   {i + 1}
                 </span>
                 <span className="text-slate-800 leading-relaxed">{r}</span>
@@ -1256,31 +1256,31 @@ ${catalogSection}`;
         </div>
 
         {/* Blok Tanda Tangan */}
-        <div className="print-block bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow-md">
+        <div className="print-block bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow">
           <div className="text-center text-sm">
             <p className="text-slate-600 mb-2">
               Disusun oleh,
             </p>
-            <p className="font-serif font-black text-lg uppercase text-emerald-700">
+            <p className=" font-semibold text-lg uppercase text-emerald-700">
               Dinas Pertanian, Perikanan dan Ketahanan Pangan Kab. Banjarnegara
             </p>
-            <p className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest mt-1">
+            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">
               Analitika Pertanian, Peternakan &amp; Perikanan
             </p>
-            <p className="text-xs font-mono text-slate-500 mt-3">
+            <p className="text-xs text-slate-500 mt-3">
               Banjarnegara, {tanggalCetak}
             </p>
           </div>
         </div>
 
-        <p className="text-[10px] font-mono text-slate-500 uppercase text-center">
+        <p className="text-[10px] text-slate-500 uppercase text-center">
           Dokumen dihasilkan oleh SISPERTANI Distankan Kab. Banjarnegara
         </p>
       </section>
 
       {/* Tren Produksi Padi — dibangun langsung dari data terkoreksi (bukan hardcode) */}
       <section className="print-block mt-8 bg-amber-50 border border-amber-200 p-6 shadow-sm">
-        <h3 className="text-sm font-mono font-black uppercase text-amber-800 tracking-wide mb-3">
+        <h3 className="text-sm font-semibold uppercase text-amber-800 tracking-wide mb-3">
           Tren Produksi Padi (Sawah + Ladang) — Data Terkoreksi
         </h3>
         <p className="text-xs text-slate-700 leading-relaxed mb-3">
@@ -1290,7 +1290,7 @@ ${catalogSection}`;
           bawah selalu mengikuti data aktual.
         </p>
         <div className="overflow-x-auto">
-          <table className="w-full text-[11px] font-mono border-collapse">
+          <table className="w-full text-[11px] border-collapse">
             <thead>
               <tr className="bg-amber-100 text-amber-900">
                 <th className="border border-amber-300 px-2 py-1 text-left">Tahun</th>

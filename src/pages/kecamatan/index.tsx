@@ -101,7 +101,7 @@ export default function KecamatanIndexPage() {
           />
         </div>
 
-        <div className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:gap-4">
+        <div className="flex flex-col gap-3 rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:gap-4">
           <label
             className="text-sm font-semibold whitespace-nowrap text-slate-700"
             htmlFor="pilih-kecamatan"
