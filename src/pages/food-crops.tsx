@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import DefaultLayout from "@/layouts/default";
+import { SectorEconomicWidget } from "@/components/SectorEconomicWidget";
 import { LoadingSpinner } from "@/components/ui";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { fetchJagungUbiKayu, fetchKacangKedelai, fetchUbiKacangHijau, fetchPadiSawahLadang, FoodCropRow } from "@/services/api";
@@ -379,6 +380,8 @@ export default function FoodCropsPage() {
             Kedelai, Ubi Jalar, Kacang Hijau) per kecamatan Kabupaten Banjarnegara.
           </p>
         </header>
+
+        <SectorEconomicWidget sektor="pangan" tahun={selectedYear} />
 
         {/* ===== Panel Filter ===== */}
         <section className="bg-white border border-slate-200 rounded-lg p-4">

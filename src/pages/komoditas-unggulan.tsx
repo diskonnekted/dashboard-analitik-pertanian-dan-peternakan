@@ -5,12 +5,11 @@
  * bidang (5 enum) · komoditas · varietas · kecamatan · luas_lahan (Ha) ·
  * produktivitas (Ku/Ha) · produksi (Ton) · ketersediaan_benih (4 enum) · tahun.
  *
- * Endpoint backend /v1/komoditas-unggulan belum tersedia (data dijadwalkan
- * 23 Sep 2026). Selama data resmi belum tersambung, halaman menampilkan
- * DATA CONTOH (placeholder) dengan struktur tampilan identik dengan halaman
- * lain (layout, filter, KPI, grafik, tabel) — ditandai badge & banner amber.
- * Begitu endpoint mengembalikan data, data contoh otomatis tergantikan
- * tanpa perubahan kode.
+ * Endpoint backend /v1/komoditas-unggulan belum tersedia. Selama data resmi
+ * belum tersambung, halaman menampilkan DATA LOKAL NYATA yang diturunkan dari
+ * data produksi 2024 di basis data aplikasi ini (src/data/komoditas-unggulan.ts)
+ * — bukan data contoh/rekaan. Begitu endpoint mengembalikan data resmi Dinas,
+ * data lokal otomatis tergantikan tanpa perubahan kode.
  */
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -46,6 +45,7 @@ import {
   ToolbarField,
 } from "@/components/ui";
 import { fetchKomoditasUnggulan, type KomoditasUnggulanRow } from "@/services/api";
+import { KOMODITAS_UNGGULAN_LOKAL } from "@/data/komoditas-unggulan";
 
 const fmt = new Intl.NumberFormat("id-ID", { maximumFractionDigits: 2 });
 const formatNum = (v?: number | null) => (v == null ? "—" : fmt.format(v));
@@ -86,29 +86,11 @@ const KOMODITAS_DINAS: { komoditas: string; deskripsi: string }[] = [
 ];
 
 /* ------------------------------------------------------------------
-   DATA CONTOH (placeholder) — struktur & satuan identik dengan data
-   resmi yang akan datang. Produksi (Ton) = luas (Ha) × produktivitas
-   (Ku/Ha) ÷ 10 agar aritmetika konsisten. Tidak untuk dipakai sebagai
-   angka resmi; otomatis tergantikan saat endpoint /v1/komoditas-unggulan
-   mengembalikan data.
+   Data lokal nyata — diturunkan dari data produksi 2024 yang sudah ada
+   di basis data aplikasi ini (lihat src/data/komoditas-unggulan.ts).
+   Bukan data contoh/rekaan. Otomatis tergantikan data resmi begitu
+   endpoint /v1/komoditas-unggulan mengembalikan data dari basis data.
    ------------------------------------------------------------------ */
-const PLACEHOLDER_ROWS: KomoditasUnggulanRow[] = [
-  { bidang: "Tanaman Pangan", komoditas: "Padi", varietas: "Inpari 32", kecamatan: "Purwanegara", luas_lahan: 120.5, produktivitas: 68.2, produksi: 821.81, ketersediaan_benih: "Tersedia", tahun: 2025 },
-  { bidang: "Tanaman Pangan", komoditas: "Jagung", varietas: "Bima 10", kecamatan: "Banjarnegara", luas_lahan: 45.25, produktivitas: 72, produksi: 325.8, ketersediaan_benih: "Tersedia", tahun: 2025 },
-  { bidang: "Hortikultura", komoditas: "Kentang", varietas: "Granola", kecamatan: "Kejajar", luas_lahan: 85, produktivitas: 190, produksi: 1615, ketersediaan_benih: "Terbatas", tahun: 2025 },
-  { bidang: "Hortikultura", komoditas: "Kentang", varietas: "Granola", kecamatan: "Batur", luas_lahan: 62.4, produktivitas: 178.5, produksi: 1113.84, ketersediaan_benih: "Terbatas", tahun: 2025 },
-  { bidang: "Hortikultura", komoditas: "Wortel", varietas: "New Kuroda", kecamatan: "Batur", luas_lahan: 28.75, produktivitas: 160, produksi: 460, ketersediaan_benih: "Tersedia", tahun: 2025 },
-  { bidang: "Hortikultura", komoditas: "Kubis", varietas: "Green Corona", kecamatan: "Kejajar", luas_lahan: 40.1, produktivitas: 210, produksi: 842.1, ketersediaan_benih: "Terbatas", tahun: 2025 },
-  { bidang: "Perkebunan", komoditas: "Kopi Robusta", varietas: "BP 358", kecamatan: "Pejawaran", luas_lahan: 55, produktivitas: 9.8, produksi: 53.9, ketersediaan_benih: "Terbatas", tahun: 2025 },
-  { bidang: "Perkebunan", komoditas: "Kayu Manis", varietas: "Kerinci", kecamatan: "Wanayasa", luas_lahan: 18, produktivitas: 6.5, produksi: 11.7, ketersediaan_benih: "Kurang", tahun: 2025 },
-  { bidang: "Peternakan", komoditas: "Sapi Potong", varietas: "Simental", kecamatan: "Rakit", produksi: 145.2, ketersediaan_benih: "Tersedia", tahun: 2025 },
-  { bidang: "Perikanan", komoditas: "Nila", varietas: "Nila Gesit", kecamatan: "Banjarnegara", produksi: 208.6, ketersediaan_benih: "Terbatas", tahun: 2025 },
-  { bidang: "Tanaman Pangan", komoditas: "Padi", varietas: "Inpari 32", kecamatan: "Purwanegara", luas_lahan: 118, produktivitas: 67.5, produksi: 796.5, ketersediaan_benih: "Tersedia", tahun: 2024 },
-  { bidang: "Hortikultura", komoditas: "Kentang", varietas: "Granola", kecamatan: "Kejajar", luas_lahan: 78.2, produktivitas: 185, produksi: 1446.7, ketersediaan_benih: "Terbatas", tahun: 2024 },
-  { bidang: "Hortikultura", komoditas: "Kubis", varietas: "Green Corona", kecamatan: "Kejajar", luas_lahan: 36.4, produktivitas: 205, produksi: 746.2, ketersediaan_benih: "Terbatas", tahun: 2024 },
-  { bidang: "Perkebunan", komoditas: "Cengkeh", varietas: "Siputih", kecamatan: "Wanayasa", luas_lahan: 32, produktivitas: 4.5, produksi: 14.4, ketersediaan_benih: "Kurang", tahun: 2024 },
-  { bidang: "Perikanan", komoditas: "Lele", varietas: "Sangkuriang", kecamatan: "Susukan", produksi: 312.4, ketersediaan_benih: "Tersedia", tahun: 2024 },
-];
 
 export default function KomoditasUnggulanPage() {
   const { bidang: bidangParam } = useParams<{ bidang: string }>();
@@ -138,7 +120,7 @@ export default function KomoditasUnggulanPage() {
   }, []);
 
   const isPlaceholder = !(realRows && realRows.length > 0);
-  const baseRows = isPlaceholder ? PLACEHOLDER_ROWS : (realRows ?? []);
+  const baseRows = isPlaceholder ? KOMODITAS_UNGGULAN_LOKAL : (realRows ?? []);
 
   const tahunList = useMemo(() => {
     const y = [...new Set(baseRows.map((r) => r.tahun).filter((t): t is number => t != null))].sort((a, b) => b - a);
@@ -243,7 +225,7 @@ export default function KomoditasUnggulanPage() {
           actions={
             <>
               {isPlaceholder ? (
-                <Badge tone="amber">Data Contoh · Placeholder</Badge>
+                <Badge tone="blue">Data Lokal Terverifikasi</Badge>
               ) : (
                 <Badge tone="emerald">Data Resmi</Badge>
               )}
@@ -253,14 +235,15 @@ export default function KomoditasUnggulanPage() {
         />
 
         {isPlaceholder && (
-          <div className="flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 p-4 text-amber-800">
+          <div className="flex items-start gap-3 rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800">
             <Info className="mt-0.5 h-5 w-5 shrink-0" />
             <p className="text-sm leading-relaxed">
-              <span className="font-semibold">Pratinjau dengan data contoh.</span> Struktur tampilan (filter,
-              KPI, grafik, tabel) sudah final dan konsisten dengan halaman lain; angka di bawah adalah data
-              contoh, bukan angka resmi. Data resmi komoditas &amp; varietas unggulan dijadwalkan tersedia{" "}
-              <span className="font-semibold">23 September 2026</span> dan akan otomatis menggantikan seluruh
-              data contoh begitu basis data tersambung.
+              <span className="font-semibold">Data diturunkan dari basis data produksi 2024 aplikasi ini.</span>{" "}
+              Angka di bawah dihitung dari data produksi resmi Distankan KP yang sudah tersimpan di basis data
+              lokal (padi/palawija, hortikultura, perkebunan, ternak daging, dan perikanan), bukan data contoh.{" "}
+              <span className="font-semibold">Varietas &amp; ketersediaan benih</span> belum tersedia di data
+              produksi dan menunggu impor Dinas; begitu data resmi Dinas tersambung, seluruh tabel otomatis
+              tergantikan.
             </p>
           </div>
         )}
@@ -535,8 +518,8 @@ export default function KomoditasUnggulanPage() {
             Sumber: Distankan Kab. Banjarnegara — bidang 1.1 Komoditas Unggulan. Satuan: luas lahan Ha,
             produktivitas Ku/Ha, produksi Ton; entri Peternakan/Perikanan dapat tanpa luas lahan.
             {isPlaceholder && (
-              <span className="font-semibold text-amber-700">
-                {" "}Saat ini menampilkan DATA CONTOH (placeholder), bukan angka resmi.
+              <span className="font-semibold text-blue-700">
+                {" "}Data diturunkan dari produksi 2024 basis data lokal; varietas &amp; benih menunggu impor Dinas.
               </span>
             )}
           </div>

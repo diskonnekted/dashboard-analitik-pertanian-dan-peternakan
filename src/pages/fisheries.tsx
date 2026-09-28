@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import DefaultLayout from "@/layouts/default";
+import { SectorEconomicWidget } from "@/components/SectorEconomicWidget";
 import { EmptyStatePlaceholder, LoadingSpinner } from "@/components/ui";
 import {
   BarChart,
@@ -555,6 +556,8 @@ export default function FisheriesPage() {
             />
           </div>
         </section>
+
+        <SectorEconomicWidget sektor="perikanan" tahun={selectedYear} />
 
         {/* Filters */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-white border border-slate-200 p-6 shadow-sm transition-all duration-300 hover:shadow">

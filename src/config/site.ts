@@ -42,6 +42,14 @@ export const siteConfig = {
           label: "Tanaman Pangan (Padi & Palawija)",
           href: "/food-crops",
         },
+        {
+          label: "Komoditas Unggulan Pangan",
+          href: "/komoditas-unggulan/pangan",
+        },
+        {
+          label: "Nilai Ekonomi Pangan",
+          href: "/nilai-ekonomi/pangan",
+        },
       ],
     },
     // 3. Bidang Hortikultura & Perkebunan — resmi satu bidang (Seksi Usaha & Produksi)
@@ -53,8 +61,24 @@ export const siteConfig = {
           href: "/horticulture",
         },
         {
+          label: "Komoditas Unggulan Hortikultura",
+          href: "/komoditas-unggulan/hortikultura",
+        },
+        {
+          label: "Nilai Ekonomi Hortikultura",
+          href: "/nilai-ekonomi/hortikultura",
+        },
+        {
           label: "Analitik Perkebunan",
           href: "/plantation",
+        },
+        {
+          label: "Komoditas Unggulan Perkebunan",
+          href: "/komoditas-unggulan/perkebunan",
+        },
+        {
+          label: "Nilai Ekonomi Perkebunan",
+          href: "/nilai-ekonomi/perkebunan",
         },
         {
           label: "LTT & Kalender Tanam",
@@ -69,6 +93,14 @@ export const siteConfig = {
         {
           label: "Populasi & Produksi Ternak",
           href: "/livestock",
+        },
+        {
+          label: "Komoditas Unggulan Peternakan",
+          href: "/komoditas-unggulan/peternakan",
+        },
+        {
+          label: "Nilai Ekonomi Peternakan",
+          href: "/nilai-ekonomi/peternakan",
         },
         {
           label: "Susu & Kulit Ternak",
@@ -89,24 +121,13 @@ export const siteConfig = {
           label: "Produksi Perikanan",
           href: "/fisheries",
         },
-      ],
-    },
-    // 6. Analisis Lintas Bidang — halaman generik lintas bidang (satu halaman
-    // dengan pemilih bidang tab/dropdown di dalamnya; bukan milik satu bidang).
-    {
-      title: "Analisis Lintas Bidang",
-      items: [
         {
-          label: "Komoditas & Varietas Unggulan",
-          href: "/komoditas-unggulan",
+          label: "Komoditas Unggulan Perikanan",
+          href: "/komoditas-unggulan/perikanan",
         },
         {
-          label: "Nilai Ekonomi",
-          href: "/nilai-ekonomi/pangan",
-        },
-        {
-          label: "Sebaran Wilayah (Peta)",
-          href: "/sebaran/pangan",
+          label: "Nilai Ekonomi Perikanan",
+          href: "/economic-value",
         },
       ],
     },
@@ -151,6 +172,10 @@ export const siteConfig = {
         {
           label: "Profil Kecamatan",
           href: "/kecamatan",
+        },
+        {
+          label: "Peta Sebaran Komoditas",
+          href: "/sebaran/pangan",
         },
       ],
     },

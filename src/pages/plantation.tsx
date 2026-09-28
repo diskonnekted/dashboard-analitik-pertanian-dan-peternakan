@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import DefaultLayout from "@/layouts/default";
+import { SectorEconomicWidget } from "@/components/SectorEconomicWidget";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { fetchPlantationArea, fetchPlantationProduction, PlantationArea, PlantationProduction } from "@/services/api";
 import { Sprout, TreePine, Calendar, MapPin, TrendingUp, Filter, AlertTriangle, ShieldCheck, FileSpreadsheet, Activity } from "lucide-react";
@@ -430,6 +431,8 @@ export default function PlantationPage() {
           subtitle="Analisis luas lahan, hasil produksi, dan produktivitas perkebunan Kabupaten Banjarnegara."
           actions={<Badge tone="blue">Tahun {selectedYear}</Badge>}
         />
+
+        <SectorEconomicWidget sektor="perkebunan" tahun={selectedYear} />
 
         {/* Filters Panel */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-white border border-slate-200 rounded-lg p-4 shadow-sm">

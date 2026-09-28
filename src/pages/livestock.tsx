@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import DefaultLayout from "@/layouts/default";
+import { SectorEconomicWidget } from "@/components/SectorEconomicWidget";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { fetchTernakKecil, fetchTernakBesar, fetchUnggas, fetchTernakTelur, TernakKecil, TernakBesar, Unggas, TernakFlow } from "@/services/api";
 import { Beef, Squirrel, Bird, Calendar, MapPin, TrendingUp, Filter, AlertTriangle, ShieldCheck, Egg } from "lucide-react";
@@ -385,6 +386,8 @@ export default function LivestockPage() {
           subtitle="Pemantauan populasi ternak besar, ternak kecil, dan unggas per kecamatan di Kabupaten Banjarnegara."
           actions={<Badge tone="blue">Tahun {selectedYear}</Badge>}
         />
+
+        <SectorEconomicWidget sektor="peternakan" tahun={selectedYear} />
 
         {/* Jenis ternak tambahan — placeholder menunggu data dinas (keputusan klien 23 Sep 2026) */}
         <div className="flex items-start gap-3 rounded-lg border border-amber-300 bg-amber-50 p-4 text-amber-800">

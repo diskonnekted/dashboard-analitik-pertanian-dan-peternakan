@@ -1855,8 +1855,9 @@ const fetchUnggasCsv = async (): Promise<Unggas[]> =>
         transformHeader: (h) => h.trim(),
         complete: (results) => {
           const rows = results.data as any[];
-          // cleanFloat mempertahankan nilai negatif (revisi BPS, mis. Itik Biasa 2022 "-65")
-          // — parseInt lama membalik tandanya menjadi positif.
+          // Catatan: sumber CSV sudah dikoreksi, 2 sel typo tanda-negatif BPS
+          // (Itik Biasa 2022: Karangkobar -65 -> 65, Pandanarum -23 -> 23) telah diperbaiki
+          // di MySQL & CSV. cleanFloat tetap lulus nilai apa adanya sebagai lapisan transparansi.
           resolve(rows.filter(r => {
             const kec = String(r.Kecamatan ?? "").trim();
             if (!kec || kec.toLowerCase().includes("jumlah")) return false;

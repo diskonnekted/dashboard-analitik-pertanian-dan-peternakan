@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import DefaultLayout from "@/layouts/default";
+import { SectorEconomicWidget } from "@/components/SectorEconomicWidget";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { fetchVegetableArea, fetchVegetableProduction, fetchFruitProduction, fetchAnnualHorticultureProduction, fetchTanamanHias, fetchBiofarmaka, fetchSayuranBuahSemusim, VegetableArea, VegetableProduction, FruitProduction, AnnualHorticultureProduction, TanamanHiasBiofarmaka } from "@/services/api";
 import { Sprout, Calendar, MapPin, TrendingUp, Filter, AlertTriangle, ShieldCheck, FileSpreadsheet, Pizza } from "lucide-react";
@@ -578,6 +579,8 @@ export default function HorticulturePage() {
           subtitle="Pemantauan produksi dan lahan sayuran & buah-buahan per kecamatan di Kabupaten Banjarnegara."
           actions={<Badge tone="blue">Tahun {selectedYear}</Badge>}
         />
+
+        <SectorEconomicWidget sektor="hortikultura" tahun={selectedYear} />
 
         {/* Category & Filters Panel */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 bg-white border border-slate-200 rounded-lg p-4 shadow-sm text-left">
