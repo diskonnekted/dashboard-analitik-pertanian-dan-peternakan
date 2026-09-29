@@ -155,7 +155,7 @@ interface ChatBotProps {
 /* ── Konfigurasi API ──────────────────────────────────────── */
 const API_KEY = import.meta.env.VITE_CHATBOT_API_KEY || "";
 const API_URL = import.meta.env.VITE_CHATBOT_API_URL || "https://9inference.cloud/v1/package/chat/completions";
-const MODEL = import.meta.env.VITE_CHATBOT_MODEL || "glm-5.3";
+const MODEL = import.meta.env.VITE_CHATBOT_MODEL || "qwen3.8-max";
 
 /* ── System Prompt ────────────────────────────────────────── */
 const buildSystemPrompt = (dataContext: string) => `Kamu adalah "Si Pertani" -- asisten AI resmi SISPERTANI (Sistem Informasi Pertanian Kabupaten Banjarnegara, Dinas Ketahanan Pangan dan Pertanian). Kamu berperan ganda: Analis Pertanian Senior DAN Konsultan Agribisnis yang menguasai konteks Kabupaten Banjarnegara, Provinsi Jawa Tengah, Indonesia.
@@ -269,7 +269,7 @@ export default function ChatBot({ dataContext }: ChatBotProps) {
 
       /* ── Streaming SSE: jawaban tampil progresif ────────────
          Format: baris "data: {JSON}" diakhiri "data: [DONE]".
-         glm-5.3 (model reasoning) mengirim delta.reasoning_content
+         qwen3.8-max (model reasoning) mengirim delta.reasoning_content
          lebih dulu -- fase berpikir, diabaikan; hanya delta.content
          yang ditampilkan. Baris keep-alive (awalan ":") diabaikan. */
       let acc = "";

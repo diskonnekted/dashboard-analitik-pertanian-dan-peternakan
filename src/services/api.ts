@@ -184,17 +184,22 @@ const withCache = async <T>(
 ): Promise<T> => {
   const cached = getCachedData<T>(cacheKey);
 
-  if (cached) {
+  // Cache berisi null/undefined = hasil fetch gagal (backend sempat down/404).
+  // Jangan dipakai — ambil ulang agar pulih begitu backend hidup kembali.
+  if (cached && cached.data !== null && cached.data !== undefined) {
     if (cached.isStale) {
       fetchFn()
-        .then((data) => setCachedData(cacheKey, data))
+        .then((data) => {
+          if (data !== null && data !== undefined) setCachedData(cacheKey, data);
+        })
         .catch((err) => console.warn(`Gagal update background ${cacheKey}:`, err));
     }
     return cached.data;
   }
 
   const data = await fetchFn();
-  setCachedData(cacheKey, data);
+  // Jangan simpan hasil gagal (null) ke cache agar tidak "meracuni" muat berikutnya.
+  if (data !== null && data !== undefined) setCachedData(cacheKey, data);
   return data;
 };
 

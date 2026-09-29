@@ -81,18 +81,6 @@ const BENIH_TONE: Record<string, "emerald" | "amber" | "red" | "slate"> = {
   "Tidak ada": "slate",
 };
 
-/* Komoditas tambahan menunggu impor Dinas (notulen Distankan KP 21 Sep 2026;
-   keputusan klien 23 Sep: talas & porang = dua komoditas terpisah). Tiap kartu
-   punya bidang sendiri: Kelapa Deres = Perkebunan; Talas & Porang = Tanaman
-   Pangan (umbi-umbian, sekelas ubi kayu/ubi jalar). Kartu otomatis hilang
-   begitu data dinas memuat komoditas bernama sama pada bidang terkait
-   (pola placeholder auto-upgrade). */
-const KOMODITAS_DINAS: { komoditas: string; bidang: string; deskripsi: string }[] = [
-  { komoditas: "Kelapa Deres", bidang: "Perkebunan", deskripsi: "Nira kelapa dalam diolah menjadi gula semut/gula aren — produk hilirisasi khas kawasan Dieng." },
-  { komoditas: "Talas", bidang: "Tanaman Pangan", deskripsi: "Umbi talas sebagai komoditas non-rilis BPS; sentra kawasan Dieng." },
-  { komoditas: "Porang", bidang: "Tanaman Pangan", deskripsi: "Umbi porang untuk bahan baku chip kering / tepung glukomanan berorientasi ekspor." },
-];
-
 /* ------------------------------------------------------------------
    Data lokal nyata — diturunkan dari data produksi 2024 yang sudah ada
    di basis data aplikasi ini (lihat src/data/komoditas-unggulan.ts).
@@ -289,36 +277,63 @@ export default function KomoditasUnggulanPage() {
           </div>
         )}
 
-        {/* Komoditas tambahan menunggu import dinas — tiap kartu disesuaikan
-            dengan bidangnya masing-masing. Kartu otomatis tergantikan data resmi
-            begitu komoditas bernama sama muncul pada bidang terkait di basis data. */}
+        {/* ---------- Komoditas Unggulan Teratas (dinamis: peringkat produksi terbesar,
+            mengikuti bidang aktif — mis. /komoditas-unggulan/hortikultura menampilkan
+            tiga komoditas hortikultura dengan produksi tertinggi) ---------- */}
         {(() => {
-          const menunggu = KOMODITAS_DINAS.filter(
-            (k) => !baseRows.some((r) => r.bidang === k.bidang && r.komoditas === k.komoditas),
-          );
-          if (menunggu.length === 0) return null;
+          const top = [...filtered]
+            .filter((r) => (r.produksi ?? 0) > 0)
+            .sort((a, b) => (b.produksi ?? 0) - (a.produksi ?? 0))
+            .slice(0, 3);
+          if (top.length === 0) return null;
+          const medal = [
+            "bg-amber-400 text-amber-950 ring-amber-500/30",
+            "bg-slate-300 text-slate-700 ring-slate-400/30",
+            "bg-orange-300 text-orange-900 ring-orange-400/30",
+          ];
+          const cakupan = bidang === "all" ? "Semua Bidang" : bidang;
           return (
-            <div className="grid gap-4 rounded-lg border border-dashed border-amber-300 bg-amber-50/60 p-5 md:grid-cols-3">
-              {menunggu.map((k) => (
-                <div key={k.komoditas} className="flex flex-col gap-2 rounded-lg border border-amber-200 bg-white/70 p-4">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-amber-800">
-                      <Sprout className="h-4 w-4" aria-hidden />
-                      {k.bidang}
-                    </span>
-                    <Badge tone="amber">Menunggu Data Dinas</Badge>
+            <SectionCard
+              title={`Komoditas Unggulan Teratas — ${cakupan}`}
+              icon={<Award className="h-4 w-4 text-blue-800" />}
+              actions={<Badge tone="emerald">Peringkat Produksi Terbesar</Badge>}
+            >
+              <div className="grid gap-4 md:grid-cols-3">
+                {top.map((r, i) => (
+                  <div
+                    key={`${r.bidang}-${r.komoditas}-${r.kecamatan}-${i}`}
+                    className="flex flex-col gap-2 rounded-lg border border-slate-200 bg-slate-50/70 p-4"
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <span
+                        className={`inline-flex h-7 w-7 items-center justify-center rounded-full text-sm font-bold ring-2 ${medal[i] ?? "bg-slate-200 text-slate-600 ring-slate-300/30"}`}
+                        aria-hidden
+                      >
+                        {i + 1}
+                      </span>
+                      <Badge tone={BIDANG_TONE[r.bidang] ?? "slate"}>{r.bidang}</Badge>
+                    </div>
+                    <p className="text-lg font-bold leading-snug text-slate-900">{r.komoditas}</p>
+                    <p className="text-xs text-slate-500">
+                      Sentra: <span className="font-semibold text-slate-600">{r.kecamatan ?? "—"}</span>
+                    </p>
+                    <div className="mt-1 flex items-baseline gap-1.5">
+                      <span className="text-2xl font-bold tabular-nums text-blue-800">{formatNum(r.produksi)}</span>
+                      <span className="text-xs font-semibold text-slate-500">Ton</span>
+                    </div>
+                    {(r.luas_lahan != null || r.produktivitas != null) && (
+                      <p className="text-xs tabular-nums text-slate-500">
+                        Luas {formatNum(r.luas_lahan)} Ha · Produktivitas {formatNum(r.produktivitas)} Ku/Ha
+                      </p>
+                    )}
                   </div>
-                  <p className="text-lg font-bold text-slate-900">{k.komoditas}</p>
-                  <p className="text-sm leading-relaxed text-slate-600">{k.deskripsi}</p>
-                </div>
-              ))}
-              <p className="text-xs leading-relaxed text-amber-800 md:col-span-3">
-                Komoditas tambahan menunggu impor Dinas (notulen Distankan KP 21 Sep 2026 — talas &amp; porang
-                sebagai dua komoditas terpisah). Setiap kartu disesuaikan dengan bidang masing-masing:
-                Kelapa Deres (Perkebunan), Talas &amp; Porang (Tanaman Pangan — umbi-umbian); kartu otomatis
-                tergantikan data resmi begitu komoditas bernama sama tersedia pada bidang terkait di basis data.
+                ))}
+              </div>
+              <p className="mt-3 text-xs leading-relaxed text-slate-500">
+                Peringkat dihitung dari produksi terbesar pada cakupan filter aktif
+                {activeYear ? ` (tahun ${activeYear})` : ""}. Kartu mengikuti bidang yang dipilih.
               </p>
-            </div>
+            </SectionCard>
           );
         })()}
 
@@ -374,125 +389,6 @@ export default function KomoditasUnggulanPage() {
             Reset
           </button>
         </Toolbar>
-
-        {/* ---------- Komoditas Unggulan per Kecamatan (dinamis, terbesar per bidang) ---------- */}
-        <SectionCard
-          title="Komoditas Unggulan per Kecamatan"
-          icon={<Award className="h-4 w-4 text-blue-800" />}
-          bodyClassName="p-0"
-          actions={
-            <>
-              <label className="flex items-center gap-2 text-xs font-semibold text-slate-500">
-                Tahun analisis
-                <select
-                  value={unggulan?.tahun ?? ""}
-                  onChange={(e) =>
-                    setUnggulanYear(e.target.value ? Number(e.target.value) : undefined)
-                  }
-                  className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-sm text-slate-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-800/20"
-                >
-                  {(unggulan?.tahunTersedia ?? [])
-                    .slice()
-                    .reverse()
-                    .map((t) => (
-                      <option key={t} value={t}>
-                        {t}
-                      </option>
-                    ))}
-                </select>
-              </label>
-              <Badge tone="emerald">Dinamis per Tahun</Badge>
-            </>
-          }
-        >
-          {!unggulan ? (
-            <div className="px-5 py-10 text-center text-sm text-slate-400">
-              Memuat analisis komoditas unggulan per kecamatan...
-            </div>
-          ) : matrixRows.length === 0 ? (
-            <div className="px-5 py-10 text-center text-sm text-slate-400">
-              Tidak ada data unggulan untuk filter ini.
-            </div>
-          ) : (
-            <>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead className="bg-slate-50">
-                    <tr>
-                      <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">
-                        Kecamatan
-                      </th>
-                      {matrixBidang.map((b) => (
-                        <th
-                          key={b}
-                          className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500"
-                        >
-                          {b}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {matrixRows.map((row) => (
-                      <tr key={row.kecamatan} className="hover:bg-slate-50">
-                        <td className="border-b border-slate-100 px-4 py-2.5 font-medium text-slate-700">
-                          {row.kecamatan}
-                        </td>
-                        {matrixBidang.map((b) => {
-                          const rec = row.bidang[b];
-                          return (
-                            <td
-                              key={b}
-                              className="border-b border-slate-100 px-4 py-2.5 align-top"
-                            >
-                              {rec ? (
-                                <div>
-                                  <span
-                                    className="font-semibold text-slate-800"
-                                    title={
-                                      rec.metode
-                                        ? "Metode budidaya (data spesies ikan per kecamatan tidak tersedia)"
-                                        : `Komoditas dengan produksi terbesar${rec.runnerUp ? `; ke-2: ${rec.runnerUp}` : ""}`
-                                    }
-                                  >
-                                    {rec.komoditas}
-                                    {rec.metode && <sup className="text-amber-600">*</sup>}
-                                  </span>
-                                  <div className="text-xs tabular-nums text-slate-500">
-                                    {fmt.format(rec.nilai)} {rec.satuan} ({rec.share}%)
-                                  </div>
-                                </div>
-                              ) : (
-                                <span className="text-slate-300">-</span>
-                              )}
-                            </td>
-                          );
-                        })}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <div className="border-t border-slate-100 px-4 py-3 text-xs leading-relaxed text-slate-500">
-                <p className="font-semibold text-slate-600">
-                  Logika: komoditas dengan nilai terbesar di tiap kecamatan per bidang
-                  {unggulan.tahun ? ` (tahun ${unggulan.tahun})` : ""}.
-                </p>
-                {unggulan.catatan?.Peternakan && (
-                  <p className="mt-1">
-                    <span className="font-semibold">Peternakan:</span> {unggulan.catatan.Peternakan}
-                  </p>
-                )}
-                {unggulan.catatan?.Perikanan && (
-                  <p className="mt-1">
-                    <span className="font-semibold">Perikanan:</span> {unggulan.catatan.Perikanan}{" "}
-                    <span className="text-amber-600">(*)</span>
-                  </p>
-                )}
-              </div>
-            </>
-          )}
-        </SectionCard>
 
         {/* ---------- KPI + komposisi ---------- */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -684,6 +580,125 @@ export default function KomoditasUnggulanPage() {
               </span>
             )}
           </div>
+        </SectionCard>
+
+        {/* ---------- Komoditas Unggulan per Kecamatan (dinamis, terbesar per bidang) ---------- */}
+        <SectionCard
+          title="Komoditas Unggulan per Kecamatan"
+          icon={<Award className="h-4 w-4 text-blue-800" />}
+          bodyClassName="p-0"
+          actions={
+            <>
+              <label className="flex items-center gap-2 text-xs font-semibold text-slate-500">
+                Tahun analisis
+                <select
+                  value={unggulan?.tahun ?? ""}
+                  onChange={(e) =>
+                    setUnggulanYear(e.target.value ? Number(e.target.value) : undefined)
+                  }
+                  className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-sm text-slate-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-800/20"
+                >
+                  {(unggulan?.tahunTersedia ?? [])
+                    .slice()
+                    .reverse()
+                    .map((t) => (
+                      <option key={t} value={t}>
+                        {t}
+                      </option>
+                    ))}
+                </select>
+              </label>
+              <Badge tone="emerald">Dinamis per Tahun</Badge>
+            </>
+          }
+        >
+          {!unggulan ? (
+            <div className="px-5 py-10 text-center text-sm text-slate-400">
+              Memuat analisis komoditas unggulan per kecamatan...
+            </div>
+          ) : matrixRows.length === 0 ? (
+            <div className="px-5 py-10 text-center text-sm text-slate-400">
+              Tidak ada data unggulan untuk filter ini.
+            </div>
+          ) : (
+            <>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead className="bg-slate-50">
+                    <tr>
+                      <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                        Kecamatan
+                      </th>
+                      {matrixBidang.map((b) => (
+                        <th
+                          key={b}
+                          className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500"
+                        >
+                          {b}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {matrixRows.map((row) => (
+                      <tr key={row.kecamatan} className="hover:bg-slate-50">
+                        <td className="border-b border-slate-100 px-4 py-2.5 font-medium text-slate-700">
+                          {row.kecamatan}
+                        </td>
+                        {matrixBidang.map((b) => {
+                          const rec = row.bidang[b];
+                          return (
+                            <td
+                              key={b}
+                              className="border-b border-slate-100 px-4 py-2.5 align-top"
+                            >
+                              {rec ? (
+                                <div>
+                                  <span
+                                    className="font-semibold text-slate-800"
+                                    title={
+                                      rec.metode
+                                        ? "Metode budidaya (data spesies ikan per kecamatan tidak tersedia)"
+                                        : `Komoditas dengan produksi terbesar${rec.runnerUp ? `; ke-2: ${rec.runnerUp}` : ""}`
+                                    }
+                                  >
+                                    {rec.komoditas}
+                                    {rec.metode && <sup className="text-amber-600">*</sup>}
+                                  </span>
+                                  <div className="text-xs tabular-nums text-slate-500">
+                                    {fmt.format(rec.nilai)} {rec.satuan} ({rec.share}%)
+                                  </div>
+                                </div>
+                              ) : (
+                                <span className="text-slate-300">-</span>
+                              )}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div className="border-t border-slate-100 px-4 py-3 text-xs leading-relaxed text-slate-500">
+                <p className="font-semibold text-slate-600">
+                  Logika: komoditas dengan nilai terbesar di tiap kecamatan per bidang
+                  {unggulan.tahun ? ` (tahun ${unggulan.tahun})` : ""}.
+                </p>
+                {unggulan.catatan?.Peternakan && (
+                  <p className="mt-1">
+                    <span className="font-semibold">Peternakan:</span> {unggulan.catatan.Peternakan}
+                  </p>
+                )}
+                {unggulan.catatan?.Perikanan && (
+                  <p className="mt-1">
+                    <span className="font-semibold">Perikanan:</span> {unggulan.catatan.Perikanan}{" "}
+                    <span className="text-amber-600">(*)</span>
+                  </p>
+                )}
+              </div>
+            </>
+          )}
         </SectionCard>
       </section>
     </DefaultLayout>
