@@ -221,12 +221,13 @@ export default function GovernmentAssistancePage() {
                   <th className="p-3 uppercase">Sektor Target</th>
                   <th className="p-3 uppercase">Penerima</th>
                   <th className="p-3 uppercase text-center">Indikator Dampak</th>
+                  <th className="p-3 uppercase">Catatan Dampak</th>
                 </tr>
               </thead>
               <tbody>
                 {program.length === 0 ? (
                   <tr className="border-b border-slate-200">
-                    <td colSpan={6} className="p-8 text-center text-xs uppercase text-slate-400">
+                    <td colSpan={7} className="p-8 text-center text-xs uppercase text-slate-400">
                       Belum ada program bantuan yang diinput
                     </td>
                   </tr>
@@ -250,6 +251,9 @@ export default function GovernmentAssistancePage() {
                         }`} title={p.dampakCatatan || undefined}>
                           <ArrowUpRight size={10} /> {p.dampakLevel}
                         </span>
+                      </td>
+                      <td className="p-3 text-xs text-slate-600 max-w-[200px] truncate" title={p.dampakCatatan || undefined}>
+                        {p.dampakCatatan || "-"}
                       </td>
                     </tr>
                   ))

@@ -46,19 +46,20 @@ for (const raw of fs.readFileSync(ENV_PATH, "utf8").split(/\r?\n/)) {
 const { buildWorkbook } = await import(pathToFileURL(path.join(BACKEND, "src", "lib", "excel.js")).href);
 const { q, getPool } = await import(pathToFileURL(path.join(BACKEND, "src", "db.js")).href);
 
-// 15 domain yang dikelola Dasbor Admin (sinkron dengan backend/src/lib/domains.js)
+// 18 domain yang dikelola Dasbor Admin (sinkron dengan backend/src/lib/domains.js)
 const DOMAIN_KEYS = [
   "padi", "palawija", "hortikultura", "perkebunan", "peternakan", "perikanan",
   "lahan", "lumbung", "ekonomi", "kelembagaan", "st2023", "renstra",
   "bantuan-program", "bantuan-alokasi", "bantuan-korelasi",
+  // "kwt", "komoditas-unggulan", "ltt-katam" — tabel belum ada di DB production
 ];
 const DOMAIN_LABELS = {
   padi: "Padi", palawija: "Palawija", hortikultura: "Hortikultura",
   perkebunan: "Perkebunan", peternakan: "Peternakan", perikanan: "Perikanan",
   lahan: "Lahan", lumbung: "Lumbung Pangan", ekonomi: "Ekonomi",
   kelembagaan: "Kelembagaan", st2023: "Sensus Pertanian 2023", renstra: "Renstra",
-  "bantuan-program": "Bantuan - Program", "bantuan-alokasi": "Bantuan - Alokasi",
-  "bantuan-korelasi": "Bantuan - Korelasi",
+  "bantuan-program": "Bantuan - Program", "bantuan-alokasi": "Bantuan - Alokasi", "bantuan-korelasi": "Bantuan - Korelasi",
+  kwt: "KWT", "komoditas-unggulan": "Komoditas Unggulan", "ltt-katam": "LTT - Katam",
 };
 
 const DIR_TPL = path.join(__dirname, "templates");
