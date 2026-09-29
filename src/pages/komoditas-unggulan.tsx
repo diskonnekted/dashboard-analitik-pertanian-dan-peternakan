@@ -81,14 +81,16 @@ const BENIH_TONE: Record<string, "emerald" | "amber" | "red" | "slate"> = {
   "Tidak ada": "slate",
 };
 
-/* Komoditas tambahan Bidang Perkebunan (notulen Distankan KP 21 Sep 2026;
-   keputusan klien 23 Sep: talas & porang = dua komoditas terpisah). Kartu
-   placeholder di bawah otomatis hilang begitu data dinas memuat komoditas
-   dengan nama yang sama (pola placeholder auto-upgrade). */
-const KOMODITAS_DINAS: { komoditas: string; deskripsi: string }[] = [
-  { komoditas: "Kelapa Deres", deskripsi: "Nira kelapa dalam diolah menjadi gula semut/gula aren — produk hilirisasi khas kawasan Dieng." },
-  { komoditas: "Talas", deskripsi: "Umbi talas sebagai komoditas non-rilis BPS; sentra kawasan Dieng." },
-  { komoditas: "Porang", deskripsi: "Umbi porang untuk bahan baku chip kering / tepung glukomanan berorientasi ekspor." },
+/* Komoditas tambahan menunggu impor Dinas (notulen Distankan KP 21 Sep 2026;
+   keputusan klien 23 Sep: talas & porang = dua komoditas terpisah). Tiap kartu
+   punya bidang sendiri: Kelapa Deres = Perkebunan; Talas & Porang = Tanaman
+   Pangan (umbi-umbian, sekelas ubi kayu/ubi jalar). Kartu otomatis hilang
+   begitu data dinas memuat komoditas bernama sama pada bidang terkait
+   (pola placeholder auto-upgrade). */
+const KOMODITAS_DINAS: { komoditas: string; bidang: string; deskripsi: string }[] = [
+  { komoditas: "Kelapa Deres", bidang: "Perkebunan", deskripsi: "Nira kelapa dalam diolah menjadi gula semut/gula aren — produk hilirisasi khas kawasan Dieng." },
+  { komoditas: "Talas", bidang: "Tanaman Pangan", deskripsi: "Umbi talas sebagai komoditas non-rilis BPS; sentra kawasan Dieng." },
+  { komoditas: "Porang", bidang: "Tanaman Pangan", deskripsi: "Umbi porang untuk bahan baku chip kering / tepung glukomanan berorientasi ekspor." },
 ];
 
 /* ------------------------------------------------------------------
@@ -287,12 +289,12 @@ export default function KomoditasUnggulanPage() {
           </div>
         )}
 
-        {/* Komoditas tambahan Perkebunan — placeholder menunggu import dinas.
-            Kartu otomatis tergantikan data resmi begitu komoditas bernama sama
-            muncul di basis data. */}
+        {/* Komoditas tambahan menunggu import dinas — tiap kartu disesuaikan
+            dengan bidangnya masing-masing. Kartu otomatis tergantikan data resmi
+            begitu komoditas bernama sama muncul pada bidang terkait di basis data. */}
         {(() => {
           const menunggu = KOMODITAS_DINAS.filter(
-            (k) => !baseRows.some((r) => r.bidang === "Perkebunan" && r.komoditas === k.komoditas),
+            (k) => !baseRows.some((r) => r.bidang === k.bidang && r.komoditas === k.komoditas),
           );
           if (menunggu.length === 0) return null;
           return (
@@ -302,7 +304,7 @@ export default function KomoditasUnggulanPage() {
                   <div className="flex items-center justify-between gap-2">
                     <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-amber-800">
                       <Sprout className="h-4 w-4" aria-hidden />
-                      Perkebunan
+                      {k.bidang}
                     </span>
                     <Badge tone="amber">Menunggu Data Dinas</Badge>
                   </div>
@@ -311,9 +313,10 @@ export default function KomoditasUnggulanPage() {
                 </div>
               ))}
               <p className="text-xs leading-relaxed text-amber-800 md:col-span-3">
-                Tiga komoditas tambahan Bidang Perkebunan (notulen Distankan KP 21 Sep 2026 — talas &amp; porang
-                sebagai dua komoditas terpisah) akan diimpor dari Dinas; kartu di atas otomatis tergantikan
-                data resmi begitu tersedia di basis data.
+                Komoditas tambahan menunggu impor Dinas (notulen Distankan KP 21 Sep 2026 — talas &amp; porang
+                sebagai dua komoditas terpisah). Setiap kartu disesuaikan dengan bidang masing-masing:
+                Kelapa Deres (Perkebunan), Talas &amp; Porang (Tanaman Pangan — umbi-umbian); kartu otomatis
+                tergantikan data resmi begitu komoditas bernama sama tersedia pada bidang terkait di basis data.
               </p>
             </div>
           );
