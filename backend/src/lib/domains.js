@@ -52,6 +52,13 @@ const LABELS = {
   nilai: "Nilai", satuan: "Satuan",
   bidang: "Bidang", volume: "Volume", harga_produsen: "Harga Produsen (Rp)",
   triwulan: "Triwulan (1-4; kosong = tahunan)",
+  nama_kelompok: "Nama Kelompok", jumlah_anggota: "Jumlah Anggota",
+  produk_andalan: "Produk Andalan", tahun_registrasi: "Tahun Registrasi",
+  varietas: "Varietas", produktivitas: "Produktivitas (Kg/Ha)",
+  produksi: "Produksi (Ton)", ketersediaan_benih: "Ketersediaan Benih", luas_lahan: "Luas Lahan (Ha)",
+  luas_rencana: "Luas Rencana (Ha)", luas_tanam: "Luas Tanam (Ha)", luas_panen: "Luas Panen (Ha)",
+  produksi_rencana: "Produksi Rencana (Ton)", produksi_aktual: "Produksi Aktual (Ton)",
+  bulan_mulai: "Bulan Mulai", bulan_panen: "Bulan Panen",
 };
 
 // Suffix kolom → satuan pada label
@@ -171,6 +178,21 @@ export const DOMAINS = {
     label: "Renstra — Target",
     desc: "Target indikator Renstra Distankan (mis. Tabel 4.1 renstra.pdf).",
     sheets: [{ table: "renstra_target", name: "Target Renstra", kecamatan: false, key: ["indikator", "tahun_target"] }],
+  },
+  "kwt": {
+    label: "KWT — Kelompok Wanita Tani",
+    desc: "Kelompok Wanita Tani (KWT), Pokdakan, Poklahsar, Pokmamas per kecamatan.",
+    sheets: [{ table: "kwt_kelompok_wanita_tani", name: "KWT", kecamatan: true, key: ["kecamatan", "nama_kelompok"], enums: { jenis: ["KWT", "Pokdakan", "Poklahsar", "Pokmamas"] } }],
+  },
+  "komoditas-unggulan": {
+    label: "Komoditas Unggulan",
+    desc: "Komoditas unggulan per kecamatan (bidang, varietas, luas lahan, produktivitas, ketersediaan benih).",
+    sheets: [{ table: "komoditas_unggulan", name: "Komoditas Unggulan", kecamatan: true, key: ["kecamatan", "komoditas", "varietas"], enums: { bidang: ["Tanaman Pangan", "Hortikultura", "Perkebunan", "Peternakan", "Perikanan"], ketersediaan_benih: ["Tersedia", "Terbatas", "Kurang", "Tidak ada"] } }],
+  },
+  "ltt-katam": {
+    label: "LTT — Luas Tambah Tanam & Kalender Tanam",
+    desc: "Monitoring luas tambah tanam (LTT) dan kalender tanam (Katam) per kecamatan.",
+    sheets: [{ table: "ltt_katam", name: "LTT & Katam", kecamatan: true, key: ["kecamatan", "komoditas", "jenis", "tahun"], enums: { jenis: ["LTT", "Katam"] } }],
   },
 };
 

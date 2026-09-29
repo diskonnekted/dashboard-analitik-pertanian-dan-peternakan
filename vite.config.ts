@@ -8,6 +8,13 @@ export default defineConfig({
     tsconfigPaths: true,
   },
   plugins: [react(), tailwindcss()],
+  build: {
+    // Rolldown sudah memecah vendor besar (maplibre-gl ~1 MB, recharts,
+    // leaflet) secara otomatis ke chunk terpisah. MapLibre hanya diimpor oleh
+    // 4 halaman peta (lazy), jadi otomatis didefer; pastikan TIDAK ada impor
+    // global "maplibre-gl/dist/maplibre-gl.css" di main.tsx (itu dulu menarik
+    // JS maplibre ke grafik entry dan mem-preload-nya di semua halaman).
+  },
   server: {
     proxy: {
       // Fase B: proxy ke backend read-only MySQL (backend/, port 4100).

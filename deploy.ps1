@@ -2,8 +2,10 @@
 # deploy.ps1 - SISPERTANI produksi di CloudPanel (pola 1 x Node.js Site)
 #
 # Upload backend (src/, package.json, .env) + frontend (dist/) ke Application
-# Root. Aplikasi dijalankan CloudPanel sebagai service system - restart
-# dilakukan lewat UI CloudPanel (Sites -> <site> -> Node.js -> Restart).
+# Root. Backend langsung di root (src/, package.json, .env); frontend di dist/.
+# Aplikasi dijalankan PM2 (app "sispertani-api") via nvm - restart otomatis di
+# langkah 5 (BUKAN service system CloudPanel). Express melayani API
+# (/sispertani-api/*) + SPA static dari dist/ (DIST_DIR=./dist).
 #
 # Semua kredensial dibaca dari deploy.env (untracked). Lihat deploy.env.example.
 #

@@ -169,10 +169,14 @@ export async function buildWorkbook(domainKey, mode = "template") {
   await buildPetunjuk(wb, domain, specs, kec);
 
   for (const spec of specs) {
+    // Saat mode export, tambahkan kolom sumber ke spec.cols untuk traceability
+    const exportSpec = spec.hasSumber
+      ? { ...spec, cols: [...spec.cols, { field: "sumber", header: "Sumber Data", type: "text", required: false }] }
+      : spec;
     if (mode === "export") {
       const rows = await q(selectSql(spec) + orderSql(spec));
-      const mapped = rows.map((r) => spec.cols.map((c) => (c.field === "kecamatan" ? r.kecamatan ?? "" : r[c.field] ?? null)));
-      addDataSheet(wb, spec, mapped);
+      const mapped = rows.map((r) => exportSpec.cols.map((c) => (c.field === "kecamatan" ? r.kecamatan ?? "" : r[c.field] ?? null)));
+      addDataSheet(wb, exportSpec, mapped);
     } else {
       addDataSheet(wb, spec, []);
       // Sheet contoh: ambil 2 baris terakhir dari DB, atau contoh sintetis

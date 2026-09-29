@@ -702,7 +702,7 @@ DROP TABLE IF EXISTS kwt_kelompok_wanita_tani;
 CREATE TABLE kwt_kelompok_wanita_tani (
   id           INT UNSIGNED NOT NULL AUTO_INCREMENT,
   nama_kelompok VARCHAR(150) NOT NULL,
-  kecamatan    VARCHAR(50)  NOT NULL,
+  kecamatan_id TINYINT UNSIGNED NOT NULL,
   desa         VARCHAR(50)  NOT NULL,
   jenis        ENUM('KWT','Pokdakan','Poklahsar','Pokmamas') NOT NULL,
   jumlah_anggota SMALLINT UNSIGNED,
@@ -712,9 +712,11 @@ CREATE TABLE kwt_kelompok_wanita_tani (
   longitude    DECIMAL(11,8),
   created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  UNIQUE KEY uq_kwt (nama_kelompok, kecamatan, desa),
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_kwt (nama_kelompok, kecamatan_id, desa),
   KEY idx_kwt_jenis (jenis),
-  KEY idx_kwt_kec (kecamatan)
+  KEY idx_kwt_kec (kecamatan_id),
+  CONSTRAINT fk_kwt_kec FOREIGN KEY (kecamatan_id) REFERENCES kecamatan (id)
 ) ENGINE=InnoDB COMMENT='Kelompok Wanita Tani (KWT/Pokdakan/Poklahsar/Pokmamas)';
 
 -- 2. Komoditas unggulan (bidang 1.1)
@@ -724,15 +726,17 @@ CREATE TABLE komoditas_unggulan (
   bidang        ENUM('Tanaman Pangan','Hortikultura','Perkebunan','Peternakan','Perikanan') NOT NULL,
   komoditas     VARCHAR(100) NOT NULL,
   varietas      VARCHAR(150) NOT NULL,
-  kecamatan     VARCHAR(50),
+  kecamatan_id  TINYINT UNSIGNED NOT NULL,
   luas_lahan    DECIMAL(8,2),
   produktivitas DECIMAL(9,2),
   produksi      DECIMAL(10,2),
   ketersediaan_benih ENUM('Tersedia','Terbatas','Kurang','Tidak ada'),
   tahun         SMALLINT UNSIGNED,
   updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
   KEY idx_komoditas_bidang (bidang, komoditas),
-  KEY idx_komoditas_kec (kecamatan)
+  KEY idx_komoditas_kec (kecamatan_id),
+  CONSTRAINT fk_komoditas_unggulan_kec FOREIGN KEY (kecamatan_id) REFERENCES kecamatan (id)
 ) ENGINE=InnoDB COMMENT='Komoditas unggulan dan varietas per kecamatan';
 
 -- 3. Nilai ekonomi (bidang 2.2) — input dinas via dasbor admin (domain "ekonomi",
@@ -763,7 +767,7 @@ DROP TABLE IF EXISTS ltt_katam;
 CREATE TABLE ltt_katam (
   id          INT UNSIGNED NOT NULL AUTO_INCREMENT,
   komoditas   VARCHAR(100) NOT NULL,
-  kecamatan   VARCHAR(50) NOT NULL,
+  kecamatan_id TINYINT UNSIGNED NOT NULL,
   jenis       ENUM('LTT','Katam') NOT NULL,
   luas_rencana DECIMAL(8,2),
   luas_tanam   DECIMAL(8,2),
@@ -773,17 +777,23 @@ CREATE TABLE ltt_katam (
   bulan_mulai  TINYINT UNSIGNED,
   bulan_panen  TINYINT UNSIGNED,
   tahun        SMALLINT UNSIGNED,
-  source       VARCHAR(30),
+  sumber       VARCHAR(30),
   updated_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
   KEY idx_ltt_komoditas (komoditas, tahun),
-  KEY idx_ltt_kec (kecamatan)
+  KEY idx_ltt_kec (kecamatan_id),
+  CONSTRAINT fk_ltt_katam_kec FOREIGN KEY (kecamatan_id) REFERENCES kecamatan (id)
 ) ENGINE=InnoDB COMMENT='LTT dan Kalender tanam';
 
 -- ============================================================================
--- VIEW: lahan_pertahanan (gabungan lahan_desa + ltt_katam)
+-- VIEW: lahan_pertahanan (luas lahan usaha tani per desa, tahun berjalan)
+-- Perbaikan 2026-09-29: lahan_desa tidak punya kolom `kecamatan`/`total_luas`
+-- (CREATE VIEW lama gagal dengan error unknown column). Kini join ke tabel
+-- kecamatan (k.nama) dan memakai total_ha (total luas fisik).
 -- ============================================================================
 DROP VIEW IF EXISTS v_lahan_pertahanan;
 CREATE VIEW v_lahan_pertahanan AS
-SELECT l.desa_norm AS desa, l.kecamatan, l.total_luas AS luas_ha, 'lhpb' AS sumber
+SELECT l.desa_norm AS desa, k.nama AS kecamatan, l.total_ha AS luas_ha, 'lhpb' AS sumber
 FROM lahan_desa l
+JOIN kecamatan k ON k.id = l.kecamatan_id
 WHERE l.tahun = YEAR(NOW());

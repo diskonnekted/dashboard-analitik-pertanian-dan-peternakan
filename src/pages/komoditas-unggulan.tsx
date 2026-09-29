@@ -46,6 +46,7 @@ import {
 } from "@/components/ui";
 import { fetchKomoditasUnggulan, type KomoditasUnggulanRow } from "@/services/api";
 import { KOMODITAS_UNGGULAN_LOKAL } from "@/data/komoditas-unggulan";
+import { PENDUDUK_2023 } from "@/data/penduduk";
 
 const fmt = new Intl.NumberFormat("id-ID", { maximumFractionDigits: 2 });
 const formatNum = (v?: number | null) => (v == null ? "—" : fmt.format(v));
@@ -134,10 +135,17 @@ export default function KomoditasUnggulanPage() {
     [baseRows, activeYear],
   );
 
-  const kecamatanList = useMemo(
-    () => [...new Set(yearRows.map((r) => r.kecamatan).filter((x): x is string => !!x))].sort(),
-    [yearRows],
-  );
+  /* Dropdown kecamatan WAJIB menampilkan seluruh 20 kecamatan resmi Kab.
+     Banjarnegara, bukan hanya yang kebetulan ada di data aktif. Sumber kanonik
+     = PENDUDUK_2023 (src/data/penduduk.ts). Kecamatan ekstra yang mungkin
+     muncul dari data resmi/API tetap digabungkan agar tidak hilang. */
+  const kecamatanList = useMemo(() => {
+    const kanonik = PENDUDUK_2023.map((p) => p.kecamatan);
+    const ekstra = [...new Set(yearRows.map((r) => r.kecamatan).filter((x): x is string => !!x))].filter(
+      (k) => !kanonik.includes(k),
+    );
+    return [...kanonik, ...ekstra].sort((a, b) => a.localeCompare(b, "id"));
+  }, [yearRows]);
 
   const scopedRows = useMemo(
     () => yearRows.filter((r) => (kecamatan === "all" ? true : r.kecamatan === kecamatan)),
