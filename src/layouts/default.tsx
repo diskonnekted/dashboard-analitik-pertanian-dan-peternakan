@@ -1,46 +1,22 @@
 import { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
-import { 
-  LayoutDashboard, 
-  TrendingUp, 
-  Map, 
-  LineChart, 
-  ShieldCheck, 
-  Truck, 
-  Menu, 
-  X, 
-  Info,
-  ChevronDown,
-  Fish,
-  DollarSign,
-  ClipboardList,
-  Sprout,
-  Cherry,
-  Users,
-  Coins,
+import {
   BookOpen,
-  AlertTriangle,
-  Database,
-  Tractor,
+  ChevronDown,
   Crop,
-  HeartPulse,
-  Wheat,
-  Droplets,
-  Award,
   Handshake,
-  Bone,
+  HeartPulse,
+  Info,
+  LayoutDashboard,
   Leaf,
-  Waves,
-  Scale,
-  GraduationCap,
-  Calendar,
-  FileCheck,
-  Activity,
-  Settings,
-  UserCog,
+  LineChart,
   Lock,
-  Store,
   MapPin,
+  Menu,
+  Scale,
+  Tractor,
+  Waves,
+  X,
 } from "lucide-react";
 import { siteConfig } from "@/config/site";
 
@@ -63,109 +39,28 @@ export default function DefaultLayout({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
 
-  // Helper to map route to its Lucide icon
-  const getIcon = (label: string, isActive: boolean) => {
-    const iconColor = isActive ? "text-white" : "text-slate-400 group-hover:text-white";
-    const disabledColor = "text-slate-600";
-    const classes = `w-4 h-4 mr-3 shrink-0 ${isActive ? iconColor : iconColor} transition-colors`;
-    const disabledClasses = `w-4 h-4 mr-3 shrink-0 ${disabledColor}`;
-    
-    // Check if this is a disabled item
-    const item = siteConfig.navItems.find(i => i.label === label);
-    const isDisabled = item?.disabled;
-    const cls = isDisabled ? disabledClasses : classes;
-
-    // Ikon generik berdasarkan pola rute (submenu simetris lintas bidang)
-    if (item?.href) {
-      if (item.href.startsWith("/komoditas-unggulan")) return <Sprout className={cls} />;
-      if (item.href.startsWith("/nilai-ekonomi")) return <DollarSign className={cls} />;
-      if (item.href.startsWith("/sebaran")) return <Map className={cls} />;
-    }
-
-    switch (label) {
-      case "Dashboard":
-        return <LayoutDashboard className={cls} />;
-      case "Peta Sebaran & Alert":
-        return <AlertTriangle className={cls} />;
-      case "Data Petani & NPP":
-        return <Users className={cls} />;
-      case "Data Lahan & Peta Digital":
-        return <Map className={cls} />;
-      case "Kesesuaian Lahan":
+  // Pemetaan ikon grup navigasi — kunci dari siteConfig.navGroups[].icon
+  const getGroupIcon = (icon: string, active: boolean) => {
+    const cls = `w-4 h-4 shrink-0 transition-colors ${active ? "text-emerald-400" : "text-slate-400 group-hover:text-emerald-300"}`;
+    switch (icon) {
+      case "pangan":
         return <Crop className={cls} />;
-      case "Data Alsintan":
-        return <Tractor className={cls} />;
-      case "Luas Tambah Tanam & Luas Panen":
-        return <Wheat className={cls} />;
-      case "Prediksi Panen":
-        return <TrendingUp className={cls} />;
-      case "OPT / Hama & Penyakit":
-        return <AlertTriangle className={cls} />;
-      case "Irigasi & Tata Air":
-        return <Droplets className={cls} />;
-      case "Produksi Sayuran, Buah & Flora Hias":
-        return <Cherry className={cls} />;
-      case "Kawasan Hortikultura":
+      case "horti":
         return <Leaf className={cls} />;
-      case "Sertifikasi & Mutu Hasil":
-        return <Award className={cls} />;
-      case "Komoditas & Varietas Unggulan":
-        return <Sprout className={cls} />;
-      case "Kemitraan & Hilirisasi":
-        return <Handshake className={cls} />;
-      case "Populasi & Produksi Ternak":
-        return <Database className={cls} />;
-      case "Kesehatan Hewan & Zoonosis":
+      case "ternak":
         return <HeartPulse className={cls} />;
-      case "Pakan Ternak & Hijauan":
-        return <Bone className={cls} />;
-      case "Susu & Kulit Ternak":
-        return <Droplets className={cls} />;
-      case "Produksi Perikanan":
-        return <Fish className={cls} />;
-      case "Nilai Ekonomi":
-      case "Nilai Ekonomi Perikanan":
-        return <DollarSign className={cls} />;
-      case "Sebaran Wilayah (Peta)":
-        return <Map className={cls} />;
-      case "Kesehatan Ikan & Lingkungan Perairan":
+      case "ikan":
         return <Waves className={cls} />;
-      case "Ketersediaan Beras":
-        return <ShieldCheck className={cls} />;
-      case "Ketahanan Pangan (FSVA)":
-        return <ShieldCheck className={cls} />;
-      case "Rantai Pasok & Distribusi":
-        return <Truck className={cls} />;
-      case "Fluktuasi Harga & Inflasi":
-        return <LineChart className={cls} />;
-      case "Cadangan Pangan Daerah":
+      case "ketapang":
         return <Scale className={cls} />;
-      case "Kelembagaan Tani":
-        return <Users className={cls} />;
-      case "Profil Kecamatan":
+      case "renstra":
+        return <LineChart className={cls} />;
+      case "lembaga":
+        return <Handshake className={cls} />;
+      case "bantuan":
+        return <Tractor className={cls} />;
+      case "lahan":
         return <MapPin className={cls} />;
-      case "Kewirausahaan KWT":
-        return <Store className={cls} />;
-      case "Jadwal & Materi Penyuluhan":
-        return <Calendar className={cls} />;
-      case "Penilaian Kinerja Penyuluh":
-        return <GraduationCap className={cls} />;
-      case "Analisis Bantuan":
-        return <Coins className={cls} />;
-      case "Analisis Renstra & RKPD":
-        return <FileCheck className={cls} />;
-      case "Rekomendasi Kebijakan":
-        return <ClipboardList className={cls} />;
-      case "Monitoring & Evaluasi":
-        return <Activity className={cls} />;
-      case "Info SISPERTANI":
-        return <Info className={cls} />;
-      case "Manual Book / Panduan":
-        return <BookOpen className={cls} />;
-      case "Manajemen User & Hak Akses":
-        return <UserCog className={cls} />;
-      case "Pengaturan Sistem":
-        return <Settings className={cls} />;
       default:
         return <LayoutDashboard className={cls} />;
     }
@@ -181,75 +76,111 @@ export default function DefaultLayout({
     return "Dasbor Pertanian";
   };
 
-  // Render grouped nav items
+  // Render grouped nav items — kategori ALL-CAPS, grup ikon+judul+subjudul, item dot-bullet
   const renderNavGroups = (onLinkClick?: () => void) => (
     <>
       {siteConfig.navGroups.map((group, groupIndex) => {
-        // Menu inaktif (hidden) tidak dirender; grup tanpa item aktif → dilewati
+        // Grup kosong (semua item hidden) dilewati
         const visibleItems = group.items.filter((it) => !it.hidden);
         if (!visibleItems.length) return null;
         const hasTitle = !!group.title;
         const isOpen = hasTitle ? openGroup === groupIndex : true;
         const hasActiveChild = group.items.some((it) => it.href === location.pathname);
         return (
-        <div key={groupIndex} className={group.title ? "mt-1 first:mt-0" : ""}>
-          {group.title && (
-            <button
-              type="button"
-              onClick={() => setOpenGroup(openGroup === groupIndex ? null : groupIndex)}
-              aria-expanded={isOpen}
-              className={`w-full flex items-center justify-between px-3 py-2 mb-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-colors text-left ${
-                hasActiveChild
-                  ? 'border border-emerald-500/40 bg-slate-800/90 text-white'
-                  : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
-              }`}
-            >
-              <span>{group.title}</span>
-              <ChevronDown className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
-            </button>
-          )}
-          {isOpen && (
-          <div className="space-y-1">
-            {visibleItems.map((item) => {
-              const isActive = location.pathname === item.href;
-              const isDisabled = item.disabled;
-              
-              if (isDisabled) {
-                return (
-                  <div
-                    key={item.href}
-                    className="group flex items-center px-4 py-2.5 rounded-lg font-sans font-semibold text-xs tracking-wide text-slate-600 cursor-not-allowed"
-                    title="Modul belum tersedia"
-                  >
-                    {getIcon(item.label, false)}
-                    <span className="flex-1">{item.label}</span>
-                    <span className="text-[8px] text-slate-700 bg-slate-800/60 px-1.5 py-0.5 rounded">SOON</span>
-                  </div>
-                );
-              }
-              
-              return (
-                <Link
-                  key={item.href}
-                  to={item.href}
-                  onClick={onLinkClick}
-                  className={`group flex items-center px-4 py-2.5 rounded-lg font-sans font-semibold text-xs tracking-wide transition-all duration-150 ${
-                    isActive 
-                      ? 'bg-emerald-600 text-white shadow-md' 
-                      : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-                  }`}
-                >
-                  {getIcon(item.label, isActive)}
-                  {item.label}
-                  {isActive && (
-                    <span className="ml-auto w-1.5 h-1.5 rounded-full bg-white" />
+          <div key={groupIndex}>
+            {group.category && (
+              <div className="text-[10px] font-bold tracking-wider text-slate-400 uppercase px-3 pt-3.5 pb-1 select-none">
+                {group.category}
+              </div>
+            )}
+            {group.title && (
+              <button
+                type="button"
+                onClick={() => setOpenGroup(openGroup === groupIndex ? null : groupIndex)}
+                aria-expanded={isOpen}
+                className={`w-full flex items-center justify-between px-2.5 py-2 mb-0.5 rounded-lg text-xs font-medium transition-all text-left group ${
+                  hasActiveChild
+                    ? "bg-slate-800/90 text-white border border-emerald-500/40 shadow-sm"
+                    : "text-slate-300 hover:bg-slate-800/80 hover:text-white"
+                }`}
+              >
+                <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                  {group.icon && (
+                    <span
+                      className={`w-7 h-7 rounded-md flex items-center justify-center shrink-0 transition-colors ${
+                        isOpen || hasActiveChild
+                          ? "bg-emerald-950/70 text-emerald-400 border border-emerald-800/40"
+                          : "bg-slate-800/60 text-slate-400 group-hover:bg-slate-800 group-hover:text-slate-200 border border-transparent"
+                      }`}
+                    >
+                      {getGroupIcon(group.icon, isOpen || hasActiveChild)}
+                    </span>
                   )}
-                </Link>
-              );
-            })}
+                  <span className="min-w-0 flex-1 leading-tight">
+                    <span
+                      className={`block truncate text-[12px] font-semibold ${
+                        isOpen || hasActiveChild ? "text-white" : "text-slate-300 group-hover:text-white"
+                      }`}
+                    >
+                      {group.title}
+                    </span>
+                    {group.subtitle && (
+                      <span className="block truncate text-[10px] font-normal text-slate-400 mt-0.5">
+                        {group.subtitle}
+                      </span>
+                    )}
+                  </span>
+                </div>
+                <ChevronDown
+                  className={`w-3.5 h-3.5 shrink-0 ml-1.5 transition-transform duration-200 text-slate-400 group-hover:text-slate-200 ${
+                    isOpen ? "rotate-180 text-emerald-400" : ""
+                  }`}
+                />
+              </button>
+            )}
+            {isOpen && (
+              <div className="space-y-1">
+                {visibleItems.map((item) => {
+                  const isActive = location.pathname === item.href;
+                  const isDisabled = item.disabled;
+
+                  if (isDisabled) {
+                    return (
+                      <div
+                        key={item.href}
+                        className="group flex items-center px-2.5 py-2 rounded-lg text-xs text-slate-600 cursor-not-allowed"
+                        title="Modul belum tersedia"
+                      >
+                        <span className="w-1.5 h-1.5 rounded-full mr-2 shrink-0 bg-slate-700" />
+                        <span className="flex-1 truncate">{item.label}</span>
+                        <span className="text-[8px] text-slate-700 bg-slate-800/60 px-1.5 py-0.5 rounded">SOON</span>
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <Link
+                      key={item.href}
+                      to={item.href}
+                      onClick={onLinkClick}
+                      className={`group flex items-center px-2.5 py-2 rounded-lg text-xs transition-all ${
+                        isActive
+                          ? "bg-emerald-600 text-white font-semibold shadow-md shadow-emerald-950/50"
+                          : "text-slate-400 hover:bg-slate-800/60 hover:text-white font-medium"
+                      }`}
+                    >
+                      <span
+                        className={`w-1.5 h-1.5 rounded-full mr-2 shrink-0 transition-colors ${
+                          isActive ? "bg-white" : "bg-slate-600 group-hover:bg-slate-400"
+                        }`}
+                      />
+                      <span className="truncate">{item.label}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
           </div>
-          )}
-        </div>
         );
       })}
     </>
@@ -264,7 +195,7 @@ export default function DefaultLayout({
         {/* Sidebar Modern (Desktop) */}
         <aside className="no-print w-64 bg-slate-900 text-white flex flex-col flex-shrink-0 hidden md:flex border-r border-slate-800">
           <div className="h-[88px] p-5 border-b border-slate-800 bg-slate-950 flex items-center gap-3">
-            <img src="/logo.png" alt="Logo Dinas" className="w-10 h-10 object-contain shrink-0" />
+            <img src="/logo.svg" alt="Logo Dinas" className="w-10 h-10 object-contain shrink-0" />
             <div>
               <span className="font-sans font-bold text-base tracking-tight uppercase text-white block leading-none">
                 SISPERTANI
@@ -385,7 +316,7 @@ export default function DefaultLayout({
           >
             <div className="flex items-center justify-between pb-4 border-b border-slate-800">
               <div className="flex items-center gap-2">
-                <img src="/logo.png" alt="Logo Dinas" className="w-8 h-8 object-contain shrink-0" />
+                <img src="/logo.svg" alt="Logo Dinas" className="w-8 h-8 object-contain shrink-0" />
                 <span className="font-sans font-bold text-sm text-white uppercase leading-none">
                   SISPERTANI
                 </span>

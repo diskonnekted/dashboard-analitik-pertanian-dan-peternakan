@@ -337,7 +337,7 @@ export default function AdminPage() {
           <div className="pointer-events-none absolute -bottom-32 -right-16 h-96 w-96 rounded-full bg-lime-500/10 blur-3xl" />
 
           <div className="relative">
-            <img src="/logo.png" alt="Logo SISPERTANI" className="h-24 w-auto drop-shadow" />
+            <img src="/logo.svg" alt="Logo SISPERTANI" className="h-24 w-auto drop-shadow" />
             <p className="mt-8 text-[11px] font-semibold uppercase tracking-[0.25em] text-emerald-400">
               Sistem Informasi Pertanian Terintegrasi
             </p>
@@ -374,7 +374,7 @@ export default function AdminPage() {
         <div className="flex flex-1 flex-col items-center justify-center px-6 py-10">
           <div className="w-full max-w-md">
             <div className="mb-6 text-center lg:hidden">
-              <img src="/logo.png" alt="Logo SISPERTANI" className="mx-auto h-20 w-auto" />
+              <img src="/logo.svg" alt="Logo SISPERTANI" className="mx-auto h-20 w-auto" />
             </div>
 
             <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow shadow-slate-200/60">
@@ -486,7 +486,7 @@ export default function AdminPage() {
       {/* ---------- Header ---------- */}
       <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/95 backdrop-blur">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-3 px-4 py-3 md:px-6">
-          <img src="/logo.png" alt="Logo SISPERTANI" className="h-9 w-auto" />
+          <img src="/logo.svg" alt="Logo SISPERTANI" className="h-9 w-auto" />
           <div className="min-w-0">
             <p className="text-sm font-semibold tracking-tight text-slate-800">
               SISPERTANI <span className="font-medium text-slate-400">· Dasbor Data</span>

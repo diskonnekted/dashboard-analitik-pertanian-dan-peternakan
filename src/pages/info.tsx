@@ -176,7 +176,7 @@ export default function InfoPage() {
         {/* Kartu identitas aplikasi + logo resmi */}
         <div className="bg-white border border-slate-200 rounded-lg shadow-sm p-6 flex flex-col sm:flex-row items-center sm:items-start gap-6">
           <img
-            src="/logo.png"
+            src="/logo.svg"
             alt="Logo resmi SISPERTANI"
             className="h-28 w-auto shrink-0 rounded-lg bg-white p-1"
           />
