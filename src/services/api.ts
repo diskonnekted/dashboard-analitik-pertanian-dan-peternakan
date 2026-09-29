@@ -3240,6 +3240,41 @@ export const fetchKomoditasUnggulan = createFetcher<KomoditasUnggulanRow>("/v1/k
 export const fetchNilaiEkonomi = createFetcher<NilaiEkonomiRow>("/v1/nilai-ekonomi");
 export const fetchLttKatam = createFetcher<LttKatamRow>("/v1/ltt-katam");
 
+// --- Komoditas unggulan per kecamatan per bidang (dinamis, agregasi produksi) ---
+// Endpoint /v1/komoditas-unggulan/per-kecamatan menghitung, untuk tiap kecamatan x
+// bidang, komoditas dengan nilai TERBESAR pada tahun terpilih (mengikuti pemilih tahun).
+// Peternakan memakai populasi (ekor) per spesies; Perikanan memakai metode budidaya
+// karena data spesies ikan per kecamatan tidak tersedia -> ditandai flag `metode` + catatan.
+export interface UnggulanBidangRec {
+  komoditas: string;
+  nilai: number;
+  total: number;
+  share: number;
+  runnerUp: string | null;
+  satuan: string;
+  metode?: boolean;
+}
+export interface UnggulanKecamatanRec {
+  kecamatan: string;
+  bidang: Record<string, UnggulanBidangRec | null>;
+}
+export interface KomoditasUnggulanPerKecamatan {
+  ok: boolean;
+  tahun: number | null;
+  tahunTersedia: number[];
+  satuan: Record<string, string>;
+  catatan: Record<string, string>;
+  kecamatan: UnggulanKecamatanRec[];
+}
+
+export const fetchKomoditasUnggulanPerKecamatan = (
+  tahun?: number,
+): Promise<KomoditasUnggulanPerKecamatan | null> => {
+  const path = `/v1/komoditas-unggulan/per-kecamatan${tahun ? `?tahun=${tahun}` : ""}`;
+  const cacheKey = `api_v1_komoditas_unggulan_per_kecamatan_${tahun ?? "terbaru"}_v1`;
+  return withCache(cacheKey, () => apiGet<KomoditasUnggulanPerKecamatan>(path));
+};
+
 // --- Daging ternak & telur per kecamatan (kg) — bentuk TernakFlow, konsisten dengan fetchDagingUnggas ---
 // Dipakai /livestock-flow (daging ternak), /livestock (produksi telur), dan
 // /nilai-ekonomi (keduanya). Jalur utama MySQL; fallback CSV publik Distankan KP.

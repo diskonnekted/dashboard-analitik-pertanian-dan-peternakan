@@ -15,6 +15,7 @@ import { ekonomiRouter, lumbungRouter } from "./routes/ekonomi.js";
 import { kelembagaanRouter } from "./routes/kelembagaan.js";
 import { st2023Router } from "./routes/st2023.js";
 import bantuanRouter from "./routes/bantuan.js";
+import { komoditasUnggulanRouter } from "./routes/komoditas-unggulan.js";
 import adminRouter from "./routes/admin.js";
 
 const app = express();
@@ -103,6 +104,7 @@ api.get("/v1", (_req, res) => {
       "/api/v1/kelembagaan/kelompok-tani", "/api/v1/kelembagaan/kth",
       "/api/v1/st2023/desa",
       "/api/v1/bantuan",
+      "/api/v1/komoditas-unggulan/per-kecamatan",
       "/api/v1/admin/login", "/api/v1/admin/domains", "/api/v1/admin/sync-log",
       "/api/v1/admin/template/:domain", "/api/v1/admin/export/:domain",
       "/api/v1/admin/import/:domain",
@@ -123,6 +125,7 @@ api.use("/v1/lumbung", lumbungRouter);
 api.use("/v1/kelembagaan", kelembagaanRouter);
 api.use("/v1/st2023", st2023Router);
 api.use("/v1/bantuan", bantuanRouter);
+api.use("/v1/komoditas-unggulan/per-kecamatan", komoditasUnggulanRouter);
 api.use("/v1/admin", adminRouter);
 
 // Catch-all 404 di dalam router — berlaku untuk kedua prefix (/api & /sispertani-api).
