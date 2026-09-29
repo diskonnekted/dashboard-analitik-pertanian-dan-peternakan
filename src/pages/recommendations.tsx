@@ -11,6 +11,9 @@ import {
   AlertCircle,
   Banknote,
   TrendingUp,
+  Sparkles,
+  Loader2,
+  RotateCcw,
 } from "lucide-react";
 import {
   fetchPadiProduction,
@@ -36,6 +39,10 @@ import {
   type HargaPanganJateng,
 } from "@/services/api";
 import ChatBot from "@/components/ChatBot";
+import {
+  generateSectorAnalysis,
+  type AiRekomendasi,
+} from "@/utils/aiRecommendation";
 import {
   describe,
   computeConcentration,
@@ -90,6 +97,14 @@ export default function RecommendationsPage() {
   const [lahanData, setLahanData] = useState<LahanDesa[]>([]);
   const [openDataCatalog, setOpenDataCatalog] = useState<CkanCatalog | null>(null);
   const [loading, setLoading] = useState(true);
+
+  /* ── Analisa AI per bidang (on-demand via tombol "Analisa") ──
+   * Hasil AI bersifat PELENGKAP rekomendasi statis resmi di bawahnya.
+   * Keyed by sector id: pertanian / peternakan / perikanan. */
+  const [aiAnalysis, setAiAnalysis] = useState<Record<string, AiRekomendasi[]>>({});
+  const [aiLoading, setAiLoading] = useState<Record<string, boolean>>({});
+  const [aiError, setAiError] = useState<Record<string, string>>({});
+  const [aiTime, setAiTime] = useState<Record<string, string>>({});
 
   useEffect(() => {
     const loadAll = async () => {
@@ -758,6 +773,99 @@ ${stats.padiProductivity !== undefined ? `Produktivitas padi kabupaten: ${stats.
 ${catalogSection}`;
   }, [stats, padiData, ternakBesar, ikanData, openDataCatalog, padiTrend]);
 
+  /* ── Konteks data per bidang untuk prompt AI ──
+   * Hanya angka/konteks yang benar-benar ada di halaman ini (tidak mengarang). */
+  const sectorContext = (id: string): string => {
+    const fmt = (n: number) => new Intl.NumberFormat("id-ID").format(Math.round(n));
+    if (id === "pertanian") {
+      return [
+        `Tahun data: ${stats.tahunPadi}`,
+        `Total produksi padi (sawah + ladang): ${fmt(stats.totalPadiProd)} Ton`,
+        `Total luas panen: ${fmt(stats.totalPadiLuas)} Ha`,
+        `Produktivitas agregat: ${stats.padiProductivity !== undefined ? stats.padiProductivity.toFixed(2) + " Ton/Ha" : "n/a"}`,
+        `Kecamatan sentra produksi: ${stats.topPadiKec} (${fmt(stats.maxPadiProd)} Ton)`,
+        `Total lahan sawah (data ${stats.tahunLahan}): ${fmt(stats.totalSawah)} Ha`,
+        `Konsentrasi geografis (HHI): ${stats.padiConcentration.hhi} (${stats.padiConcentration.interpretation}), Top-1 share ${stats.padiConcentration.top1Share}%`,
+        `Dispersi antarkecamatan (CV): ${formatPct(stats.padiSeries.cv)}`,
+        padiTrend
+          ? `Proyeksi tren produksi: ${padiTrend.direction} (slope ${padiTrend.slope.toFixed(0)} ton/tahun, R²=${padiTrend.r2}, estimasi tahun depan ${fmt(padiTrend.projectionNext)} Ton, perubahan ${padiTrend.pctChange}%)`
+          : "",
+        `Estimasi nilai ekonomi gabah: ${formatRupiah(stats.econ.gabah)}`,
+        pasarCtxPadi.trim(),
+      ]
+        .filter(Boolean)
+        .join("\n");
+    }
+    if (id === "peternakan") {
+      return [
+        `Tahun data: ${stats.tahunTernak}`,
+        `Populasi sapi: ${fmt(stats.totalSapi)} ekor (sapi perah ${fmt(stats.totalSapiPerah)} ekor)`,
+        `Kambing & domba: ${fmt(stats.totalKambing)} ekor`,
+        `Total populasi ternak utama (sapi + kambing/domba): ${fmt(stats.totalTernakPop)} ekor`,
+        `Ternak lain: kerbau ${fmt(stats.totalKerbau)} ekor, kuda ${fmt(stats.totalKuda)} ekor, babi ${fmt(stats.totalBabi)} ekor, kelinci ${fmt(stats.totalKelinci)} ekor`,
+        `Kecamatan sentra peternakan: ${stats.topTernakKec} (${fmt(stats.maxTernakPop)} ekor)`,
+        `Konsentrasi geografis (HHI): ${stats.ternakConcentration.hhi} (${stats.ternakConcentration.interpretation}), Top-1 share ${stats.ternakConcentration.top1Share}%, Top-3 share ${stats.ternakConcentration.top3Share}%`,
+        `Dispersi antarkecamatan (CV): ${formatPct(stats.ternakSeries.cv)}`,
+        `Estimasi nilai ekonomi: sapi ${formatRupiah(stats.econ.sapi)}, kambing ${formatRupiah(stats.econ.kambing)}`,
+        pasarCtxTernak.trim(),
+      ]
+        .filter(Boolean)
+        .join("\n");
+    }
+    // perikanan
+    return [
+      `Tahun data: ${stats.tahunIkan}`,
+      `Total produksi budidaya: ${fmt(stats.totalIkanProd)} Ton`,
+      `Rincian: kolam pembesaran ${fmt(stats.kolamTon)} Ton, KJA ${fmt(stats.kjaTon)} Ton, mina padi ${fmt(stats.minapadiTon)} Ton`,
+      `Kecamatan sentra perikanan: ${stats.topIkanKec} (${fmt(stats.maxIkanProd)} Ton)`,
+      `Total nilai produksi (${stats.tahunNilai}, budidaya + tangkap): ${formatRupiah(stats.totalNilaiProduksi2024 * 1000)}`,
+      `Harga implisit: Rp ${fmt(stats.hargaPerKg)}/kg`,
+      `Konsentrasi geografis (HHI): ${stats.ikanConcentration.hhi} (${stats.ikanConcentration.interpretation}), Top-1 share ${stats.ikanConcentration.top1Share}%`,
+      `Dispersi antarkecamatan (CV): ${formatPct(stats.ikanSeries.cv)}`,
+      `Estimasi nilai ekonomi ikan: ${formatRupiah(stats.econ.ikan)}`,
+      pasarCtxIkan.trim(),
+    ]
+      .filter(Boolean)
+      .join("\n");
+  };
+
+  const handleAnalisa = async (s: Sektor) => {
+    setAiLoading((p) => ({ ...p, [s.id]: true }));
+    setAiError((p) => ({ ...p, [s.id]: "" }));
+    try {
+      const hasil = await generateSectorAnalysis(s.nama, sectorContext(s.id));
+      setAiAnalysis((p) => ({ ...p, [s.id]: hasil }));
+      setAiTime((p) => ({
+        ...p,
+        [s.id]: new Date().toLocaleTimeString("id-ID", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      }));
+    } catch (e) {
+      setAiError((p) => ({
+        ...p,
+        [s.id]: e instanceof Error ? e.message : "Gagal melakukan analisa AI.",
+      }));
+    } finally {
+      setAiLoading((p) => ({ ...p, [s.id]: false }));
+    }
+  };
+
+  const resetAnalisa = (id: string) => {
+    setAiAnalysis((p) => {
+      const n = { ...p };
+      delete n[id];
+      return n;
+    });
+    setAiTime((p) => {
+      const n = { ...p };
+      delete n[id];
+      return n;
+    });
+    setAiError((p) => ({ ...p, [id]: "" }));
+  };
+
   if (loading) {
     return (
       <DefaultLayout>
@@ -1159,6 +1267,45 @@ ${catalogSection}`;
               <p className="text-sm text-slate-700 mt-3 leading-relaxed">
                 {s.ringkasan}
               </p>
+
+              {/* Tombol Analisa AI per bidang (tidak ikut tercetak) */}
+              <div className="no-print mt-4 flex flex-wrap items-center gap-2">
+                <button
+                  onClick={() => handleAnalisa(s)}
+                  disabled={aiLoading[s.id]}
+                  className="inline-flex items-center gap-2 py-2 px-4 rounded-md bg-blue-800 text-white text-xs font-medium hover:bg-blue-900 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                >
+                  {aiLoading[s.id] ? (
+                    <Loader2 size={15} className="animate-spin" />
+                  ) : (
+                    <Sparkles size={15} />
+                  )}
+                  {aiLoading[s.id]
+                    ? "Menganalisis…"
+                    : aiAnalysis[s.id]
+                      ? "Analisa Ulang dengan AI"
+                      : "Analisa dengan AI"}
+                </button>
+                {aiAnalysis[s.id] && !aiLoading[s.id] && (
+                  <button
+                    onClick={() => resetAnalisa(s.id)}
+                    className="inline-flex items-center gap-1.5 py-2 px-3 rounded-md border border-slate-300 bg-white text-slate-700 text-xs font-medium hover:bg-slate-50 transition-colors"
+                  >
+                    <RotateCcw size={13} /> Reset
+                  </button>
+                )}
+                <span className="text-[10px] text-slate-600 leading-snug">
+                  {aiAnalysis[s.id]
+                    ? `Analisa AI dibuat pukul ${aiTime[s.id]} — pelengkap rekomendasi resmi di atas.`
+                    : "Rekomendasi statis di bawah = baseline resmi. Tombol ini menambah analisa AI berbasis data terkini (qwen3.8-max)."}
+                </span>
+              </div>
+              {aiError[s.id] && (
+                <p className="no-print mt-2 flex items-start gap-1.5 text-[11px] text-red-700">
+                  <AlertCircle size={13} className="mt-0.5 shrink-0" />
+                  Analisa AI gagal: {aiError[s.id]}
+                </p>
+              )}
             </div>
 
             {s.items.map((item, idx) => (
@@ -1212,6 +1359,86 @@ ${catalogSection}`;
                 </div>
               </div>
             ))}
+
+            {/* ── Hasil Analisa AI (tampil setelah tombol "Analisa" diklik) ── */}
+            {aiLoading[s.id] && (
+              <div className="print-block bg-white border border-blue-200 p-6 text-left">
+                <div className="flex items-center gap-2 text-blue-800">
+                  <Loader2 size={16} className="animate-spin" />
+                  <span className="text-sm font-medium">
+                    AI sedang menyusun rekomendasi untuk sektor {s.nama}… (beberapa detik)
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {aiAnalysis[s.id] && !aiLoading[s.id] && (
+              <div className="flex flex-col gap-4">
+                <div className="print-block bg-blue-50 border border-blue-200 border-l-4 border-l-blue-700 p-4 text-left">
+                  <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-blue-800">
+                    <Sparkles size={12} /> Analisa AI — Sektor {s.nama}
+                  </p>
+                  <p className="text-[11px] text-blue-900 mt-1 leading-relaxed">
+                    Rekomendasi berikut disusun otomatis oleh AI (qwen3.8-max) berdasarkan data
+                    terkini sektor {s.nama}, dibuat pukul {aiTime[s.id]}. Bersifat masukan/pelengkap
+                    berbasis data — bukan pengganti rekomendasi resmi statis di atas.
+                  </p>
+                </div>
+
+                {aiAnalysis[s.id].map((item, idx) => (
+                  <div
+                    key={idx}
+                    className="print-block bg-white border border-blue-200 p-6 shadow-sm text-left transition-all duration-300 hover:shadow"
+                  >
+                    <div className="flex items-start justify-between gap-4 mb-3">
+                      <h4 className="text-md font-bold uppercase text-slate-800 tracking-wide">
+                        {idx + 1}. {item.judul}
+                      </h4>
+                      <span
+                        className={`shrink-0 text-[10px] font-bold uppercase px-2 py-1 border ${PRIORITY_STYLE[item.prioritas]}`}
+                      >
+                        {item.prioritas}
+                      </span>
+                    </div>
+
+                    {item.masalah && (
+                      <div className="flex items-start gap-2 mb-3">
+                        <AlertCircle size={16} className="text-blue-600 mt-0.5 shrink-0" />
+                        <p className="text-sm text-slate-700">
+                          <span className="font-bold">Permasalahan: </span>
+                          {item.masalah}
+                        </p>
+                      </div>
+                    )}
+
+                    {item.aksi.length > 0 && (
+                      <div className="mb-3">
+                        <p className="text-xs font-bold uppercase text-slate-500 mb-2">
+                          Langkah Rekomendasi
+                        </p>
+                        <ul className="space-y-1.5">
+                          {item.aksi.map((a, i) => (
+                            <li key={i} className="flex items-start gap-2 text-sm">
+                              <span className="text-blue-700 font-semibold mt-0.5">▸</span>
+                              <span className="text-slate-800">{a}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {item.dampak && (
+                      <div className="bg-blue-50 border-l-4 border-blue-600 px-3 py-2">
+                        <p className="text-sm text-slate-800">
+                          <span className="font-bold">Dampak yang diharapkan: </span>
+                          {item.dampak}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         ))}
 

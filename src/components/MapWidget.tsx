@@ -2,12 +2,14 @@ import { useEffect, useState, useMemo, useRef } from "react";
 import { MapContainer, TileLayer, GeoJSON, LayersControl, useMap, useMapEvents, LayerGroup } from "react-leaflet";
 import L from "leaflet";
 import ReactDOMServer from "react-dom/server";
-import { Search, Plus, Minus, Lock, AlertTriangle, RotateCw, ArrowUpRight } from "lucide-react";
+import { Search, Plus, Minus, Lock, AlertTriangle, RotateCw, ArrowUpRight, MapPin } from "lucide-react";
 import { LoadingSpinner } from "@/components/ui";
 
 import "leaflet/dist/leaflet.css";
 import { LahanDesa, KelompokTaniRow, fetchKelompokTani, fetchSt2023DesaExtra, St2023DesaExtra, fetchVegetableProduction, VegetableProduction } from "@/services/api";
 import { buildDesaPath } from "@/services/desa";
+import { useNavigate } from "react-router-dom";
+import { fetchKecamatanIndex, buildKecamatanPath, type KecamatanIndex } from "@/services/kecamatan";
 
 /**
  * Link CTA ke halaman detail desa. Ditempatkan sebagai baris lebar-penuh
@@ -679,6 +681,49 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
       console.error("Gagal menghitung batas desa:", err);
     }
   };
+
+  /* ── Pencarian KECAMATAN → navigasi ke halaman profil kecamatan ──
+   * Sumber: fetchKecamatanIndex() (20 kecamatan resmi, namaTampil + slug).
+   * Memilih kecamatan membuka /kecamatan/:slug (halaman profil yang sudah ada). */
+  const navigate = useNavigate();
+  const [kecIndex, setKecIndex] = useState<KecamatanIndex[]>([]);
+  const [kecSearchQuery, setKecSearchQuery] = useState("");
+  const [showKecDropdown, setShowKecDropdown] = useState(false);
+
+  useEffect(() => {
+    let alive = true;
+    fetchKecamatanIndex()
+      .then((idx) => {
+        if (alive) setKecIndex(idx);
+      })
+      .catch(() => {
+        /* index kosong — pencarian kecamatan nonaktif; pencarian desa tetap jalan */
+      });
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  // Hasil dropdown kecamatan — maks 8; cocok-awalan didahulukan, lalu substring.
+  const kecSearchResults = useMemo(() => {
+    const q = kecSearchQuery.trim().toUpperCase();
+    if (q.length < 2) return [] as KecamatanIndex[];
+    const starts: KecamatanIndex[] = [];
+    const contains: KecamatanIndex[] = [];
+    for (const k of kecIndex) {
+      const nm = k.namaTampil.toUpperCase();
+      if (nm.startsWith(q)) starts.push(k);
+      else if (nm.includes(q)) contains.push(k);
+    }
+    return [...starts, ...contains].slice(0, 8);
+  }, [kecIndex, kecSearchQuery]);
+
+  const handleSelectKecamatan = (k: KecamatanIndex) => {
+    setKecSearchQuery(k.namaTampil);
+    setShowKecDropdown(false);
+    navigate(buildKecamatanPath(k.namaTampil));
+  };
+
   const [activeLegendCategory, setActiveLegendCategory] = useState<number | null>(null);
   const [zoomLocked, setZoomLocked] = useState(true); // true = terkunci (Ctrl dibutuhkan)
 
@@ -1065,25 +1110,27 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
         </div>
       </div>
 
-      {/* --- TOP RIGHT: Search Bar + dropdown hasil desa --- */}
-      <div className="absolute top-3 right-3 z-[1000] flex">
+      {/* --- TOP RIGHT: Search Bar (Desa + Kecamatan) --- */}
+      <div className="absolute top-3 right-3 z-[1000] flex flex-col sm:flex-row gap-2 items-end sm:items-center">
+        {/* ===== CARI DESA — aksen emerald mencolok ===== */}
         <div className="relative">
           {showSearchDropdown && searchQuery.trim().length >= 2 && (
             <div className="fixed inset-0 z-0" onClick={() => setShowSearchDropdown(false)} />
           )}
-          <div className="relative z-10 bg-white border border-slate-200 shadow-sm flex items-center p-1 w-[190px] transition-all focus-within:w-[230px] rounded-lg">
-            <Search className="text-neutral-400 mx-2" size={16} />
+          <div className="relative z-10 flex items-center p-1 w-[190px] transition-all focus-within:w-[230px] rounded-lg border-2 border-emerald-500 bg-emerald-50 shadow-md ring-2 ring-emerald-500/30">
+            <Search className="text-emerald-600 mx-2 shrink-0" size={16} />
             <input
               type="text"
               placeholder="CARI DESA..."
-              className="w-full text-[11px] font-bold uppercase focus:outline-none bg-transparent"
+              className="w-full text-[11px] font-bold uppercase focus:outline-none bg-transparent text-slate-800 placeholder:text-emerald-700/70"
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
                 setShowSearchDropdown(true);
+                setShowKecDropdown(false);
                 if (!e.target.value) setSearchTarget(null);
               }}
-              onFocus={() => setShowSearchDropdown(true)}
+              onFocus={() => { setShowSearchDropdown(true); setShowKecDropdown(false); }}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && searchResults.length > 0) handleSelectDesa(searchResults[0]);
                 if (e.key === "Escape") setShowSearchDropdown(false);
@@ -1092,13 +1139,13 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
             {searchQuery && (
               <button
                 onClick={() => { setSearchQuery(""); setSearchTarget(null); setShowSearchDropdown(false); }}
-                className="px-2 font-semibold text-red-500 hover:bg-red-50"
+                className="px-2 font-semibold text-red-500 hover:bg-red-100 rounded"
               >X</button>
             )}
           </div>
 
           {showSearchDropdown && searchResults.length > 0 && (
-            <div className="absolute right-0 z-10 mt-1 w-[230px] bg-white border border-slate-200 shadow rounded-lg overflow-hidden">
+            <div className="absolute right-0 z-10 mt-1 w-[230px] bg-white border-2 border-emerald-500 shadow-lg rounded-lg overflow-hidden">
               {searchResults.map((item, idx) => (
                 <button
                   key={`${item.kec}-${item.name}-${idx}`}
@@ -1114,8 +1161,60 @@ export const MapWidget = ({ data = [] }: MapWidgetProps) => {
             </div>
           )}
           {showSearchDropdown && searchQuery.trim().length >= 2 && searchResults.length === 0 && desaGeoData && (
-            <div className="absolute right-0 z-10 mt-1 w-[230px] bg-white border border-slate-200 shadow rounded-lg px-3 py-2">
-              <span className=" text-[10px] uppercase text-neutral-500">Desa tidak ditemukan</span>
+            <div className="absolute right-0 z-10 mt-1 w-[230px] bg-white border-2 border-emerald-500 shadow-lg rounded-lg px-3 py-2">
+              <span className="text-[10px] uppercase text-neutral-500">Desa tidak ditemukan</span>
+            </div>
+          )}
+        </div>
+
+        {/* ===== CARI KECAMATAN — aksen amber mencolok; pilih → buka profil kecamatan ===== */}
+        <div className="relative">
+          {showKecDropdown && kecSearchQuery.trim().length >= 2 && (
+            <div className="fixed inset-0 z-0" onClick={() => setShowKecDropdown(false)} />
+          )}
+          <div className="relative z-10 flex items-center p-1 w-[190px] transition-all focus-within:w-[230px] rounded-lg border-2 border-amber-500 bg-amber-50 shadow-md ring-2 ring-amber-500/30">
+            <MapPin className="text-amber-600 mx-2 shrink-0" size={16} />
+            <input
+              type="text"
+              placeholder="CARI KECAMATAN..."
+              className="w-full text-[11px] font-bold uppercase focus:outline-none bg-transparent text-slate-800 placeholder:text-amber-700/70"
+              value={kecSearchQuery}
+              onChange={(e) => {
+                setKecSearchQuery(e.target.value);
+                setShowKecDropdown(true);
+                setShowSearchDropdown(false);
+              }}
+              onFocus={() => { setShowKecDropdown(true); setShowSearchDropdown(false); }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && kecSearchResults.length > 0) handleSelectKecamatan(kecSearchResults[0]);
+                if (e.key === "Escape") setShowKecDropdown(false);
+              }}
+            />
+            {kecSearchQuery && (
+              <button
+                onClick={() => { setKecSearchQuery(""); setShowKecDropdown(false); }}
+                className="px-2 font-semibold text-red-500 hover:bg-red-100 rounded"
+              >X</button>
+            )}
+          </div>
+
+          {showKecDropdown && kecSearchResults.length > 0 && (
+            <div className="absolute right-0 z-10 mt-1 w-[230px] bg-white border-2 border-amber-500 shadow-lg rounded-lg overflow-hidden">
+              {kecSearchResults.map((k, idx) => (
+                <button
+                  key={`${k.slug}-${idx}`}
+                  onClick={() => handleSelectKecamatan(k)}
+                  className="w-full text-left px-3 py-2 hover:bg-amber-50 active:bg-amber-100 border-b border-slate-100 last:border-b-0 transition-colors"
+                >
+                  <span className="block text-[11px] font-bold uppercase text-slate-800 leading-tight">{k.namaTampil}</span>
+                  <span className="block text-[9px] uppercase text-amber-700 leading-tight">{k.jumlahDesa} desa/kelurahan</span>
+                </button>
+              ))}
+            </div>
+          )}
+          {showKecDropdown && kecSearchQuery.trim().length >= 2 && kecSearchResults.length === 0 && kecIndex.length > 0 && (
+            <div className="absolute right-0 z-10 mt-1 w-[230px] bg-white border-2 border-amber-500 shadow-lg rounded-lg px-3 py-2">
+              <span className="text-[10px] uppercase text-neutral-500">Kecamatan tidak ditemukan</span>
             </div>
           )}
         </div>
