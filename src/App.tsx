@@ -8,6 +8,7 @@ const PredictionPage = lazy(() => import("@/pages/prediction"));
 const SuitabilityPage = lazy(() => import("@/pages/suitability"));
 const PriceVolatilityPage = lazy(() => import("@/pages/price-volatility"));
 const FoodSecurityPage = lazy(() => import("@/pages/food-security"));
+const KetahananPanganPage = lazy(() => import("@/pages/ketahanan-pangan"));
 const FsvaPage = lazy(() => import("@/pages/fsva"));
 const SupplyChainPage = lazy(() => import("@/pages/supply-chain"));
 const InfoPage = lazy(() => import("@/pages/info"));
@@ -51,6 +52,7 @@ function App() {
           <Route element={<SuitabilityPage />} path="/suitability" />
           <Route element={<PriceVolatilityPage />} path="/price-volatility" />
           <Route element={<FoodSecurityPage />} path="/food-security" />
+          <Route element={<KetahananPanganPage />} path="/ketahanan-pangan" />
       <Route element={<FsvaPage />} path="/fsva" />
           <Route element={<SupplyChainPage />} path="/supply-chain" />
           <Route element={<LivestockPage />} path="/livestock" />

@@ -1,11 +1,43 @@
-# Gap Analysis Fitur SISPERTANI — v4.0
+# Gap Analysis Fitur SISPERTANI — v4.1
 
-> **Update: 22 September 2026** (sebelumnya v3.2, 21 September 2026)
-> Basis audit: kode aktual per 22 Sep 2026 — 22 halaman aktif, 35 fetcher `src/services/api.ts`, backend 32 endpoint (Express :4100), MySQL 40 tabel (XAMPP MariaDB dev), 20 route placeholder "ComingSoon", 6 komponen detail desa.
+> **Update: 30 September 2026** (sebelumnya v4.0, 22 September 2026)
+> Basis audit: kode aktual per 30 Sep 2026 — 23 halaman aktif (bertambah `/ketahanan-pangan`), backend Express :4100, MySQL (XAMPP MariaDB dev), 20 route placeholder "ComingSoon", 6 komponen detail desa.
 > Lokasi kanonik dokumen: `public/gap-analysis.md` (v3.2 menyebut `.docs/` — tidak pernah ada; dikoreksi di v4.0).
 > Rencana lanjutan: lihat **`public/pengembangan.md`**.
 
 **Legenda:** ✅ ada & terverifikasi · 🟡 parsial (data atau UI sebagian) · ❌ belum ada
+
+---
+
+## Changelog v4.0 → v4.1 (30 Sep 2026)
+
+**Ketahanan Pangan direstrukturisasi ke kerangka 3 Pilar Bapanas/FAO** — halaman baru `/ketahanan-pangan`:
+
+1. **Kerangka pemersatu 3 pilar.** Data ketahanan pangan sebelumnya tersebar di empat halaman
+   (`/food-security`, `/fsva`, `/price-volatility`, `/supply-chain`) tanpa kerangka pemersatu.
+   Kini definisi & cakupan FAO/Bapanas (ketersediaan, keterjangkauan, pemanfaatan) dipetakan
+   eksplisit ke data riil, lengkap dengan tautan ke halaman sumbernya.
+2. **Neraca kalori 2.100 kkal/kapita/hari** (permintaan `gap-analysis-master.md` baris 6).
+   17 komoditas dari 9 fetcher resmi; faktor konversi TKPI (Kemenkes) + rendemen/BDD NBM (Bapanas)
+   dipusatkan di `src/services/ketahananPangan.ts` agar dapat diaudit. Status per kecamatan:
+   Swasembada (≥125%) / Surplus (100–125%) / Defisit (75–100%) / Kurang (<75%).
+   **Tervalidasi silang independen** terhadap API: 1.998 vs 1.995 kkal/kap/hari (selisih 0,15%,
+   karena halaman hanya menghitung 19 kecamatan yang punya data padi).
+3. **FSVA diagregasi per kecamatan & per pilar** (278 desa, 2021–2024) — sebelumnya hanya per desa.
+   Indikator `rasioMiskin` & `tanpaAkses` → pilar keterjangkauan; `tanpaAirBersih` & `rasioNakes` →
+   pilar pemanfaatan; `rasioLahan` & `rasioSarana` → pilar ketersediaan.
+4. **Cadangan pangan direposisi** ke halaman ketahanan pangan (lumbung & gudang) sebagai komponen
+   pilar ketersediaan — sebelumnya hanya tampil di detail kecamatan.
+5. **Celah data dinyatakan terbuka, bukan diisi perkiraan** (`CELAH_DATA_PILAR`, 9 item):
+   Skor PPH, PoU, stunting, keamanan pangan, produksi bulanan, RMU, arus impor antar wilayah,
+   pendapatan per kapita, kondisi jalan — masing-masing disertai sumber data yang dibutuhkan.
+6. **Koreksi temuan v4.0 yang stale**: baris "FSVA ❌ 0 hit" sudah tidak berlaku (FSVA implemented
+   24 Sep). Yang benar-benar belum ada: PPH, PoU, stunting, RMU, produksi bulanan.
+7. **Keterbatasan data yang ditemukan & dinyatakan jujur**: susu tidak dapat dihitung karena sumber
+   "Jumlah Produksi Kulit dan Susu" mencampur kulit (lembar) dan susu (liter) dalam satu kolom;
+   Kecamatan Batur tidak punya data produksi padi sehingga tidak ikut neraca.
+
+**Skor sinkronisasi:** dari ~40 item gap → **16 selesai**, **7 parsial**, **~17 masih gap asli**.
 
 ---
 
@@ -78,17 +110,26 @@ Sejak v3.2 ditulis, terjadi perubahan besar yang membuat banyak item 🔴 "BELUM
 | Pokdakan (kelompok perikanan) | ❌ | 0 hit |
 | Ikan hias dinamis | ❌ | 0 hit (jangan tertukar: `tanaman_hias` di horti = tanaman) |
 
-## 6. Ketahanan Pangan (`/food-security`, `/supply-chain`)
+## 6. Ketahanan Pangan (`/ketahanan-pangan`, `/food-security`, `/supply-chain`)
 
 | Fitur | Status | Bukti / Catatan |
 |---|---|---|
-| Lumbung pangan KTH per desa (63 unit / 95.826 ton) | ✅ | `fetchLumbungPangan` + tabel `lumbung_pangan` |
+| 3 pilar Bapanas (kerangka pemersatu) | ✅ | `/ketahanan-pangan` — definisi & cakupan FAO/Bapanas dipetakan ke data riil, `PILAR` + `FSVA_INDICATORS.pilar` di `services/ketahananPangan.ts` |
+| Neraca kalori 2.100 kkal/jiwa per kecamatan | ✅ | `/ketahanan-pangan` — 17 komoditas, faktor TKPI/NBM terpusat, status Swasembada/Surplus/Defisit/Kurang; tervalidasi silang 1.998 vs 1.995 kkal/kap/hari (2024) |
+| FSVA Bapanas 2021-2024 (278 desa) | ✅ | `/fsva` + `data/fsva.ts`; diagregasi per kecamatan & per pilar di `/ketahanan-pangan` |
+| Lumbung pangan KTH per desa (63 unit / 95.826 ton) | ✅ | `fetchLumbungPangan` + tabel `lumbung_pangan`; kini juga tampil di `/ketahanan-pangan` sebagai komponen cadangan pilar 1 |
 | Pangan utama (padi) + pasar + inflasi | ✅ | `/food-security`, `/supply-chain` + `fetchInflationData`, `fetchMarketData` |
-| 3 pilar Bapanas | ❌ | 0 hit |
-| Kalkulator kalori 2.100 kkal/jiwa per kecamatan | ❌ | 0 hit |
-| FSVA, PPH, PoU | ❌ | 0 hit |
-| RMU (penggilingan) | ❌ | 0 hit |
-| Data tanam bulanan | ❌ | Terkait LTT (ComingSoon) |
+| Skor PPH (Pola Pangan Harapan) | ❌ | Butuh survei konsumsi Bapanas/DKP Provinsi — dinyatakan terbuka di `CELAH_DATA_PILAR` |
+| PoU (Prevalence of Undernourishment) | ❌ | Butuh survei konsumsi rumah tangga Bapanas — dinyatakan terbuka |
+| Prevalensi stunting | ❌ | Butuh Dinkes / e-PPGBM / SSGI — dinyatakan terbuka |
+| Keamanan pangan (uji kontaminasi) | ❌ | `/sertifikasi-mutu` masih ComingSoon |
+| RMU (penggilingan) | ❌ | Butuh inventarisasi Distankan KP |
+| Data tanam bulanan | ❌ | Terkait LTT (ComingSoon); data produksi masih tahunan |
+| Pendapatan/daya beli per kapita & kondisi jalan | ❌ | Butuh BPS (PDRB/pengeluaran) & DPUPR |
+
+> Catatan: Kecamatan **Batur** tidak ikut neraca kalori karena tidak memiliki data produksi padi
+> (API `/v1/padi/production` 2024 hanya 19 kecamatan). Hal ini dinyatakan eksplisit di halaman,
+> bukan disembunyikan.
 
 ## 7. Penyuluhan & Kelembagaan (`/farmers`)
 

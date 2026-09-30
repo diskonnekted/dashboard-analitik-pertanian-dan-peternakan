@@ -94,9 +94,10 @@ export const siteConfig = {
     {
       category: "KEBIJAKAN & ANALITIK",
       title: "Ketahanan Pangan (Bapanas)",
-      subtitle: "Neraca Beras & Peta FSVA",
+      subtitle: "Tiga Pilar, Neraca Kalori & FSVA",
       icon: "ketapang",
       items: [
+        { label: "Tiga Pilar & Neraca Kalori", href: "/ketahanan-pangan" },
         { label: "Ketersediaan Beras & Lumbung", href: "/food-security" },
         { label: "Peta Kerawanan Pangan (FSVA)", href: "/fsva" },
         { label: "Rantai Pasok & Distribusi", href: "/supply-chain" },
